@@ -22,39 +22,39 @@ app.use( express.static(path.join(__dirname,"public")));
 app.get('/',(req,res)=>{
     res.render('home')
 })
-app.get('/categories',(req,res)=>{
-    res.render('categories')
-})
-app.get('/checkout',(req,res)=>{
-    res.render('checkout')
-})
-app.get('/contact',(req,res)=>{
-    res.render('contact')
-})
-app.get('/404',(req,res)=>{
-    res.render('error-404')
-})
-app.get('/gallery',(req,res)=>{
-    res.render('gallery')
-})
-app.get('/login',(req,res)=>{
-    res.render('login')
-})
-app.get('/product',(req,res)=>{
-    res.render('product-page')
-})
-app.get('/signup',(req,res)=>{
-    res.render('signup')
-})
-app.get('/size',(req,res)=>{
-    res.render('sizing-guide')
-})
-app.get('/track',(req,res)=>{
-    res.render('track-order')
-})
-app.get('/shop',(req,res)=>{
-    res.render('single-product')
-})
+// app.get('/categories',(req,res)=>{
+//     res.render('categories')
+// })
+// app.get('/checkout',(req,res)=>{
+//     res.render('checkout')
+// })
+// app.get('/contact',(req,res)=>{
+//     res.render('contact')
+// })
+// app.get('/404',(req,res)=>{
+//     res.render('error-404')
+// })
+// app.get('/gallery',(req,res)=>{
+//     res.render('gallery')
+// })
+// app.get('/login',(req,res)=>{
+//     res.render('login')
+// })
+// app.get('/product',(req,res)=>{
+//     res.render('product-page')
+// })
+// app.get('/signup',(req,res)=>{
+//     res.render('signup')
+// })
+// app.get('/size',(req,res)=>{
+//     res.render('sizing-guide')
+// })
+// app.get('/track',(req,res)=>{
+//     res.render('track-order')
+// })
+// app.get('/shop',(req,res)=>{
+//     res.render('single-product')
+// })
 
 
 app.listen(PORT,()=>{
