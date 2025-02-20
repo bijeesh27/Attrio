@@ -2,6 +2,9 @@ const express=require('express')
 const app=express()
 require('dotenv').config()
 const path=require('path')
+const userRoutes=require("./src/router/userRouter")
+const adminRoutes=require("./src/router/adminRouter")
+const connectDB=require("./src/config/db")
 
 const PORT = process.env.PORT
 
@@ -11,51 +14,15 @@ app.set("views", [
     path.join(__dirname, "src", "views", "user"),
     path.join(__dirname, "src", "views", "admin")
 ]);
+app.use(express.urlencoded({ extended:true }))
 
 
 app.use( express.static(path.join(__dirname,"public")));
 
+app.use("/",userRoutes)
+app.use("/admin",adminRoutes)
 
-// app.get('/',(req,res)=>{
-//     res.render('add-product')
-// })
-app.get('/',(req,res)=>{
-    res.render('home')
-})
-// app.get('/categories',(req,res)=>{
-//     res.render('categories')
-// })
-// app.get('/checkout',(req,res)=>{
-//     res.render('checkout')
-// })
-// app.get('/contact',(req,res)=>{
-//     res.render('contact')
-// })
-// app.get('/404',(req,res)=>{
-//     res.render('error-404')
-// })
-// app.get('/gallery',(req,res)=>{
-//     res.render('gallery')
-// })
-// app.get('/login',(req,res)=>{
-//     res.render('login')
-// })
-// app.get('/product',(req,res)=>{
-//     res.render('product-page')
-// })
-// app.get('/signup',(req,res)=>{
-//     res.render('signup')
-// })
-// app.get('/size',(req,res)=>{
-//     res.render('sizing-guide')
-// })
-// app.get('/track',(req,res)=>{
-//     res.render('track-order')
-// })
-// app.get('/shop',(req,res)=>{
-//     res.render('single-product')
-// })
-
+connectDB()
 
 app.listen(PORT,()=>{
     console.log(`http://localhost:${PORT}`);
