@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Attiro Fashions</title>
+    <link rel="icon" type="image/png" href="user/assets/img/favicon.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      body,
+      html {
+        height: 100%;
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .bg-wrapper {
+        height: 100%;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+        background: url("/api/placeholder/1920/1080") no-repeat center center;
+        background-size: cover;
+      }
+
+      .blur-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(8px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .password-container {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+        padding: 40px;
+        width: 100%;
+        max-width: 500px;
+        transition: all 0.3s ease;
+      }
+
+      .password-container:hover {
+        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.4);
+      }
+
+      .password-area h2 {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 15px;
+        text-align: center;
+      }
+
+      .password-area p {
+        text-align: center;
+        color: #6c757d;
+        margin-bottom: 30px;
+      }
+
+      .form-control {
+        height: 50px;
+        border-radius: 8px;
+        box-shadow: none;
+        margin-bottom: 25px;
+        padding-left: 20px;
+        border: 1px solid #e8e8e8;
+        transition: all 0.3s;
+      }
+
+      .form-control:focus {
+        border-color: #f53f85;
+        box-shadow: 0 0 0 0.25rem #f56da1;
+      }
+
+      .password-wrapper {
+        position: relative;
+      }
+
+      .toggle-password {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+        cursor: pointer;
+        transition: color 0.3s;
+      }
+
+      .toggle-password:hover {
+        color: #f53f85;
+      }
+
+      .default-btn {
+        width: 100%;
+        height: 50px;
+        background: linear-gradient(135deg, #f53f85 0%, #f53f85 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        margin-bottom: 20px;
+        transition: all 0.3s;
+      }
+
+      .default-btn:hover {
+        background: linear-gradient(135deg, #f53f85 0%, #f53f85 100%);
+        transform: translateY(-2px);
+      }
+
+      .key-icon {
+        display: block;
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 50px;
+        color: #f53f85;
+      }
+
+      .password-strength {
+        height: 5px;
+        margin-bottom: 25px;
+        border-radius: 10px;
+        background-color: #e9ecef;
+        overflow: hidden;
+      }
+
+      .password-strength-meter {
+        height: 100%;
+        width: 0%;
+        transition: all 0.5s;
+        border-radius: 10px;
+      }
+
+      .password-feedback {
+        font-size: 12px;
+        color: #6c757d;
+        margin-bottom: 25px;
+        margin-top: -15px;
+      }
+
+      .requirements {
+        margin-bottom: 25px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+      }
+
+      .requirement {
+        margin-bottom: 8px;
+        color: #6c757d;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+      }
+
+      .requirement i {
+        margin-right: 8px;
+        font-size: 14px;
+      }
+
+      .weak {
+        background-color: #dc3545;
+      }
+
+      .medium {
+        background-color: #ffc107;
+      }
+
+      .strong {
+        background-color: #28a745;
+      }
+
+      .requirement.valid {
+        color: #28a745;
+      }
+
+      .requirement.invalid {
+        color: #6c757d;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-wrapper">
+      <div class="blur-overlay">
+        <div class="password-container">
+          <section class="password-area">
+            <div class="password-content">
+              <div class="key-icon">
+                <i class="fas fa-key"></i>
+              </div>
+              <h2>Set New Password</h2>
+              <p>Please create a strong password for your account</p>
+
+              <form class="password-form" action="#" method="post">
+                <div class="password-wrapper">
+                  <input
+                    type="password"
+                    id="newPassword"
+                    class="form-control"
+                    placeholder="New password"
+                    name="newPassword"
+                    required
+                  />
+                  <span class="toggle-password" toggle="#newPassword">
+                    <i class="far fa-eye"></i>
+                  </span>
+                </div>
+
+                <div class="password-strength">
+                  <div class="password-strength-meter" id="strengthMeter"></div>
+                </div>
+                <div class="password-feedback" id="passwordFeedback">
+                  Password strength
+                </div>
+
+                <div class="requirements">
+                  <div class="requirement" id="length">
+                    <i class="far fa-circle"></i> At least 8 characters
+                  </div>
+                  <div class="requirement" id="uppercase">
+                    <i class="far fa-circle"></i> At least one uppercase letter
+                  </div>
+                  <div class="requirement" id="lowercase">
+                    <i class="far fa-circle"></i> At least one lowercase letter
+                  </div>
+                  <div class="requirement" id="number">
+                    <i class="far fa-circle"></i> At least one number
+                  </div>
+                  <div class="requirement" id="special">
+                    <i class="far fa-circle"></i> At least one special character
+                  </div>
+                </div>
+
+                <div class="password-wrapper">
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    class="form-control"
+                    placeholder="Confirm password"
+                    name="confirmPassword"
+                    required
+                  />
+                  <span class="toggle-password" toggle="#confirmPassword">
+                    <i class="far fa-eye"></i>
+                  </span>
+                </div>
+
+                <button type="submit" class="default-btn" id="submitBtn">
+                  Reset Password
+                </button>
+              </form>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Toggle password visibility
+      const togglePassword = document.querySelectorAll(".toggle-password");
+      togglePassword.forEach((button) => {
+        button.addEventListener("click", function () {
+          const input = document.querySelector(this.getAttribute("toggle"));
+          if (input.type === "password") {
+            input.type = "text";
+            this.innerHTML = '<i class="far fa-eye-slash"></i>';
+          } else {
+            input.type = "password";
+            this.innerHTML = '<i class="far fa-eye"></i>';
+          }
+        });
+      });
+
+      // Password strength checker
+      const newPassword = document.getElementById("newPassword");
+      const confirmPassword = document.getElementById("confirmPassword");
+      const strengthMeter = document.getElementById("strengthMeter");
+      const passwordFeedback = document.getElementById("passwordFeedback");
+      const submitBtn = document.getElementById("submitBtn");
+
+      const requirements = {
+        length: document.getElementById("length"),
+        uppercase: document.getElementById("uppercase"),
+        lowercase: document.getElementById("lowercase"),
+        number: document.getElementById("number"),
+        special: document.getElementById("special"),
+      };
+
+      newPassword.addEventListener("input", function () {
+        const password = this.value;
+        let strength = 0;
+
+        // Check requirements
+        const hasLength = password.length >= 8;
+        const hasUppercase = /[A-Z]/.test(password);
+        const hasLowercase = /[a-z]/.test(password);
+        const hasNumber = /[0-9]/.test(password);
+        const hasSpecial = /[^A-Za-z0-9]/.test(password);
+
+        // Update requirement indicators
+        updateRequirement(requirements.length, hasLength);
+        updateRequirement(requirements.uppercase, hasUppercase);
+        updateRequirement(requirements.lowercase, hasLowercase);
+        updateRequirement(requirements.number, hasNumber);
+        updateRequirement(requirements.special, hasSpecial);
+
+        // Calculate strength
+        if (hasLength) strength += 20;
+        if (hasUppercase) strength += 20;
+        if (hasLowercase) strength += 20;
+        if (hasNumber) strength += 20;
+        if (hasSpecial) strength += 20;
+
+        // Update strength meter
+        strengthMeter.style.width = strength + "%";
+
+        if (strength < 40) {
+          strengthMeter.className = "password-strength-meter weak";
+          passwordFeedback.innerText = "Weak password";
+          passwordFeedback.style.color = "#dc3545";
+        } else if (strength < 80) {
+          strengthMeter.className = "password-strength-meter medium";
+          passwordFeedback.innerText = "Medium strength password";
+          passwordFeedback.style.color = "#ffc107";
+        } else {
+          strengthMeter.className = "password-strength-meter strong";
+          passwordFeedback.innerText = "Strong password";
+          passwordFeedback.style.color = "#28a745";
+        }
+
+        validateForm();
+      });
+
+      confirmPassword.addEventListener("input", validateForm);
+
+      function updateRequirement(element, valid) {
+        if (valid) {
+          element.className = "requirement valid";
+          element.querySelector("i").className = "fas fa-check-circle";
+        } else {
+          element.className = "requirement invalid";
+          element.querySelector("i").className = "far fa-circle";
+        }
+      }
+
+      function validateForm() {
+        const password = newPassword.value;
+        const confirm = confirmPassword.value;
+
+        // Check if passwords match
+        if (confirm && password !== confirm) {
+          confirmPassword.style.borderColor = "#dc3545";
+          submitBtn.disabled = true;
+        } else if (confirm) {
+          confirmPassword.style.borderColor = "#28a745";
+          submitBtn.disabled = password.length < 8;
+        } else {
+          confirmPassword.style.borderColor = "#e8e8e8";
+          submitBtn.disabled = password.length < 8;
+        }
+      }
+    </script>
+  </body>
+</html>
