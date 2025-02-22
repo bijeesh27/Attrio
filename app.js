@@ -19,6 +19,7 @@ app.set("views", [
     path.join(__dirname, "src", "views", "admin")
 ]);
 app.use(express.urlencoded({ extended:true }))
+
 app.use(
     session({
       secret: "keyboard cat",
@@ -26,6 +27,8 @@ app.use(
       saveUninitialized: true,
     })
   );
+
+app.use
 
 app.use( express.static(path.join(__dirname,"public")));
 

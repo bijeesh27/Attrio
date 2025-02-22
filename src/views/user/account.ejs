@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Account Details - Xton</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Account Menu -->
+    <div class="account-tabs-menu">
+        <ul>
+            <li><a href="index.html"><i class='bx bxs-dashboard'></i> Dashboard</a></li>
+            <li><a href="orders.html"><i class='bx bxs-shopping-bag'></i> Orders</a></li>
+            <li><a href="addresses.html"><i class='bx bxs-map'></i> Addresses</a></li>
+            <li><a href="account-details.html" class="active"><i class='bx bxs-user-detail'></i> Account Details</a></li>
+            <li><a href="/logout"><i class='bx bx-log-out'></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Account Details Content -->
+    <div class="account-tabs-content">
+        <div class="dashboard-box">
+            <h3>Account Details</h3>
+            <form class="account-details-form">
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" class="form-control" value="John">
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" class="form-control" value="Doe">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" class="form-control" value="john@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Current Password</label>
+                    <input type="password" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>New Password</label>
+                    <input type="password" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Confirm New Password</label>
+                    <input type="password" class="form-control">
+                </div>
+                <button type="submit" class="default-btn">Save Changes</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

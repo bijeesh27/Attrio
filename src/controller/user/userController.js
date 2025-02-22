@@ -1,4 +1,4 @@
-const User = require("../models/userSchema");
+const User = require("../../models/userSchema");
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
 dotenv.config();
@@ -14,8 +14,14 @@ const login = async (req, res) => {
     if (!isMatch) {
       return res.redirect("/login");
     }
+
+    if (!user.status) {
+      return res.redirect("/login");
+    }
+
     req.session.isAuth = true;
-    req.session.user = user.email;
+    req.session.email = user.email;
+    req.session.userId = user._id;
     return res.redirect("/");
   } catch (error) {
     console.log("error occured while login time", error);
@@ -123,6 +129,23 @@ const loadOtp = async (req, res) => {
   }
 };
 
+const loadProfile = async (req, res) => {
+  try {
+    return res.render("profile");
+  } catch (error) {
+    console.log("error rendering profile page", error);
+  }
+};
+
+const logout = async (req, res) => {
+  try {
+    req.session.destroy();
+    res.redirect("/login");
+  } catch (error) {
+    console.log("error occured while logout", error);
+  }
+};
+
 module.exports = {
   loadHome,
   loadLogin,
@@ -135,4 +158,6 @@ module.exports = {
   loadForgot,
   forgot,
   loadOtp,
+  loadProfile,
+  logout,
 };

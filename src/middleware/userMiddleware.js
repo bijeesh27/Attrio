@@ -2,30 +2,32 @@ const userModel = require("../models/userSchema");
 
 const ifLogged = async (req, res, next) => {
   try {
-    if (req.session.user) {
-      next();
+    if (req.session.isAuth) {
+      res.redirect("/");
     } else {
-      return res.redirect("/login");
+      next();
     }
   } catch (error) {
     console.log("error form middleware", error);
   }
 };
 
-const ifLoggedOut=async (req,res,next) => {
-    try {
-        if(!req.session.user){
-            return res.redirect('/login')
-        }else{
-            next()
-        }
-    } catch (error) {
-        console.log("error from middleware",error);
+const logged = async (req, res, next) => {
+  try {
+    const user = await userModel.findOne({ _id: req.session.userId });
+    console.log("user:", user);
+    if (req.session.isAuth && user && user.status === true) {
+      next();
+    } else {
+      req.session.isAuth = false;
+      res.redirect("/login");
     }
-}
+  } catch (error) {
+    console.log("error occured", error);
+  }
+};
 
-
-module.exports={
-    ifLogged,
-    ifLoggedOut
-}
+module.exports = {
+  ifLogged,
+  logged,
+};

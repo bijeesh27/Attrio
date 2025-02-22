@@ -8619,3 +8619,145 @@ Go Top CSS
 .go-top:hover i {
   margin-top: -3px;
 }/*# sourceMappingURL=style.css.map */
+
+
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f9;
+}
+
+.account-tabs-menu {
+  width: 250px;
+  background: #f8f9fa;
+  border-right: 1px solid #eee;
+  padding: 20px;
+  height: 500px;
+}
+
+.account-tabs-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.account-tabs-menu li {
+  border-bottom: 1px solid #eee;
+}
+
+.account-tabs-menu a {
+  display: block;
+  padding: 15px 25px;
+  color: #666;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.account-tabs-menu a:hover,
+.account-tabs-menu a.active {
+  background: #F53F85; /* Updated color */
+  color: #fff;
+}
+
+.account-tabs-content {
+  flex: 1;
+  padding: 30px;
+}
+
+.dashboard-box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.04);
+}
+
+.welcome-msg {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333; /* Dark text for better readability */
+}
+
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.order-table th,
+.order-table td {
+  padding: 12px;
+  border: 1px solid #eee;
+}
+
+.order-table th {
+  background: #f8f9fa;
+}
+
+.address-box {
+  border: 1px solid #eee;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333; /* Dark text for better readability */
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.default-btn {
+  background: #F53F85; /* Updated color */
+  color: #fff;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.default-btn:hover {
+  background: #d6346f; /* Slightly darker shade for hover */
+}
+
+/* Order Details Styles */
+.order-details {
+  display: none; /* Hidden by default */
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  background: #f8f9fa;
+}
+
+.order-details.active {
+  display: block; /* Show when active */
+}
+
+.order-details h3 {
+  margin-top: 0;
+  color: #333; /* Dark text for better readability */
+}
+
+.order-details ul {
+  list-style: none;
+  padding: 0;
+}
+
+.order-details ul li {
+  padding: 5px 0;
+  color: #555; /* Slightly lighter text for details */
+}
