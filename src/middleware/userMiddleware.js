@@ -1,4 +1,4 @@
-const userModel = require("../models/userSchema");
+const User = require("../models/userSchema");
 
 const ifLogged = async (req, res, next) => {
   try {
@@ -14,7 +14,7 @@ const ifLogged = async (req, res, next) => {
 
 const logged = async (req, res, next) => {
   try {
-    const user = await userModel.findOne({ _id: req.session.userId });
+    const user = await User.findOne({ _id: req.session.userId });
     console.log("user:", user);
     if (req.session.isAuth && user && user.status === true) {
       next();
@@ -26,6 +26,8 @@ const logged = async (req, res, next) => {
     console.log("error occured", error);
   }
 };
+
+
 
 module.exports = {
   ifLogged,

@@ -1,4 +1,5 @@
 const User = require("../../models/userSchema");
+const Product=require("../../models/productSchema")
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
 dotenv.config();
@@ -30,6 +31,7 @@ const login = async (req, res) => {
 
 const register = async (req, res) => {
   try {
+    console.log("req.body:",req.body);
     const { firstName, lastName, email, number, password, confirmPassword } =
       req.body;
     const user = await User.findOne({ email });
@@ -68,7 +70,9 @@ const forgot = async (req, res) => {
 
 const loadHome = async (req, res) => {
   try {
-    return res.render("home");
+    const product=await Product.find()
+    console.log("product:",product);
+    return res.render("home",{product});
   } catch (error) {
     console.log("error rendering home page", error);
   }
@@ -98,13 +102,7 @@ const loadCategory = async (req, res) => {
   }
 };
 
-const loadProductPage = async (req, res) => {
-  try {
-    return res.render("product-page");
-  } catch (error) {
-    console.log("error rendering product page", error);
-  }
-};
+
 
 const loadForgotEmailverification = async (req, res) => {
   try {
@@ -153,7 +151,6 @@ module.exports = {
   loadRegister,
   register,
   loadCategory,
-  loadProductPage,
   loadForgotEmailverification,
   loadForgot,
   forgot,

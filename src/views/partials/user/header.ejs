@@ -300,9 +300,12 @@
 
                     <div class="col-lg-4 col-md-12">
                         <ul class="header-top-menu">
-                            <li><a href="/profile"><i class='bx bxs-user'></i> My Account</a></li>
-                            <li><a href="#" data-bs-toggle="modal" data-bs-target="#shoppingWishlistModal"><i class='bx bx-heart'></i> Wishlist</a></li>
+                            <% if (locals.session.isAuth) { %>
+                                <li><a href="/profile"><i class='bx bxs-user'></i> My Account</a></li>
+                                <li><a href="#" data-bs-toggle="modal" data-bs-target="#shoppingWishlistModal"><i class='bx bx-heart'></i> Wishlist</a></li>
+                            <% } else {%>
                             <li><a href="/login"><i class='bx bx-log-in'></i> Login</a></li>
+                            <% } %>
                         </ul>
 
                         <ul class="header-top-others-option">
@@ -361,20 +364,24 @@
                                         <i class="search-btn bx bx-search-alt"></i>
                                     </div>
                                 </div>
-
-                                <div class="option-item">
-                                    <div class="cart-btn">
-                                        <a href="#" data-bs-toggle="modal" data-bs-target="#shoppingCartModal"><i class='bx bx-shopping-bag'></i><span>0</span></a>
+                                
+                                <% if (locals.session.isAuth) { %>
+                                 
+                                    <div class="option-item">
+                                        <div class="cart-btn">
+                                            <a href="#" data-bs-toggle="modal" data-bs-target="#shoppingCartModal"><i class='bx bx-shopping-bag'></i><span>0</span></a>
+                                        </div>
                                     </div>
-                                </div>
+                                <% } %>
 
-                                <div class="option-item">
+
+                                <!-- <div class="option-item">
                                     <div class="burger-menu" data-bs-toggle="modal" data-bs-target="#sidebarModal">
                                         <span class="top-bar"></span>
                                         <span class="middle-bar"></span>
                                         <span class="bottom-bar"></span>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </nav>
@@ -407,19 +414,23 @@
                                     </div>
                                 </div>
 
-                                <div class="option-item">
-                                    <div class="cart-btn">
-                                        <a href="#" data-bs-toggle="modal" data-bs-target="#shoppingCartModal"><i class='bx bx-shopping-bag'></i><span>0</span></a>
+                                
+                                <% if (locals.session.isAuth) { %>
+                                 
+                                    <div class="option-item">
+                                        <div class="cart-btn">
+                                            <a href="#" data-bs-toggle="modal" data-bs-target="#shoppingCartModal"><i class='bx bx-shopping-bag'></i><span>0</span></a>
+                                        </div>
                                     </div>
-                                </div>
+                                <% } %>
 
-                                <div class="option-item">
+                                <!-- <div class="option-item">
                                     <div class="burger-menu" data-bs-toggle="modal" data-bs-target="#sidebarModal">
                                         <span class="top-bar"></span>
                                         <span class="middle-bar"></span>
                                         <span class="bottom-bar"></span>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </nav>

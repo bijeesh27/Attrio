@@ -1,4 +1,7 @@
 const User = require("../../models/userSchema");
+const Product = require("../../models/productSchema");
+const Category = require("../../models/categorySchema");
+const bcrypt = require("bcrypt");
 
 const loadDashboard = async (req, res) => {
   try {
@@ -7,74 +10,44 @@ const loadDashboard = async (req, res) => {
     console.log(error);
   }
 };
-const loadAddProduct = async (req, res) => {
+
+const loadLogin = async (req, res) => {
   try {
-    return res.render("add-product");
+    return res.render("admin-login");
   } catch (error) {
-    console.log(error);
-  }
-};
-const loadCategories = async (req, res) => {
-  try {
-    return res.render("adminCategories");
-  } catch (error) {
-    console.log(error);
-  }
-};
-const loadProducts = async (req, res) => {
-  try {
-    return res.render("products");
-  } catch (error) {
-    console.log(error);
-  }
-};
-const loadUser = async (req, res) => {
-  try {
-    const users = await User.find({});
-    return res.render("user", { users });
-  } catch (error) {
-    console.log(error);
+    console.log("error occured while rendering admin login page", error);
   }
 };
 
-const addProduct = async (req, res) => {
+const login = async (req, res) => {
   try {
-    const {
-      name,
-      category,
-      description,
-      price,
-      discountPrice,
-      totalstock,
-      status,
-      stock,
-      image,
-    } = req.body;
-    console.log(req.body);
+    const { email, password } = req.body;
+    const admin = await User.findOne({ email: email });
+    if (!admin.isAdmin) {
+      return res.redirect("/admin/login");
+    }
+    let isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) {
+      return res.redirect("/admin/login");
+    }
+    req.session.isAdmin = true;
+    return res.redirect("/admin/");
   } catch (error) {
-    console.log("error occured while adding product", error);
+    console.log("error occured while login admin", error);
   }
 };
-
-const blockUser = async (req, res) => {
+const logout = async (req, res) => {
   try {
-    const userId = req.params.userId;
-    const user = await User.findById({ _id: userId });
-    console.log(user);
-    const status = !user.status;
-    await User.updateOne({ _id: userId }, { $set: { status: status } });
-    res.redirect("/admin/user");
+    req.session.destroy();
+    res.redirect("/admin/login");
   } catch (error) {
-    console.log("error occured while blocking user", error);
+    console.log("error ocuured while admin logouting", error);
   }
 };
 
 module.exports = {
   loadDashboard,
-  loadAddProduct,
-  loadUser,
-  loadProducts,
-  loadCategories,
-  addProduct,
-  blockUser,
+  loadLogin,
+  login,
+  logout,
 };

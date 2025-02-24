@@ -1,12 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../controller/user/userController");
-const {
-  ifLogged,
-  ifLoggedOut,
-  ifBlocked,
-  logged,
-} = require("../middleware/userMiddleware");
+const productController = require("../controller/user/productController");
+const { ifLogged, logged } = require("../middleware/userMiddleware");
 
 // Public Routes (accessible only if not logged in)
 router.get("/login", ifLogged, userController.loadLogin);
@@ -18,7 +14,7 @@ router.post("/forgot", userController.forgot);
 router.get("/otp", userController.loadOtp);
 router.get("/", userController.loadHome);
 router.get("/shop", userController.loadCategory);
-router.get("/productPage", userController.loadProductPage);
+router.get("/productPage", productController.loadProductPage);
 
 // Private Routes (accessible only if logged in)
 router.get("/profile", logged, userController.loadProfile);

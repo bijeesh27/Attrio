@@ -1,0 +1,70 @@
+<%- include('../partials/admin/header') %>
+<body data-sidebar="dark"></body>
+
+<div class="main-content">
+    <div class="page-content">
+        <div class="container-fluid">
+
+            <!-- Page Title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                        <h4 class="mb-sm-0 font-size-18">Add Category</h4>
+                        <div class="page-title-right">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item"><a href="javascript: void(0);">Ecommerce</a></li>
+                                <li class="breadcrumb-item active">Add Category</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Page Title -->
+
+            <!-- Category Form -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Category Details</h4>
+                            <p class="card-title-desc">Fill in the category information below</p>
+
+                            <form action="/admin/add-category" method="post">
+                                <!-- Basic Information -->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="name" class="form-label">Category Name</label>
+                                            <input type="text" class="form-control" id="name" name="name" placeholder="Enter category name" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="description" class="form-label">Description</label>
+                                            <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter category description" required></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Form Actions -->
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary">Save Category</button>
+                                    <a href="/admin/categories">
+                                        <button type="button" class="btn btn-secondary">Cancel</button>
+                                    </a>
+                                    
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Category Form -->
+
+        </div> <!-- container-fluid -->
+    </div>
+    <!-- End Page-content -->
+
+    <%- include('../partials/admin/footer') %>
+</div>

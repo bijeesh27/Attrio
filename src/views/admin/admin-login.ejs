@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Attrio</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-container {
+            max-width: 400px;
+            width: 100%;
+            padding: 15px;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: #2a3042;
+            color: white;
+            text-align: center;
+            border-radius: 10px 10px 0 0 !important;
+            border-bottom: none;
+            padding: 20px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .form-control {
+            height: 45px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-shadow: none;
+        
+        }
+        .form-control:focus {
+            border-color: #556ee6;
+            box-shadow: 0 0 0 0.2rem rgba(85, 110, 230, 0.25);
+        }
+        .input-group-text {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-right: none;
+        }
+        .btn-primary {
+            background-color: #556ee6;
+            border-color: #556ee6;
+            height: 45px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        .btn-primary:hover {
+            background-color: #485ec4;
+            border-color: #485ec4;
+        }
+        .forgot-password {
+            color: #556ee6;
+            text-decoration: none;
+        }
+        .forgot-password:hover {
+            color: #485ec4;
+            text-decoration: underline;
+        }
+        .alert {
+            border-radius: 6px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="card">
+            <div class="card-header">
+                <div class="logo">ATTRIO ADMIN</div>
+                <p class="mt-2 mb-0">Login to Admin Dashboard</p>
+            </div>
+            <div class="card-body p-4">
+                <!-- Login Form -->
+                <form action="/admin/login" method="post">
+                    
+                    <!-- Email/Username -->
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Email address" required>
+                    </div>
+                    
+                    <!-- Password -->
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                    </div>
+                    
+                   
+                    
+                    <!-- Submit button -->
+                    <button type="submit" class="btn btn-primary w-100">
+                        Log In
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4 text-muted">
+            <small>&copy; 2025 Attrio. All rights reserved.</small>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

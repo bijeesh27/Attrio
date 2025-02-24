@@ -20,9 +20,6 @@ var productSchema = new Schema({
       type: Number,
       required: true
     },
-    discountPrice: {
-      type: Number,
-    },
     stock: [{
       size: {
         type: String,

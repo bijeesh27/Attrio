@@ -1,5 +1,124 @@
 <%- include('../partials/admin/header') %>
 
+<style>
+  .productImage {
+    max-width: 50px;
+    max-height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+    cursor: zoom-in;
+  }
+
+  /* Image zoom container */
+  .image-zoom-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* Zoomed image popup */
+  .zoomed-image {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    background: white;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.2);
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .zoomed-image img {
+    max-width: 200px;
+    max-height: 200px;
+    object-fit: contain;
+  }
+
+  .image-zoom-container:hover .zoomed-image {
+    display: block;
+  }
+
+  /* Table styling */
+  .table-container {
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  #productList-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+  }
+
+  /* Description cell styling */
+  .description-cell {
+    position: relative;
+    max-width: 200px;
+  }
+
+  .description-content {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    /* -webkit-line-clamp: 2; */
+    -webkit-box-orient: vertical;
+    line-height: 1.5;
+  }
+
+  .description-expand {
+    display: none;
+    position: absolute;
+    background: white;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 1000;
+    width: 300px;
+    left: 0;
+  }
+
+  /* .description-cell:hover .description-expand {
+    display: block;
+  } */
+
+  /* Optimized column widths */
+  #productList-table th,
+  #productList-table td {
+    padding: 8px;
+    white-space: nowrap;
+  }
+
+  #productList-table td.description-cell {
+    white-space: normal;
+  }
+
+  /* Responsive design */
+  /* @media screen and (max-width: 1200px) {
+    .description-content {
+      -webkit-line-clamp: 1;
+    }
+    
+    #productList-table th,
+    #productList-table td {
+      padding: 6px;
+      font-size: 14px;
+    }
+  } */
+
+  @media screen and (max-width: 992px) {
+    .zoomed-image img {
+      max-width: 200px;
+      max-height: 200px;
+    }
+
+    .description-cell {
+      max-width: 150px;
+    }
+  }
+</style>
+
 <body data-sidebar="dark">
   <div class="main-content">
     <div class="page-content">
@@ -9,7 +128,6 @@
           <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
               <h4 class="mb-sm-0 font-size-18">Products</h4>
-
               <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                   <li class="breadcrumb-item"><a href="javascript: void(0);">Ecommerce</a></li>
@@ -30,7 +148,7 @@
                   <div class="col-sm-12">
                     <div class="text-sm-end">
                       <a href="/admin/add-product">
-                        <button type="button" class="btn btn-success btn-rounded waves-effect waves-light mb-2 me-2" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                        <button type="button" class="btn btn-success btn-rounded waves-effect waves-light mb-2 me-2">
                           <i class="mdi mdi-plus me-1"></i> Add New Product
                         </button>
                       </a>
@@ -39,8 +157,8 @@
                 </div>
 
                 <!-- Products Table -->
-                <div class="table-responsive">
-                  <table class="table align-middle table-nowrap dt-responsive nowrap w-100" id="productList-table">
+                <div class="table-container">
+                  <table class="table align-middle" id="productList-table">
                     <thead class="table-light">
                       <tr>
                         <th>SL.No</th>
@@ -55,64 +173,40 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <!-- Example Data -->
-                      <tr>
-                        <td>1</td>
-                        <td>Half Sleeve T-Shirt</td>
-                        <td>
-                          <img src="/admin/assets/images/product/img-1.png" alt="Product Image" class="img-thumbnail" width="50">
-                        </td>
-                        <td>Comfortable and stylish half-sleeve T-shirt</td>
-                        <td>T-shirts</td>
-                        <td>$25.00</td>
-                        <td>100</td>
-                        <td>
-                          <span class="badge bg-success">Active</span>
-                        </td>
-                        <td>
-                          <button type="button" class="btn btn-danger btn-sm waves-effect waves-light">
-                            <i class="mdi mdi-block-helper"></i> Block
-                          </button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>2</td>
-                        <td>Light Blue T-Shirt</td>
-                        <td>
-                          <img src="/admin/assets/images/product/img-2.png" alt="Product Image" class="img-thumbnail" width="50">
-                        </td>
-                        <td>Light blue cotton T-shirt</td>
-                        <td>T-shirts</td>
-                        <td>$20.00</td>
-                        <td>50</td>
-                        <td>
-                          <span class="badge bg-danger">Inactive</span>
-                        </td>
-                        <td>
-                          <button type="button" class="btn btn-success btn-sm waves-effect waves-light">
-                            <i class="mdi mdi-check"></i> Unblock
-                          </button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>3</td>
-                        <td>Black Hoodie</td>
-                        <td>
-                          <img src="/admin/assets/images/product/img-3.png" alt="Product Image" class="img-thumbnail" width="50">
-                        </td>
-                        <td>Warm and cozy black hoodie</td>
-                        <td>Hoodies</td>
-                        <td>$45.00</td>
-                        <td>75</td>
-                        <td>
-                          <span class="badge bg-success">Active</span>
-                        </td>
-                        <td>
-                          <button type="button" class="btn btn-danger btn-sm waves-effect waves-light">
-                            <i class="mdi mdi-block-helper"></i> Block
-                          </button>
-                        </td>
-                      </tr>
+                      <% products.forEach((product, index) => { %>
+                        <tr>
+                          <td><%= index + 1 %></td>
+                          <td><%= product.name %></td>
+                          <td>
+                            <div class="image-zoom-container">
+                              <img src="/<%= product.image[0] %>" alt="<%= product.name %>" class="productImage">
+                              <div class="zoomed-image">
+                                <img src="/<%= product.image[0] %>" alt="<%= product.name %>">
+                              </div>
+                            </div>
+                          </td>
+                          <td class="description-cell">
+                            <div class="description-content">
+                              <%= product.description %>
+                            </div>
+                            <div class="description-expand">
+                              <%= product.description %>
+                            </div>
+                          </td>
+                          <td><%= product.category.name %></td>
+                          <td>₹<%= product.price %></td>
+                          <td><%= product.totalstock %></td>
+                          <td><%= product.status ? "Active" : "Inactive" %></td>
+                          <td>
+                            <button
+                              onclick="confirmBlock('<%= product.id %>')"
+                              class="<%= product.status ? 'btn btn-danger btn-sm waves-effect waves-light' : 'btn btn-success btn-sm waves-effect waves-light' %>"
+                            >
+                              <%= product.status ? "Block" : "Unblock" %>
+                            </button>
+                          </td>
+                        </tr>
+                      <% }) %>
                     </tbody>
                   </table>
                 </div>
@@ -131,8 +225,25 @@
     <!-- End Page Content -->
   </div>
   <!-- End Main Content -->
-
- 
-
-  <%- include('../partials/admin/footer') %>
 </body>
+
+<script>
+  function confirmBlock(productId) {
+    Swal.fire({
+      title: `Are you sure?`,
+      text: ` Do you want to continue?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#000000",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = ` /admin/blockProduct/${productId}`;
+      }
+    });
+  }
+</script>
+
+<%- include('../partials/admin/footer') %>

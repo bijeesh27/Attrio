@@ -4,6 +4,8 @@
   <!-- ============================================================== -->
   <!-- Start right Content here -->
   <!-- ============================================================== -->
+
+
   <div class="main-content">
     <div class="page-content">
       <div class="container-fluid">
@@ -47,8 +49,7 @@
                     </div>
                   </div>
                   <div class="col-sm-8">
-                    <div class="text-sm-end">
-                    </div>
+                    <div class="text-sm-end"></div>
                   </div>
                   <!-- end col-->
                 </div>
@@ -74,11 +75,14 @@
                         <td><%= users.firstName %></td>
                         <td><%= users.email %></td>
                         <td><%= users.number %></td>
-                        <td><%= users.status?true:false%></td>
+                        <td><%= users.status?"Active" : "Inactive" %></td>
 
                         <td>
-                          <button onclick="confirmBlock('<%= users.id %>')" >
-                            <%= users.status?"block":"unblock" %>
+                          <button
+                            onclick="confirmBlock('<%= users.id %>')"
+                            class="<%= users.status ? 'btn btn-danger btn-sm waves-effect waves-light' : 'btn btn-success btn-sm waves-effect waves-light' %>"
+                          >
+                            <%= users.status ? "Block" : "Unblock" %>
                           </button>
                         </td>
                       </tr>
@@ -100,23 +104,24 @@
     </div>
     <!-- End Page-content -->
     <script>
-       function confirmBlock(userId) {
-
-           Swal.fire({
-               title: `Are you sure?`,
-               text:` Do you want to continue?`,
-               icon: 'warning',
-               showCancelButton: true,
-               confirmButtonColor: '#000000',
-               cancelButtonColor: '#d33',
-               confirmButtonText: 'Yes',
-               cancelButtonText: 'No'
-           }).then((result) => {
-               if (result.isConfirmed) {
-                   window.location.href =` /admin/block/${userId}`;
-               }
-           });
+      function confirmBlock(userId) {
+        Swal.fire({
+          title: `Are you sure?`,
+          text: ` Do you want to continue?`,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#000000",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = ` /admin/block/${userId}`;
+          }
+        });
       }
     </script>
 
     <%- include('../partials/admin/footer') %>
+  </div>
+</body>

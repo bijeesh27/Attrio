@@ -1,5 +1,54 @@
 <%- include('../partials/admin/header') %>
 
+<style>
+  /* Base button styles */
+  button {
+    padding: 8px 16px; /* Add padding for better spacing */
+    border: none; /* Remove default border */
+    border-radius: 4px; /* Add rounded corners */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    font-size: 14px; /* Set font size */
+    color: white; /* Set text color to white for better contrast */
+    transition: background-color 0.3s ease; /* Smooth transition for background color */
+  }
+
+  /* Blocked state (red background) */
+  .blocked {
+    background-color: #ff4d4d; /* Light red */
+  }
+
+  .blocked:hover {
+    background-color: #cc0000; /* Darker red on hover */
+  }
+
+  /* Unblocked state (green background) */
+  .unblocked {
+    background-color: #4caf50; /* Light green */
+  }
+
+  .unblocked:hover {
+    background-color: #45a049; /* Darker green on hover */
+  }
+
+  .outline {
+    background-color: transparent;
+    border: 2px solid;
+  }
+
+  .outline.blocked {
+    border-color: #ff4d4d;
+    color: #ff4d4d;
+  }
+
+  .outline.unblocked {
+    border-color: #4caf50;
+    color: #4caf50;
+  }
+  button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+</style>
 <body data-sidebar="dark">
   <div class="main-content">
     <div class="page-content">
@@ -29,9 +78,12 @@
                 <div class="row mb-2">
                   <div class="col-sm-12">
                     <div class="text-sm-end">
-                      <button type="button" class="btn btn-success btn-rounded waves-effect waves-light mb-2 me-2">
-                        <i class="mdi mdi-plus me-1"></i> Add New Category
-                      </button>
+                      <a href="/admin/add-category">
+                        <button type="button" class="btn btn-success btn-rounded waves-effect waves-light mb-2 me-2">
+                          <i class="mdi mdi-plus me-1"></i> Add New Category
+                        </button>
+                      </a>
+                      
                     </div>
                   </div>
                 </div>
@@ -49,6 +101,20 @@
                       </tr>
                     </thead>
                     <tbody>
+                     <% categories.forEach((categories,index) => { %>
+                      <tr>
+                        <td><%= index+1 %></td>
+                        <td><%= categories.name %></td>
+                        <td><%= categories.description %></td>
+                        <td><%= categories.status?"Active" : "Inactive"  %></td>
+                        <td>
+                          <button onclick="confirmBlock('<%= categories.id %>')"
+                            class="<%= categories.status ?'btn btn-danger btn-sm waves-effect waves-light': 'btn btn-success btn-sm waves-effect waves-light'%>" >
+                            <%= categories.status?"block":"unblock" %>
+                          </button>
+                        </td>
+                      </tr>
+                     <% }) %>
                       
                     </tbody>
                   </table>
@@ -68,6 +134,25 @@
     <!-- End Page Content -->
   </div>
   <!-- End Main Content -->
+  <script>
+    function confirmBlock(categoryId) {
+
+        Swal.fire({
+            title: `Are you sure?`,
+            text:` Do you want to continue?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#000000',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href =` /admin/blockCategory/${categoryId}`;
+            }
+        });
+   }
+ </script>
 
   <%- include('../partials/admin/footer') %>
 </body>
