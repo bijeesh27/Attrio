@@ -39,56 +39,58 @@
         <!-- End Page Title -->
 
         <!-- Start Categories Banner Area -->
+        <% category.forEach(category => { %>
         <section class="categories-banner-area pt-100 pb-70">
-            <div class="container-fluid">
-                <div class="row justify-content-center">
+             
+                <div class="container-fluid">
+                    <div class="row justify-content-center">
                     <div class="col-lg-6 col-md-12">
                         <div class="categories-box">
                             <img src="user/assets/img/categories/img5.jpg" alt="image">
-
+                            
                             <div class="content">
-                                <h3>New Arrivals!</h3>
+                                <h3><%= category.name %></h3>
                             </div>
-
-                           <a href="/productPage" class="link-btn"></a>
+                            
+                            <a href="/productPage" class="link-btn"></a>
                         </div>
                     </div>
-
+                    
                     <div class="col-lg-6 col-md-12">
                         <div class="row justify-content-center">
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="categories-box">
                                     <img src="user/assets/img/categories/img6.jpg" alt="image">
-        
+                                    
                                     <div class="content">
-                                        <h3>Women'S</h3>
+                                        <h3></h3>
                                     </div>
-
-                                   <a href="/productPage" class="link-btn"></a>
+                                    
+                                    <a href="/productPage" class="link-btn"></a>
                                 </div>
                             </div>
-
+                            
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="categories-box">
                                     <img src="user/assets/img/categories/img7.jpg" alt="image">
-        
+                                    
                                     <div class="content">
                                         <h3>Men'S</h3>
                                     </div>
-
-                                   <a href="/productPage" class="link-btn"></a>
+                                    
+                                    <a href="/productPage" class="link-btn"></a>
                                 </div>
                             </div>
-
+                            
                             <div class="col-lg-12 col-md-12">
                                 <div class="categories-box">
                                     <img src="user/assets/img/categories/img8.jpg" alt="image">
-        
+                                    
                                     <div class="content">
                                         <h3>Kid'S</h3>
                                     </div>
-
-                                   <a href="/productPage" class="link-btn"></a>
+                                    
+                                    <a href="/productPage" class="link-btn"></a>
                                 </div>
                             </div>
                         </div>
@@ -96,6 +98,7 @@
                 </div>
             </div>
         </section>
+        <% }) %>
         <!-- End Categories Banner Area -->
 
         <!-- Start Facility Area -->

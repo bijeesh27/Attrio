@@ -2,6 +2,7 @@ const User = require("../../models/userSchema");
 const Product=require("../../models/productSchema")
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
+const Category = require("../../models/categorySchema");
 dotenv.config();
 
 const login = async (req, res) => {
@@ -22,7 +23,7 @@ const login = async (req, res) => {
 
     req.session.isAuth = true;
     req.session.email = user.email;
-    req.session.userId = user._id;
+    req.session.userId = user._id.toString();
     return res.redirect("/");
   } catch (error) {
     console.log("error occured while login time", error);
@@ -71,8 +72,9 @@ const forgot = async (req, res) => {
 const loadHome = async (req, res) => {
   try {
     const product=await Product.find()
+    const category=await Category.find()
     console.log("product:",product);
-    return res.render("home",{product});
+    return res.render("home",{product,category});
   } catch (error) {
     console.log("error rendering home page", error);
   }
@@ -94,13 +96,7 @@ const loadRegister = async (req, res) => {
   }
 };
 
-const loadCategory = async (req, res) => {
-  try {
-    return res.render("categories");
-  } catch (error) {
-    console.log("error rendering categorypage", error);
-  }
-};
+
 
 
 
@@ -144,17 +140,26 @@ const logout = async (req, res) => {
   }
 };
 
+const loadShop=async (req,res) => {
+  try {
+    const products=await Product.find()
+    return res.render('product-page',{products})
+  } catch (error) {
+    console.log("error occured while rendering shop page",error);
+  }
+}
+
 module.exports = {
   loadHome,
   loadLogin,
   login,
   loadRegister,
   register,
-  loadCategory,
   loadForgotEmailverification,
   loadForgot,
   forgot,
   loadOtp,
   loadProfile,
   logout,
+  loadShop
 };

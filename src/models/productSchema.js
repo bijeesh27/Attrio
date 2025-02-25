@@ -1,35 +1,37 @@
-const mongoose=require('mongoose')
-const {Schema}=mongoose;
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
-
-var productSchema = new Schema({
+var productSchema = new Schema(
+  {
     name: {
       type: String,
-      required: true
+      required: true,
     },
     category: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'categories',
+      ref: "categories",
       required: true,
     },
     description: {
       type: String,
-      required: true
+      required: true,
     },
     price: {
       type: Number,
-      required: true
+      required: true,
     },
-    stock: [{
-      size: {
-        type: String,
-        required: true,
+    stock: [
+      {
+        size: {
+          type: String,
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+        },
       },
-      quantity: {
-        type: Number,
-        required: true,
-      },
-    }],
+    ],
     totalstock: {
       type: Number,
       required: true,
@@ -41,8 +43,10 @@ var productSchema = new Schema({
     status: {
       type: Boolean,
       default: true,
-    }
-  });
+    },
+  },
+  { timestamps: true }
+);
 
-  const Product=mongoose.model("Product",productSchema)
-  module.exports=Product
+const Product = mongoose.model("Product", productSchema);
+module.exports = Product;

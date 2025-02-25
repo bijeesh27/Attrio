@@ -2,6 +2,10 @@ const mongoose=require('mongoose')
 const {Schema}=mongoose;
 
 const userSchema = new Schema({
+    googleId: {
+        type: String,
+        unique:true
+    },
     firstName: {
         type: String,
         required: true
@@ -18,6 +22,8 @@ const userSchema = new Schema({
     number: {
         type: String,
         required: false,
+        sparse:true,
+        default:null
     },
     password: {
         type: String,

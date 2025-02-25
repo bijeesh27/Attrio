@@ -65,7 +65,7 @@
                                         <h1>Summer-Fashion!</h1>
                                         <p>Leap year offer ‘Sale Must-Haves'</p>
                                         <div class="btn-box">
-                                            <a href="/shop" class="default-btn">Shop Now</a>
+                                            <a href="/shop" class="default-btn"><button onclick="filtering">Shop Now</button></a>
                                         </div>
                                     </div>
                                 </div>
@@ -88,31 +88,21 @@
         <section class="categories-banner-area pt-100 pb-70">
             <div class="container">
                 <div class="row justify-content-center">
-                    <div class="col-lg-6 col-md-6 col-sm-6">
-                        <div class="single-categories-box">
-                            <img src="user/assets/img/categories/img1.jpg" alt="image">
-
-                            <div class="content text-white">
-                                <span>Don’t Miss Today</span>
-                                <h3>50% OFF</h3>
-                                <a href="/shop" class="default-btn">Discover Now</a>
+                    <% category.forEach(category => { %>
+                     
+                        <div class="col-lg-4 col-md-4 col-sm-4">
+                            <div class="single-categories-box">
+                                <img src="user/assets/img/categories/img1.jpg" alt="image">
+    
+                                <div class="content text-white">
+                                    <span>Dress for </span>
+                                    <h3><%= category.description %></h3>
+                                    <button onclick="filtering('<%= category._id %>')" class="default-btn">Shop Now</button>
+                                </div>
+                                
                             </div>
-                            <a href="/shop" class="link-btn"></a>
                         </div>
-                    </div>
-
-                    <div class="col-lg-6 col-md-6 col-sm-6">
-                        <div class="single-categories-box">
-                            <img src="user/assets/img/categories/img2.jpg" alt="image">
-
-                            <div class="content">
-                                <span>New Collection</span>
-                                <h3>Need Now</h3>
-                                <a href="/newArrivals" class="default-btn">Discover Now</a>
-                            </div>
-                            <a href="/newArrivals" class="link-btn"></a>
-                        </div>
-                    </div>
+                    <% }) %>
                 </div>
             </div>
         </section>
@@ -146,17 +136,17 @@
                                                     </a>
                                                 </div>
                                             </li>
-                                            <li>
+                                            <!-- <li>
                                                 <div class="compare-btn">
                                                     <a href="compare.html">
                                                         <i class='bx bx-refresh'></i>
                                                         <span class="tooltip-label">Compare</span>
                                                     </a>
                                                 </div>
-                                            </li>
+                                            </li> -->
                                             <li>
                                                 <div class="quick-view-btn">
-                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#productsQuickView">
+                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#productsQuickView" data-product-id="<%= product._id %>">
                                                         <i class='bx bx-search-alt'></i>
                                                         <span class="tooltip-label">Quick View</span>
                                                     </a>
@@ -448,77 +438,82 @@
                         <span aria-hidden="true"><i class='bx bx-x'></i></span>
                     </button>
 
-                    <div class="row align-items-center justify-content-center">
-                        <div class="col-lg-6 col-md-6">
-                            <div class="products-image">
-                                <img src="user/assets/img/quick-view-img.jpg" alt="image">
+                    <div id="quickViewContent">
+
+                        <div class="row align-items-center justify-content-center">
+                            <div class="col-lg-6 col-md-6">
+                                <div class="products-image">
+                                    <img src="user/assets/img/quick-view-img.jpg" alt="image">
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="col-lg-6 col-md-6">
-                            <div class="products-content">
-                                <h3><a href="#">Long Sleeve Leopard T-Shirt</a></h3>
-
-                                <div class="price">
-                                    <span class="old-price">$210.00</span>
-                                    <span class="new-price">$200.00</span>
-                                </div>
-
-                                <div class="products-review">
-                                    <div class="rating">
-                                        <i class='bx bxs-star'></i>
-                                        <i class='bx bxs-star'></i>
-                                        <i class='bx bxs-star'></i>
-                                        <i class='bx bxs-star'></i>
-                                        <i class='bx bxs-star'></i>
+    
+                            <div class="col-lg-6 col-md-6">
+                                <div class="products-content">
+                                    <h3><a href="#">Long Sleeve Leopard T-Shirt</a></h3>
+    
+                                    <div class="price">
+                                        <span class="old-price">$210.00</span>
+                                        <span class="new-price">$200.00</span>
                                     </div>
-                                    <a href="#" class="rating-count">3 reviews</a>
-                                </div>
-
-                                <ul class="products-info">
-                                    <li><span>Vendor:</span> <a href="#">Lereve</a></li>
-                                    <li><span>Availability:</span> <a href="#">In stock (7 items)</a></li>
-                                    <li><span>Products Type:</span> <a href="#">T-Shirt</a></li>
-                                </ul>
-
-                                <div class="products-color-switch">
-                                    <h4>Color:</h4>
-
-                                    <ul>
-                                        <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Black" class="color-black"></a></li>
-                                        <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="White" class="color-white"></a></li>
-                                        <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Green" class="color-green"></a></li>
-                                        <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Yellow Green" class="color-yellowgreen"></a></li>
-                                        <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Teal" class="color-teal"></a></li>
-                                    </ul>
-                                </div>
-
-                                <div class="products-size-wrapper">
-                                    <h4>Size:</h4>
-
-                                    <ul>
-                                        <li><a href="#">XS</a></li>
-                                        <li class="active"><a href="#">S</a></li>
-                                        <li><a href="#">M</a></li>
-                                        <li><a href="#">XL</a></li>
-                                        <li><a href="#">XXL</a></li>
-                                    </ul>
-                                </div>
-
-                                <div class="products-add-to-cart">
-                                    <div class="input-counter">
-                                        <span class="minus-btn"><i class='bx bx-minus'></i></span>
-                                        <input type="text" value="1">
-                                        <span class="plus-btn"><i class='bx bx-plus'></i></span>
+    
+                                    <div class="products-review">
+                                        <div class="rating">
+                                            <i class='bx bxs-star'></i>
+                                            <i class='bx bxs-star'></i>
+                                            <i class='bx bxs-star'></i>
+                                            <i class='bx bxs-star'></i>
+                                            <i class='bx bxs-star'></i>
+                                        </div>
+                                        <a href="#" class="rating-count">3 reviews</a>
                                     </div>
-
-                                    <button type="submit" class="default-btn">Add to Cart</button>
+    
+                                    <ul class="products-info">
+                                        <li><span>Vendor:</span> <a href="#">Lereve</a></li>
+                                        <li><span>Availability:</span> <a href="#">In stock (7 items)</a></li>
+                                        <li><span>Products Type:</span> <a href="#">T-Shirt</a></li>
+                                    </ul>
+    
+                                    <div class="products-color-switch">
+                                        <h4>Color:</h4>
+    
+                                        <ul>
+                                            <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Black" class="color-black"></a></li>
+                                            <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="White" class="color-white"></a></li>
+                                            <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Green" class="color-green"></a></li>
+                                            <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Yellow Green" class="color-yellowgreen"></a></li>
+                                            <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Teal" class="color-teal"></a></li>
+                                        </ul>
+                                    </div>
+    
+                                    <div class="products-size-wrapper">
+                                        <h4>Size:</h4>
+    
+                                        <ul>
+                                            <li><a href="#">XS</a></li>
+                                            <li class="active"><a href="#">S</a></li>
+                                            <li><a href="#">M</a></li>
+                                            <li><a href="#">XL</a></li>
+                                            <li><a href="#">XXL</a></li>
+                                        </ul>
+                                    </div>
+    
+                                    <div class="products-add-to-cart">
+                                        <div class="input-counter">
+                                            <span class="minus-btn"><i class='bx bx-minus'></i></span>
+                                            <input type="text" value="1">
+                                            <span class="plus-btn"><i class='bx bx-plus'></i></span>
+                                        </div>
+    
+                                        <button type="submit" class="default-btn">Add to Cart</button>
+                                    </div>
+    
+                                    <a href="#" class="view-full-info">View Full Info</a>
                                 </div>
-
-                                <a href="#" class="view-full-info">View Full Info</a>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
+
+
                 </div>
             </div>
         </div>
@@ -969,4 +964,133 @@
         <!-- End Products Filter Modal Area -->
 
         <!-- Start Footer Area -->
+
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Quick View functionality
+                const quickViewBtns = document.querySelectorAll('.quick-view-btn a');
+                const quickViewContent = document.getElementById('quickViewContent');
+                
+                quickViewBtns.forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const productId = this.getAttribute('data-product-id');
+                        
+                        // Fetch product details via AJAX
+                        fetch(`/singleproduct/${productId}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if(data.success) {
+                                    const product = data.product;
+                                    
+                                    // Create HTML for the quick view modal
+                                    const quickViewHTML = `
+                                        <div class="row align-items-center justify-content-center">
+                                            <div class="col-lg-6 col-md-6">
+                                                <div class="products-image">
+                                                    <img src="/${product.image[0]}" alt="${product.name}">
+                                                </div>
+                                            </div>
+        
+                                            <div class="col-lg-6 col-md-6">
+                                                <div class="products-content">
+                                                    <h3><a href="/product/${product._id}">${product.name}</a></h3>
+        
+                                                    <div class="price">
+                                                        <span class="old-price">Rs.3500</span>
+                                                        <span class="new-price">Rs.${product.price}</span>
+                                                    </div>
+        
+                                                    <div class="products-review">
+                                                        <div class="rating">
+                                                            <i class='bx bxs-star'></i>
+                                                            <i class='bx bxs-star'></i>
+                                                            <i class='bx bxs-star'></i>
+                                                            <i class='bx bxs-star'></i>
+                                                            <i class='bx bxs-star'></i>
+                                                        </div>
+                                                        <a href="#" class="rating-count">${product.reviews ? product.reviews.length : 0} reviews</a>
+                                                    </div>
+        
+                                                    <ul class="products-info">
+                                                        <li><span>Availability:</span> <a href="#">${product.totalstock > 0 ? `In stock (${product.totalstock} items)` : 'Out of stock'}</a></li><br>
+                                                        <li><span>Product Type:</span> <a href="#">${product.category.name || 'N/A'}</a></li><br>
+
+                                                    </ul>
+        
+                                                    <div class="products-add-to-cart">
+                                                        <div class="input-counter">
+                                                            <span class="minus-btn"><i class='bx bx-minus'></i></span>
+                                                            <input type="text" value="1" id="quantity">
+                                                            <span class="plus-btn"><i class='bx bx-plus'></i></span>
+                                                        </div>
+        
+                                                        <button type="button" class="default-btn add-to-cart-btn" data-product-id="${product._id}">Add to Cart</button>
+                                                    </div>
+        
+                                                    <a href="/product/${product._id}" class="view-full-info">View Full Info</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
+                                    
+                                    // Insert the HTML into the modal
+                                    quickViewContent.innerHTML = quickViewHTML;
+                                    
+                                    // Initialize quantity buttons
+                                    initQuantityButtons();
+                                } else {
+                                    quickViewContent.innerHTML = '<p class="text-center">Product details not found!</p>';
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error fetching product details:', error);
+                                quickViewContent.innerHTML = '<p class="text-center">Error loading product details!</p>';
+                            });
+                    });
+                });
+                
+                // Initialize quantity buttons
+                function initQuantityButtons() {
+                    const minusBtn = document.querySelector('.minus-btn');
+                    const plusBtn = document.querySelector('.plus-btn');
+                    const quantityInput = document.getElementById('quantity');
+                    
+                    if(minusBtn && plusBtn && quantityInput) {
+                        minusBtn.addEventListener('click', function() {
+                            let value = parseInt(quantityInput.value);
+                            if(value > 1) {
+                                value--;
+                                quantityInput.value = value;
+                            }
+                        });
+                        
+                        plusBtn.addEventListener('click', function() {
+                            let value = parseInt(quantityInput.value);
+                            value++;
+                            quantityInput.value = value;
+                        });
+                    }
+                    
+                    // Add to cart functionality
+                    const addToCartBtn = document.querySelector('.add-to-cart-btn');
+                    if(addToCartBtn) {
+                        addToCartBtn.addEventListener('click', function() {
+                            const productId = this.getAttribute('data-product-id');
+                            const quantity = document.getElementById('quantity').value;
+                            
+                            // Add to cart logic - you can implement AJAX call here
+                            console.log(`Adding product ${productId} to cart with quantity ${quantity}`);
+                            // Implement your add to cart functionality here
+                        });
+                    }
+                }
+            });
+
+            function filtering(categoryId){
+                window.location.href = ` /productPage/${categoryId}`;
+            }
+        </script>
+
         <%- include('../partials/user/footer') %>

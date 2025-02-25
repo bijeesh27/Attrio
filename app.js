@@ -9,6 +9,8 @@ const session = require("express-session");
 const nocache = require("nocache");
 const multer = require("multer");
 const os = require("os");
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
 const PORT = process.env.PORT;
 
@@ -20,15 +22,30 @@ app.set("views", [
   path.join(__dirname, "src", "views", "user"),
   path.join(__dirname, "src", "views", "admin"),
 ]);
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(
   session({
-    secret: "keyboard cat",
+    secret:process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
   })
 );
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Configure Passport Google Strategy
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: process.env.GOOGLE_CALLBACK_URL
+}, (accessToken, refreshToken, profile, done) => {
+  return done(null, profile);
+}));
+
+
 app.use(express.static(path.join(os.homedir(), "Downloads")));
 
 const storage = multer.diskStorage({
