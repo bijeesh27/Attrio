@@ -10,6 +10,16 @@ const loadAddProduct = async (req, res) => {
     console.log(error);
   }
 };
+const loadEditProduct = async (req, res) => {
+  try {
+    const productId=req.params.productId
+    const categories = await Category.find({});
+    const product=await Product.findOne({_id:productId})
+    return res.render("editProduct", { categories,product });
+  } catch (error) {
+    console.log(error);
+  }
+};
 const loadProducts = async (req, res) => {
   try {
     const products = await Product.find().populate("category","name");
@@ -67,6 +77,44 @@ const addProduct = async (req, res) => {
     console.log("error occured while adding product", error);
   }
 };
+const editProduct = async (req, res) => {
+  try {
+    const productId=req.params.productId
+    const product=await Product.findOne({_id:productId})
+    console.log("req.body:",req.body);
+    const image = req.files.map((file) => file.path);
+    const totalstock =
+    parseInt(req.body.s) +
+    parseInt(req.body.m) +
+    parseInt(req.body.l) +
+    parseInt(req.body.xl);
+    await Product.updateOne({_id:productId},{$set:{name: req.body.name,
+        category: req.body.category,
+        price: parseInt(req.body.price),
+        description: req.body.description,
+        stock: [
+          { size: "S", quantity: parseInt(req.body.s) },
+          {
+            size: "M",
+            quantity: parseInt(req.body.m),
+          },
+          {
+            size: "L",
+            quantity: parseInt(req.body.l),
+          },
+          {
+            size: "XL",
+            quantity: parseInt(req.body.xl),
+          },
+        ],
+        totalstock,
+        image,}})
+
+    res.redirect("/admin/products");
+  } catch (error) {
+    console.log("error occured while adding product", error);
+  }
+};
 
 const blockProduct=async (req,res) => {
     try {
@@ -86,4 +134,6 @@ module.exports = {
   loadProducts,
   addProduct,
   blockProduct,
+  loadEditProduct,
+  editProduct
 };

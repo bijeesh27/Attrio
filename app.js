@@ -69,11 +69,14 @@ app.use((req,res,next)=>{
   next()
 })
 
+app.use("/admin/assets", express.static(path.join(__dirname, "public", "admin", "assets")));
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/uploads", express.static("uploads"));
 
 app.use("/", userRoutes);
 app.use("/admin", adminRoutes);
+
+
 
 connectDB();
 

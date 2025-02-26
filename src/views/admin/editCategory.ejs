@@ -1,0 +1,118 @@
+<%- include('../partials/admin/header') %>
+
+        <!-- ========== Left Sidebar Start ========== -->
+        <div class="vertical-menu">
+          <div data-simplebar class="h-100">
+              <div id="sidebar-menu">
+                  <ul class="metismenu list-unstyled" id="side-menu">
+                      <li>
+                          <a href="/admin/" class="menu-item">
+                              <i class="bx bx-home-circle sidebar-icon"></i>
+                              <span>Dashboard</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="/admin/user" class="menu-item">
+                              <i class="bx bx-user sidebar-icon"></i>
+                              <span>Users</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="/admin/products" class="menu-item">
+                              <i class="bx bx-package sidebar-icon"></i>
+                              <span>Products</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="/admin/categories" class="menu-item">
+                              <i class="bx bx-category sidebar-icon"></i>
+                              <span>Categories</span>
+                          </a>
+                      </li>
+                      <!-- Logout Button -->
+                      <li>
+                          <a href="/admin/logout" class="menu-item">
+                              <i class="bx bx-log-out sidebar-icon"></i>
+                              <span>Logout</span>
+                          </a>
+                      </li>
+                  </ul>
+              </div>
+          </div>
+      </div>
+        <!-- Left Sidebar End -->
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script src="/admin/assets/js/plugin.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<div class="main-content">
+    <div class="page-content">
+        <div class="container-fluid">
+
+            <!-- Page Title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                        <h4 class="mb-sm-0 font-size-18">Add Category</h4>
+                        <div class="page-title-right">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item"><a href="javascript: void(0);">Ecommerce</a></li>
+                                <li class="breadcrumb-item active">Add Category</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Page Title -->
+
+            <!-- Category Form -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Category Details</h4>
+                            <p class="card-title-desc">Fill in the category information below</p>
+
+                            <form action="/admin/editCategory/<%= category.id %>" method="post">
+                                <!-- Basic Information -->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="name" class="form-label">Category Name</label>
+                                             <input type="text" class="form-control" id="name" name="name" rows="3" placeholder="Enter category name" value="<%= category.name %>">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="description" class="form-label">Description</label>
+                                            <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter category description" ><%= category.description %></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Form Actions -->
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary">Save Category</button>
+                                    <a href="/admin/categories">
+                                        <button type="button" class="btn btn-secondary">Cancel</button>
+                                    </a>
+                                    
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Category Form -->
+
+        </div> <!-- container-fluid -->
+    </div>
+        
+   
+    <!-- End Page-content -->
+
+</div>
+<%- include('../partials/admin/footer') %>

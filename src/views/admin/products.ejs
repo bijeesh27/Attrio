@@ -198,6 +198,14 @@
                           <td><%= product.totalstock %></td>
                           <td><%= product.status ? "Active" : "Inactive" %></td>
                           <td>
+                            <a href="/admin/edit-product/<%= product.id %>">
+                              <button
+                                
+                                class="btn btn-edit btn-success btn-sm waves-effect waves-light"
+                              >
+                                Edit
+                              </button>
+                            </a>
                             <button
                               onclick="confirmBlock('<%= product.id %>')"
                               class="<%= product.status ? 'btn btn-danger btn-sm waves-effect waves-light' : 'btn btn-success btn-sm waves-effect waves-light' %>"
