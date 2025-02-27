@@ -96,9 +96,10 @@
                         rows="3"
                         placeholder="Enter product description"
                         required
-                      ><%= product.description %></textarea>
+                      >
+<%= product.description %></textarea
+                      >
                     </div>
-                  
                   </div>
                 </div>
 
@@ -109,44 +110,60 @@
                       <label class="form-label">Size & Quantity</label>
                       <div id="stock-container">
                         <div class="row g-2 mb-2">
+                          <% // Find stock quantities by size const sizes =
+                          ['S', 'M', 'L', 'XL']; const stockMap = {}; //
+                          Initialize with 0 sizes.forEach(size => {
+                          stockMap[size] = 0; }); // Fill with actual values if
+                          (product.stock && product.stock.length > 0) {
+                          product.stock.forEach(item => { stockMap[item.size] =
+                          item.quantity; }); } %>
+
                           <div class="col-md-2">
-                            <label for="">S</label>
+                            <label for="stock-S">S</label>
                             <input
                               type="number"
-                              class="form-control"
-                              name="s"
+                              class="form-control stock-input"
+                              id="stock-S"
+                              name="stock[S]"
                               placeholder="Enter the quantity"
-                              value="<%= product.s %>"
+                              value="<%= stockMap['S'] %>"
+                              min="0"
                             />
                           </div>
                           <div class="col-md-2">
-                            <label for="">M</label>
+                            <label for="stock-M">M</label>
                             <input
                               type="number"
-                              class="form-control"
-                              name="m"
+                              class="form-control stock-input"
+                              id="stock-M"
+                              name="stock[M]"
                               placeholder="Enter the quantity"
-                              value="<%= product.m %>"
+                              value="<%= stockMap['M'] %>"
+                              min="0"
                             />
                           </div>
                           <div class="col-md-2">
-                            <label for="">L</label>
+                            <label for="stock-L">L</label>
                             <input
                               type="number"
-                              class="form-control"
-                              name="l"
+                              class="form-control stock-input"
+                              id="stock-L"
+                              name="stock[L]"
                               placeholder="Enter the quantity"
-                              value="<%= product.l %>"
+                              value="<%= stockMap['L'] %>"
+                              min="0"
                             />
                           </div>
                           <div class="col-md-2">
-                            <label for="">XL</label>
+                            <label for="stock-XL">XL</label>
                             <input
                               type="number"
-                              class="form-control"
-                              name="xl"
+                              class="form-control stock-input"
+                              id="stock-XL"
+                              name="stock[XL]"
                               placeholder="Enter the quantity"
-                              value="<%= product.xl %>"
+                              value="<%= stockMap['XL'] %>"
+                              min="0"
                             />
                           </div>
                         </div>
@@ -168,7 +185,6 @@
                         multiple
                         accept="image/*"
                         required
-                        value="<%=  %>"
                       />
                       <small class="form-text text-muted"
                         >You can upload up to 3 images.</small

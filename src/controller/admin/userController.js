@@ -4,10 +4,32 @@ const Category = require("../../models/categorySchema");
 
 const loadUser = async (req, res) => {
   try {
-    const users = await User.find({});
-    return res.render("user", { users });
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+
+    const skip = (page - 1) * limit;
+
+    const totalUsers = await User.countDocuments();
+    const totalPages = Math.ceil(totalUsers / limit);
+
+    const users = await User.find()
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    return res.render("user", {
+      users,
+      pagination: {
+        currentPage: page,
+        totalPages: totalPages,
+        totalItems: totalUsers,
+      },
+
+      pages: Array.from({ length: totalPages }, (_, i) => i + 1),
+    });
   } catch (error) {
-    console.log(error);
+    console.log("Error loading users:", error);
+    return res.status(500).render("error", { message: "Failed to load users" });
   }
 };
 

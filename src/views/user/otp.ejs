@@ -153,12 +153,12 @@
                         <h2>OTP Verification</h2>
                         <p>Please enter the verification code sent to <br><strong>example@email.com</strong></p>
                         
-                        <form class="otp-form" action="#" method="post">
-                            <div class="otp-inputs">
-                                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="one-time-code" required>
-                                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
-                                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
-                                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" required>
+                        <form class="otp-form" action="/verify-otp" method="post">
+                            <div class="otp-inputs" id="otp">
+                                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="one-time-code" name="otp1" required>
+                                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" name="otp2" required >
+                                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" name="otp3" required>
+                                <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric" name="otp4" required>
                             </div>
                             
                             <button type="submit" class="default-btn">Verify</button>

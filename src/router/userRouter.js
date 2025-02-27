@@ -15,8 +15,10 @@ router.post("/register", userController.register);
 router.get("/forgot", userController.loadForgotEmailverification);
 router.post("/forgot", userController.forgot);
 router.get("/otp", userController.loadOtp);
+router.post("/verify-otp",userController.verifyOtp)
 router.get("/", userController.loadHome);
 router.get("/shop", userController.loadShop);
+router.get("/shopsingle/:productId",productController.loadShopSingle)
 // router.get("/productPage/:categoryId", productController.loadProductPage);
 router.get("/singleproduct/:productId", productController.singleProduct);
 

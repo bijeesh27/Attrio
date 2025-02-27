@@ -91,6 +91,37 @@
                   </table>
                 </div>
                 <!-- end table responsive -->
+
+                <!-- Add this at the bottom of your users table, before the end of card-body div -->
+<!-- Add this at the bottom of your users table, before the end of card-body div -->
+<div class="row mt-4">
+  <div class="col-12">
+    <nav aria-label="User pagination">
+      <ul class="pagination pagination-rounded justify-content-center">
+        <!-- Previous page button -->
+        <li class="page-item <%= pagination.currentPage === 1 ? 'disabled' : '' %>">
+          <a class="page-link" href="/admin/users?page=<%= pagination.currentPage - 1 %>" tabindex="-1">
+            <i class="mdi mdi-chevron-left"></i>
+          </a>
+        </li>
+        
+        <!-- Page numbers -->
+        <% pages.forEach(pageNum => { %>
+          <li class="page-item <%= pagination.currentPage === pageNum ? 'active' : '' %>">
+            <a class="page-link" href="/admin/users?page=<%= pageNum %>"><%= pageNum %></a>
+          </li>
+        <% }) %>
+        
+        <!-- Next page button -->
+        <li class="page-item <%= pagination.currentPage === pagination.totalPages ? 'disabled' : '' %>">
+          <a class="page-link" href="/admin/users?page=<%= pagination.currentPage + 1 %>">
+            <i class="mdi mdi-chevron-right"></i>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
               </div>
               <!-- end card body -->
             </div>

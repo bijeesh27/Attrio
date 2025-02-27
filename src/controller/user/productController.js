@@ -3,7 +3,7 @@ const Product = require("../../models/productSchema");
 
 // const loadProductPage = async (req, res) => {
 //   try {
-//     const categoryId=req.params.categoryId   
+//     const categoryId=req.params.categoryId
 //     console.log("categoryId:",categoryId);
 //     const products=await Product.find({category:categoryId})
 //     console.log("products",products);
@@ -33,7 +33,20 @@ const singleProduct = async (req, res) => {
   }
 };
 
+const loadShopSingle = async (req, res) => {
+  try {
+    const productId = req.params.productId;
+    const product = await Product.findOne({ _id: productId });
+    const allProducts = await Product.find();
+    console.log(product);
+    res.render("single-product", { product, allProducts });
+  } catch (error) {
+    console.log("error loading shop single page");
+  }
+};
+
 module.exports = {
   // loadProductPage,
   singleProduct,
+  loadShopSingle,
 };

@@ -1,9 +1,10 @@
 const User = require("../../models/userSchema");
-const Product=require("../../models/productSchema")
+const Product = require("../../models/productSchema");
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
-const Category = require("../../models/categorySchema");
 dotenv.config();
+const Category = require("../../models/categorySchema");
+const nodemailer = require("nodemailer");
 
 const login = async (req, res) => {
   try {
@@ -30,9 +31,42 @@ const login = async (req, res) => {
   }
 };
 
+function generateOtp() {
+  return Math.floor(1000 + Math.random() * 9000).toString();
+}
+
+let sendVerificationEmail = async (email, otp) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      host: "smtp.gmail.com",
+      port: "587",
+      secure: false,
+      auth: {
+        user: process.env.NODEMAILER_EMAIL,
+        pass: process.env.NODEMAILER_PASSWORD,
+      },
+    });
+
+    const info = {
+      from: process.env.NODEMAILER_EMAIL,
+      to: email,
+      subject: "verify your account",
+      text: `your otp is ${otp}`,
+      html: `<b>Your otp ${otp}</b>`,
+    };
+
+    await transporter.sendMail(info);
+
+    return true;
+  } catch (error) {
+    console.log("error from send verification email", error);
+  }
+};
+
 const register = async (req, res) => {
   try {
-    console.log("req.body:",req.body);
+    console.log("req.body:", req.body);
     const { firstName, lastName, email, number, password, confirmPassword } =
       req.body;
     const user = await User.findOne({ email });
@@ -47,20 +81,62 @@ const register = async (req, res) => {
     if (number < 10) {
       return res.redirect("/register");
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({
-      firstName,
-      lastName,
-      email,
-      number,
-      password: hashedPassword,
-    });
-    await newUser.save();
-    return res.redirect("/login");
+    const otp = generateOtp();
+    const emailSent = await sendVerificationEmail(email, otp);
+    console.log("emailsent", emailSent);
+    if (!emailSent) {
+      return res.json("email-error");
+    }
+    req.session.userOtp = otp;
+    req.session.userData = { firstName, lastName, email, number, password };
+    console.log("otp:", otp);
+    return res.redirect("/otp");
   } catch (error) {
     console.log("error occured while registering new user", error);
   }
 };
+
+const securePassword = async (password) => {
+  try {
+    const passwordHash = await bcrypt.hash(password, 10);
+    return passwordHash;
+  } catch (error) {}
+};
+
+const verifyOtp = async (req, res) => {
+  try {
+    console.log("req.body", req.body);
+    const otp = Object.values(req.body).join("");
+    console.log(otp);
+    console.log("userOtp", req.session.userOtp);
+    if (otp == req.session.userOtp) {
+      console.log("1");
+      const user = req.session.userData;
+      console.log("user:", user);
+      const passwordHash = await securePassword(user.password);
+      console.log("passwordHash:", passwordHash);
+      const newUser = new User({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        number: user.number,
+        password: passwordHash,
+      });
+      console.log("newUser", newUser);
+      await newUser.save();
+      req.session.isAuth = true;
+      req.session.userId = newUser._id;
+      req.session.email = newUser.email;
+      res.redirect("/");
+    } else {
+      res.redirect("/otp");
+    }
+  } catch (error) {
+    console.error("Error in OTP verification:", error);
+    return res.json({ success: false, message: "Verification failed" });
+  }
+};
+
 const forgot = async (req, res) => {
   try {
     res.render("forgot");
@@ -71,10 +147,31 @@ const forgot = async (req, res) => {
 
 const loadHome = async (req, res) => {
   try {
-    const product=await Product.find()
-    const category=await Category.find()
-    console.log("product:",product);
-    return res.render("home",{product,category});
+    // Get current page from query or default to 1
+    const page = parseInt(req.query.page) || 1;
+    const limit = 3; // 6 products per page
+    const skip = (page - 1) * limit;
+
+    // Get total count for pagination calculation
+    const totalProducts = await Product.countDocuments({ status: true });
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    // Fetch products for current page
+    const category = await Category.find();
+    const product = await Product.find({ status: true })
+      .sort({ createdAt: -1 })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate("category");
+    // If you need category details
+    res.render("home", {
+      product,
+      currentPage: page,
+      totalPages,
+      totalProducts,
+      category,
+    });
   } catch (error) {
     console.log("error rendering home page", error);
   }
@@ -95,10 +192,6 @@ const loadRegister = async (req, res) => {
     console.log("error rendering signup page", error);
   }
 };
-
-
-
-
 
 const loadForgotEmailverification = async (req, res) => {
   try {
@@ -140,14 +233,34 @@ const logout = async (req, res) => {
   }
 };
 
-const loadShop=async (req,res) => {
+const loadShop = async (req, res) => {
   try {
-    const products=await Product.find()
-    return res.render('product-page',{products})
+    // Get current page from query or default to 1
+    const page = parseInt(req.query.page) || 1;
+    const limit = 6; // 6 products per page
+    const skip = (page - 1) * limit;
+
+    // Get total count for pagination calculation
+    const totalProducts = await Product.countDocuments({ status: true });
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    // Fetch products for current page
+    const products = await Product.find({ status: true })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate("category"); // If you need category details
+
+    res.render("product-page", {
+      products,
+      currentPage: page,
+      totalPages,
+      totalProducts,
+    });
   } catch (error) {
-    console.log("error occured while rendering shop page",error);
+    console.log("error occured while rendering shop page", error);
   }
-}
+};
 
 module.exports = {
   loadHome,
@@ -161,5 +274,6 @@ module.exports = {
   loadOtp,
   loadProfile,
   logout,
-  loadShop
+  loadShop,
+  verifyOtp,
 };

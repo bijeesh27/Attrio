@@ -26,6 +26,7 @@ router.get("/blockCategory/:categoryId",isAdmin,categoryController.blockCategory
 router.get("/editCategory/:categoryId",isAdmin,categoryController.loadEditCategory)
 router.post("/editCategory/:categoryId",isAdmin,categoryController.editCategory)
 router.get("/blockProduct/:productId",isAdmin,productController.blockProduct)
+router.get("/new-arrivals")
 router.get("/logout",adminController.logout)
 
 module.exports = router;

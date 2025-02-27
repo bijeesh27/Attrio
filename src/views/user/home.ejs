@@ -121,7 +121,7 @@
                         <div class="col-lg-4 col-md-6 col-sm-6">
                             <div class="single-productsBox">
                                 <div class="products-image">
-                                    <a href="products-type-3.html">
+                                    <a href="/shopsingle/<%= product._id %>">
                                         <img src="/<%= product.image[0] %>" class="main-image" alt="<%= product.name %>">
                                         <img src="/<%= product.image[1] %>" class="hover-image" alt="<%= product.name %>">
                                     </a>
@@ -188,7 +188,199 @@
             </div>
         </section>
         <!-- End Products Area -->
-
+        <div class="pagination-area text-center">
+            <% if (totalPages > 1) { %>
+                <div class="pagination-container">
+                  <div class="pagination-area">
+                    <a href="?page=<%= currentPage > 1 ? currentPage - 1 : 1 %>" class="pagination-arrow prev <%= currentPage === 1 ? 'disabled' : '' %>">
+                      <i class='bx bx-chevron-left'></i>
+                    </a>
+                    
+                    <div class="pagination-numbers">
+                      <% 
+                      // Show limited page numbers with ellipsis
+                      const maxPagesToShow = 5;
+                      let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+                      let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+                      
+                      // Adjust if we're near the end
+                      if (endPage - startPage + 1 < maxPagesToShow) {
+                        startPage = Math.max(1, endPage - maxPagesToShow + 1);
+                      }
+                      
+                      // Show first page if not included in range
+                      if (startPage > 1) { %>
+                        <a href="?page=1" class="pagination-number">1</a>
+                        <% if (startPage > 2) { %>
+                          <span class="pagination-ellipsis">...</span>
+                        <% } %>
+                      <% } %>
+                      
+                      <% for(let i = startPage; i <= endPage; i++) { %>
+                        <% if(i === currentPage) { %>
+                          <span class="pagination-number active"><%= i %></span>
+                        <% } else { %>
+                          <a href="?page=<%= i %>" class="pagination-number"><%= i %></a>
+                        <% } %>
+                      <% } %>
+                      
+                      <% if (endPage < totalPages) { %>
+                        <% if (endPage < totalPages - 1) { %>
+                          <span class="pagination-ellipsis">...</span>
+                        <% } %>
+                        <a href="?page=<%= totalPages %>" class="pagination-number"><%= totalPages %></a>
+                      <% } %>
+                    </div>
+                    
+                    <a href="?page=<%= currentPage < totalPages ? currentPage + 1 : totalPages %>" class="pagination-arrow next <%= currentPage === totalPages ? 'disabled' : '' %>">
+                      <i class='bx bx-chevron-right'></i>
+                    </a>
+                  </div>
+                  
+                  <div class="pagination-info">
+                    Showing page <%= currentPage %> of <%= totalPages %>
+                  </div>
+                </div>
+              <% } %>
+              
+              <style>
+              .pagination-container {
+                padding: 40px 0;
+                font-family: 'Poppins', sans-serif;
+              }
+              
+              .pagination-area {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+              }
+              
+              .pagination-numbers {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+              }
+              
+              .pagination-number {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                font-size: 14px;
+                font-weight: 500;
+                color: #333;
+                text-decoration: none;
+                transition: all 0.25s ease;
+                position: relative;
+                border: 1px solid #f0f0f0;
+                background-color: #fff;
+              }
+              
+              .pagination-number:hover {
+                border-color: #f53f85;
+                color: #f53f85;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(245, 63, 133, 0.15);
+              }
+              
+              .pagination-number.active {
+                background: linear-gradient(135deg, #f53f85 0%, #ff7eb3 100%);
+                color: white;
+                border: none;
+                box-shadow: 0 4px 15px rgba(245, 63, 133, 0.3);
+              }
+              
+              .pagination-arrow {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                color: #333;
+                text-decoration: none;
+                transition: all 0.25s ease;
+                background-color: #fff;
+                border: 1px solid #f0f0f0;
+                margin: 0 12px;
+              }
+              
+              .pagination-arrow:hover {
+                background-color: #f53f85;
+                color: white;
+                box-shadow: 0 4px 12px rgba(245, 63, 133, 0.2);
+                transform: translateY(-2px);
+              }
+              
+              .pagination-arrow i {
+                font-size: 18px;
+              }
+              
+              .pagination-arrow.disabled {
+                opacity: 0.4;
+                pointer-events: none;
+                background-color: #f9f9f9;
+              }
+              
+              .pagination-ellipsis {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 32px;
+                color: #888;
+                font-size: 14px;
+                letter-spacing: 1px;
+              }
+              
+              .pagination-info {
+                text-align: center;
+                margin-top: 15px;
+                font-size: 13px;
+                color: #999;
+                font-weight: 400;
+              }
+              
+              @media (max-width: 767px) {
+                .pagination-number {
+                  width: 36px;
+                  height: 36px;
+                  font-size: 13px;
+                }
+                
+                .pagination-arrow {
+                  width: 36px;
+                  height: 36px;
+                  margin: 0 8px;
+                }
+                
+                .pagination-info {
+                  font-size: 12px;
+                }
+              }
+              
+              @media (max-width: 480px) {
+                .pagination-number {
+                  width: 32px;
+                  height: 32px;
+                  font-size: 12px;
+                }
+                
+                .pagination-arrow {
+                  width: 32px;
+                  height: 32px;
+                  margin: 0 6px;
+                }
+                
+                .pagination-ellipsis {
+                  width: 24px;
+                }
+              }
+              </style>
+        </div>
         <!-- Start Offer Products Area -->
         <section class="offer-products-area">
             <div class="container">

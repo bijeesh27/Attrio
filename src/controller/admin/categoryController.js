@@ -4,10 +4,33 @@ const Category = require("../../models/categorySchema");
 
 const loadCategories = async (req, res) => {
   try {
-    const categories = await Category.find({});
-    return res.render("adminCategories", { categories });
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+
+    const skip = (page - 1) * limit;
+
+    const totalCategories = await Category.countDocuments();
+    const totalPages = Math.ceil(totalCategories / limit);
+
+    const categories = await Category.find({})
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    return res.render("adminCategories", {
+      categories,
+      pagination: {
+        currentPage: page,
+        totalPages: totalPages,
+        totalItems: totalCategories,
+      },
+      pages: Array.from({ length: totalPages }, (_, i) => i + 1),
+    });
   } catch (error) {
-    console.log(error);
+    console.log("Error loading categories:", error);
+    return res
+      .status(500)
+      .render("error", { message: "Failed to load categories" });
   }
 };
 
@@ -50,33 +73,35 @@ const blockCategory = async (req, res) => {
   }
 };
 
-const loadEditCategory=async (req,res) => {
+const loadEditCategory = async (req, res) => {
   try {
-    const categoryId=req.params.categoryId
-    const category=await Category.findOne({_id:categoryId})
+    const categoryId = req.params.categoryId;
+    const category = await Category.findOne({ _id: categoryId });
     console.log(category);
-    return res.render('editCategory',{category})
+    return res.render("editCategory", { category });
   } catch (error) {
-    console.log("Error rendering edit category page",error);
+    console.log("Error rendering edit category page", error);
   }
-}
+};
 
 const editCategory = async (req, res) => {
   try {
     console.log("req.body:", req.body);
-    const categoryId=req.params.categoryId
+    const categoryId = req.params.categoryId;
     const { name, description } = req.body;
 
-    const existingCategory = await Category.findOne({_id:categoryId});
-    console.log("existingCategory",existingCategory);
-    if(!existingCategory){
-
+    const existingCategory = await Category.findOne({ _id: categoryId });
+    console.log("existingCategory", existingCategory);
+    if (!existingCategory) {
       console.log("this category not existing");
-      res.redirect("/admin/editCategory")
+      res.redirect("/admin/editCategory");
     }
-    console.log("category:",categoryId);
-    
-   await Category.updateOne({_id:categoryId},{$set:{name:name,description:description}})
+    console.log("category:", categoryId);
+
+    await Category.updateOne(
+      { _id: categoryId },
+      { $set: { name: name, description: description } }
+    );
     res.redirect("/admin/categories");
   } catch (error) {
     console.log("error occured while adding product");
@@ -89,10 +114,5 @@ module.exports = {
   addCategory,
   blockCategory,
   loadEditCategory,
- editCategory
-
-
-
-
-
+  editCategory,
 };
