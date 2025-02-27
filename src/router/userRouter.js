@@ -6,7 +6,6 @@ const categoryController = require("../controller/user/categoryController");
 const passport = require("../config/passport");
 const { ifLogged, logged } = require("../middleware/userMiddleware");
 
-
 // Public Routes (accessible only if not logged in)
 router.get("/login", ifLogged, userController.loadLogin);
 router.post("/login", userController.login);
@@ -15,11 +14,11 @@ router.post("/register", userController.register);
 router.get("/forgot", userController.loadForgotEmailverification);
 router.post("/forgot", userController.forgot);
 router.get("/otp", userController.loadOtp);
-router.post("/verify-otp",userController.verifyOtp)
+router.post("/verify-otp", userController.verifyOtp);
 router.get("/", userController.loadHome);
-router.get("/shop", userController.loadShop);
-router.get("/shopsingle/:productId",productController.loadShopSingle)
-// router.get("/productPage/:categoryId", productController.loadProductPage);
+router.get("/shop", productController.loadShop);
+router.get("/shopsingle/:productId", productController.loadShopSingle);
+router.get("/catfilter/:categoryId", productController.findByCategory);
 router.get("/singleproduct/:productId", productController.singleProduct);
 
 // Private Routes (accessible only if logged in)

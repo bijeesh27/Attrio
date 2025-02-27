@@ -67,7 +67,7 @@ let sendVerificationEmail = async (email, otp) => {
 const register = async (req, res) => {
   try {
     console.log("req.body:", req.body);
-    const { firstName, lastName, email, number, password, confirmPassword } =
+    const { username, email, number, password, confirmPassword } =
       req.body;
     const user = await User.findOne({ email });
     if (user) {
@@ -88,7 +88,7 @@ const register = async (req, res) => {
       return res.json("email-error");
     }
     req.session.userOtp = otp;
-    req.session.userData = { firstName, lastName, email, number, password };
+    req.session.userData = { username, email, number, password };
     console.log("otp:", otp);
     return res.redirect("/otp");
   } catch (error) {
@@ -116,8 +116,7 @@ const verifyOtp = async (req, res) => {
       const passwordHash = await securePassword(user.password);
       console.log("passwordHash:", passwordHash);
       const newUser = new User({
-        firstName: user.firstName,
-        lastName: user.lastName,
+        username: user.username,
         email: user.email,
         number: user.number,
         password: passwordHash,
@@ -163,7 +162,6 @@ const loadHome = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate("category");
     // If you need category details
     res.render("home", {
       product,
@@ -210,7 +208,7 @@ const loadForgot = async (req, res) => {
 
 const loadOtp = async (req, res) => {
   try {
-    return res.render("otp");
+    return res.render("otp",{email:req.session.userData.email});
   } catch (error) {
     console.log("error rendering otp page", error);
   }
@@ -233,34 +231,7 @@ const logout = async (req, res) => {
   }
 };
 
-const loadShop = async (req, res) => {
-  try {
-    // Get current page from query or default to 1
-    const page = parseInt(req.query.page) || 1;
-    const limit = 6; // 6 products per page
-    const skip = (page - 1) * limit;
 
-    // Get total count for pagination calculation
-    const totalProducts = await Product.countDocuments({ status: true });
-    const totalPages = Math.ceil(totalProducts / limit);
-
-    // Fetch products for current page
-    const products = await Product.find({ status: true })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .populate("category"); // If you need category details
-
-    res.render("product-page", {
-      products,
-      currentPage: page,
-      totalPages,
-      totalProducts,
-    });
-  } catch (error) {
-    console.log("error occured while rendering shop page", error);
-  }
-};
 
 module.exports = {
   loadHome,
@@ -274,6 +245,5 @@ module.exports = {
   loadOtp,
   loadProfile,
   logout,
-  loadShop,
   verifyOtp,
 };

@@ -24,107 +24,83 @@
         </div>
         <!-- End Search Overlay -->
 
-        <!-- Start Main Banner Area -->
-        <div class="home-slides-three owl-carousel owl-theme">
-            <div class="hero-banner">
-                <div class="d-table">
-                    <div class="d-table-cell">
-                        <div class="container">
-                            <div class="row align-items-center justify-content-center">
-                                <div class="col-lg-6">
-                                    <div class="main-banner-content">
-                                        <span class="sub-title">Limited Time Offer!</span>
-                                        <h1>Winter-Spring!</h1>
-                                        <p>Take 20% Off ‘Sale Must-Haves'</p>
-                                        <div class="btn-box">
-                                            <a href="/shop" class="default-btn">Shop Now</a>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6">
-                                    <div class="banner-image">
-                                        <div class="circle"></div>
-                                        <img src="user/assets/img/banner-img2.png" alt="image">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="hero-banner">
-                <div class="d-table">
-                    <div class="d-table-cell">
-                        <div class="container">
-                            <div class="row align-items-center justify-content-center">
-                                <div class="col-lg-6">
-                                    <div class="main-banner-content">
-                                        <span class="sub-title">Exclusive Offer!</span>
-                                        <h1>Summer-Fashion!</h1>
-                                        <p>Leap year offer ‘Sale Must-Haves'</p>
-                                        <div class="btn-box">
-                                            <a href="/shop" class="default-btn"><button onclick="filtering">Shop Now</button></a>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6">
-                                    <div class="banner-image">
-                                        <div class="circle"></div>
-                                        <img src="user/assets/img/banner-img1.png" alt="image">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <!-- Start Page Title -->
+        <div class="page-title-area">
+            <div class="container">
+                <div class="page-title-content">
+                    <h2>Products</h2>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li>Products</li>
+                    </ul>
                 </div>
             </div>
         </div>
-        <!-- End Main Banner Area -->
-
-        <!-- Start Categories Banner Area -->
-        <section class="categories-banner-area pt-100 pb-70">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <% category.forEach(category => { %>
-                     
-                        <div class="col-lg-4 col-md-4 col-sm-4">
-                            <div class="single-categories-box">
-                                <img src="user/assets/img/categories/img1.jpg" alt="image">
-    
-                                <div class="content text-white">
-                                    <span>Dress for </span>
-                                    <h3><%= category.description %></h3>
-                                    <a href="/catfilter/<%= category._id %>"><button class="default-btn">Shop Now</button></a>
-                                    
-                                </div>
-                                
-                            </div>
-                        </div>
-                    <% }) %>
-                </div>
-            </div>
-        </section>
-        <!-- End Categories Banner Area -->
+        <!-- End Page Title -->
 
         <!-- Start Products Area -->
-        <section class="products-area pb-70">
+        <section class="products-area pt-100 pb-70">
             <div class="container">
-                <div class="section-title">
-                    <span class="sub-title">See Our Collection</span>
-                    <h2>Recent Products</h2>
-                </div>
-                
-                <div class="row justify-content-center">
-                        <% product.forEach(product => { %>
-                        <div class="col-lg-4 col-md-6 col-sm-6">
+                <!-- <div class="products-filter-options">
+                    <div class="row align-items-center justify-content-center">
+                        <div class="col-lg-4 col-md-4">
+                            <div class="d-lg-flex d-md-flex align-items-center">
+                                <span class="sub-title"><a href="#" data-bs-toggle="modal" data-bs-target="#productsFilterModal"><i class='bx bx-filter-alt'></i> Filter</a></span>
+                                
+                                <span class="sub-title d-none d-lg-block d-md-block">View:</span>
+
+                                <div class="view-list-row d-none d-lg-block d-md-block">
+                                    <div class="view-column">
+                                        <a href="#" class="icon-view-two">
+                                            <span></span>
+                                            <span></span>
+                                        </a>
+
+                                        <a href="#" class="icon-view-three active">
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                        </a>
+
+                                        <a href="#" class="icon-view-four">
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                        </a>
+
+                                        <a href="#" class="view-grid-switch">
+                                            <span></span>
+                                            <span></span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4">
+                            <p>Showing 1 – 18 of 100</p>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4">
+                            <div class="products-ordering-list">
+                                <select>
+                                    <option>Sort by Price: Low to High</option>
+                                    <option>Sort by Price: High to Low</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+                <div id="products-collections-filter" class="row">
+                     <% products.forEach(product => { %>
+                    <div class="col-lg-4 col-md-6 col-sm-6 products-col-item">
                             <div class="single-productsBox">
                                 <div class="products-image">
                                     <a href="/shopsingle/<%= product._id %>">
-                                        <img src="/<%= product.image[0] %>" class="main-image" alt="<%= product.name %>">
-                                        <img src="/<%= product.image[1] %>" class="hover-image" alt="<%= product.name %>">
+                                        <img src="/<%= product.image[0] %>" class="main-image" alt="image">
+                                        <img src="/<%= product.image[1] %>" class="hover-image" alt="image">
                                     </a>
     
                                     <div class="products-button">
@@ -137,17 +113,17 @@
                                                     </a>
                                                 </div>
                                             </li>
-                                            <!-- <li>
+                                            <li>
                                                 <div class="compare-btn">
                                                     <a href="compare.html">
                                                         <i class='bx bx-refresh'></i>
                                                         <span class="tooltip-label">Compare</span>
                                                     </a>
                                                 </div>
-                                            </li> -->
+                                            </li>
                                             <li>
                                                 <div class="quick-view-btn">
-                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#productsQuickView" data-product-id="<%= product._id %>">
+                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#productsQuickView">
                                                         <i class='bx bx-search-alt'></i>
                                                         <span class="tooltip-label">Quick View</span>
                                                     </a>
@@ -160,8 +136,8 @@
                                 </div>
     
                                 <div class="products-content">
-                                    <!-- <span class="category">T-Shirt</span> -->
-                                    <h3><a href="products-type-3.html"><%= product.name %></a></h3>
+                                    <span class="category">T-Shirt</span>
+                                    <h3><a href="/shopsingle/<%= product._id %>"><%= product.name %></a></h3>
                                     <div class="star-rating">
                                         <i class='bx bxs-star'></i>
                                         <i class='bx bxs-star'></i>
@@ -170,7 +146,7 @@
                                         <i class='bx bxs-star'></i>
                                     </div>
                                     <div class="price">
-                                        <span class="old-price">Rs.3500</span>
+                                        <span class="old-price">Rs.3000</span>
                                         <span class="new-price">Rs.<%= product.price %></span>
                                     </div>
                                     <a href="cart.html" class="add-to-cart">Add to Cart</a>
@@ -182,251 +158,209 @@
                                     </span>
                                 </span>
                             </div>
+                 
                         </div>
-    
                         <% }) %>
-                    </div>
+
+                    
+                </div>
+
+                <div class="pagination-area text-center">
+                    <% if (totalPages > 1) { %>
+                        <div class="pagination-container">
+                          <div class="pagination-area">
+                            <a href="?page=<%= currentPage > 1 ? currentPage - 1 : 1 %>" class="pagination-arrow prev <%= currentPage === 1 ? 'disabled' : '' %>">
+                              <i class='bx bx-chevron-left'></i>
+                            </a>
+                            
+                            <div class="pagination-numbers">
+                              <% 
+                              // Show limited page numbers with ellipsis
+                              const maxPagesToShow = 5;
+                              let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+                              let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+                              
+                              // Adjust if we're near the end
+                              if (endPage - startPage + 1 < maxPagesToShow) {
+                                startPage = Math.max(1, endPage - maxPagesToShow + 1);
+                              }
+                              
+                              // Show first page if not included in range
+                              if (startPage > 1) { %>
+                                <a href="?page=1" class="pagination-number">1</a>
+                                <% if (startPage > 2) { %>
+                                  <span class="pagination-ellipsis">...</span>
+                                <% } %>
+                              <% } %>
+                              
+                              <% for(let i = startPage; i <= endPage; i++) { %>
+                                <% if(i === currentPage) { %>
+                                  <span class="pagination-number active"><%= i %></span>
+                                <% } else { %>
+                                  <a href="?page=<%= i %>" class="pagination-number"><%= i %></a>
+                                <% } %>
+                              <% } %>
+                              
+                              <% if (endPage < totalPages) { %>
+                                <% if (endPage < totalPages - 1) { %>
+                                  <span class="pagination-ellipsis">...</span>
+                                <% } %>
+                                <a href="?page=<%= totalPages %>" class="pagination-number"><%= totalPages %></a>
+                              <% } %>
+                            </div>
+                            
+                            <a href="?page=<%= currentPage < totalPages ? currentPage + 1 : totalPages %>" class="pagination-arrow next <%= currentPage === totalPages ? 'disabled' : '' %>">
+                              <i class='bx bx-chevron-right'></i>
+                            </a>
+                          </div>
+                          
+                          <div class="pagination-info">
+                            Showing page <%= currentPage %> of <%= totalPages %>
+                          </div>
+                        </div>
+                      <% } %>
+                      
+                      <style>
+                      .pagination-container {
+                        padding: 40px 0;
+                        font-family: 'Poppins', sans-serif;
+                      }
+                      
+                      .pagination-area {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        position: relative;
+                      }
+                      
+                      .pagination-numbers {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 6px;
+                      }
+                      
+                      .pagination-number {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        font-size: 14px;
+                        font-weight: 500;
+                        color: #333;
+                        text-decoration: none;
+                        transition: all 0.25s ease;
+                        position: relative;
+                        border: 1px solid #f0f0f0;
+                        background-color: #fff;
+                      }
+                      
+                      .pagination-number:hover {
+                        border-color: #f53f85;
+                        color: #f53f85;
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 12px rgba(245, 63, 133, 0.15);
+                      }
+                      
+                      .pagination-number.active {
+                        background: linear-gradient(135deg, #f53f85 0%, #ff7eb3 100%);
+                        color: white;
+                        border: none;
+                        box-shadow: 0 4px 15px rgba(245, 63, 133, 0.3);
+                      }
+                      
+                      .pagination-arrow {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        color: #333;
+                        text-decoration: none;
+                        transition: all 0.25s ease;
+                        background-color: #fff;
+                        border: 1px solid #f0f0f0;
+                        margin: 0 12px;
+                      }
+                      
+                      .pagination-arrow:hover {
+                        background-color: #f53f85;
+                        color: white;
+                        box-shadow: 0 4px 12px rgba(245, 63, 133, 0.2);
+                        transform: translateY(-2px);
+                      }
+                      
+                      .pagination-arrow i {
+                        font-size: 18px;
+                      }
+                      
+                      .pagination-arrow.disabled {
+                        opacity: 0.4;
+                        pointer-events: none;
+                        background-color: #f9f9f9;
+                      }
+                      
+                      .pagination-ellipsis {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 32px;
+                        color: #888;
+                        font-size: 14px;
+                        letter-spacing: 1px;
+                      }
+                      
+                      .pagination-info {
+                        text-align: center;
+                        margin-top: 15px;
+                        font-size: 13px;
+                        color: #999;
+                        font-weight: 400;
+                      }
+                      
+                      @media (max-width: 767px) {
+                        .pagination-number {
+                          width: 36px;
+                          height: 36px;
+                          font-size: 13px;
+                        }
+                        
+                        .pagination-arrow {
+                          width: 36px;
+                          height: 36px;
+                          margin: 0 8px;
+                        }
+                        
+                        .pagination-info {
+                          font-size: 12px;
+                        }
+                      }
+                      
+                      @media (max-width: 480px) {
+                        .pagination-number {
+                          width: 32px;
+                          height: 32px;
+                          font-size: 12px;
+                        }
+                        
+                        .pagination-arrow {
+                          width: 32px;
+                          height: 32px;
+                          margin: 0 6px;
+                        }
+                        
+                        .pagination-ellipsis {
+                          width: 24px;
+                        }
+                      }
+                      </style>
+                </div>
             </div>
         </section>
         <!-- End Products Area -->
-        <div class="pagination-area text-center">
-            <% if (totalPages > 1) { %>
-                <div class="pagination-container">
-                  <div class="pagination-area">
-                    <a href="?page=<%= currentPage > 1 ? currentPage - 1 : 1 %>" class="pagination-arrow prev <%= currentPage === 1 ? 'disabled' : '' %>">
-                      <i class='bx bx-chevron-left'></i>
-                    </a>
-                    
-                    <div class="pagination-numbers">
-                      <% 
-                      // Show limited page numbers with ellipsis
-                      const maxPagesToShow = 5;
-                      let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
-                      let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
-                      
-                      // Adjust if we're near the end
-                      if (endPage - startPage + 1 < maxPagesToShow) {
-                        startPage = Math.max(1, endPage - maxPagesToShow + 1);
-                      }
-                      
-                      // Show first page if not included in range
-                      if (startPage > 1) { %>
-                        <a href="?page=1" class="pagination-number">1</a>
-                        <% if (startPage > 2) { %>
-                          <span class="pagination-ellipsis">...</span>
-                        <% } %>
-                      <% } %>
-                      
-                      <% for(let i = startPage; i <= endPage; i++) { %>
-                        <% if(i === currentPage) { %>
-                          <span class="pagination-number active"><%= i %></span>
-                        <% } else { %>
-                          <a href="?page=<%= i %>" class="pagination-number"><%= i %></a>
-                        <% } %>
-                      <% } %>
-                      
-                      <% if (endPage < totalPages) { %>
-                        <% if (endPage < totalPages - 1) { %>
-                          <span class="pagination-ellipsis">...</span>
-                        <% } %>
-                        <a href="?page=<%= totalPages %>" class="pagination-number"><%= totalPages %></a>
-                      <% } %>
-                    </div>
-                    
-                    <a href="?page=<%= currentPage < totalPages ? currentPage + 1 : totalPages %>" class="pagination-arrow next <%= currentPage === totalPages ? 'disabled' : '' %>">
-                      <i class='bx bx-chevron-right'></i>
-                    </a>
-                  </div>
-                  
-                  <div class="pagination-info">
-                    Showing page <%= currentPage %> of <%= totalPages %>
-                  </div>
-                </div>
-              <% } %>
-              
-              <style>
-              .pagination-container {
-                padding: 40px 0;
-                font-family: 'Poppins', sans-serif;
-              }
-              
-              .pagination-area {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                position: relative;
-              }
-              
-              .pagination-numbers {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 6px;
-              }
-              
-              .pagination-number {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-                font-size: 14px;
-                font-weight: 500;
-                color: #333;
-                text-decoration: none;
-                transition: all 0.25s ease;
-                position: relative;
-                border: 1px solid #f0f0f0;
-                background-color: #fff;
-              }
-              
-              .pagination-number:hover {
-                border-color: #f53f85;
-                color: #f53f85;
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(245, 63, 133, 0.15);
-              }
-              
-              .pagination-number.active {
-                background: linear-gradient(135deg, #f53f85 0%, #ff7eb3 100%);
-                color: white;
-                border: none;
-                box-shadow: 0 4px 15px rgba(245, 63, 133, 0.3);
-              }
-              
-              .pagination-arrow {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-                color: #333;
-                text-decoration: none;
-                transition: all 0.25s ease;
-                background-color: #fff;
-                border: 1px solid #f0f0f0;
-                margin: 0 12px;
-              }
-              
-              .pagination-arrow:hover {
-                background-color: #f53f85;
-                color: white;
-                box-shadow: 0 4px 12px rgba(245, 63, 133, 0.2);
-                transform: translateY(-2px);
-              }
-              
-              .pagination-arrow i {
-                font-size: 18px;
-              }
-              
-              .pagination-arrow.disabled {
-                opacity: 0.4;
-                pointer-events: none;
-                background-color: #f9f9f9;
-              }
-              
-              .pagination-ellipsis {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 32px;
-                color: #888;
-                font-size: 14px;
-                letter-spacing: 1px;
-              }
-              
-              .pagination-info {
-                text-align: center;
-                margin-top: 15px;
-                font-size: 13px;
-                color: #999;
-                font-weight: 400;
-              }
-              
-              @media (max-width: 767px) {
-                .pagination-number {
-                  width: 36px;
-                  height: 36px;
-                  font-size: 13px;
-                }
-                
-                .pagination-arrow {
-                  width: 36px;
-                  height: 36px;
-                  margin: 0 8px;
-                }
-                
-                .pagination-info {
-                  font-size: 12px;
-                }
-              }
-              
-              @media (max-width: 480px) {
-                .pagination-number {
-                  width: 32px;
-                  height: 32px;
-                  font-size: 12px;
-                }
-                
-                .pagination-arrow {
-                  width: 32px;
-                  height: 32px;
-                  margin: 0 6px;
-                }
-                
-                .pagination-ellipsis {
-                  width: 24px;
-                }
-              }
-              </style>
-        </div>
-        <!-- Start Offer Products Area -->
-        <section class="offer-products-area">
-            <div class="container">
-                <div class="offer-products-slides owl-carousel owl-theme">
-                    <div class="single-offer-products">
-                        <div class="content">
-                            <h3><a href="/shop">New Collections!</a></h3>
-                            <p>Stylist Allison Taylor take on the summer season's trends.</p>
-                            <a href="/shop" class="default-btn">Discover Now!</a>
-                        </div>
-
-                        <div class="image">
-                            <a href="/shop"><img src="user/assets/img/offer/img3.jpg" alt="image"></a>
-                        </div>
-                    </div>
-
-                    <div class="single-offer-products">
-                        <div class="content">
-                            <h3><a href="/shop">Our Popular Products</a></h3>
-                            <p>Stylist Allison Taylor take on the summer season's trends.</p>
-                            <a href="/shop" class="default-btn">Discover Now!</a>
-                        </div>
-
-                        <div class="image">
-                            <a href="/shop"><img src="user/assets/img/offer/img2.jpg" alt="image"></a>
-                        </div>
-                    </div>
-
-                    <div class="single-offer-products">
-                        <div class="content">
-                            <h3><a href="/shop">Hot Trending Products</a></h3>
-                            <p>Stylist Allison Taylor take on the summer season's trends.</p>
-                            <a href="/shop" class="default-btn">Discover Now!</a>
-                        </div>
-
-                        <div class="image">
-                            <a href="/shop"><img src="user/assets/img/offer/img3.jpg" alt="image"></a>
-                        </div>
-                    </div>
-                </div>
-            </div><br><br>
-        </section>
-        <!-- End Offer Products Area -->
-
-
 
         <!-- Start Facility Area -->
         <section class="facility-area pb-70">
@@ -485,11 +419,6 @@
         </section>
         <!-- End Facility Area -->
 
-        
-
-
-
-        
         <!-- Start Instagram Area -->
         <div class="instagram-area">
             <div class="container-fluid">
@@ -580,7 +509,7 @@
                                 <ul class="sidebar-contact-info">
                                     <li><i class='bx bx-map'></i> <a href="#" target="_blank">Wonder Street, USA, New York</a></li>
                                     <li><i class='bx bx-phone-call'></i> <a href="tel:+01321654214">+01 321 654 214</a></li>
-                                    <li><i class='bx bx-envelope'></i> <a href="https://templates.hibootstrap.com/cdn-cgi/l/email-protection#0a626f6666654a727e656424696567"><span class="__cf_email__" data-cfemail="e68e838a8a89a69e928988c885898b">[email&#160;protected]</span></a></li>
+                                    <li><i class='bx bx-envelope'></i> <a href="https://templates.hibootstrap.com/cdn-cgi/l/email-protection#573f323b3b38172f2338397934383a"><span class="__cf_email__" data-cfemail="4e262b2222210e363a2120602d2123">[email&#160;protected]</span></a></li>
                                 </ul>
                             </div>
 
@@ -631,82 +560,77 @@
                         <span aria-hidden="true"><i class='bx bx-x'></i></span>
                     </button>
 
-                    <div id="quickViewContent">
-
-                        <div class="row align-items-center justify-content-center">
-                            <div class="col-lg-6 col-md-6">
-                                <div class="products-image">
-                                    <img src="user/assets/img/quick-view-img.jpg" alt="image">
-                                </div>
+                    <div class="row align-items-center justify-content-center">
+                        <div class="col-lg-6 col-md-6">
+                            <div class="products-image">
+                                <img src="user/assets/img/quick-view-img.jpg" alt="image">
                             </div>
-    
-                            <div class="col-lg-6 col-md-6">
-                                <div class="products-content">
-                                    <h3><a href="#">Long Sleeve Leopard T-Shirt</a></h3>
-    
-                                    <div class="price">
-                                        <span class="old-price">$210.00</span>
-                                        <span class="new-price">$200.00</span>
+                        </div>
+
+                        <div class="col-lg-6 col-md-6">
+                            <div class="products-content">
+                                <h3><a href="#">Long Sleeve Leopard T-Shirt</a></h3>
+
+                                <div class="price">
+                                    <span class="old-price">$210.00</span>
+                                    <span class="new-price">$200.00</span>
+                                </div>
+
+                                <div class="products-review">
+                                    <div class="rating">
+                                        <i class='bx bxs-star'></i>
+                                        <i class='bx bxs-star'></i>
+                                        <i class='bx bxs-star'></i>
+                                        <i class='bx bxs-star'></i>
+                                        <i class='bx bxs-star'></i>
                                     </div>
-    
-                                    <div class="products-review">
-                                        <div class="rating">
-                                            <i class='bx bxs-star'></i>
-                                            <i class='bx bxs-star'></i>
-                                            <i class='bx bxs-star'></i>
-                                            <i class='bx bxs-star'></i>
-                                            <i class='bx bxs-star'></i>
-                                        </div>
-                                        <a href="#" class="rating-count">3 reviews</a>
-                                    </div>
-    
-                                    <ul class="products-info">
-                                        <li><span>Vendor:</span> <a href="#">Lereve</a></li>
-                                        <li><span>Availability:</span> <a href="#">In stock (7 items)</a></li>
-                                        <li><span>Products Type:</span> <a href="#">T-Shirt</a></li>
+                                    <a href="#" class="rating-count">3 reviews</a>
+                                </div>
+
+                                <ul class="products-info">
+                                    <li><span>Vendor:</span> <a href="#">Lereve</a></li>
+                                    <li><span>Availability:</span> <a href="#">In stock (7 items)</a></li>
+                                    <li><span>Products Type:</span> <a href="#">T-Shirt</a></li>
+                                </ul>
+
+                                <div class="products-color-switch">
+                                    <h4>Color:</h4>
+
+                                    <ul>
+                                        <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Black" class="color-black"></a></li>
+                                        <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="White" class="color-white"></a></li>
+                                        <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Green" class="color-green"></a></li>
+                                        <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Yellow Green" class="color-yellowgreen"></a></li>
+                                        <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Teal" class="color-teal"></a></li>
                                     </ul>
-    
-                                    <div class="products-color-switch">
-                                        <h4>Color:</h4>
-    
-                                        <ul>
-                                            <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Black" class="color-black"></a></li>
-                                            <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="White" class="color-white"></a></li>
-                                            <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Green" class="color-green"></a></li>
-                                            <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Yellow Green" class="color-yellowgreen"></a></li>
-                                            <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Teal" class="color-teal"></a></li>
-                                        </ul>
-                                    </div>
-    
-                                    <div class="products-size-wrapper">
-                                        <h4>Size:</h4>
-    
-                                        <ul>
-                                            <li><a href="#">XS</a></li>
-                                            <li class="active"><a href="#">S</a></li>
-                                            <li><a href="#">M</a></li>
-                                            <li><a href="#">XL</a></li>
-                                            <li><a href="#">XXL</a></li>
-                                        </ul>
-                                    </div>
-    
-                                    <div class="products-add-to-cart">
-                                        <div class="input-counter">
-                                            <span class="minus-btn"><i class='bx bx-minus'></i></span>
-                                            <input type="text" value="1">
-                                            <span class="plus-btn"><i class='bx bx-plus'></i></span>
-                                        </div>
-    
-                                        <button type="submit" class="default-btn">Add to Cart</button>
-                                    </div>
-    
-                                    <a href="#" class="view-full-info">View Full Info</a>
                                 </div>
+
+                                <div class="products-size-wrapper">
+                                    <h4>Size:</h4>
+
+                                    <ul>
+                                        <li><a href="#">XS</a></li>
+                                        <li class="active"><a href="#">S</a></li>
+                                        <li><a href="#">M</a></li>
+                                        <li><a href="#">XL</a></li>
+                                        <li><a href="#">XXL</a></li>
+                                    </ul>
+                                </div>
+
+                                <div class="products-add-to-cart">
+                                    <div class="input-counter">
+                                        <span class="minus-btn"><i class='bx bx-minus'></i></span>
+                                        <input type="text" value="1">
+                                        <span class="plus-btn"><i class='bx bx-plus'></i></span>
+                                    </div>
+
+                                    <button type="submit" class="default-btn">Add to Cart</button>
+                                </div>
+
+                                <a href="#" class="view-full-info">View Full Info</a>
                             </div>
-                        </div> -->
+                        </div>
                     </div>
-
-
                 </div>
             </div>
         </div>
@@ -866,7 +790,7 @@
         <!-- End Wishlist Modal -->
 
         <!-- Start Size Guide Modal Area -->
-        <!-- <div class="modal fade sizeGuideModal" id="sizeGuideModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal fade sizeGuideModal" id="sizeGuideModal" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
@@ -1010,7 +934,7 @@
                     </div>
                 </div>
             </div>
-        </div> -->
+        </div>
         <!-- End Size Guide Modal Area -->
 
         <!-- Start Shipping Modal Area -->
@@ -1052,31 +976,14 @@
 
                     <div class="modal-body">
                         <div class="woocommerce-widget-area">
-                            <div class="woocommerce-widget filter-list-widget">
-                                <h3 class="woocommerce-widget-title">Current Selection</h3>
-
-                                <div class="selected-filters-wrap-list">
-                                    <ul>
-                                        <li><a href="#"><i class='bx bx-x'></i> 44</a></li>
-                                        <li><a href="#"><i class='bx bx-x'></i> XI</a></li>
-                                        <li><a href="#"><i class='bx bx-x'></i> Clothing</a></li>
-                                        <li><a href="#"><i class='bx bx-x'></i> Shoes</a></li>
-                                    </ul>
-
-                                    <a href="#" class="delete-selected-filters"><i class='bx bx-trash'></i> <span>Clear All</span></a>
-                                </div>
-                            </div>
-
+                            
                             <div class="woocommerce-widget collections-list-widget">
-                                <h3 class="woocommerce-widget-title">Collections</h3>
+                                <h3 class="woocommerce-widget-title">Categories</h3>
 
                                 <ul class="collections-list-row">
                                     <li><a href="#">Men's</a></li>
                                     <li class="active"><a href="#" class="active">Women’s</a></li>
-                                    <li><a href="#">Clothing</a></li>
-                                    <li><a href="#">Shoes</a></li>
-                                    <li><a href="#">Accessories</a></li>
-                                    <li><a href="#">Uncategorized</a></li>
+                                    <li><a href="#">kid's</a></li>
                                 </ul>
                             </div>
 
@@ -1105,50 +1012,6 @@
                                 </ul>
                             </div>
 
-                            <div class="woocommerce-widget color-list-widget">
-                                <h3 class="woocommerce-widget-title">Color</h3>
-
-                                <ul class="color-list-row">
-                                    <li class="active"><a href="#" title="Black" class="color-black"></a></li>
-                                    <li><a href="#" title="Red" class="color-red"></a></li>
-                                    <li><a href="#" title="Yellow" class="color-yellow"></a></li>
-                                    <li><a href="#" title="White" class="color-white"></a></li>
-                                    <li><a href="#" title="Blue" class="color-blue"></a></li>
-                                    <li><a href="#" title="Green" class="color-green"></a></li>
-                                    <li><a href="#" title="Yellow Green" class="color-yellowgreen"></a></li>
-                                    <li><a href="#" title="Pink" class="color-pink"></a></li>
-                                    <li><a href="#" title="Violet" class="color-violet"></a></li>
-                                    <li><a href="#" title="Blue Violet" class="color-blueviolet"></a></li>
-                                    <li><a href="#" title="Lime" class="color-lime"></a></li>
-                                    <li><a href="#" title="Plum" class="color-plum"></a></li>
-                                    <li><a href="#" title="Teal" class="color-teal"></a></li>
-                                </ul>
-                            </div>
-
-                            <div class="woocommerce-widget brands-list-widget">
-                                <h3 class="woocommerce-widget-title">Brands</h3>
-
-                                <ul class="brands-list-row">
-                                    <li><a href="#">Gucci</a></li>
-                                    <li><a href="#">Virgil Abloh</a></li>
-                                    <li><a href="#">Balenciaga</a></li>
-                                    <li class="active"><a href="#">Moncler</a></li>
-                                    <li><a href="#">Fendi</a></li>
-                                    <li><a href="#">Versace</a></li>
-                                </ul>
-                            </div>
-
-                            <div class="woocommerce-widget aside-trending-widget">
-                                <div class="aside-trending-products">
-                                    <img src="user/assets/img/offer-bg.jpg" alt="image">
-
-                                    <div class="category">
-                                        <h3>Top Trending</h3>
-                                        <span>Spring/Summer 2024 Collection</span>
-                                    </div>
-                                   <a href="products-right-sidebar.html" class="link-btn"></a>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -1157,130 +1020,4 @@
         <!-- End Products Filter Modal Area -->
 
         <!-- Start Footer Area -->
-
-
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Quick View functionality
-                const quickViewBtns = document.querySelectorAll('.quick-view-btn a');
-                const quickViewContent = document.getElementById('quickViewContent');
-                
-                quickViewBtns.forEach(btn => {
-                    btn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const productId = this.getAttribute('data-product-id');
-                        
-                        // Fetch product details via AJAX
-                        fetch(`/singleproduct/${productId}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                if(data.success) {
-                                    const product = data.product;
-                                    
-                                    // Create HTML for the quick view modal
-                                    const quickViewHTML = `
-                                        <div class="row align-items-center justify-content-center">
-                                            <div class="col-lg-6 col-md-6">
-                                                <div class="products-image">
-                                                    <img src="/${product.image[0]}" alt="${product.name}">
-                                                </div>
-                                            </div>
-        
-                                            <div class="col-lg-6 col-md-6">
-                                                <div class="products-content">
-                                                    <h3><a href="/product/${product._id}">${product.name}</a></h3>
-        
-                                                    <div class="price">
-                                                        <span class="old-price">Rs.3500</span>
-                                                        <span class="new-price">Rs.${product.price}</span>
-                                                    </div>
-        
-                                                    <div class="products-review">
-                                                        <div class="rating">
-                                                            <i class='bx bxs-star'></i>
-                                                            <i class='bx bxs-star'></i>
-                                                            <i class='bx bxs-star'></i>
-                                                            <i class='bx bxs-star'></i>
-                                                            <i class='bx bxs-star'></i>
-                                                        </div>
-                                                        <a href="#" class="rating-count">${product.reviews ? product.reviews.length : 0} reviews</a>
-                                                    </div>
-        
-                                                    <ul class="products-info">
-                                                        <li><span>Availability:</span> <a href="#">${product.totalstock > 0 ? `In stock (${product.totalstock} items)` : 'Out of stock'}</a></li><br>
-                                                        <li><span>Product Type:</span> <a href="#">${product.category.name || 'N/A'}</a></li><br>
-
-                                                    </ul>
-        
-                                                    <div class="products-add-to-cart">
-                                                        <div class="input-counter">
-                                                            <span class="minus-btn"><i class='bx bx-minus'></i></span>
-                                                            <input type="text" value="1" id="quantity">
-                                                            <span class="plus-btn"><i class='bx bx-plus'></i></span>
-                                                        </div>
-        
-                                                        <button type="button" class="default-btn add-to-cart-btn" data-product-id="${product._id}">Add to Cart</button>
-                                                    </div>
-        
-                                                    <a href="/product/${product._id}" class="view-full-info">View Full Info</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    `;
-                                    
-                                    // Insert the HTML into the modal
-                                    quickViewContent.innerHTML = quickViewHTML;
-                                    
-                                    // Initialize quantity buttons
-                                    initQuantityButtons();
-                                } else {
-                                    quickViewContent.innerHTML = '<p class="text-center">Product details not found!</p>';
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error fetching product details:', error);
-                                quickViewContent.innerHTML = '<p class="text-center">Error loading product details!</p>';
-                            });
-                    });
-                });
-                
-                // Initialize quantity buttons
-                function initQuantityButtons() {
-                    const minusBtn = document.querySelector('.minus-btn');
-                    const plusBtn = document.querySelector('.plus-btn');
-                    const quantityInput = document.getElementById('quantity');
-                    
-                    if(minusBtn && plusBtn && quantityInput) {
-                        minusBtn.addEventListener('click', function() {
-                            let value = parseInt(quantityInput.value);
-                            if(value > 1) {
-                                value--;
-                                quantityInput.value = value;
-                            }
-                        });
-                        
-                        plusBtn.addEventListener('click', function() {
-                            let value = parseInt(quantityInput.value);
-                            value++;
-                            quantityInput.value = value;
-                        });
-                    }
-                    
-                    // Add to cart functionality
-                    const addToCartBtn = document.querySelector('.add-to-cart-btn');
-                    if(addToCartBtn) {
-                        addToCartBtn.addEventListener('click', function() {
-                            const productId = this.getAttribute('data-product-id');
-                            const quantity = document.getElementById('quantity').value;
-                            
-                            // Add to cart logic - you can implement AJAX call here
-                            console.log(`Adding product ${productId} to cart with quantity ${quantity}`);
-                            // Implement your add to cart functionality here
-                        });
-                    }
-                }
-            });
-
-        </script>
-
         <%- include('../partials/user/footer') %>
