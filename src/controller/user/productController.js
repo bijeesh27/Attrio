@@ -1,5 +1,6 @@
 const { closeDelimiter } = require("ejs");
 const Product = require("../../models/productSchema");
+const Category = require("../../models/categorySchema");
 
 const loadShop = async (req, res) => {
   try {
@@ -9,7 +10,7 @@ const loadShop = async (req, res) => {
 
     const totalProducts = await Product.countDocuments({ status: true });
     const totalPages = Math.ceil(totalProducts / limit);
-
+    const category=await Category.find()
     const products = await Product.find({ status: true })
       .sort({ createdAt: -1 })
       .skip(skip)
@@ -17,6 +18,7 @@ const loadShop = async (req, res) => {
 
     res.render("product-page", {
       products,
+      category,
       currentPage: page,
       totalPages,
       totalProducts,
@@ -69,6 +71,8 @@ const findByCategory = async (req, res) => {
 
     const totalProducts = await Product.countDocuments({ status: true });
     const totalPages = Math.ceil(totalProducts / limit);
+    const category=await Category.findOne({_id:categoryId})
+    console.log("!!!!!!!",category);
     const products = await Product.find({
       category: categoryId,
       status: true,
@@ -79,6 +83,7 @@ const findByCategory = async (req, res) => {
     console.log("products:", products);
     res.render("products", {
       products,
+      category,
       currentPage: page,
       totalPages,
       totalProducts,

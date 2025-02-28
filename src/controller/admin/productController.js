@@ -29,6 +29,7 @@ const loadProducts = async (req, res) => {
     const skip = (page - 1) * limit;
 
     const totalProducts = await Product.countDocuments();
+    const totalPages = Math.ceil(totalProducts / limit);
 
     const products = await Product.find()
       .populate("category", "name")
@@ -36,7 +37,7 @@ const loadProducts = async (req, res) => {
       .limit(limit)
       .sort({ createdAt: -1 });
 
-    return res.render("products", {
+    return res.render("adminproducts", {
       products,
       pagination: {
         currentPage: page,

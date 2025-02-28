@@ -981,9 +981,10 @@
                                 <h3 class="woocommerce-widget-title">Categories</h3>
 
                                 <ul class="collections-list-row">
-                                    <li><a href="#">Men's</a></li>
-                                    <li class="active"><a href="#" class="active">Women’s</a></li>
-                                    <li><a href="#">kid's</a></li>
+                                    <% category.forEach(category => { %>
+                                        <li><a href="/catfilter/<%= category._id %>"><%= category.description %></a></li>
+                                    <% }) %>
+                                    
                                 </ul>
                             </div>
 

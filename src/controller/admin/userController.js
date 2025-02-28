@@ -12,7 +12,7 @@ const loadUser = async (req, res) => {
     const totalUsers = await User.countDocuments();
     const totalPages = Math.ceil(totalUsers / limit);
 
-    const users = await User.find()
+    const users = await User.find({isAdmin:false})
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });

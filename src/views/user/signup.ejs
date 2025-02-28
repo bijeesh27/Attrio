@@ -61,7 +61,7 @@
             height: 50px;
             border-radius: 8px;
             box-shadow: none;
-            margin-bottom: 25px;
+            margin-bottom: 5px;
             padding-left: 20px;
             border: 1px solid #e8e8e8;
             transition: all 0.3s;
@@ -81,6 +81,7 @@
             border-radius: 8px;
             font-weight: 500;
             margin-bottom: 20px;
+            margin-top: 10px;
             transition: all 0.3s;
         }
         
@@ -163,6 +164,33 @@
             color: #6c757d;
             font-size: 14px;
         }
+        
+        .error-text {
+            color: #dc3545;
+            font-size: 12px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .is-invalid {
+            border-color: #dc3545 !important;
+        }
+        
+        .alert {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
     </style>
 </head>
 <body>
@@ -173,6 +201,14 @@
                     <div class="login-content">
                         <h2>Create Your Account</h2>
                         
+                        <% if (locals.errors && errors.length > 0) { %>
+                            <div class="alert alert-danger">
+                                <% errors.forEach(error => { %>
+                                    <div><%= error %></div>
+                                <% }) %>
+                            </div>
+                        <% } %>
+                        
                         <a href="/auth/google" class="google-btn">
                             <span class="google-icon"><i class="fab fa-google"></i></span>
                             <span>Sign up with Google</span>
@@ -182,23 +218,30 @@
                             <span>OR</span>
                         </div>
                         
-                        <form class="login-form" action="#" method="post">
+                        <form id="registerForm" class="login-form" action="/register" method="post" novalidate>
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Enter your Name" name="username">
-                            </div>
-                            <div class="form-group">
-                                <input type="email" class="form-control" placeholder="Enter your email Address" name="email">
-                            </div>
-
-                            <div class="form-group">
-                                <input type="number" class="form-control" placeholder="Enter your number" name="number">
+                                <input type="text" class="form-control" id="username" placeholder="Enter your Name" name="username" value="<%= locals.input ? input.username : '' %>">
+                                <small id="nameError" class="error-text">Name is required</small>
                             </div>
                             
                             <div class="form-group">
-                                <input type="password" class="form-control" placeholder="Enter your password" name="password">
+                                <input type="email" class="form-control" id="email" placeholder="Enter your email Address" name="email" value="<%= locals.input ? input.email : '' %>">
+                                <small id="emailError" class="error-text">Please enter a valid email address</small>
                             </div>
+                            
                             <div class="form-group">
-                                <input type="password" class="form-control" placeholder="confirmPassword" name="confirmPassword">
+                                <input type="tel" class="form-control" id="number" placeholder="Enter your number" name="number" value="<%= locals.input ? input.number : '' %>">
+                                <small id="numberError" class="error-text">Please enter a valid phone number</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <input type="password" class="form-control" id="password" placeholder="Enter your password" name="password">
+                                <small id="passwordError" class="error-text">Password must be at least 6 characters</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password" name="confirmPassword">
+                                <small id="confirmPasswordError" class="error-text">Passwords do not match</small>
                             </div>
                             
                             <button type="submit" class="default-btn">SignUp</button>
@@ -211,5 +254,210 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('registerForm');
+            const username = document.getElementById('username');
+            const email = document.getElementById('email');
+            const number = document.getElementById('number');
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirmPassword');
+            
+            const nameError = document.getElementById('nameError');
+            const emailError = document.getElementById('emailError');
+            const numberError = document.getElementById('numberError');
+            const passwordError = document.getElementById('passwordError');
+            const confirmPasswordError = document.getElementById('confirmPasswordError');
+            
+            // Function to validate email
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+            
+            // Function to validate phone number
+            function isValidPhoneNumber(phone) {
+                const phoneRegex = /^\d{10}$/;
+                return phoneRegex.test(phone);
+            }
+            
+            // Function to show error
+            function showError(input, errorElement, message) {
+                input.classList.add('is-invalid');
+                errorElement.style.display = 'block';
+                errorElement.textContent = message;
+            }
+            
+            // Function to hide error
+            function hideError(input, errorElement) {
+                input.classList.remove('is-invalid');
+                errorElement.style.display = 'none';
+            }
+            
+            // Username validation
+            username.addEventListener('blur', function() {
+                if (username.value.trim() === '') {
+                    showError(username, nameError, 'Name is required');
+                } else if (username.value.trim().length < 3) {
+                    showError(username, nameError, 'Name must be at least 3 characters');
+                } else {
+                    hideError(username, nameError);
+                }
+            });
+            
+            // Email validation
+            email.addEventListener('blur', function() {
+                if (email.value.trim() === '') {
+                    showError(email, emailError, 'Email is required');
+                } else if (!isValidEmail(email.value)) {
+                    showError(email, emailError, 'Please enter a valid email address');
+                } else {
+                    hideError(email, emailError);
+                }
+            });
+            
+            // Phone number validation
+            number.addEventListener('blur', function() {
+                if (number.value.trim() === '') {
+                    showError(number, numberError, 'Phone number is required');
+                } else if (!isValidPhoneNumber(number.value)) {
+                    showError(number, numberError, 'Please enter a valid 10 digit phone number');
+                } else {
+                    hideError(number, numberError);
+                }
+            });
+            
+            // Password validation
+            password.addEventListener('blur', function() {
+                if (password.value.trim() === '') {
+                    showError(password, passwordError, 'Password is required');
+                } else if (password.value.length < 6) {
+                    showError(password, passwordError, 'Password must be at least 6 characters');
+                } else {
+                    hideError(password, passwordError);
+                }
+                
+                // Also check confirm password match if it has a value
+                if (confirmPassword.value.trim() !== '') {
+                    if (password.value !== confirmPassword.value) {
+                        showError(confirmPassword, confirmPasswordError, 'Passwords do not match');
+                    } else {
+                        hideError(confirmPassword, confirmPasswordError);
+                    }
+                }
+            });
+            
+            // Confirm password validation
+            confirmPassword.addEventListener('blur', function() {
+                if (confirmPassword.value.trim() === '') {
+                    showError(confirmPassword, confirmPasswordError, 'Please confirm your password');
+                } else if (password.value !== confirmPassword.value) {
+                    showError(confirmPassword, confirmPasswordError, 'Passwords do not match');
+                } else {
+                    hideError(confirmPassword, confirmPasswordError);
+                }
+            });
+            
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                let isValid = true;
+                
+                // Validate username
+                if (username.value.trim() === '') {
+                    showError(username, nameError, 'Name is required');
+                    isValid = false;
+                } else if (username.value.trim().length < 3) {
+                    showError(username, nameError, 'Name must be at least 3 characters');
+                    isValid = false;
+                } else {
+                    hideError(username, nameError);
+                }
+                
+                // Validate email
+                if (email.value.trim() === '') {
+                    showError(email, emailError, 'Email is required');
+                    isValid = false;
+                } else if (!isValidEmail(email.value)) {
+                    showError(email, emailError, 'Please enter a valid email address');
+                    isValid = false;
+                } else {
+                    hideError(email, emailError);
+                }
+                
+                // Validate phone number
+                if (number.value.trim() === '') {
+                    showError(number, numberError, 'Phone number is required');
+                    isValid = false;
+                } else if (!isValidPhoneNumber(number.value)) {
+                    showError(number, numberError, 'Please enter a valid 10 digit phone number');
+                    isValid = false;
+                } else {
+                    hideError(number, numberError);
+                }
+                
+                // Validate password
+                if (password.value.trim() === '') {
+                    showError(password, passwordError, 'Password is required');
+                    isValid = false;
+                } else if (password.value.length < 6) {
+                    showError(password, passwordError, 'Password must be at least 6 characters');
+                    isValid = false;
+                } else {
+                    hideError(password, passwordError);
+                }
+                
+                // Validate confirm password
+                if (confirmPassword.value.trim() === '') {
+                    showError(confirmPassword, confirmPasswordError, 'Please confirm your password');
+                    isValid = false;
+                } else if (password.value !== confirmPassword.value) {
+                    showError(confirmPassword, confirmPasswordError, 'Passwords do not match');
+                    isValid = false;
+                } else {
+                    hideError(confirmPassword, confirmPasswordError);
+                }
+                
+                // Prevent form submission if validation fails
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            });
+            
+            // Clear errors when inputs change
+            username.addEventListener('input', function() {
+                hideError(username, nameError);
+            });
+            
+            email.addEventListener('input', function() {
+                hideError(email, emailError);
+            });
+            
+            number.addEventListener('input', function() {
+                hideError(number, numberError);
+            });
+            
+            password.addEventListener('input', function() {
+                hideError(password, passwordError);
+                
+                // Also check confirm password match if it has a value
+                if (confirmPassword.value.trim() !== '') {
+                    if (password.value !== confirmPassword.value) {
+                        showError(confirmPassword, confirmPasswordError, 'Passwords do not match');
+                    } else {
+                        hideError(confirmPassword, confirmPasswordError);
+                    }
+                }
+            });
+            
+            confirmPassword.addEventListener('input', function() {
+                if (password.value !== confirmPassword.value) {
+                    showError(confirmPassword, confirmPasswordError, 'Passwords do not match');
+                } else {
+                    hideError(confirmPassword, confirmPasswordError);
+                }
+            });
+        });
+    </script>
 </body>
 </html>

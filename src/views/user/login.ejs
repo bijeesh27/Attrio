@@ -61,7 +61,7 @@
             height: 50px;
             border-radius: 8px;
             box-shadow: none;
-            margin-bottom: 25px;
+            margin-bottom: 5px;
             padding-left: 20px;
             border: 1px solid #e8e8e8;
             transition: all 0.3s;
@@ -81,6 +81,7 @@
             border-radius: 8px;
             font-weight: 500;
             margin-bottom: 20px;
+            margin-top: 10px;
             transition: all 0.3s;
         }
         
@@ -163,6 +164,33 @@
             color: #6c757d;
             font-size: 14px;
         }
+        
+        .error-text {
+            color: #dc3545;
+            font-size: 12px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .is-invalid {
+            border-color: #dc3545 !important;
+        }
+        
+        .alert {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
     </style>
 </head>
 <body>
@@ -173,6 +201,14 @@
                     <div class="login-content">
                         <h2>Welcome Back</h2>
                         
+                        <% if (locals.errors && errors.length > 0) { %>
+                            <div class="alert alert-danger">
+                                <% errors.forEach(error => { %>
+                                    <div><%= error %></div>
+                                <% }) %>
+                            </div>
+                        <% } %>
+                        
                         <a href="/auth/google" class="google-btn">
                             <span class="google-icon"><i class="fab fa-google"></i></span>
                             <span>Continue with Google</span>
@@ -182,13 +218,15 @@
                             <span>OR</span>
                         </div>
                         
-                        <form class="login-form" action="#" method="post">
+                        <form id="loginForm" class="login-form" action="/login" method="post" novalidate>
                             <div class="form-group">
-                                <input type="email" class="form-control" placeholder="Enter your email Address" name="email">
+                                <input type="email" class="form-control" id="email" placeholder="Enter your email Address" name="email" value="<%= locals.input ? input.email : '' %>">
+                                <small id="emailError" class="error-text">Please enter a valid email address</small>
                             </div>
                             
                             <div class="form-group">
-                                <input type="password" class="form-control" placeholder="Enter your password" name="password">
+                                <input type="password" class="form-control" id="password" placeholder="Enter your password" name="password">
+                                <small id="passwordError" class="error-text">Password is required</small>
                             </div>
                             
                             <button type="submit" class="default-btn">Login</button>
@@ -203,5 +241,92 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('loginForm');
+            const email = document.getElementById('email');
+            const password = document.getElementById('password');
+            const emailError = document.getElementById('emailError');
+            const passwordError = document.getElementById('passwordError');
+            
+            // Function to validate email
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+            
+            // Function to show error
+            function showError(input, errorElement, message) {
+                input.classList.add('is-invalid');
+                errorElement.style.display = 'block';
+                errorElement.textContent = message;
+            }
+            
+            // Function to hide error
+            function hideError(input, errorElement) {
+                input.classList.remove('is-invalid');
+                errorElement.style.display = 'none';
+            }
+            
+            // Email input validation on blur
+            email.addEventListener('blur', function() {
+                if (email.value.trim() === '') {
+                    showError(email, emailError, 'Email is required');
+                } else if (!isValidEmail(email.value)) {
+                    showError(email, emailError, 'Please enter a valid email address');
+                } else {
+                    hideError(email, emailError);
+                }
+            });
+            
+            // Password input validation on blur
+            password.addEventListener('blur', function() {
+                if (password.value.trim() === '') {
+                    showError(password, passwordError, 'Password is required');
+                } else {
+                    hideError(password, passwordError);
+                }
+            });
+            
+            // Form submission validation
+            form.addEventListener('submit', function(e) {
+                let isValid = true;
+                
+                // Validate email
+                if (email.value.trim() === '') {
+                    showError(email, emailError, 'Email is required');
+                    isValid = false;
+                } else if (!isValidEmail(email.value)) {
+                    showError(email, emailError, 'Please enter a valid email address');
+                    isValid = false;
+                } else {
+                    hideError(email, emailError);
+                }
+                
+                // Validate password
+                if (password.value.trim() === '') {
+                    showError(password, passwordError, 'Password is required');
+                    isValid = false;
+                } else {
+                    hideError(password, passwordError);
+                }
+                
+                // Prevent form submission if validation fails
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            });
+            
+            // Clear errors when inputs change
+            email.addEventListener('input', function() {
+                hideError(email, emailError);
+            });
+            
+            password.addEventListener('input', function() {
+                hideError(password, passwordError);
+            });
+        });
+    </script>
 </body>
 </html>

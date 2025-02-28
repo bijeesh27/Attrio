@@ -50,7 +50,7 @@
                         id="name"
                         name="name"
                         placeholder="Enter product name"
-                        required
+                        
                       />
                     </div>
                     <div class="mb-3">
@@ -59,7 +59,7 @@
                         class="form-select"
                         id="category"
                         name="category"
-                        required
+                        
                       >
                         <option value="">Select category</option>
                         <% categories.forEach(category => { %>
@@ -77,7 +77,7 @@
                         id="price"
                         name="price"
                         placeholder="Enter price"
-                        required
+                        
                       />
                     </div>
                   </div>
@@ -93,7 +93,7 @@
                         name="description"
                         rows="3"
                         placeholder="Enter product description"
-                        required
+                        
                       ></textarea>
                     </div>
                   
@@ -161,7 +161,7 @@
                         name="images"
                         multiple
                         accept="image/*"
-                        required
+                        
                       />
                       <small class="form-text text-muted"
                         >You can upload up to 3 images.</small
@@ -243,4 +243,237 @@
         reader.readAsDataURL(file);
       }
     });
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form[action="/admin/add-product"]');
+    
+    // Get all input elements
+    const name = document.getElementById('name');
+    const category = document.getElementById('category');
+    const price = document.getElementById('price');
+    const description = document.getElementById('description');
+    const imageUpload = document.getElementById('image-upload');
+    const sizeS = document.querySelector('input[name="s"]');
+    const sizeM = document.querySelector('input[name="m"]');
+    const sizeL = document.querySelector('input[name="l"]');
+    const sizeXL = document.querySelector('input[name="xl"]');
+    
+    // Create error elements
+    function createErrorElement(inputId) {
+        const errorElement = document.createElement('div');
+        errorElement.className = 'invalid-feedback';
+        errorElement.id = inputId + 'Error';
+        
+        // Insert error element after the input
+        const input = document.getElementById(inputId);
+        input.parentNode.insertBefore(errorElement, input.nextSibling);
+        
+        return errorElement;
+    }
+    
+    // Create error elements for all fields
+    const nameError = createErrorElement('name');
+    const categoryError = createErrorElement('category');
+    const priceError = createErrorElement('price');
+    const descriptionError = createErrorElement('description');
+    
+    // Create error for image upload
+    const imageError = document.createElement('div');
+    imageError.className = 'invalid-feedback';
+    imageError.id = 'imageError';
+    imageUpload.parentNode.insertBefore(imageError, imageUpload.nextSibling);
+    
+    // Create error for sizes
+    const sizeError = document.createElement('div');
+    sizeError.className = 'invalid-feedback d-block mt-2';
+    sizeError.id = 'sizeError';
+    sizeError.style.display = 'none';
+    document.getElementById('stock-container').appendChild(sizeError);
+    
+    // Function to show error
+    function showError(input, errorElement, message) {
+        input.classList.add('is-invalid');
+        input.classList.remove('is-valid');
+        errorElement.style.display = 'block';
+        errorElement.textContent = message;
+    }
+    
+    // Function to hide error
+    function hideError(input, errorElement) {
+        input.classList.remove('is-invalid');
+        input.classList.add('is-valid');
+        errorElement.style.display = 'none';
+    }
+    
+    // Name validation
+    name.addEventListener('blur', function() {
+        if (name.value.trim() === '') {
+            showError(name, nameError, 'Product name is required');
+        } else if (name.value.trim().length < 3) {
+            showError(name, nameError, 'Product name must be at least 3 characters');
+        } else {
+            hideError(name, nameError);
+        }
+    });
+    
+    // Category validation
+    category.addEventListener('blur', function() {
+        if (category.value === '') {
+            showError(category, categoryError, 'Please select a category');
+        } else {
+            hideError(category, categoryError);
+        }
+    });
+    
+    // Price validation
+    price.addEventListener('blur', function() {
+        if (price.value.trim() === '') {
+            showError(price, priceError, 'Price is required');
+        } else if (isNaN(price.value) || Number(price.value) <= 0) {
+            showError(price, priceError, 'Please enter a valid price greater than 0');
+        } else {
+            hideError(price, priceError);
+        }
+    });
+    
+    // Description validation
+    description.addEventListener('blur', function() {
+        if (description.value.trim() === '') {
+            showError(description, descriptionError, 'Description is required');
+        } else if (description.value.trim().length < 20) {
+            showError(description, descriptionError, 'Description must be at least 20 characters long');
+        } else {
+            hideError(description, descriptionError);
+        }
+    });
+    
+    // Image validation
+    imageUpload.addEventListener('change', function() {
+        const files = imageUpload.files;
+        
+        if (files.length === 0) {
+            showError(imageUpload, imageError, 'Please select at least one image');
+        } else if (files.length > 3) {
+            showError(imageUpload, imageError, 'You can only upload up to 3 images');
+        } else {
+            hideError(imageUpload, imageError);
+        }
+    });
+    
+    // Validate at least one size has stock
+    function validateSizes() {
+        if (
+            (sizeS.value === '' )&&
+            (sizeM.value === '' )&&
+            (sizeL.value === '' ) &&
+            (sizeXL.value === '' )
+        ) {
+            sizeError.style.display = 'block';
+            sizeError.textContent = 'Add the stock quantity';
+            return false;
+        } else {
+            sizeError.style.display = 'none';
+            return true;
+        }
+    }
+    
+    // Size input event listeners
+    sizeS.addEventListener('input', validateSizes);
+    sizeM.addEventListener('input', validateSizes);
+    sizeL.addEventListener('input', validateSizes);
+    sizeXL.addEventListener('input', validateSizes);
+    
+    // Clear errors when inputs change
+    name.addEventListener('input', function() {
+        if (name.value.trim().length >= 3) {
+            hideError(name, nameError);
+        }
+    });
+    
+    category.addEventListener('input', function() {
+        if (category.value !== '') {
+            hideError(category, categoryError);
+        }
+    });
+    
+    price.addEventListener('input', function() {
+        if (!isNaN(price.value) && Number(price.value) > 0) {
+            hideError(price, priceError);
+        }
+    });
+    
+    description.addEventListener('input', function() {
+        if (description.value.trim().length >= 20) {
+            hideError(description, descriptionError);
+        }
+    });
+    
+    // Form submission validation
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        // Validate name
+        if (name.value.trim() === '') {
+            showError(name, nameError, 'Product name is required');
+            isValid = false;
+        } else if (name.value.trim().length < 3) {
+            showError(name, nameError, 'Product name must be at least 3 characters');
+            isValid = false;
+        } else {
+            hideError(name, nameError);
+        }
+        
+        // Validate category
+        if (category.value === '') {
+            showError(category, categoryError, 'Please select a category');
+            isValid = false;
+        } else {
+            hideError(category, categoryError);
+        }
+        
+        // Validate price
+        if (price.value.trim() === '') {
+            showError(price, priceError, 'Price is required');
+            isValid = false;
+        } else if (isNaN(price.value) || Number(price.value) <= 0) {
+            showError(price, priceError, 'Please enter a valid price greater than 0');
+            isValid = false;
+        } else {
+            hideError(price, priceError);
+        }
+        
+        // Validate description
+        if (description.value.trim() === '') {
+            showError(description, descriptionError, 'Description is required');
+            isValid = false;
+        } else if (description.value.trim().length < 20) {
+            showError(description, descriptionError, 'Description must be at least 20 characters long');
+            isValid = false;
+        } else {
+            hideError(description, descriptionError);
+        }
+        
+        // Validate images
+        const files = imageUpload.files;
+        if (files.length === 0) {
+            showError(imageUpload, imageError, 'Please select at least one image');
+            isValid = false;
+        } else if (files.length > 3) {
+            showError(imageUpload, imageError, 'You can only upload up to 3 images');
+            isValid = false;
+        } else {
+            hideError(imageUpload, imageError);
+        }
+        
+        // Validate sizes
+        if (!validateSizes()) {
+            isValid = false;
+        }
+        
+        // Prevent form submission if validation fails
+        if (!isValid) {
+            e.preventDefault();
+        }
+    });
+});
 </script>

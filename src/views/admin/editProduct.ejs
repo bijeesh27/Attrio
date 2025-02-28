@@ -67,7 +67,7 @@
                         <option value="<%= category._id %>">
                           <%= category.name %>
                         </option>
-                        <%})%>
+                        <% }) %>
                       </select>
                     </div>
                     <div class="mb-3">
@@ -96,9 +96,7 @@
                         rows="3"
                         placeholder="Enter product description"
                         required
-                      >
-<%= product.description %></textarea
-                      >
+                      ><%= product.description %></textarea>
                     </div>
                   </div>
                 </div>
@@ -110,13 +108,23 @@
                       <label class="form-label">Size & Quantity</label>
                       <div id="stock-container">
                         <div class="row g-2 mb-2">
-                          <% // Find stock quantities by size const sizes =
-                          ['S', 'M', 'L', 'XL']; const stockMap = {}; //
-                          Initialize with 0 sizes.forEach(size => {
-                          stockMap[size] = 0; }); // Fill with actual values if
-                          (product.stock && product.stock.length > 0) {
-                          product.stock.forEach(item => { stockMap[item.size] =
-                          item.quantity; }); } %>
+                          <% 
+                          // Find stock quantities by size 
+                          const sizes = ['S', 'M', 'L', 'XL'];
+                          const stockMap = {}; 
+                          
+                          // Initialize with 0
+                          sizes.forEach(size => {
+                            stockMap[size] = 0;
+                          }); 
+                          
+                          // Fill with actual values 
+                          if (product.stock && product.stock.length > 0) {
+                            product.stock.forEach(item => {
+                              stockMap[item.size] = item.quantity;
+                            });
+                          } 
+                          %>
 
                           <div class="col-md-2">
                             <label for="stock-S">S</label>
@@ -266,4 +274,250 @@
         reader.readAsDataURL(file);
       }
     });
+    document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form[action^="/admin/edit-product/"]');
+    
+    // Get all input elements
+    const name = document.getElementById('name');
+    const category = document.getElementById('category');
+    const price = document.getElementById('price');
+    const description = document.getElementById('description');
+    const imageUpload = document.getElementById('image-upload');
+    const stockS = document.getElementById('stock-S');
+    const stockM = document.getElementById('stock-M');
+    const stockL = document.getElementById('stock-L');
+    const stockXL = document.getElementById('stock-XL');
+    
+    // Create error elements
+    function createErrorElement(inputId) {
+        const errorElement = document.createElement('div');
+        errorElement.className = 'invalid-feedback';
+        errorElement.id = inputId + 'Error';
+        
+        // Insert error element after the input
+        const input = document.getElementById(inputId);
+        input.parentNode.insertBefore(errorElement, input.nextSibling);
+        
+        return errorElement;
+    }
+    
+    // Create error elements for all fields
+    const nameError = createErrorElement('name');
+    const categoryError = createErrorElement('category');
+    const priceError = createErrorElement('price');
+    const descriptionError = createErrorElement('description');
+    
+    // Create error for image upload
+    const imageError = document.createElement('div');
+    imageError.className = 'invalid-feedback';
+    imageError.id = 'imageError';
+    imageUpload.parentNode.insertBefore(imageError, imageUpload.nextSibling);
+    
+    // Create error for sizes
+    const sizeError = document.createElement('div');
+    sizeError.className = 'invalid-feedback d-block mt-2';
+    sizeError.id = 'sizeError';
+    sizeError.style.display = 'none';
+    document.getElementById('stock-container').appendChild(sizeError);
+    
+    // Function to show error
+    function showError(input, errorElement, message) {
+        input.classList.add('is-invalid');
+        input.classList.remove('is-valid');
+        errorElement.style.display = 'block';
+        errorElement.textContent = message;
+    }
+    
+    // Function to hide error
+    function hideError(input, errorElement) {
+        input.classList.remove('is-invalid');
+        input.classList.add('is-valid');
+        errorElement.style.display = 'none';
+    }
+    
+    // Name validation
+    name.addEventListener('blur', function() {
+        if (name.value.trim() === '') {
+            showError(name, nameError, 'Product name is required');
+        } else if (name.value.trim().length < 3) {
+            showError(name, nameError, 'Product name must be at least 3 characters');
+        } else {
+            hideError(name, nameError);
+        }
+    });
+    
+    // Category validation
+    category.addEventListener('blur', function() {
+        if (category.value === '') {
+            showError(category, categoryError, 'Please select a category');
+        } else {
+            hideError(category, categoryError);
+        }
+    });
+    
+    // Price validation
+    price.addEventListener('blur', function() {
+        if (price.value.trim() === '') {
+            showError(price, priceError, 'Price is required');
+        } else if (isNaN(price.value) || Number(price.value) <= 0) {
+            showError(price, priceError, 'Please enter a valid price greater than 0');
+        } else {
+            hideError(price, priceError);
+        }
+    });
+    
+    // Description validation
+    description.addEventListener('blur', function() {
+        if (description.value.trim() === '') {
+            showError(description, descriptionError, 'Description is required');
+        } else if (description.value.trim().length < 20) {
+            showError(description, descriptionError, 'Description must be at least 20 characters long');
+        } else {
+            hideError(description, descriptionError);
+        }
+    });
+    
+    // Image validation - for edit page, make it conditional if files are selected
+    imageUpload.addEventListener('change', function() {
+        const files = imageUpload.files;
+        
+        if (files.length > 3) {
+            showError(imageUpload, imageError, 'You can only upload up to 3 images');
+        } else {
+            hideError(imageUpload, imageError);
+        }
+    });
+    
+    // Validate at least one size has stock
+    function validateSizes() {
+        if (
+            (stockS.value === '' || Number(stockS.value) === 0) &&
+            (stockM.value === '' || Number(stockM.value) === 0) &&
+            (stockL.value === '' || Number(stockL.value) === 0) &&
+            (stockXL.value === '' || Number(stockXL.value) === 0)
+        ) {
+            sizeError.style.display = 'block';
+            sizeError.textContent = 'At least one size must have stock quantity';
+            return false;
+        } else {
+            sizeError.style.display = 'none';
+            return true;
+        }
+    }
+    
+    // Size input event listeners
+    stockS.addEventListener('input', validateSizes);
+    stockM.addEventListener('input', validateSizes);
+    stockL.addEventListener('input', validateSizes);
+    stockXL.addEventListener('input', validateSizes);
+    
+    // Clear errors when inputs change
+    name.addEventListener('input', function() {
+        if (name.value.trim().length >= 3) {
+            hideError(name, nameError);
+        }
+    });
+    
+    category.addEventListener('input', function() {
+        if (category.value !== '') {
+            hideError(category, categoryError);
+        }
+    });
+    
+    price.addEventListener('input', function() {
+        if (!isNaN(price.value) && Number(price.value) > 0) {
+            hideError(price, priceError);
+        }
+    });
+    
+    description.addEventListener('input', function() {
+        if (description.value.trim().length >= 20) {
+            hideError(description, descriptionError);
+        }
+    });
+    
+    // Form submission validation
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        // Validate name
+        if (name.value.trim() === '') {
+            showError(name, nameError, 'Product name is required');
+            isValid = false;
+        } else if (name.value.trim().length < 3) {
+            showError(name, nameError, 'Product name must be at least 3 characters');
+            isValid = false;
+        } else {
+            hideError(name, nameError);
+        }
+        
+        // Validate category
+        if (category.value === '') {
+            showError(category, categoryError, 'Please select a category');
+            isValid = false;
+        } else {
+            hideError(category, categoryError);
+        }
+        
+        // Validate price
+        if (price.value.trim() === '') {
+            showError(price, priceError, 'Price is required');
+            isValid = false;
+        } else if (isNaN(price.value) || Number(price.value) <= 0) {
+            showError(price, priceError, 'Please enter a valid price greater than 0');
+            isValid = false;
+        } else {
+            hideError(price, priceError);
+        }
+        
+        // Validate description
+        if (description.value.trim() === '') {
+            showError(description, descriptionError, 'Description is required');
+            isValid = false;
+        } else if (description.value.trim().length < 20) {
+            showError(description, descriptionError, 'Description must be at least 20 characters long');
+            isValid = false;
+        } else {
+            hideError(description, descriptionError);
+        }
+        
+        // Validate images - only if new files are selected
+        const files = imageUpload.files;
+        if (files.length > 0 && files.length > 3) {
+            showError(imageUpload, imageError, 'You can only upload up to 3 images');
+            isValid = false;
+        }
+        
+        // Validate sizes
+        if (!validateSizes()) {
+            isValid = false;
+        }
+        
+        // Prevent form submission if validation fails
+        if (!isValid) {
+            e.preventDefault();
+        }
+    });
+    
+    // Pre-select the category if possible
+    try {
+        // Get the product category ID from a data attribute that we'll add to the form
+        if (form.dataset.categoryId) {
+            const categoryId = form.dataset.categoryId;
+            const options = category.querySelectorAll('option');
+            
+            for (let i = 0; i < options.length; i++) {
+                if (options[i].value === categoryId) {
+                    options[i].selected = true;
+                    break;
+                }
+            }
+        }
+    } catch (e) {
+        console.error("Could not pre-select category:", e);
+    }
+    
+    // Run initial validation for all fields
+    validateSizes();
+});
 </script>

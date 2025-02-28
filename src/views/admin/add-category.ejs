@@ -1,5 +1,5 @@
 <%- include('../partials/admin/header') %>
-<body data-sidebar="dark"></body>
+<body data-sidebar="dark">
 
 <div class="main-content">
     <div class="page-content">
@@ -29,20 +29,22 @@
                             <h4 class="card-title">Category Details</h4>
                             <p class="card-title-desc">Fill in the category information below</p>
 
-                            <form action="/admin/add-category" method="post">
+                            <form action="/admin/add-category" method="post" id="categoryForm">
                                 <!-- Basic Information -->
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="name" class="form-label">Category Name</label>
-                                            <input type="text" class="form-control" id="name" name="name" placeholder="Enter category name" required>
+                                            <input type="text" class="form-control" id="name" name="name" placeholder="Enter category name">
+                                            <div class="invalid-feedback" id="nameError" style="display: none;">Please enter a category name.</div>
                                         </div>
                                     </div>
 
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="description" class="form-label">Description</label>
-                                            <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter category description" required></textarea>
+                                            <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter category description" ></textarea>
+                                            <div class="invalid-feedback" id="descriptionError" style="display: none;">Please enter a category description.</div>
                                         </div>
                                     </div>
                                 </div>
@@ -50,10 +52,7 @@
                                 <!-- Form Actions -->
                                 <div class="d-flex gap-2">
                                     <button type="submit" class="btn btn-primary">Save Category</button>
-                                    <a href="/admin/categories">
-                                        <button type="button" class="btn btn-secondary">Cancel</button>
-                                    </a>
-                                    
+                                    <a href="/admin/categories" class="btn btn-secondary">Cancel</a>
                                 </div>
                             </form>
                         </div>
@@ -68,3 +67,96 @@
 
     <%- include('../partials/admin/footer') %>
 </div>
+
+<!-- Form Validation JS -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('categoryForm');
+        const name = document.getElementById('name');
+        const description = document.getElementById('description');
+        const nameError = document.getElementById('nameError');
+        const descriptionError = document.getElementById('descriptionError');
+        
+        // Function to show error
+        function showError(input, errorElement, message) {
+            input.classList.add('is-invalid');
+            errorElement.style.display = 'block';
+            errorElement.textContent = message;
+        }
+        
+        // Function to hide error
+        function hideError(input, errorElement) {
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
+            errorElement.style.display = 'none';
+        }
+        
+        // Name input validation on blur
+        name.addEventListener('blur', function() {
+            if (name.value.trim() === '') {
+                showError(name, nameError, 'Category name is required');
+            } else if (name.value.trim().length < 2) {
+                showError(name, nameError, 'Category name must be at least 2 characters');
+            } else {
+                hideError(name, nameError);
+            }
+        });
+        
+        // Description input validation on blur
+        description.addEventListener('blur', function() {
+            if (description.value.trim() === '') {
+                showError(description, descriptionError, 'Description is required');
+            } else if (description.value.trim().length < 10) {
+                showError(description, descriptionError, 'Description must be at least 10 characters long');
+            } else {
+                hideError(description, descriptionError);
+            }
+        });
+        
+        // Form submission validation
+        form.addEventListener('submit', function(e) {
+            let isValid = true;
+            
+            // Validate name
+            if (name.value.trim() === '') {
+                showError(name, nameError, 'Category name is required');
+                isValid = false;
+            } else if (name.value.trim().length < 2) {
+                showError(name, nameError, 'Category name must be at least 2 characters');
+                isValid = false;
+            } else {
+                hideError(name, nameError);
+            }
+            
+            // Validate description
+            if (description.value.trim() === '') {
+                showError(description, descriptionError, 'Description is required');
+                isValid = false;
+            } else if (description.value.trim().length < 10) {
+                showError(description, descriptionError, 'Description must be at least 10 characters long');
+                isValid = false;
+            } else {
+                hideError(description, descriptionError);
+            }
+            
+            // Prevent form submission if validation fails
+            if (!isValid) {
+                e.preventDefault();
+            }
+        });
+        
+        // Clear errors when inputs change
+        name.addEventListener('input', function() {
+            if (name.value.trim().length >= 2) {
+                hideError(name, nameError);
+            }
+        });
+        
+        description.addEventListener('input', function() {
+            if (description.value.trim().length >= 10) {
+                hideError(description, descriptionError);
+            }
+        });
+    });
+</script>
+</body>
