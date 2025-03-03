@@ -21,211 +21,13 @@
         <link rel="stylesheet" href="/user/assets/css/style.css">
         <link rel="stylesheet" href="/user/assets/css/dark.css">
         <link rel="stylesheet" href="/user/assets/css/responsive.css">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        
 
         <title>Attiro Fashions</title>
 
         <link rel="icon" type="image/png" href="/user/assets/img/favicon.png">
 
-        <!-- Loading Animation CSS -->
-        <style>
-            .loader-container {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(255, 255, 255, 0.8);
-                backdrop-filter: blur(8px);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: 1000;
-            }
-
-            .tie-loader {
-                position: relative;
-                width: 200px;
-                height: 200px;
-            }
-
-            .modern-tie {
-                position: absolute;
-                left: 50%;
-                top: 50%;
-                transform: translate(-50%, -50%);
-                width: 60px;
-                height: 140px;
-                z-index: 2;
-            }
-
-            .circular-loader {
-                position: absolute;
-                width: 180px;
-                height: 180px;
-                left: 50%;
-                top: 50%;
-                transform: translate(-50%, -50%);
-            }
-
-            .circle-group {
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                animation: groupRotate 3s infinite linear;
-            }
-
-            .orbital-circle {
-                position: absolute;
-                width: 20px;
-                height: 20px;
-                border-radius: 50%;
-                background: #2d3748;
-                opacity: 0.2;
-            }
-
-            .orbital-circle:nth-child(1) {
-                top: 0;
-                left: 50%;
-                transform: translateX(-50%);
-                animation: pulseSize 1s infinite alternate;
-            }
-
-            .orbital-circle:nth-child(2) {
-                top: 50%;
-                right: 0;
-                transform: translateY(-50%);
-                animation: pulseSize 1s infinite alternate 0.2s;
-            }
-
-            .orbital-circle:nth-child(3) {
-                bottom: 0;
-                left: 50%;
-                transform: translateX(-50%);
-                animation: pulseSize 1s infinite alternate 0.4s;
-            }
-
-            .orbital-circle:nth-child(4) {
-                top: 50%;
-                left: 0;
-                transform: translateY(-50%);
-                animation: pulseSize 1s infinite alternate 0.6s;
-            }
-
-            .dotted-circle {
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                border: 2px dashed #2d3748;
-                border-radius: 50%;
-                opacity: 0.3;
-                animation: rotateReverse 8s infinite linear;
-            }
-
-            .progress-ring {
-                position: absolute;
-                width: 90%;
-                height: 90%;
-                top: 5%;
-                left: 5%;
-                border: 3px solid transparent;
-                border-top-color: #2d3748;
-                border-left-color: #2d3748;
-                border-radius: 50%;
-                animation: rotate 2s infinite ease-in-out;
-            }
-
-            @keyframes groupRotate {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-
-            @keyframes rotateReverse {
-                0% { transform: rotate(360deg); }
-                100% { transform: rotate(0deg); }
-            }
-
-            @keyframes pulseSize {
-                0% { transform: scale(0.8); opacity: 0.1; }
-                100% { transform: scale(1.2); opacity: 0.3; }
-            }
-
-            @keyframes rotate {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-
-            .tie-top {
-                position: absolute;
-                top: 0;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 40px;
-                height: 20px;
-                background: #2d3748;
-                border-radius: 4px;
-                animation: topPulse 1s infinite;
-            }
-
-            .tie-knot {
-                position: absolute;
-                top: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 30px;
-                height: 30px;
-                background: #2d3748;
-                clip-path: polygon(0 0, 100% 0, 50% 100%);
-                animation: knotRotate 2s infinite ease-in-out;
-            }
-
-            .tie-body {
-                position: absolute;
-                top: 45px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 60px;
-                height: 95px;
-                background: #2d3748;
-                clip-path: polygon(20% 0, 80% 0, 100% 30%, 100% 100%, 50% 85%, 0 100%, 0 30%);
-                animation: bodyWave 1.5s infinite ease-in-out;
-            }
-
-            .brand-text {
-                position: absolute;
-                width: 100%;
-                text-align: center;
-                bottom: -40px;
-                color: #2d3748;
-                font-family: 'Arial', sans-serif;
-                font-size: 24px;
-                font-weight: bold;
-                letter-spacing: 8px;
-                opacity: 0.9;
-                text-transform: uppercase;
-                animation: textFade 2s infinite;
-            }
-
-            @keyframes topPulse {
-                0%, 100% { transform: translateX(-50%) scaleX(1); }
-                50% { transform: translateX(-50%) scaleX(1.2); }
-            }
-
-            @keyframes knotRotate {
-                0%, 100% { transform: translateX(-50%) rotate(0deg); }
-                50% { transform: translateX(-50%) rotate(10deg); }
-            }
-
-            @keyframes bodyWave {
-                0%, 100% { transform: translateX(-50%) skewX(0deg); }
-                25% { transform: translateX(-50%) skewX(3deg); }
-                75% { transform: translateX(-50%) skewX(-3deg); }
-            }
-
-            @keyframes textFade {
-                0%, 100% { opacity: 0.9; }
-                50% { opacity: 0.5; }
-            }
-        </style>
     </head>
     <body>
         <!-- Loading Animation -->
@@ -289,7 +91,7 @@
 
                     <div class="col-lg-4 col-md-12">
                         <div class="top-header-discount-info">
-                            <p><strong> Explore </strong>  Our collections! <a href="/shop"> Shop Now! </a></p>
+                            <!-- <p><strong> Explore </strong>  Our collections! <a href="/shop"> Shop Now! </a></p> -->
                         </div>
                     </div>
 
@@ -328,7 +130,7 @@
                 <div class="container">
                     <div class="xton-responsive-menu">
                         <div class="logo">
-                            <a href="index.html">
+                            <a href="/">
                                 <img src="/user/assets/img/logo.png" class="main-logo" alt="logo">
                                 <img src="/user/assets/img/white-logo.png" class="white-logo" alt="logo">
                             </a>
@@ -340,7 +142,7 @@
             <div class="xton-nav">
                 <div class="container-fluid">
                     <nav class="navbar navbar-expand-md navbar-light">
-                        <a class="navbar-brand" href="index.html">
+                        <a class="navbar-brand" href="/">
                             <img src="/user/assets/img/logo.png" class="main-logo" alt="logo">
                             <img src="/user/assets/img/white-logo.png" class="white-logo" alt="logo">
                         </a>
@@ -350,7 +152,7 @@
                                 <li class="nav-item"><a href="/" class="nav-link active">Home </a></li>
                                 <li class="nav-item megamenu"><a href="/shop" class="nav-link">Shop</i></a></li>
                                 <li class="nav-item megamenu"><a href="/about" class="nav-link">About </a>
-                                <li class="nav-item megamenu"><a href="#" class="nav-link">Contact us </a>
+                                <li class="nav-item megamenu"><a href="/contact" class="nav-link">Contact us </a>
                             </ul>
 
                             <div class="others-option">
@@ -368,15 +170,6 @@
                                         </div>
                                     </div>
                                 <% } %>
-
-
-                                <!-- <div class="option-item">
-                                    <div class="burger-menu" data-bs-toggle="modal" data-bs-target="#sidebarModal">
-                                        <span class="top-bar"></span>
-                                        <span class="middle-bar"></span>
-                                        <span class="bottom-bar"></span>
-                                    </div>
-                                </div> -->
                             </div>
                         </div>
                     </nav>
@@ -398,8 +191,8 @@
                             <ul class="navbar-nav">
                                 <li class="nav-item"><a href="/" class="nav-link active">Home </a></li>
                                 <li class="nav-item megamenu"><a href="/shop" class="nav-link">Shop</i></a></li>
-                                <li class="nav-item megamenu"><a href="/productPage" class="nav-link">New Arrivals</a></li>
                                 <li class="nav-item megamenu"><a href="/about" class="nav-link">About</a></li>
+                                <li class="nav-item megamenu"><a href="/contac" class="nav-link">Contact us</a></li>
                             </ul>
 
                             <div class="others-option">
@@ -418,14 +211,6 @@
                                         </div>
                                     </div>
                                 <% } %>
-
-                                <!-- <div class="option-item">
-                                    <div class="burger-menu" data-bs-toggle="modal" data-bs-target="#sidebarModal">
-                                        <span class="top-bar"></span>
-                                        <span class="middle-bar"></span>
-                                        <span class="bottom-bar"></span>
-                                    </div>
-                                </div> -->
                             </div>
                         </div>
                     </nav>
@@ -435,6 +220,33 @@
 
         <!-- Loading Animation JavaScript -->
         <script>
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Get all nav links
+  const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+  
+  // Set active class based on current URL when page loads
+  const currentPath = window.location.pathname;
+  navLinks.forEach(link => {
+    if (link.getAttribute('href') === currentPath) {
+      link.classList.add('active');
+    } else {
+      link.classList.remove('active');
+    }
+  });
+  
+  // Add click event listeners to each link
+  navLinks.forEach(link => {
+    link.addEventListener('click', function() {
+      // Remove active class from all links
+      navLinks.forEach(l => l.classList.remove('active'));
+      
+      // Add active class to clicked link
+      this.classList.add('active');
+    });
+  });
+});
+
             function showLoader() {
                 document.getElementById('attiroLoader').style.display = 'flex';
             }

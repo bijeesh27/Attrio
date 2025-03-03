@@ -99,7 +99,10 @@
           <ul class="products-info">
             <li>
               <span>Availability:</span>
-              <a href="#">In stock (<%= product.totalstock %>item)</a>
+              <a href="#">
+                <% if (product.totalstock == 0) { %> Out Of Stock <% } else { %>
+                item <%= product.totalstock %> Available <% } %>
+              </a>
             </li>
           </ul>
 
@@ -108,10 +111,9 @@
 
             <ul>
               <li><a href="#">XS</a></li>
-              <li class="active"><a href="#">S</a></li>
+              <li><a href="#">S</a></li>
               <li><a href="#">M</a></li>
               <li><a href="#">XL</a></li>
-              <li><a href="#">XXL</a></li>
             </ul>
           </div>
 

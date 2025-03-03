@@ -52,7 +52,9 @@ const loadShopSingle = async (req, res) => {
   try {
     const productId = req.params.productId;
     const product = await Product.findOne({ _id: productId });
-    const allProducts = await Product.find();
+    const categoryId=product.category
+    console.log("categoryIddd:",categoryId);
+    const allProducts = await Product.find({category:categoryId});
     console.log(product);
     res.render("single-product", { product, allProducts });
   } catch (error) {

@@ -11,6 +11,7 @@ const userSchema = new Schema(
       type: String,
       required: true,
       unique: true,
+      saprse:true,default:null
     },
     number: {
       type: String,

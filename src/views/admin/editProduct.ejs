@@ -391,10 +391,10 @@
     // Validate at least one size has stock
     function validateSizes() {
         if (
-            (stockS.value === '' || Number(stockS.value) === 0) &&
-            (stockM.value === '' || Number(stockM.value) === 0) &&
-            (stockL.value === '' || Number(stockL.value) === 0) &&
-            (stockXL.value === '' || Number(stockXL.value) === 0)
+            (stockS.value === '' ) &&
+            (stockM.value === '' ) &&
+            (stockL.value === '' ) &&
+            (stockXL.value === '')
         ) {
             sizeError.style.display = 'block';
             sizeError.textContent = 'At least one size must have stock quantity';

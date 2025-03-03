@@ -5,26 +5,32 @@ const dotenv = require("dotenv");
 dotenv.config();
 const Category = require("../../models/categorySchema");
 const nodemailer = require("nodemailer");
+const passport = require("passport");
+
 
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
+      req.flash('error_msg', 'Invalid email or password');
       return res.redirect("/login");
     }
     let isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
+      req.flash('error_msg', 'Invalid password.');
       return res.redirect("/login");
     }
 
     if (!user.status) {
+      req.flash('error_msg', 'Your account has been blocked. Please contact support.');
       return res.redirect("/login");
     }
-
+    
     req.session.isAuth = true;
     req.session.email = user.email;
     req.session.userId = user._id.toString();
+    req.flash('success_msg','successfully loggined')
     return res.redirect("/");
   } catch (error) {
     console.log("error occured while login time", error);
@@ -67,10 +73,10 @@ let sendVerificationEmail = async (email, otp) => {
 const register = async (req, res) => {
   try {
     console.log("req.body:", req.body);
-    const { username, email, number, password, confirmPassword } =
-      req.body;
+    const { username, email, number, password, confirmPassword } = req.body;
     const user = await User.findOne({ email });
     if (user) {
+      req.flash('error_msg','User Already Exist')
       return res.redirect("/register");
     }
 
@@ -90,6 +96,7 @@ const register = async (req, res) => {
     req.session.userOtp = otp;
     req.session.userData = { username, email, number, password };
     console.log("otp:", otp);
+    req.flash('success_msg','OTP sent')
     return res.redirect("/otp");
   } catch (error) {
     console.log("error occured while registering new user", error);
@@ -126,14 +133,44 @@ const verifyOtp = async (req, res) => {
       req.session.isAuth = true;
       req.session.userId = newUser._id;
       req.session.email = newUser.email;
+      req.flash('success_msg','Registerd Successfully')
       res.redirect("/");
     } else {
+      req.flash('error_msg','invalid OTP')
       res.redirect("/otp");
     }
   } catch (error) {
     console.error("Error in OTP verification:", error);
     return res.json({ success: false, message: "Verification failed" });
   }
+};
+
+const resendOtp=async (req,res) => {
+  try {
+    const newOtp=generateOtp();
+    console.log(newOtp);
+    req.session.userOtp=newOtp
+    const email=req.session.email
+    await sendVerificationEmail(email, newOtp)
+    req.flash('success_msg', 'OTP has been sent again successfully');
+    res.redirect('/otp')
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const googleSignIn = passport.authenticate("google", {
+  scope: ["email", "profile"],
+});
+
+const googleCallback = passport.authenticate("google", {
+  successRedirect: "/",
+  failureRedirect: "/authfailure",
+});
+
+const authfailure = (req, res) => {
+  res.send("something wrong while authenticating....");
 };
 
 const forgot = async (req, res) => {
@@ -161,7 +198,7 @@ const loadHome = async (req, res) => {
       .sort({ createdAt: -1 })
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(limit)
+      .limit(limit);
     // If you need category details
     res.render("home", {
       product,
@@ -208,7 +245,7 @@ const loadForgot = async (req, res) => {
 
 const loadOtp = async (req, res) => {
   try {
-    return res.render("otp",{email:req.session.userData.email});
+    return res.render("otp", { email: req.session.userData.email });
   } catch (error) {
     console.log("error rendering otp page", error);
   }
@@ -224,6 +261,7 @@ const loadProfile = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
+    req.flash('success_msg', 'Successfully logged out.');
     req.session.destroy();
     res.redirect("/login");
   } catch (error) {
@@ -232,6 +270,24 @@ const logout = async (req, res) => {
 };
 
 
+
+
+const loadAbout=async (req,res) => {
+  try {
+    return res.render('about')
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+const loadContact=async (req,res) => {
+  try {
+    return res.render('contact')
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 module.exports = {
   loadHome,
@@ -246,4 +302,10 @@ module.exports = {
   loadProfile,
   logout,
   verifyOtp,
+  googleSignIn,
+  googleCallback,
+  authfailure,
+  loadAbout,
+  loadContact,
+  resendOtp
 };

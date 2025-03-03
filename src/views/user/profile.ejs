@@ -1,17 +1,82 @@
 <%- include('../partials/user/header') %>
 
 <body>
-    <!-- Account Menu -->
-    <div class="account-tabs-menu">
-        <ul>
-            <li><a href="index.html" class="active"><i class='bx bxs-dashboard'></i> Dashboard</a></li>
-            <li><a href="orders.html"><i class='bx bxs-shopping-bag'></i> Orders</a></li>
-            <li><a href="addresses.html"><i class='bx bxs-map'></i> Addresses</a></li>
-            <li><a href="account-details.html"><i class='bx bxs-user-detail'></i> Account Details</a></li>
-            <li><a href="/logout"><i class='bx bx-log-out'></i> Logout</a></li>
-        </ul>
-    </div>
+  <style>
+    .logout-button {
+      background-color: #f53f85; /* Red background */
+      color: white;
+      border: none;
+      border-radius: 50px; /* Makes it round */
+      padding: 10px 20px;
+      text-align: center;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
 
-    
+    .logout-button i {
+      margin-right: 8px;
+      font-size: 16px;
+    }
+
+    .logout-button:hover {
+      background-color: #f53f85; /* Darker red on hover */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .logout-button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+  <!-- Account Menu -->
+  <div class="account-tabs-menu">
+    <ul>
+      <li>
+        <a href="index.html" class="active"
+          ><i class="bx bxs-dashboard"></i> Dashboard</a
+        >
+      </li>
+      <li>
+        <a href="orders.html"><i class="bx bxs-shopping-bag"></i> Orders</a>
+      </li>
+      <li>
+        <a href="addresses.html"><i class="bx bxs-map"></i> Addresses</a>
+      </li>
+      <li>
+        <a href="account-details.html"
+          ><i class="bx bxs-user-detail"></i> Account Details</a
+        >
+      </li>
+    </ul>
+    <br /><br /><br />
+    <button onclick="logout()" class="logout-button">
+      <i class="bx bx-log-out"></i> Logout
+    </button>
+  </div>
+
+  <script>
+    function logout() {
+      Swal.fire({
+        title: `Are you sure?`,
+        text: ` Do you want to continue to logout?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#000000",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Logout",
+        cancelButtonText: "Cancel",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "/logout";
+        }
+      });
+    }
+  </script>
 </body>
 <%- include('../partials/user/footer') %>
