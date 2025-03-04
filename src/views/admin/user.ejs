@@ -37,12 +37,13 @@
                 <div class="row mb-2">
                   <div class="col-sm-4">
                     <div class="search-box me-2 mb-2 d-inline-block">
-                      <div class="position-relative">
+                      <div class="table-controls">
                         <input
                           type="text"
                           class="form-control"
-                          id="searchTableList"
+                          id="searchUserInput"
                           placeholder="Search..."
+                          onkeyup="searchUser()"
                         />
                         <i class="bx bx-search-alt search-icon"></i>
                       </div>
@@ -55,7 +56,7 @@
                 </div>
                 <div class="table-responsive">
                   <table
-                    class="table align-middle table-nowrap dt-responsive nowrap w-100"
+                    class="user-table table align-middle table-nowrap dt-responsive nowrap w-100"
                     id="customerList-table"
                   >
                     <thead class="table-light">
@@ -148,6 +149,24 @@
         }).then((result) => {
           if (result.isConfirmed) {
             window.location.href = ` /admin/block/${userId}`;
+          }
+        });
+      }
+
+      function searchUser() {
+        console.log("searching use");
+        let input = document
+          .getElementById("searchUserInput")
+          .value.toLowerCase();
+        let rows = document.querySelectorAll(".user-table tbody tr");
+        rows.forEach((row) => {
+          let email = row
+            .querySelector("td:nth-child(2)")
+            .textContent.toLowerCase();
+          if (email.includes(input)) {
+            row.style.display = "";
+          } else {
+            row.style.display = "none";
           }
         });
       }

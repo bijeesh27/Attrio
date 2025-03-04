@@ -23,6 +23,7 @@ router.get("/catfilter/:categoryId", productController.findByCategory);
 router.get("/singleproduct/:productId", productController.singleProduct);
 router.get('/about',userController.loadAbout)
 router.get('/contact',userController.loadContact)
+router.get('/search',productController.searchProduct)
 
 
 // Private Routes (accessible only if logged in)

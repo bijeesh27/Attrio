@@ -73,7 +73,16 @@
         </div>
       </div>
       <!-- End page title -->
-
+      <div class="text-sm-end">
+        <input
+          type="text"
+          class="form-control"
+          id="searchUserInput"
+          placeholder="Search..."
+          onkeyup="searchUser()"
+        />
+        <i class="bx bx-search-alt search-icon"></i>
+      </div>
       <div class="row">
         <div class="col-12">
           <div class="card">
@@ -97,7 +106,7 @@
               <!-- Categories Table -->
               <div class="table-responsive">
                 <table
-                  class="table align-middle table-nowrap dt-responsive nowrap w-100"
+                  class="user-table table align-middle table-nowrap dt-responsive nowrap w-100"
                   id="categoryList-table"
                 >
                   <thead class="table-light">
@@ -216,6 +225,24 @@
       }
     });
   }
+
+  function searchUser() {
+        console.log("searching use");
+        let input = document
+          .getElementById("searchUserInput")
+          .value.toLowerCase();
+        let rows = document.querySelectorAll(".user-table tbody tr");
+        rows.forEach((row) => {
+          let email = row
+            .querySelector("td:nth-child(2)")
+            .textContent.toLowerCase();
+          if (email.includes(input)) {
+            row.style.display = "";
+          } else {
+            row.style.display = "none";
+          }
+        });
+      }
 </script>
 
 <%- include('../partials/admin/footer') %>

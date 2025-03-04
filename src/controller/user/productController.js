@@ -1,6 +1,7 @@
-const { closeDelimiter } = require("ejs");
+const { closeDelimiter, name } = require("ejs");
 const Product = require("../../models/productSchema");
 const Category = require("../../models/categorySchema");
+const { options } = require("../../router/userRouter");
 
 const loadShop = async (req, res) => {
   try {
@@ -93,9 +94,60 @@ const findByCategory = async (req, res) => {
   } catch (error) {}
 };
 
+
+const searchProduct=async (req,res) => {
+  try {
+    console.log("req.query:",req.query);
+    const { query }=req.query
+    console.log(query);
+
+    const searchFilter={
+      status:true,
+      $or:[
+        {name:{$regex:query,$options:"i"}},
+        {description:{$regex:query, $options:"i"}}
+      ]
+    }
+
+    const product=await Product.find(searchFilter)
+    const category=await Category.find()
+
+          // Pagination
+          const page = parseInt(req.query.page) || 1;
+          const limit = 6;
+          const skip = (page - 1) * limit;
+    
+          // Count total search results
+          const totalProducts = await Product.countDocuments(searchFilter);
+          const totalPages = Math.ceil(totalProducts / limit);
+    
+          // Fetch products
+          const products = await Product.find(searchFilter)
+            .populate('category', 'name')
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
+    
+          res.render("products", {
+            products,
+            searchQuery: query,
+            currentPage: page,
+            totalPages,
+            totalProducts,
+            category
+          });
+    console.log(product);
+   
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
 module.exports = {
   loadShop,
   singleProduct,
   loadShopSingle,
   findByCategory,
+  searchProduct,
 };
