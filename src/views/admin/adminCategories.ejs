@@ -73,16 +73,19 @@
         </div>
       </div>
       <!-- End page title -->
-      <div class="text-sm-end">
-        <input
-          type="text"
-          class="form-control"
-          id="searchUserInput"
-          placeholder="Search..."
-          onkeyup="searchUser()"
-        />
-        <i class="bx bx-search-alt search-icon"></i>
-      </div>
+      <div>
+        <form action="/admin/categorysearch" method="GET">
+          <input
+            type="text"
+            class="form-control"
+            id="searchUserInput"
+            placeholder="Search by name..."
+            name="query"
+            value="<%= searchQuery %>"
+          />
+        </form>
+          <i class="bx bx-search-alt search-icon"></i>
+        </div>
       <div class="row">
         <div class="col-12">
           <div class="card">
@@ -119,6 +122,7 @@
                     </tr>
                   </thead>
                   <tbody>
+                    <% if (categories && categories.length > 0) { %>
                     <% categories.forEach((categories,index) => { %>
                     <tr>
                       <td><%= index+1 %></td>
@@ -142,6 +146,11 @@
                       </td>
                     </tr>
                     <% }) %>
+                    <% } else { %>
+                      <tr>
+                        <td colspan="6" class="text-center">No category found</td>
+                      </tr>
+                    <% } %>
                   </tbody>
                 </table>
               </div>
@@ -149,44 +158,25 @@
               <!-- Add this at the bottom of your categories table, before the end of card-body div -->
               <div class="row mt-4">
                 <div class="col-12">
-                  <nav aria-label="Category pagination">
-                    <ul
-                      class="pagination pagination-rounded justify-content-center"
-                    >
+                  <nav aria-label="User pagination">
+                    <ul class="pagination pagination-rounded justify-content-center">
                       <!-- Previous page button -->
-                      <li
-                        class="page-item <%= pagination.currentPage === 1 ? 'disabled' : '' %>"
-                      >
-                        <a
-                          class="page-link"
-                          href="/admin/categories?page=<%= pagination.currentPage - 1 %>"
-                          tabindex="-1"
-                        >
+                      <li class="page-item <%= pagination.currentPage === 1 ? 'disabled' : '' %>">
+                        <a class="page-link" href="/admin/categories=<%= pagination.currentPage - 1 %>&query=<%= searchQuery %>" tabindex="-1">
                           <i class="mdi mdi-chevron-left"></i>
                         </a>
                       </li>
-
+                      
                       <!-- Page numbers -->
                       <% pages.forEach(pageNum => { %>
-                      <li
-                        class="page-item <%= pagination.currentPage === pageNum ? 'active' : '' %>"
-                      >
-                        <a
-                          class="page-link"
-                          href="/admin/categories?page=<%= pageNum %>"
-                          ><%= pageNum %></a
-                        >
-                      </li>
+                        <li class="page-item <%= pagination.currentPage === pageNum ? 'active' : '' %>">
+                          <a class="page-link" href="/admin/categories?page=<%= pageNum %>&query=<%= searchQuery %>"><%= pageNum %></a>
+                        </li>
                       <% }) %>
-
+                      
                       <!-- Next page button -->
-                      <li
-                        class="page-item <%= pagination.currentPage === pagination.totalPages ? 'disabled' : '' %>"
-                      >
-                        <a
-                          class="page-link"
-                          href="/admin/categories?page=<%= pagination.currentPage + 1 %>"
-                        >
+                      <li class="page-item <%= pagination.currentPage === pagination.totalPages ? 'disabled' : '' %>">
+                        <a class="page-link" href="/admin/categories?page=<%= pagination.currentPage + 1 %>&query=<%= searchQuery %>">
                           <i class="mdi mdi-chevron-right"></i>
                         </a>
                       </li>

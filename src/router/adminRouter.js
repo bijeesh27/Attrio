@@ -26,6 +26,9 @@ router.get("/blockCategory/:categoryId",isAdmin,categoryController.blockCategory
 router.get("/editCategory/:categoryId",isAdmin,categoryController.loadEditCategory)
 router.post("/editCategory/:categoryId",isAdmin,categoryController.editCategory)
 router.get("/blockProduct/:productId",isAdmin,productController.blockProduct)
+router.get("/search",userController.loadUser)
+router.get("/productsearch",productController.loadProducts)
+router.get('/categorysearch',categoryController.loadCategories)
 router.get("/new-arrivals")
 router.get("/logout",adminController.logout)
 

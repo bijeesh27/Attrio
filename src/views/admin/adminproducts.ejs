@@ -9,13 +9,11 @@
     cursor: zoom-in;
   }
 
-  /* Image zoom container */
   .image-zoom-container {
     position: relative;
     display: inline-block;
   }
 
-  /* Zoomed image popup */
   .zoomed-image {
     display: none;
     position: absolute;
@@ -24,7 +22,7 @@
     padding: 5px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    box-shadow: 0 2px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
     left: 50%;
     transform: translateX(-50%);
   }
@@ -39,7 +37,6 @@
     display: block;
   }
 
-  /* Table styling */
   .table-container {
     width: 100%;
     margin: 0 auto;
@@ -51,7 +48,6 @@
     table-layout: auto;
   }
 
-  /* Description cell styling */
   .description-cell {
     position: relative;
     max-width: 200px;
@@ -61,7 +57,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    /* -webkit-line-clamp: 2; */
     -webkit-box-orient: vertical;
     line-height: 1.5;
   }
@@ -73,17 +68,12 @@
     border: 1px solid #ddd;
     padding: 10px;
     border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     width: 300px;
     left: 0;
   }
 
-  /* .description-cell:hover .description-expand {
-    display: block;
-  } */
-
-  /* Optimized column widths */
   #productList-table th,
   #productList-table td {
     padding: 8px;
@@ -94,18 +84,7 @@
     white-space: normal;
   }
 
-  /* Responsive design */
-  /* @media screen and (max-width: 1200px) {
-    .description-content {
-      -webkit-line-clamp: 1;
-    }
-    
-    #productList-table th,
-    #productList-table td {
-      padding: 6px;
-      font-size: 14px;
-    }
-  } */
+
 
   @media screen and (max-width: 992px) {
     .zoomed-image img {
@@ -126,11 +105,15 @@
         <!-- Start page title -->
         <div class="row">
           <div class="col-12">
-            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div
+              class="page-title-box d-sm-flex align-items-center justify-content-between"
+            >
               <h4 class="mb-sm-0 font-size-18">Products</h4>
               <div class="page-title-right">
                 <ol class="breadcrumb m-0">
-                  <li class="breadcrumb-item"><a href="javascript: void(0);">Ecommerce</a></li>
+                  <li class="breadcrumb-item">
+                    <a href="javascript: void(0);">Ecommerce</a>
+                  </li>
                   <li class="breadcrumb-item active">Products</li>
                 </ol>
               </div>
@@ -138,14 +121,17 @@
           </div>
         </div>
         <!-- End page title -->
-        <div class="text-sm-end">
+         <div>
+        <form action="/admin/productsearch" method="GET">
           <input
             type="text"
             class="form-control"
             id="searchUserInput"
-            placeholder="Search..."
-            onkeyup="searchUser()"
+            placeholder="Search by name..."
+            name="query"
+            value="<%= searchQuery %>"
           />
+        </form>
           <i class="bx bx-search-alt search-icon"></i>
         </div>
         <div class="row">
@@ -157,7 +143,10 @@
                   <div class="col-sm-12">
                     <div class="text-sm-end">
                       <a href="/admin/add-product">
-                        <button type="button" class="btn btn-success btn-rounded waves-effect waves-light mb-2 me-2">
+                        <button
+                          type="button"
+                          class="btn btn-success btn-rounded waves-effect waves-light mb-2 me-2"
+                        >
                           <i class="mdi mdi-plus me-1"></i> Add New Product
                         </button>
                       </a>
@@ -167,7 +156,10 @@
 
                 <!-- Products Table -->
                 <div class="table-container">
-                  <table class="user-table  table align-middle" id="productList-table">
+                  <table
+                    class="user-table table align-middle"
+                    id="productList-table"
+                  >
                     <thead class="table-light">
                       <tr>
                         <th>SL.No</th>
@@ -182,83 +174,94 @@
                       </tr>
                     </thead>
                     <tbody>
+                      <% if (products && products.length > 0) { %>
                       <% products.forEach((product, index) => { %>
-                        <tr>
-                          <td><%= index + 1 %></td>
-                          <td><%= product.name %></td>
-                          <td>
-                            <div class="image-zoom-container">
-                              <img src="/<%= product.image[0] %>" alt="<%= product.name %>" class="productImage">
-                              <div class="zoomed-image">
-                                <img src="/<%= product.image[0] %>" alt="<%= product.name %>">
-                              </div>
+                      <tr>
+                        <td><%= index + 1 %></td>
+                        <td><%= product.name %></td>
+                        <td>
+                          <div class="image-zoom-container">
+                            <img
+                              src="/<%= product.image[0] %>"
+                              alt="<%= product.name %>"
+                              class="productImage"
+                            />
+                            <div class="zoomed-image">
+                              <img
+                                src="/<%= product.image[0] %>"
+                                alt="<%= product.name %>"
+                              />
                             </div>
-                          </td>
-                          <td class="description-cell">
-                            <div class="description-content">
-                              <%= product.description %>
-                            </div>
-                            <div class="description-expand">
-                              <%= product.description %>
-                            </div>
-                          </td>
-                          <td><%= product.category.name %></td>
-                          <td>₹<%= product.price %></td>
-                          <td><%= product.totalstock %></td>
-                          <td><%= product.status ? "Active" : "Inactive" %></td>
-                          <td>
-                            <a href="/admin/edit-product/<%= product.id %>">
-                              <button
-                                
-                                class="btn btn-edit btn-success btn-sm waves-effect waves-light"
-                              >
-                                Edit
-                              </button>
-                            </a>
+                          </div>
+                        </td>
+                        <td class="description-cell">
+                          <div class="description-content">
+                            <%= product.description %>
+                          </div>
+                          <div class="description-expand">
+                            <%= product.description %>
+                          </div>
+                        </td>
+                        <td><%= product.category.name %></td>
+                        <td>₹<%= product.price %></td>
+                        <td><%= product.totalstock %></td>
+                        <td><%= product.status ? "Active" : "Inactive" %></td>
+                        <td>
+                          <a href="/admin/edit-product/<%= product.id %>">
                             <button
-                              onclick="confirmBlock('<%= product.id %>')"
-                              class="<%= product.status ? 'btn btn-danger btn-sm waves-effect waves-light' : 'btn btn-success btn-sm waves-effect waves-light' %>"
+                              class="btn btn-edit btn-success btn-sm waves-effect waves-light"
                             >
-                              <%= product.status ? "Block" : "Unblock" %>
+                              Edit
                             </button>
-                          </td>
-                        </tr>
+                          </a>
+                          <button
+                            onclick="confirmBlock('<%= product.id %>')"
+                            class="<%= product.status ? 'btn btn-danger btn-sm waves-effect waves-light' : 'btn btn-success btn-sm waves-effect waves-light' %>"
+                          >
+                            <%= product.status ? "Block" : "Unblock" %>
+                          </button>
+                        </td>
+                      </tr>
                       <% }) %>
+                      <% } else { %>
+                        <tr>
+                          <td colspan="6" class="text-center">No product found</td>
+                        </tr>
+                      <% } %>
                     </tbody>
                   </table>
                 </div>
                 <!-- End Table -->
 
                 <!-- Add this right after your table, before the end of card-body div -->
-<div class="row mt-4">
-  <div class="col-12">
-    <nav aria-label="Product pagination">
-      <ul class="pagination pagination-rounded justify-content-center">
-        <!-- Previous page button -->
-        <li class="page-item <%= pagination.currentPage === 1 ? 'disabled' : '' %>">
-          <a class="page-link" href="/admin/products?page=<%= pagination.currentPage - 1 %>" tabindex="-1">
-            <i class="mdi mdi-chevron-left"></i>
-          </a>
-        </li>
-        
-        <!-- Page numbers -->
-        <% pages.forEach(pageNum => { %>
-          <li class="page-item <%= pagination.currentPage === pageNum ? 'active' : '' %>">
-            <a class="page-link" href="/admin/products?page=<%= pageNum %>"><%= pageNum %></a>
-          </li>
-        <% }) %>
-        
-        <!-- Next page button -->
-        <li class="page-item <%= pagination.currentPage === pagination.totalPages ? 'disabled' : '' %>">
-          <a class="page-link" href="/admin/products?page=<%= pagination.currentPage + 1 %>">
-            <i class="mdi mdi-chevron-right"></i>
-          </a>
-        </li>
-      </ul>
-    </nav>
-  </div>
-</div>
-
+                <div class="row mt-4">
+                  <div class="col-12">
+                    <nav aria-label="User pagination">
+                      <ul class="pagination pagination-rounded justify-content-center">
+                        <!-- Previous page button -->
+                        <li class="page-item <%= pagination.currentPage === 1 ? 'disabled' : '' %>">
+                          <a class="page-link" href="/admin/products?page=<%= pagination.currentPage - 1 %>&query=<%= searchQuery %>" tabindex="-1">
+                            <i class="mdi mdi-chevron-left"></i>
+                          </a>
+                        </li>
+                        
+                        <!-- Page numbers -->
+                        <% pages.forEach(pageNum => { %>
+                          <li class="page-item <%= pagination.currentPage === pageNum ? 'active' : '' %>">
+                            <a class="page-link" href="/admin/products?page=<%= pageNum %>&query=<%= searchQuery %>"><%= pageNum %></a>
+                          </li>
+                        <% }) %>
+                        
+                        <!-- Next page button -->
+                        <li class="page-item <%= pagination.currentPage === pagination.totalPages ? 'disabled' : '' %>">
+                          <a class="page-link" href="/admin/products=<%= pagination.currentPage + 1 %>&query=<%= searchQuery %>">
+                            <i class="mdi mdi-chevron-right"></i>
+                          </a>
+                        </li>
+                      </ul>
+                    </nav>
+                  </div>
+                </div>
               </div>
               <!-- End Card Body -->
             </div>
@@ -292,25 +295,6 @@
       }
     });
   }
-
-  function searchUser() {
-        console.log("searching use");
-        let input = document
-          .getElementById("searchUserInput")
-          .value.toLowerCase();
-        let rows = document.querySelectorAll(".user-table tbody tr");
-        rows.forEach((row) => {
-          let email = row
-            .querySelector("td:nth-child(2)")
-            .textContent.toLowerCase();
-          if (email.includes(input)) {
-            row.style.display = "";
-          } else {
-            row.style.display = "none";
-          }
-        });
-      }
-</script>
 </script>
 
 <%- include('../partials/admin/footer') %>

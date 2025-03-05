@@ -4,21 +4,36 @@ const Category = require("../../models/categorySchema");
 
 const loadCategories = async (req, res) => {
   try {
+
+    const searchQuery = req.query.query || '';
+    console.log(searchQuery);
+  
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
 
     const skip = (page - 1) * limit;
 
-    const totalCategories = await Category.countDocuments();
+    const searchFilter = searchQuery 
+    ? { 
+        status: true, 
+        $or: [
+          { name: { $regex: searchQuery, $options: 'i' } },
+          { description: { $regex: searchQuery, $options: 'i' } }
+        ]
+      } 
+    : { status: true };
+
+    const totalCategories = await Category.countDocuments(searchFilter);
     const totalPages = Math.ceil(totalCategories / limit);
 
-    const categories = await Category.find({})
+    const categories = await Category.find(searchFilter)
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });
 
     return res.render("adminCategories", {
       categories,
+      searchQuery,
       pagination: {
         currentPage: page,
         totalPages: totalPages,

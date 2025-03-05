@@ -1,6 +1,7 @@
 const User = require("../../models/userSchema");
 const Product = require("../../models/productSchema");
 const Category = require("../../models/categorySchema");
+const { name } = require("ejs");
 
 const loadAddProduct = async (req, res) => {
   try {
@@ -23,15 +24,29 @@ const loadEditProduct = async (req, res) => {
 
 const loadProducts = async (req, res) => {
   try {
+
+    const searchQuery = req.query.query || '';
+    console.log(searchQuery);
     const page = parseInt(req.query.page) || 1;
     const limit = 5;
 
+
+    const searchFilter = searchQuery 
+    ? { 
+        status: true, 
+        $or: [
+          { name: { $regex: searchQuery, $options: 'i' } },
+          { description: { $regex: searchQuery, $options: 'i' } }
+        ]
+      } 
+    : { status: true };
+
     const skip = (page - 1) * limit;
 
-    const totalProducts = await Product.countDocuments();
+    const totalProducts = await Product.countDocuments(searchFilter);
     const totalPages = Math.ceil(totalProducts / limit);
 
-    const products = await Product.find()
+    const products = await Product.find(searchFilter)
       .populate("category", "name")
       .skip(skip)
       .limit(limit)
@@ -39,6 +54,7 @@ const loadProducts = async (req, res) => {
 
     return res.render("adminproducts", {
       products,
+      searchQuery,
       pagination: {
         currentPage: page,
         totalPages: totalPages,
@@ -48,9 +64,7 @@ const loadProducts = async (req, res) => {
     });
   } catch (error) {
     console.log("Error loading products:", error);
-    return res
-      .status(500)
-      .render("error", { message: "Failed to load products" });
+  
   }
 };
 
