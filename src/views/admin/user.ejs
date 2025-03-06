@@ -1,5 +1,82 @@
 <%- include('../partials/admin/header') %>
 
+<style>
+  /* Compact Search component styles */
+  .search-container {
+    position: relative;
+    margin-bottom: 20px;
+    max-width: 400px;
+  }
+  
+  .search-form {
+    display: flex;
+    align-items: center;
+  }
+  
+  .search-input-wrapper {
+    position: relative;
+    flex-grow: 1;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 8px 35px 8px 35px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: all 0.3s;
+    outline: none;
+    height: 38px;
+  }
+  
+  .search-input:focus {
+    border-color: #556ee6;
+    box-shadow: 0 0 0 2px rgba(85, 110, 230, 0.1);
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-size: 16px;
+    pointer-events: none;
+  }
+  
+  .cancel-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-size: 16px;
+    cursor: pointer;
+    display: none;
+  }
+  
+  .search-input:not(:placeholder-shown) ~ .cancel-icon {
+    display: block;
+  }
+  
+  .search-button {
+    margin-left: 8px;
+    padding: 8px 15px;
+    background-color: #556ee6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    height: 38px;
+  }
+  
+  .search-button:hover {
+    background-color: #4458b8;
+  }
+</style>
+
 <body data-sidebar="dark">
   <div class="main-content">
     <div class="page-content">
@@ -19,31 +96,35 @@
           </div>
         </div>
 
+        <!-- New Compact Search Component -->
+        <div class="row mb-3">
+          <div class="col-sm-12 col-md-6">
+            <div class="search-container">
+              <form action="/admin/search" method="GET" class="search-form" id="searchForm">
+                <div class="search-input-wrapper">
+                  <i class="bx bx-search search-icon"></i>
+                  <input
+                    type="text"
+                    class="search-input form-control"
+                    id="searchUserInput"
+                    placeholder="Search by name..."
+                    name="query"
+                    value="<%= searchQuery %>"
+                  />
+                  <i class="bx bx-x cancel-icon" onclick="clearSearch()"></i>
+                </div>
+                <button type="submit" class="search-button">
+                  Search
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
         <div class="row">
           <div class="col-12">
             <div class="card">
               <div class="card-body">
-                <!-- Search Section -->
-                <div class="row mb-2">
-                  <div class="col-sm-4">
-                    <div class="search-box me-2 mb-2 d-inline-block">
-                      <div class="table-controls">
-                        <form action="/admin/search" method="GET">
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="searchUserInput"
-                            placeholder="Search by name..."
-                            name="query"
-                            value="<%= searchQuery %>"
-                          />
-                        </form>
-                        <i class="bx bx-search-alt search-icon"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
                 <!-- User Table -->
                 <div class="table-responsive">
                   <table 
@@ -141,6 +222,32 @@
           }
         });
       }
+
+      function clearSearch() {
+        document.getElementById('searchUserInput').value = '';
+        // Redirect to main users page to show all users
+        window.location.href = '/admin/user';
+      }
+
+      // Show cancel icon when input has text
+      document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchUserInput');
+        const cancelIcon = document.querySelector('.cancel-icon');
+        
+        // Check if there's initial value
+        if (searchInput.value.length > 0) {
+          cancelIcon.style.display = 'block';
+        }
+        
+        // Add event listener to handle input changes
+        searchInput.addEventListener('input', function() {
+          if (this.value.length > 0) {
+            cancelIcon.style.display = 'block';
+          } else {
+            cancelIcon.style.display = 'none';
+          }
+        });
+      });
     </script>
 
     <%- include('../partials/admin/footer') %>

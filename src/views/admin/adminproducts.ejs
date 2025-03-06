@@ -84,7 +84,80 @@
     white-space: normal;
   }
 
-
+  /* Compact Search component styles */
+  .search-container {
+    position: relative;
+    margin-bottom: 20px;
+    max-width: 400px;
+  }
+  
+  .search-form {
+    display: flex;
+    align-items: center;
+  }
+  
+  .search-input-wrapper {
+    position: relative;
+    flex-grow: 1;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 8px 35px 8px 35px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: all 0.3s;
+    outline: none;
+    height: 38px;
+  }
+  
+  .search-input:focus {
+    border-color: #556ee6;
+    box-shadow: 0 0 0 2px rgba(85, 110, 230, 0.1);
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-size: 16px;
+    pointer-events: none;
+  }
+  
+  .cancel-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-size: 16px;
+    cursor: pointer;
+    display: none;
+  }
+  
+  .search-input:not(:placeholder-shown) ~ .cancel-icon {
+    display: block;
+  }
+  
+  .search-button {
+    margin-left: 8px;
+    padding: 8px 15px;
+    background-color: #556ee6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    height: 38px;
+  }
+  
+  .search-button:hover {
+    background-color: #4458b8;
+  }
 
   @media screen and (max-width: 992px) {
     .zoomed-image img {
@@ -121,39 +194,48 @@
           </div>
         </div>
         <!-- End page title -->
-         <div>
-        <form action="/admin/productsearch" method="GET">
-          <input
-            type="text"
-            class="form-control"
-            id="searchUserInput"
-            placeholder="Search by name..."
-            name="query"
-            value="<%= searchQuery %>"
-          />
-        </form>
-          <i class="bx bx-search-alt search-icon"></i>
+        
+        <!-- New Compact Search Component and Add New Product Button -->
+        <div class="row mb-3">
+          <div class="col-sm-12 col-md-6">
+            <div class="search-container">
+              <form action="/admin/productsearch" method="GET" class="search-form" id="searchForm">
+                <div class="search-input-wrapper">
+                  <i class="bx bx-search search-icon"></i>
+                  <input
+                    type="text"
+                    class="search-input form-control"
+                    id="searchUserInput"
+                    placeholder="Search by name..."
+                    name="query"
+                    value="<%= searchQuery %>"
+                  />
+                  <i class="bx bx-x cancel-icon" onclick="clearSearch()"></i>
+                </div>
+                <button type="submit" class="search-button">
+                  Search
+                </button>
+              </form>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <div class="text-sm-end">
+              <a href="/admin/add-product">
+                <button
+                  type="button"
+                  class="btn btn-success btn-rounded waves-effect waves-light mb-2 me-2"
+                >
+                  <i class="mdi mdi-plus me-1"></i> Add New Product
+                </button>
+              </a>
+            </div>
+          </div>
         </div>
+
         <div class="row">
           <div class="col-12">
             <div class="card">
               <div class="card-body">
-                <!-- Add New Product Button -->
-                <div class="row mb-2">
-                  <div class="col-sm-12">
-                    <div class="text-sm-end">
-                      <a href="/admin/add-product">
-                        <button
-                          type="button"
-                          class="btn btn-success btn-rounded waves-effect waves-light mb-2 me-2"
-                        >
-                          <i class="mdi mdi-plus me-1"></i> Add New Product
-                        </button>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-
                 <!-- Products Table -->
                 <div class="table-container">
                   <table
@@ -225,7 +307,7 @@
                       <% }) %>
                       <% } else { %>
                         <tr>
-                          <td colspan="6" class="text-center">No product found</td>
+                          <td colspan="9" class="text-center">No product found</td>
                         </tr>
                       <% } %>
                     </tbody>
@@ -233,7 +315,7 @@
                 </div>
                 <!-- End Table -->
 
-                <!-- Add this right after your table, before the end of card-body div -->
+                <!-- Pagination -->
                 <div class="row mt-4">
                   <div class="col-12">
                     <nav aria-label="User pagination">
@@ -254,7 +336,7 @@
                         
                         <!-- Next page button -->
                         <li class="page-item <%= pagination.currentPage === pagination.totalPages ? 'disabled' : '' %>">
-                          <a class="page-link" href="/admin/products=<%= pagination.currentPage + 1 %>&query=<%= searchQuery %>">
+                          <a class="page-link" href="/admin/products?page=<%= pagination.currentPage + 1 %>&query=<%= searchQuery %>">
                             <i class="mdi mdi-chevron-right"></i>
                           </a>
                         </li>
@@ -291,10 +373,36 @@
       cancelButtonText: "No",
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location.href = ` /admin/blockProduct/${productId}`;
+        window.location.href = `/admin/blockProduct/${productId}`;
       }
     });
   }
+  
+  function clearSearch() {
+    document.getElementById('searchUserInput').value = '';
+    // Redirect to main products page to show all products
+    window.location.href = '/admin/products';
+  }
+
+  // Show cancel icon when input has text
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchUserInput');
+    const cancelIcon = document.querySelector('.cancel-icon');
+    
+    // Check if there's initial value
+    if (searchInput.value.length > 0) {
+      cancelIcon.style.display = 'block';
+    }
+    
+    // Add event listener to handle input changes
+    searchInput.addEventListener('input', function() {
+      if (this.value.length > 0) {
+        cancelIcon.style.display = 'block';
+      } else {
+        cancelIcon.style.display = 'none';
+      }
+    });
+  });
 </script>
 
 <%- include('../partials/admin/footer') %>

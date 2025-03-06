@@ -11278,6 +11278,9 @@ body {
   }
 }
 
+
+
+
 .flash-message {
   display: flex;
   align-items: center;
@@ -11462,4 +11465,29 @@ body {
   .pagination-ellipsis {
     width: 24px;
   }
+}
+
+
+.search-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-clear-icon {
+  position: absolute;
+  right: 60px; /* Adjusted to leave space for the submit button */
+  font-size: 20px;
+  color: #777;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.input-search:not(:placeholder-shown) ~ .search-clear-icon {
+  opacity: 1;
+}
+
+.input-search:focus ~ .search-clear-icon {
+  opacity: 1;
 }

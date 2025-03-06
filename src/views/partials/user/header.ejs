@@ -23,10 +23,62 @@
         <link rel="stylesheet" href="/user/assets/css/responsive.css">
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         
-
         <title>Attiro Fashions</title>
 
         <link rel="icon" type="image/png" href="/user/assets/img/favicon.png">
+
+        <!-- Additional CSS for header search -->
+        <style>
+        /* Header Search Styles */
+        .header-search {
+            position: relative;
+            margin-right: 20px;
+        }
+
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-search-input {
+            width: 0;
+            height: 40px;
+            border: none;
+            border-bottom: 1px solid #ddd;
+            background-color: transparent;
+            padding: 0;
+            transition: width 0.3s ease;
+            outline: none;
+        }
+
+        .header-search-input.active {
+            width: 250px;
+            padding: 0 40px 0 10px;
+        }
+
+        .search-container button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            position: absolute;
+            right: 5px;
+        }
+
+        .search-clear-icon {
+            position: absolute;
+            right: 30px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s;
+            color: #777;
+        }
+
+        /* Hide the original search buttons when using inline search */
+        .search-btn-box {
+            display: none;
+        }
+        </style>
 
     </head>
     <body>
@@ -106,9 +158,14 @@
                         </ul>
 
                         <ul class="header-top-others-option">
-                            <div class="option-item">
-                                <div class="search-btn-box">
-                                    <i class="search-btn bx bx-search-alt"></i>
+                            <!-- New Search Input -->
+                            <div class="option-item header-search">
+                                <div class="search-container">
+                                    <form action="/search" method="GET" id="searchForm">
+                                        <input type="text" class="header-search-input" placeholder="Search here..." name="query" id="userSearchInput" value="<%= locals.searchQuery || '' %>">
+                                        <button type="submit"><i class='bx bx-search-alt'></i></button>
+                                        <i class='bx bx-x search-clear-icon' id="searchClearBtn" onclick="clearUserSearch()"></i>
+                                    </form>
                                 </div>
                             </div>
 
@@ -156,14 +213,18 @@
                             </ul>
 
                             <div class="others-option">
-                                <div class="option-item">
-                                    <div class="search-btn-box">
-                                        <i class="search-btn bx bx-search-alt"></i>
+                                <!-- New Search Input for navbar -->
+                                <div class="option-item header-search">
+                                    <div class="search-container">
+                                        <form action="/search" method="GET">
+                                            <input type="text" class="header-search-input" placeholder="Search here..." name="query" value="<%= locals.searchQuery || '' %>">
+                                            <button type="submit"><i class='bx bx-search-alt'></i></button>
+                                            <i class='bx bx-x search-clear-icon' onclick="this.previousElementSibling.previousElementSibling.value=''; this.style.opacity='0'; window.location.href='/shop';"></i>
+                                        </form>
                                     </div>
                                 </div>
                                 
                                 <% if (locals.session.isAuth) { %>
-                                 
                                     <div class="option-item">
                                         <div class="cart-btn">
                                             <a href="#" data-bs-toggle="modal" data-bs-target="#shoppingCartModal"><i class='bx bx-shopping-bag'></i><span>0</span></a>
@@ -196,15 +257,18 @@
                             </ul>
 
                             <div class="others-option">
-                                <div class="option-item">
-                                    <div class="search-btn-box">
-                                        <i class="search-btn bx bx-search-alt"></i>
+                                <!-- New Search Input for sticky navbar -->
+                                <div class="option-item header-search">
+                                    <div class="search-container">
+                                        <form action="/search" method="GET">
+                                            <input type="text" class="header-search-input" placeholder="Search here..." name="query" value="<%= locals.searchQuery || '' %>">
+                                            <button type="submit"><i class='bx bx-search-alt'></i></button>
+                                            <i class='bx bx-x search-clear-icon' onclick="this.previousElementSibling.previousElementSibling.value=''; this.style.opacity='0'; window.location.href='/shop';"></i>
+                                        </form>
                                     </div>
                                 </div>
 
-                                
                                 <% if (locals.session.isAuth) { %>
-                                 
                                     <div class="option-item">
                                         <div class="cart-btn">
                                             <a href="#" data-bs-toggle="modal" data-bs-target="#shoppingCartModal"><i class='bx bx-shopping-bag'></i><span>0</span></a>
@@ -217,72 +281,108 @@
                 </div>
             </div>
         </div>
-        <!-- Start Search Overlay -->
-        <div class="search-overlay">
-            <div class="d-table">
-                <div class="d-table-cell">
-                    <div class="search-overlay-layer"></div>
-                    <div class="search-overlay-layer"></div>
-                    <div class="search-overlay-layer"></div>
-                    
-                    <div class="search-overlay-close">
-                        <span class="search-overlay-close-line"></span>
-                        <span class="search-overlay-close-line"></span>
-                    </div>
-
-                    <div class="search-overlay-form">
-                        <form action="/search" method="GET" >
-                            <input type="text" class="input-search" placeholder="Search here..." name="query">
-                            <button type="submit"><i class='bx bx-search-alt'></i></button>
-                        </form>
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End Search Overlay -->
+        
+        <!-- Remove the search overlay since we're using inline search -->
+        
         <!-- Loading Animation JavaScript -->
         <script>
-
 document.addEventListener('DOMContentLoaded', function() {
-  // Get all nav links
-  const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
-  
-  // Set active class based on current URL when page loads
-  const currentPath = window.location.pathname;
-  navLinks.forEach(link => {
-    if (link.getAttribute('href') === currentPath) {
-      link.classList.add('active');
-    } else {
-      link.classList.remove('active');
-    }
-  });
-  
-  // Add click event listeners to each link
-  navLinks.forEach(link => {
-    link.addEventListener('click', function() {
-      // Remove active class from all links
-      navLinks.forEach(l => l.classList.remove('active'));
-      
-      // Add active class to clicked link
-      this.classList.add('active');
+        // Get all nav links
+        const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+        
+        // Set active class based on current URL when page loads
+        const currentPath = window.location.pathname;
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+        
+        // Add click event listeners to each link
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                // Remove active class from all links
+                navLinks.forEach(l => l.classList.remove('active'));
+                
+                // Add active class to clicked link
+                this.classList.add('active');
+            });
+        });
+
+        // Header search functionality
+        const searchBtns = document.querySelectorAll('.search-container button');
+        const searchInputs = document.querySelectorAll('.header-search-input');
+        const clearBtns = document.querySelectorAll('.search-clear-icon');
+        
+        // Setup each search input
+        searchInputs.forEach((input, index) => {
+            const btn = searchBtns[index];
+            const clearBtn = clearBtns[index];
+            
+            // Toggle search input visibility
+            btn.addEventListener('click', function(e) {
+                if (!input.classList.contains('active') && !input.value) {
+                    e.preventDefault(); // Prevent form submission when opening
+                    input.classList.add('active');
+                    input.focus();
+                }
+            });
+            
+            // Show clear button when input has text
+            input.addEventListener('input', function() {
+                if (this.value.length > 0) {
+                    clearBtn.style.opacity = '1';
+                } else {
+                    clearBtn.style.opacity = '0';
+                }
+            });
+            
+            // Check if there's initial value
+            if (input.value.length > 0) {
+                input.classList.add('active');
+                clearBtn.style.opacity = '1';
+            }
+        });
+        
+        // Hide search inputs when clicking outside
+        document.addEventListener('click', function(e) {
+            searchInputs.forEach((input, index) => {
+                const btn = searchBtns[index];
+                const clearBtn = clearBtns[index];
+                
+                if (!input.contains(e.target) && !btn.contains(e.target) && !clearBtn.contains(e.target)) {
+                    if (input.value.length === 0) {
+                        input.classList.remove('active');
+                    }
+                }
+            });
+        });
     });
-  });
-});
 
-            function showLoader() {
-                document.getElementById('attiroLoader').style.display = 'flex';
-            }
+    function showLoader() {
+        document.getElementById('attiroLoader').style.display = 'flex';
+    }
 
-            function hideLoader() {
-                document.getElementById('attiroLoader').style.display = 'none';
-            }
+    function hideLoader() {
+        document.getElementById('attiroLoader').style.display = 'none';
+    }
 
-            // Example usage: Show loader on page load and hide after 3 seconds
-            window.onload = function() {
-                showLoader();
-                setTimeout(hideLoader, 500); // Hide after 3 seconds
-            };
+    // Clear search function
+    function clearUserSearch() {
+        const searchInput = document.getElementById('userSearchInput');
+        searchInput.value = '';
+        document.getElementById('searchClearBtn').style.opacity = '0';
+        // Redirect to shop page to show all products
+        window.location.href = '/shop';
+    }
+
+    // Example usage: Show loader on page load and hide after 3 seconds
+    window.onload = function() {
+        showLoader();
+        setTimeout(hideLoader, 500); // Hide after 0.5 seconds
+    };
         </script>
     </body>
 </html>
