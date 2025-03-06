@@ -6,11 +6,13 @@ const userRoutes = require("./src/router/userRouter");
 const adminRoutes = require("./src/router/adminRouter");
 const connectDB = require("./src/config/db");
 const session = require("express-session");
+const passport = require("./src/config/passport");
 const nocache = require("nocache");
 const multer = require("multer");
 const os = require("os");
 const flash = require("connect-flash");
-const passport = require("./src/config/passport");
+const fs = require('fs');
+
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
 const PORT = process.env.PORT;
@@ -28,13 +30,12 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   session({
-    secret: "your_secret_key",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: { secure: false }
   })
 );
-
 app.use(flash());
 
 app.use((req, res, next) => {
@@ -47,29 +48,35 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Configure Passport Google Strategy
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.GOOGLE_CALLBACK_URL,
-    },
-    (accessToken, refreshToken, profile, done) => {
-      return done(null, profile);
-    }
-  )
-);
+// passport.use(
+//   new GoogleStrategy(
+//     {
+//       clientID: process.env.GOOGLE_CLIENT_ID,
+//       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+//       callbackURL: process.env.GOOGLE_CALLBACK_URL,
+//     },
+//     (accessToken, refreshToken, profile, done) => {
+//       return done(null, profile);
+//     }
+//   )
+// );
 
 app.use(express.static(path.join(os.homedir(), "Downloads")));
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "/uploads");
+    cb(null, path.join(__dirname, "uploads"));
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + "-" + file.originalname);
   },
 });
+
+const uploadDir = path.join(__dirname, "uploads");
+
+if (!fs.existsSync(uploadDir)){
+  fs.mkdirSync(uploadDir);
+}
 
 const upload = multer({ storage: storage });
 
@@ -88,7 +95,7 @@ app.use(
   express.static(path.join(__dirname, "public", "admin", "assets"))
 );
 app.use(express.static(path.join(__dirname, "public")));
-app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/", userRoutes);
 app.use("/admin", adminRoutes);

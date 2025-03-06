@@ -1,33 +1,31 @@
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const mongoose = require("mongoose");
-const User = require("../models/userSchema"); // Import User model
+const User = require("../models/userSchema");
+const env=require('dotenv').config()
 
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL:"http://localhost:3000/auth/google/callback",
-      passReqToCallback: true,
+      callbackURL: process.env.GOOGLE_CALLBACK_URL,
     },
+
     async (accessToken, refreshToken, profile, done) => {
       try {
         console.log("hiii");
-        let user = await User.findOneAndUpdate(
-          { email: profile.emails[0].value },
-          {
-            $set: {
-              username: profile.displayName,
-            },
-          },
-          { upsert: true, new: true }
-        );
-
-        console.log("user:", user);
-
-        console.log("user has been authenticated....", user);
-        return done(null, user);
+        let user = await User.findOne({googleId:profile.id})
+        if(user){
+          return done(null,user)
+        }else{
+          user=new User({
+            username:profile.displayName,
+            email:profile.emails[0].value,
+          });
+          await user.save();
+          return done(null,user)
+        }
       } catch (error) {
         return done(error, null);
       }
@@ -37,16 +35,17 @@ passport.use(
 
 passport.serializeUser((user, done) => {
   console.log("Serializing User:", user);
-  done(null, user._id); // Store MongoDB ObjectId in session
+  done(null, user.id); 
 });
 
-passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await User.findById(id); // Fetch user by MongoDB ObjectId
-    done(null, user);
-  } catch (error) {
-    done(error, null);
-  }
+passport.deserializeUser((id, done) => {
+    User.findById(id)
+    .then(user=>{
+      done(null,user)
+    })
+    .catch(err=>{
+      done(err,null)
+    })
 });
 
 module.exports = passport;

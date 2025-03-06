@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Attiro Fashions</title>
+    <link rel="icon" type="image/png" href="user/assets/img/favicon.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/user/assets/css/substyle.css" />
+  </head>
+  <body>
+    <% if (error_msg && error_msg.length > 0) { %>
+        <div class="flash-message error-message" id="flash-message">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="feather feather-alert-circle"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <span><%= error_msg %></span>
+        </div>
+        <% } %> <% if (success_msg && success_msg.length > 0) { %>
+        <div class="flash-message success-message" id="flash-message">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="feather feather-check-circle"
+          >
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          <span><%= success_msg %></span>
+        </div>
+        <%}%>
+    <div class="bg-wrapper">
+      <div class="blur-overlay">
+        <div class="otp-container">
+          <section class="otp-area">
+            <div class="otp-content">
+              <div class="verify-icon">
+                <i class="fas fa-shield-alt"></i>
+              </div>
+              <h2>OTP Verification</h2>
+              <p>
+                Please enter the verification code sent to <br /><strong
+                  ><%= email %></strong
+                >
+              </p>
+
+              <form class="otp-form" action="/verify-fotp" method="post">
+                <div class="otp-inputs" id="otp">
+                  <input
+                    type="text"
+                    class="otp-input"
+                    maxlength="1"
+                    pattern="[0-9]"
+                    inputmode="numeric"
+                    autocomplete="one-time-code"
+                    name="otp1"
+                    required
+                  />
+                  <input
+                    type="text"
+                    class="otp-input"
+                    maxlength="1"
+                    pattern="[0-9]"
+                    inputmode="numeric"
+                    name="otp2"
+                    required
+                  />
+                  <input
+                    type="text"
+                    class="otp-input"
+                    maxlength="1"
+                    pattern="[0-9]"
+                    inputmode="numeric"
+                    name="otp3"
+                    required
+                  />
+                  <input
+                    type="text"
+                    class="otp-input"
+                    maxlength="1"
+                    pattern="[0-9]"
+                    inputmode="numeric"
+                    name="otp4"
+                    required
+                  />
+                </div>
+
+                <button type="submit" class="default-btn">Verify</button>
+
+                <span class="timer"
+                  >Resend OTP in <span id="countdown">00:10</span></span
+                >
+                <a
+                  href="/resendfotp"
+                  class="resend-link"
+                  id="resendLink"
+                  style="display: none"
+                  >Resend Code</a
+                >
+              </form>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Auto-focus to next input field
+      const otpInputs = document.querySelectorAll(".otp-input");
+      otpInputs.forEach((input, index) => {
+        input.addEventListener("keyup", function (e) {
+          if (
+            this.value.length === this.maxLength &&
+            index < otpInputs.length - 1
+          ) {
+            otpInputs[index + 1].focus();
+          }
+        });
+
+        // Allow backspace to go to previous field
+        input.addEventListener("keydown", function (e) {
+          if (e.key === "Backspace" && this.value.length === 0 && index > 0) {
+            otpInputs[index - 1].focus();
+          }
+        });
+      });
+
+      // Countdown timer
+      let timeLeft = 10; // 1:30 in seconds
+      const countdownEl = document.getElementById("countdown");
+      const resendLink = document.getElementById("resendLink");
+
+      const countdownTimer = setInterval(function () {
+        const minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        countdownEl.innerHTML = `${minutes}:${seconds}`;
+        timeLeft--;
+
+        if (timeLeft < 0) {
+          clearInterval(countdownTimer);
+          document.querySelector(".timer").style.display = "none";
+          resendLink.style.display = "block";
+        }
+      }, 1000);
+
+      function removeFlashMessage() {
+        const flashMessage = document.getElementById("flash-message");
+        if (flashMessage) {
+          setTimeout(() => {
+            flashMessage.remove();
+          }, 3000);
+        }
+      }
+
+      window.onload = removeFlashMessage;
+    </script>
+  </body>
+</html>

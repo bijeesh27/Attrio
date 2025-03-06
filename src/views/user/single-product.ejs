@@ -1,5 +1,22 @@
 <%- include('../partials/user/header') %>
 
+<style>
+.zoom-container {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.zoom-image {
+  transition: transform 0.5s ease;
+  width: 100%;
+  height: auto;
+}
+
+.zoom-container:hover .zoom-image {
+  transform: scale(1.5); /* Adjust the scale factor as needed */
+}</style>
 <!-- Start Search Overlay -->
 <div class="search-overlay">
   <div class="d-table">
@@ -51,25 +68,33 @@
           <div class="row justify-content-center">
             <div class="col-lg-6 col-md-6">
               <div class="single-products-details-image">
-                <img src="/<%= product.image[0] %>" alt="image" />
+                <div class="zoom-container">
+                  <img src="/<%= product.image[0] %>" alt="image" class="zoom-image" />
+                </div>
               </div>
             </div>
 
             <div class="col-lg-6 col-md-6">
               <div class="single-products-details-image">
-                <img src="/<%= product.image[1] %>" alt="image" />
+                <div class="zoom-container">
+                  <img src="/<%= product.image[1] %>" alt="image" class="zoom-image" />
+                </div>
               </div>
             </div>
 
             <div class="col-lg-6 col-md-6">
               <div class="single-products-details-image">
-                <img src="/<%= product.image[2] %>" alt="image" />
+                <div class="zoom-container">
+                  <img src="/<%= product.image[2] %>" alt="image" class="zoom-image" />
+                </div>
               </div>
             </div>
 
             <div class="col-lg-6 col-md-6">
               <div class="single-products-details-image">
-                <img src="/<%= product.image[0] %>" alt="image" />
+                <div class="zoom-container">
+                  <img src="/<%= product.image[0] %>" alt="image" class="zoom-image" />
+                </div>
               </div>
             </div>
           </div>
@@ -1208,5 +1233,27 @@
   </div>
 </div>
 <!-- End Products Filter Modal Area -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const zoomContainers = document.querySelectorAll(".zoom-container");
 
+    zoomContainers.forEach((container) => {
+      const img = container.querySelector(".zoom-image");
+
+      container.addEventListener("mousemove", (e) => {
+        const { left, top, width, height } = container.getBoundingClientRect();
+        const x = ((e.pageX - left) / width) * 100;
+        const y = ((e.pageY - top) / height) * 100;
+
+        img.style.transformOrigin = `${x}% ${y}%`;
+        img.style.transform = "scale(2)"; // Adjust the scale factor as needed
+      });
+
+      container.addEventListener("mouseleave", () => {
+        img.style.transformOrigin = "center center";
+        img.style.transform = "scale(1)";
+      });
+    });
+  });
+</script>
 <%- include('../partials/user/footer') %>

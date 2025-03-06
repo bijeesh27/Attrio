@@ -7,30 +7,32 @@ const Category = require("../../models/categorySchema");
 const nodemailer = require("nodemailer");
 const passport = require("passport");
 
-
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
-      req.flash('error_msg', 'Invalid email or password');
+      req.flash("error_msg", "Invalid email or password");
       return res.redirect("/login");
     }
     let isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      req.flash('error_msg', 'Invalid password.');
+      req.flash("error_msg", "Invalid password.");
       return res.redirect("/login");
     }
 
     if (!user.status) {
-      req.flash('error_msg', 'Your account has been blocked. Please contact support.');
+      req.flash(
+        "error_msg",
+        "Your account has been blocked. Please contact support."
+      );
       return res.redirect("/login");
     }
-    
+
     req.session.isAuth = true;
     req.session.email = user.email;
     req.session.userId = user._id.toString();
-    req.flash('success_msg','successfully loggined')
+    req.flash("success_msg", "successfully loggined");
     return res.redirect("/");
   } catch (error) {
     console.log("error occured while login time", error);
@@ -76,7 +78,7 @@ const register = async (req, res) => {
     const { username, email, number, password, confirmPassword } = req.body;
     const user = await User.findOne({ email });
     if (user) {
-      req.flash('error_msg','User Already Exist')
+      req.flash("error_msg", "User Already Exist");
       return res.redirect("/register");
     }
 
@@ -96,7 +98,7 @@ const register = async (req, res) => {
     req.session.userOtp = otp;
     req.session.userData = { username, email, number, password };
     console.log("otp:", otp);
-    req.flash('success_msg','OTP sent')
+    req.flash("success_msg", "OTP sent");
     return res.redirect("/otp");
   } catch (error) {
     console.log("error occured while registering new user", error);
@@ -133,10 +135,10 @@ const verifyOtp = async (req, res) => {
       req.session.isAuth = true;
       req.session.userId = newUser._id;
       req.session.email = newUser.email;
-      req.flash('success_msg','Registerd Successfully')
+      req.flash("success_msg", "Registerd Successfully");
       res.redirect("/");
     } else {
-      req.flash('error_msg','invalid OTP')
+      req.flash("error_msg", "invalid OTP");
       res.redirect("/otp");
     }
   } catch (error) {
@@ -145,20 +147,22 @@ const verifyOtp = async (req, res) => {
   }
 };
 
-const resendOtp=async (req,res) => {
+const resendOtp = async (req, res) => {
   try {
-    const newOtp=generateOtp();
+    const newOtp = generateOtp();
     console.log(newOtp);
-    req.session.userOtp=newOtp
-    const email=req.session.email
-    await sendVerificationEmail(email, newOtp)
-    req.flash('success_msg', 'OTP has been sent again successfully');
-    res.redirect('/otp')
-
+    req.session.userOtp = newOtp;
+    const user = req.session.userData
+    const email = user.email;
+    console.log(email);
+    const emailSent = await sendVerificationEmail(email, newOtp);
+    console.log(emailSent);
+    req.flash("success_msg", "OTP has been sent again successfully");
+    res.redirect("/otp");
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 const googleSignIn = passport.authenticate("google", {
   scope: ["email", "profile"],
@@ -175,31 +179,90 @@ const authfailure = (req, res) => {
 
 const forgot = async (req, res) => {
   try {
-    res.render("forgot");
+    const {email} = req.body;
+    const otp = generateOtp();
+    console.log("f otp", otp);
+    console.log(email);
+    const emailSent = await sendVerificationEmail(email, otp);
+    console.log(emailSent);
+    const user = await User.findOne({email:email});
+    console.log(user);
+    if (!user) {
+      req.flash("error_msg", "The user doesn't Exist");
+      return res.redirect("/forgot");
+    }
+    req.session.email=email
+    req.session.user = user._id;
+    req.session.userOtp = otp;
+    res.redirect("/verifyfotp");
   } catch (error) {
     console.log("error occred while forgot password", error);
   }
 };
 
+const verifyForgetOtp = async (req, res) => {
+  try {
+    const otp = Object.values(req.body).join("");
+    if (otp == req.session.userOtp) {
+      return res.redirect("/changepassword");
+    }
+
+    return res.redirect("/verifyfotp");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const changePassword = async (req, res) => {
+  try {
+    console.log(req.body);
+    const { newPassword, confirmPassword } = req.body;
+    const userId = req.session.user;
+
+    const HashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await User.findByIdAndUpdate(
+      { _id: userId },
+      { $set: { password: HashedPassword } }
+    );
+    res.redirect("/login");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const resendForgetOtp = async (req, res) => {
+  try {
+    const newOtp = generateOtp();
+    console.log(newOtp);
+    req.session.userOtp = newOtp;
+    console.log("req.session.email",req.session.email);
+    const email = req.session.email;
+    const emailSent = await sendVerificationEmail(email, newOtp);
+    console.log(emailSent);
+    req.flash("success_msg", "OTP has been sent again successfully");
+    res.redirect("/verifyfotp");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const loadHome = async (req, res) => {
   try {
-    // Get current page from query or default to 1
     const page = parseInt(req.query.page) || 1;
-    const limit = 3; // 6 products per page
+    const limit = 3;
     const skip = (page - 1) * limit;
 
-    // Get total count for pagination calculation
     const totalProducts = await Product.countDocuments({ status: true });
     const totalPages = Math.ceil(totalProducts / limit);
 
-    // Fetch products for current page
     const category = await Category.find();
     const product = await Product.find({ status: true })
       .sort({ createdAt: -1 })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
-    // If you need category details
+
     res.render("home", {
       product,
       currentPage: page,
@@ -236,13 +299,6 @@ const loadForgotEmailverification = async (req, res) => {
   }
 };
 
-const loadForgot = async (req, res) => {
-  try {
-  } catch (error) {
-    console.log("error rendering forgot page", error);
-  }
-};
-
 const loadOtp = async (req, res) => {
   try {
     return res.render("otp", { email: req.session.userData.email });
@@ -259,35 +315,47 @@ const loadProfile = async (req, res) => {
   }
 };
 
+const loadChangePassword = async (req, res) => {
+  try {
+    return res.render("forgot");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const loadvarifyForgotOtp = async (req, res) => {
+  try {
+    res.render("f-otp",{email:req.session.email});
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const loadAbout = async (req, res) => {
+  try {
+    return res.render("about");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const loadContact = async (req, res) => {
+  try {
+    return res.render("contact");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const logout = async (req, res) => {
   try {
-    req.flash('success_msg', 'Successfully logged out.');
+    req.flash("success_msg", "Successfully logged out.");
     req.session.destroy();
     res.redirect("/login");
   } catch (error) {
     console.log("error occured while logout", error);
   }
 };
-
-
-
-
-const loadAbout=async (req,res) => {
-  try {
-    return res.render('about')
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-
-const loadContact=async (req,res) => {
-  try {
-    return res.render('contact')
-  } catch (error) {
-    console.log(error);
-  }
-}
 
 module.exports = {
   loadHome,
@@ -296,7 +364,6 @@ module.exports = {
   loadRegister,
   register,
   loadForgotEmailverification,
-  loadForgot,
   forgot,
   loadOtp,
   loadProfile,
@@ -307,5 +374,10 @@ module.exports = {
   authfailure,
   loadAbout,
   loadContact,
-  resendOtp
+  resendOtp,
+  loadvarifyForgotOtp,
+  verifyForgetOtp,
+  changePassword,
+  loadChangePassword,
+  resendForgetOtp,
 };

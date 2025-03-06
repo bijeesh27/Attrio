@@ -5,15 +5,30 @@ const { options } = require("../../router/userRouter");
 
 const loadShop = async (req, res) => {
   try {
+    let sortOption={createdAt: -1}
+    console.log("All query parameters:", req.query); // Log all parameters
+    const { sort } = req.query;
+    console.log("Sort parameter:", sort);
     const page = parseInt(req.query.page) || 1;
     const limit = 6;
     const skip = (page - 1) * limit;
+
+    
+    if (sort === 'a-z') {
+      sortOption = { name: 1 };
+    } else if (sort === 'z-a') {
+      sortOption = { name: -1 };
+    } else if (sort === 'l-h') {
+      sortOption = { price: 1 };
+    } else if (sort === 'h-l') {
+      sortOption = { price: -1 };
+    }
 
     const totalProducts = await Product.countDocuments({ status: true });
     const totalPages = Math.ceil(totalProducts / limit);
     const category=await Category.find()
     const products = await Product.find({ status: true })
-      .sort({ createdAt: -1 })
+      .sort(sortOption)
       .skip(skip)
       .limit(limit);
 
