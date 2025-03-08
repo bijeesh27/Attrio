@@ -1,66 +1,127 @@
 <%- include('../partials/user/header') %>
 
 <body>
-  <style>
-    .logout-button {
-      background-color: #f53f85; /* Red background */
-      color: white;
-      border: none;
-      border-radius: 50px; /* Makes it round */
-      padding: 10px 20px;
-      text-align: center;
-      font-size: 14px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    }
+  <link rel="stylesheet" href="/user/assets/css/profilestyle.css" />
 
-    .logout-button i {
-      margin-right: 8px;
-      font-size: 16px;
-    }
+  <div class="dashboard-container">
+    <!-- Account Menu -->
+    <div class="account-tabs-menu">
+      <ul>
+        <li>
+          <a href="/profile" class="active"
+            ><i class="bx bxs-dashboard"></i> Dashboard</a
+          >
+        </li>
+        <li>
+          <a href="/orders"><i class="bx bxs-shopping-bag"></i> Orders</a>
+        </li>
+        <li>
+          <a href="/address"><i class="bx bxs-map"></i> Addresses</a>
+        </li>
+        <li>
+          <a href="/wallet"><i class="bx bxs-wallet"></i>wallet</a>
+        </li>
+        <li>
+          <a href="/changenewpassword"
+            ><i class="bx bx-lock-alt"></i>Change Password</a
+          >
+        </li>
+      </ul>
+      <br /><br /><br />
+      <button onclick="logout()" class="logout-button">
+        <i class="bx bx-log-out"></i> Logout
+      </button>
+    </div>
 
-    .logout-button:hover {
-      background-color: #f53f85; /* Darker red on hover */
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-      transform: translateY(-2px);
-    }
+    <!-- Dashboard Content -->
+    <div class="dashboard-content">
+      <!-- Profile Header -->
+      <div class="profile-section">
+        <div class="profile-image-container">
+          <img
+            src="<%= user.profileimage || '/user/assets/img/defaultprofile.jpg' %>"
+            alt="Profile Image"
+            class="profile-image"
+            id="profileImg"
+          />
+          <div class="profile-image-edit" ">
+           <a href="/editprofile"> <i class="bx bx-camera"></i></a>
+            
+          </div>
+        </div>
+        <div class="profile-info">
+          <h2><%= user.username %></h2>
+          <div class="profile-meta">
+            <span><i class="bx bx-envelope"></i> <%= user.email %></span>
+            <span><i class="bx bx-phone"></i> <%= user.number || 'Not provided' %></span>
+          </div>
+        
+        </div>
+      </div>
 
-    .logout-button:active {
-      transform: translateY(0);
-      box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
-    }
-  </style>
-  <!-- Account Menu -->
-  <div class="account-tabs-menu">
-    <ul>
-      <li>
-        <a href="index.html" class="active"
-          ><i class="bx bxs-dashboard"></i> Dashboard</a
-        >
-      </li>
-      <li>
-        <a href="orders.html"><i class="bx bxs-shopping-bag"></i> Orders</a>
-      </li>
-      <li>
-        <a href="addresses.html"><i class="bx bxs-map"></i> Addresses</a>
-      </li>
-      <li>
-        <a href="account-details.html"
-          ><i class="bx bxs-user-detail"></i> Account Details</a
-        >
-      </li>
-    </ul>
-    <br /><br /><br />
-    <button onclick="logout()" class="logout-button">
-      <i class="bx bx-log-out"></i> Logout
-    </button>
-  </div>
+      <!-- Dashboard Cards -->
+      <div class="dashboard-cards">
+        <!-- Personal Information -->
+        <div class="dashboard-card">
+          <div class="card-header">
+            <h3>Personal Information</h3>
+            <div class="edit-link">
+              <a href="/editprofile">Edit<i class="bx bx-edit"></i></a> 
+            </div>
+          </div>
+          <ul class="info-list">
+            <li>
+              <div class="info-label">Full Name</div>
+              <div class="info-value"><%= user.username%></div>
+            </li>
+            <li>
+              <div class="info-label">Email</div>
+              <div class="info-value"><%= user.email %></div>
+            </li>
+            <li>
+              <div class="info-label">Phone</div>
+              <div class="info-value"><%= user.number || 'Not provided' %></div>
+            </li>
+            <li>
+              <div class="info-label">Date of Birth</div>
+              <div class="info-value"><%= user.dob || 'Not provided' %></div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Account Summary -->
+        <div class="dashboard-card">
+          <div class="card-header">
+            <h3>Account Summary</h3>
+          </div>
+          <ul class="info-list">
+            <li>
+              <div class="info-label">Member Since</div>
+              <div class="info-value"><%= new Date(user.createdAt).toLocaleDateString() %></div>
+            </li>
+            <li>
+              <div class="info-label">Total Orders</div>
+              <div class="info-value"><%= user.totalOrders || 0 %></div>
+            </li>
+            <li>
+              <div class="info-label">Saved Items</div>
+              <div class="info-value"><%= user.wishlistCount || 0 %></div>
+            </li>
+            <li>
+              <div class="info-label">Reviews</div>
+              <div class="info-value"><%= user.reviewCount || 0 %></div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+
+    </div>
+  </div><br><br><br><br><br><br><br><br><br>
+
 
   <script>
+    // Logout confirmation
     function logout() {
       Swal.fire({
         title: `Are you sure?`,
@@ -77,6 +138,7 @@
         }
       });
     }
+
   </script>
 </body>
 <%- include('../partials/user/footer') %>

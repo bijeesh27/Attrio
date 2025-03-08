@@ -19,6 +19,42 @@
     <link rel="stylesheet" href="/user/assets/css/substyle.css" />
   </head>
   <body>
+    <% if (error_msg && error_msg.length > 0) { %>
+      <div class="flash-message error-message" id="flash-message">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="feather feather-alert-circle"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span><%= error_msg %></span>
+      </div>
+      <% } %> <% if (success_msg && success_msg.length > 0) { %>
+      <div class="flash-message success-message" id="flash-message">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="feather feather-check-circle"
+        >
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        <span><%= success_msg %></span>
+      </div>
+      <%}%>
     <div class="bg-wrapper">
       <div class="blur-overlay">
         <div class="password-container">

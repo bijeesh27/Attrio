@@ -1,0 +1,383 @@
+<%- include('../partials/user/header') %>
+
+<body>
+  <link rel="stylesheet" href="/user/assets/css/profilestyle.css" />
+  <style>
+    /* Wallet Page Specific Styles */
+    .wallet-container {
+      padding: 20px;
+      margin-top: 20px;
+    }
+    
+    .wallet-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    
+    /* Credit Card Flip Animation */
+    .credit-card-container {
+      width: 340px;
+      height: 220px;
+      perspective: 1000px;
+      margin: 20px 0;
+      cursor: pointer;
+    }
+    
+    .credit-card {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      border-radius: 15px;
+    }
+    
+    .credit-card.flipped {
+      transform: rotateY(180deg);
+    }
+    
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 15px;
+      padding: 20px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .card-front {
+      background: linear-gradient(135deg, #3a3f58 0%, #1d2033 100%);
+    }
+    
+    .card-back {
+      background: linear-gradient(135deg, #1d2033 0%, #3a3f58 100%);
+      transform: rotateY(180deg);
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .card-logo {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    
+    .card-logo span {
+      font-weight: bold;
+      font-size: 22px;
+      letter-spacing: 1px;
+    }
+    
+    .chip-container {
+      margin: 10px 0 20px;
+    }
+    
+    .card-chip {
+      width: 50px;
+      height: 40px;
+      background: linear-gradient(135deg, #d0bc57 0%, #f0e297 50%, #d0bc57 100%);
+      border-radius: 8px;
+      position: relative;
+    }
+    
+    .card-chip::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 30px;
+      height: 25px;
+      background: #1d2033;
+      border-radius: 4px;
+      opacity: 0.3;
+    }
+    
+    .card-number {
+      font-size: 20px;
+      letter-spacing: 2px;
+      margin: 10px 0 20px;
+    }
+    
+    .card-holder {
+      text-transform: uppercase;
+      font-size: 14px;
+      margin-top: auto;
+    }
+    
+    .card-holder .label {
+      font-size: 10px;
+      opacity: 0.7;
+    }
+    
+    .balance-amount {
+      font-size: 40px;
+      font-weight: bold;
+    }
+    
+    .balance-label {
+      font-size: 16px;
+      opacity: 0.8;
+      margin-top: 10px;
+    }
+    
+    /* Transaction History */
+    .transaction-history {
+      margin-top: 40px;
+    }
+    
+    .transaction-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .transaction-details {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .transaction-title {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    
+    .transaction-date {
+      font-size: 12px;
+      color: #666;
+    }
+    
+    .transaction-amount {
+      font-weight: 600;
+    }
+    
+    .transaction-amount.credit {
+      color: #28a745;
+    }
+    
+    .transaction-amount.debit {
+      color: #dc3545;
+    }
+    
+    .wallet-actions {
+      display: flex;
+      gap: 10px;
+      margin: 30px 0;
+    }
+    
+    .wallet-btn {
+      padding: 10px 20px;
+      background-color: #000;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .wallet-btn:hover {
+      background-color: #333;
+    }
+    
+    .wallet-btn.withdraw {
+      background-color: white;
+      color: #000;
+      border: 1px solid #000;
+    }
+    
+    .wallet-btn.withdraw:hover {
+      background-color: #f5f5f5;
+    }
+  </style>
+
+  <div class="dashboard-container">
+    <!-- Account Menu -->
+    <div class="account-tabs-menu">
+      <ul>
+        <li>
+          <a href="/profile"><i class="bx bxs-dashboard"></i> Dashboard</a>
+        </li>
+        <li>
+          <a href="/orders"><i class="bx bxs-shopping-bag"></i> Orders</a>
+        </li>
+        <li>
+          <a href="/address"><i class="bx bxs-map"></i> Addresses</a>
+        </li>
+        <li>
+          <a href="/wallet" class="active"><i class="bx bxs-wallet"></i> Wallet</a>
+        </li>
+        <li>
+          <a href="/changenewpassword"><i class="bx bx-lock-alt"></i> Change Password</a>
+        </li>
+      </ul>
+      <br /><br /><br />
+      <button onclick="logout()" class="logout-button">
+        <i class="bx bx-log-out"></i> Logout
+      </button>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-content">
+      <!-- Wallet Header -->
+      <div class="wallet-container">
+        <div class="wallet-title">
+          <i class="bx bx-wallet"></i> My Wallet
+        </div>
+        
+        <!-- Flip Credit Card -->
+        <div class="credit-card-container" id="creditCard">
+          <div class="credit-card" id="cardInner">
+            <div class="card-front">
+              <div class="card-logo">
+                <span>WALLET CARD</span>
+                <i class="bx bxs-wallet" style="font-size: 24px;"></i>
+              </div>
+              <div class="chip-container">
+                <div class="card-chip"></div>
+              </div>
+              <div class="card-holder">
+                <div class="label">CARD HOLDER</div>
+                <div><%= user.username %></div>
+              </div>
+              <div class="card-number">•••• •••• •••• <%= user.walletCardNumber || '1234' %></div>
+            </div>
+            <div class="card-back">
+              <div class="balance-amount">Rs.<%= user.walletBalance || '0.00' %></div>
+              <div class="balance-label">Available Balance</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="wallet-actions">
+          <button class="wallet-btn" onclick="showAddFundsModal()">
+            <i class="bx bx-plus-circle"></i> Add Funds
+          </button>
+          <button class="wallet-btn withdraw" onclick="showWithdrawModal()">
+            <i class="bx bx-minus-circle"></i> Withdraw
+          </button>
+        </div>
+        
+        <!-- Transaction History -->
+        <div class="transaction-history">
+          <h3>Recent Transactions</h3>
+          
+          <% if (user.transactions && user.transactions.length > 0) { %>
+            <% user.transactions.forEach(transaction => { %>
+              <div class="transaction-item">
+                <div class="transaction-details">
+                  <div class="transaction-title"><%= transaction.description %></div>
+                  <div class="transaction-date"><%= new Date(transaction.date).toLocaleDateString() %></div>
+                </div>
+                <div class="transaction-amount <%= transaction.type === 'credit' ? 'credit' : 'debit' %>">
+                  <%= transaction.type === 'credit' ? '+' : '-' %>$<%= transaction.amount.toFixed(2) %>
+                </div>
+              </div>
+            <% }); %>
+          <% } else { %>
+            <p>No transactions yet</p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div><br><br><br><br><br><br><br><br><br>
+
+  <script>
+    // Flip card animation
+    document.getElementById('creditCard').addEventListener('click', function() {
+      document.getElementById('cardInner').classList.toggle('flipped');
+    });
+    
+    // Logout confirmation
+    function logout() {
+      Swal.fire({
+        title: `Are you sure?`,
+        text: ` Do you want to continue to logout?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#000000",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Logout",
+        cancelButtonText: "Cancel",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "/logout";
+        }
+      });
+    }
+    
+    // Add funds modal
+    function showAddFundsModal() {
+      Swal.fire({
+        title: 'Add Funds to Wallet',
+        html: `
+          <div style="text-align: left; margin-bottom: 20px;">
+            <label for="amount" style="display: block; margin-bottom: 5px;">Amount</label>
+            <input id="amount" type="number" class="swal2-input" placeholder="Enter amount" min="1" step="1">
+          </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Add Funds',
+        confirmButtonColor: '#000000',
+        cancelButtonColor: '#d33',
+        preConfirm: () => {
+          const amount = document.getElementById('amount').value;
+          if (!amount || amount <= 0) {
+            Swal.showValidationMessage('Please enter a valid amount');
+            return false;
+          }
+          return { amount };
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Submit to backend
+          window.location.href = `/add-funds?amount=${result.value.amount}`;
+        }
+      });
+    }
+    
+    // Withdraw modal
+    function showWithdrawModal() {
+      Swal.fire({
+        title: 'Withdraw Funds',
+        html: `
+          <div style="text-align: left; margin-bottom: 20px;">
+            <label for="withdraw-amount" style="display: block; margin-bottom: 5px;">Amount</label>
+            <input id="withdraw-amount" type="number" class="swal2-input" placeholder="Enter amount" min="1" max="<%= user.walletBalance || 0 %>" step="1">
+          </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Withdraw',
+        confirmButtonColor: '#000000',
+        cancelButtonColor: '#d33',
+        preConfirm: () => {
+          const amount = document.getElementById('withdraw-amount').value;
+          if (!amount || amount <= 0) {
+            Swal.showValidationMessage('Please enter a valid amount');
+            return false;
+          }
+          if (amount > <%= user.walletBalance || 0 %>) {
+            Swal.showValidationMessage('Insufficient balance');
+            return false;
+          }
+          return { amount };
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Submit to backend
+          window.location.href = `/withdraw-funds?amount=${result.value.amount}`;
+        }
+      });
+    }
+  </script>
+</body>
+<%- include('../partials/user/footer') %>

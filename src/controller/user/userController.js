@@ -194,6 +194,7 @@ const forgot = async (req, res) => {
     req.session.email=email
     req.session.user = user._id;
     req.session.userOtp = otp;
+    req.flash('success_msg','Email Verified and OTP sent')
     res.redirect("/verifyfotp");
   } catch (error) {
     console.log("error occred while forgot password", error);
@@ -204,9 +205,10 @@ const verifyForgetOtp = async (req, res) => {
   try {
     const otp = Object.values(req.body).join("");
     if (otp == req.session.userOtp) {
+      req.flash('success_msg','OTP Verified')
       return res.redirect("/changepassword");
     }
-
+    req.flash("error_msg", "Invalid OTP");
     return res.redirect("/verifyfotp");
   } catch (error) {
     console.log(error);
@@ -225,6 +227,7 @@ const changePassword = async (req, res) => {
       { _id: userId },
       { $set: { password: HashedPassword } }
     );
+    req.flash('success_msg','Password change successfully')
     res.redirect("/login");
   } catch (error) {
     console.log(error);
@@ -256,7 +259,7 @@ const loadHome = async (req, res) => {
     const totalProducts = await Product.countDocuments({ status: true });
     const totalPages = Math.ceil(totalProducts / limit);
 
-    const category = await Category.find();
+    const category = await Category.find({ status: true });
     const product = await Product.find({ status: true })
       .sort({ createdAt: -1 })
       .sort({ createdAt: -1 })
@@ -307,13 +310,7 @@ const loadOtp = async (req, res) => {
   }
 };
 
-const loadProfile = async (req, res) => {
-  try {
-    return res.render("profile");
-  } catch (error) {
-    console.log("error rendering profile page", error);
-  }
-};
+
 
 const loadChangePassword = async (req, res) => {
   try {
@@ -366,7 +363,6 @@ module.exports = {
   loadForgotEmailverification,
   forgot,
   loadOtp,
-  loadProfile,
   logout,
   verifyOtp,
   googleSignIn,

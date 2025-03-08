@@ -3,14 +3,18 @@ const router = express.Router();
 const userController = require("../controller/user/userController");
 const productController = require("../controller/user/productController");
 const categoryController = require("../controller/user/categoryController");
+const profileController=require('../controller/user/profileController')
 const passport = require("../config/passport");
 const { ifLogged, logged } = require("../middleware/userMiddleware");
+const {upload,cropUpload}=require("../config/profilemulter")
+router.post("/register", userController.register);
+
 
 // Public Routes (accessible only if not logged in)
 router.get("/login", ifLogged, userController.loadLogin);
 router.post("/login", userController.login);
 router.get("/register", ifLogged, userController.loadRegister);
-router.post("/register", userController.register);
+
 
 
 router.get("/otp", userController.loadOtp);
@@ -36,9 +40,19 @@ router.post('/changepassword',userController.changePassword)
 router.get('/resendfotp',userController.resendForgetOtp)
 
 
+
 // Private Routes (accessible only if logged in)
-router.get("/profile", logged, userController.loadProfile);
+router.get("/profile", logged, profileController.loadProfile);
+router.get('/orders',logged,profileController.loadOrder)
+router.get("/address",logged,profileController.loadAddress)
+router.get("/changenewpassword",logged,profileController.loadChangeNewPassword)
+router.get("/editprofile",logged,profileController.loadEditprofile)
+router.post("/updateprofile",upload.array("images"),logged,profileController.updateProfile)
+router.post("/update-profile-image", logged, cropUpload.single('profileImage'), profileController.updateProfileImage);
 router.get("/logout", userController.logout);
+router.get('/wallet',logged,profileController.loadWallet)
+router.get("/addaddress",logged,profileController.loadAddAddress)
+router.post("/add-address",logged,profileController.addAddress)
 
 router.get("/auth/google",passport.authenticate("google", { scope: ["profile", "email"] })
 );
@@ -51,18 +65,6 @@ router.get("/auth/google/callback",passport.authenticate("google", { failureRedi
   }
 );
 
-// // Google sign-in route (triggered when a user clicks to sign in with Google)
-// router.get("/googlesignin", userController.googleSignIn);
-
-// // Callback route (where Google redirects after successful authentication)
-// router.get("/auth/google/callback", userController.googleCallback);
-
-// // Authentication failure route (handles authentication failure, if needed)
-// router.get("/authfailure", userController.authfailure);
-
-//sort
-
-// router.get('/az',productController.loadShop)
 
 
 module.exports = router;

@@ -24,6 +24,14 @@ const userSchema = new Schema(
       type: String,
       required: false,
     },
+    dob:{
+      type:String,
+      required:false
+    },
+    profileimage: {
+      type: Array,
+      required: false,
+    },
     status: {
       type: Boolean,
       default: true,

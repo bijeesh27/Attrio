@@ -15,13 +15,13 @@ const loadCategories = async (req, res) => {
 
     const searchFilter = searchQuery 
     ? { 
-        status: true, 
+         
         $or: [
           { name: { $regex: searchQuery, $options: 'i' } },
           { description: { $regex: searchQuery, $options: 'i' } }
         ]
       } 
-    : { status: true };
+    : {};
 
     const totalCategories = await Category.countDocuments(searchFilter);
     const totalPages = Math.ceil(totalCategories / limit);
