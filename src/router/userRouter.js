@@ -4,6 +4,7 @@ const userController = require("../controller/user/userController");
 const productController = require("../controller/user/productController");
 const categoryController = require("../controller/user/categoryController");
 const profileController=require('../controller/user/profileController')
+const cartController=require('../controller/user/cartController')
 const passport = require("../config/passport");
 const { ifLogged, logged } = require("../middleware/userMiddleware");
 const {upload,cropUpload}=require("../config/profilemulter")
@@ -46,6 +47,7 @@ router.get("/profile", logged, profileController.loadProfile);
 router.get('/orders',logged,profileController.loadOrder)
 router.get("/address",logged,profileController.loadAddress)
 router.get("/changenewpassword",logged,profileController.loadChangeNewPassword)
+router.post('/changenewpassword',logged,profileController.changeNewPassword)
 router.get("/editprofile",logged,profileController.loadEditprofile)
 router.post("/updateprofile",upload.array("images"),logged,profileController.updateProfile)
 router.post("/update-profile-image", logged, cropUpload.single('profileImage'), profileController.updateProfileImage);
@@ -53,6 +55,15 @@ router.get("/logout", userController.logout);
 router.get('/wallet',logged,profileController.loadWallet)
 router.get("/addaddress",logged,profileController.loadAddAddress)
 router.post("/add-address",logged,profileController.addAddress)
+router.get('/editaddress/:addressId',logged,profileController.loadEditAddress)
+router.post('/editaddress/:addressId',logged,profileController.editAddress)
+router.get("/setdefaultaddress/:addressId",logged,profileController.setDefault)
+router.get('/deleteaddress/:addressId',logged,profileController.deleteAddress)
+router.get("/cart",logged,cartController.loadCart)
+router.post("/addtocart",logged,cartController.addToCart)
+router.get('/clearcart',logged,cartController.clearCart)
+router.get('/removeItem/:productId/:size',logged,cartController.removeItem)
+
 
 router.get("/auth/google",passport.authenticate("google", { scope: ["profile", "email"] })
 );

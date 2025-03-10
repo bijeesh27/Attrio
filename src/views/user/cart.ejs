@@ -1,0 +1,533 @@
+<%- include('../partials/user/header') %>
+<link rel="stylesheet" href="/user/assets/css/cartstyle.css">
+<!-- Start Search Overlay -->
+<div class="search-overlay">
+  <div class="d-table">
+    <div class="d-table-cell">
+      <div class="search-overlay-layer"></div>
+      <div class="search-overlay-layer"></div>
+      <div class="search-overlay-layer"></div>
+      
+      <div class="search-overlay-close">
+        <span class="search-overlay-close-line"></span>
+        <span class="search-overlay-close-line"></span>
+      </div>
+
+      <div class="search-overlay-form">
+        <form action="/search" method="GET">
+          <input type="text" class="input-search" placeholder="Search here..." name="query">
+          <button type="submit"><i class='bx bx-search-alt'></i></button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Search Overlay -->
+
+<!-- Start Page Title -->
+<div class="page-title-area">
+  <div class="container">
+    <div class="page-title-content">
+      <h2>Shopping Cart</h2>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li>Cart</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<!-- End Page Title -->
+
+<!-- Start Cart Area -->
+<section class="cart-area ptb-100">
+  <div class="container">
+    <div class="row">
+      <!-- Main Cart Column -->
+      <div class="col-lg-8 col-md-12">
+        <form>
+          <div class="cart-table-container">
+            <div class="cart-header">
+              <h3><i class='bx bx-cart'></i> Your Shopping Cart</h3>
+              <p class="items-count">
+                <% if (cart && cart.item && cart.item.length > 0) { %>
+                  <%= cart.item.length %> item<%= cart.item.length > 1 ? 's' : '' %> in your cart
+                <% } else { %>
+                  0 items in your cart
+                <% } %>
+              </p>
+            </div>
+            
+            <div class="cart-table table-responsive">
+              <table class="table table-spaced">
+                <thead>
+                  <tr>
+                    <th scope="col" class="sl-col">Sl <br> No </th>
+                    <th scope="col" class="product-col">Product</th>
+                    <th scope="col" class="price-col">Price</th>
+                    <th scope="col" class="quantity-col">Quantity</th>
+                    <th scope="col" class="total-col">Total</th>
+                    <th scope="col" class="action-col"></th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <% if (cart && cart.item && cart.item.length > 0) { %>
+                    <% cart.item.forEach((item, index) => { %>
+                      <tr class="cart-item animate-item">
+                        <td class="sl-col">
+                          <span class="sl-number"><%= index + 1 %></span>
+                        </td>
+                        <td class="product-col">
+                          <div class="product-info">
+                            <div class="product-image">
+                              <a href="/shop-single/<%= item.productId %>">
+                                <img src="/<%= item.productId.image[0] %>" alt="<%= item.productId.name %>" class="img-fluid">
+                              </a>
+                            </div>
+                            <div class="product-details">
+                              <h4 class="product-title">
+                                <a href="/shop-single/<%= item.productId %>"><%= item.productId.name %></a>
+                              </h4>
+                              <div class="product-meta">
+                                <span class="size-badge">Size: <strong><%= item.size %></strong></span>
+                                <% if (item.stock == 0) { %>
+                                  <span class="stock-badge out-stock">Out of Stock</span>
+                                <% } else { %>
+                                  <span class="stock-badge in-stock">In Stock</span>
+                                <% } %>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+
+                        <td class="price-col">
+                          <span class="price">Rs.<%= item.price.toLocaleString() %></span>
+                        </td>
+
+                        <td class="quantity-col">
+                          <div class="quantity-selector">
+                            <button type="button" class="quantity-btn minus-btn" onclick="updateQuantity('<%= item.productId %>', '<%= item.size %>', -1)">
+                              <i class="bx bx-minus"></i>
+                            </button>
+                            <input type="text" value="<%= item.quantity %>" id="quantity-<%= item.productId %>-<%= item.size %>" min="1" class="quantity-input" readonly>
+                            <button type="button" class="quantity-btn plus-btn" onclick="updateQuantity('<%= item.productId %>', '<%= item.size %>', 1)">
+                              <i class="bx bx-plus"></i>
+                            </button>
+                          </div>
+                        </td>
+
+                        <td class="total-col">
+                          <span class="total">Rs.<%= item.total.toLocaleString() %></span>
+                        </td>
+                        
+                        <td class="action-col">
+                          <button type="button" class="remove-btn" onclick="removeItem('<%= item.productId._id %>', '<%= item.size %>')">
+                            <i class="bx bx-trash"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    <% }); %>
+                  <% } else { %>
+                    <tr>
+                      <td colspan="6">
+                        <div class="empty-cart">
+                          <div class="empty-cart-icon">
+                            <i class="bx bx-cart-alt"></i>
+                          </div>
+                          <h3>Your cart is empty</h3>
+                          <p>Looks like you haven't added anything to your cart yet.</p>
+                          <a href="/shop" class="btn-shop-now">
+                            <span>Explore Products</span>
+                            <i class="bx bx-right-arrow-alt"></i>
+                          </a>
+                        </div>
+                      </td>
+                    </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+
+            <% if (cart && cart.item && cart.item.length > 0) { %>
+              <div class="cart-actions">
+                <div class="continue-shopping">
+                  <a href="/shop" class="btn-continue">
+                    <i class="bx bx-chevron-left"></i>
+                    <span>Continue Shopping</span>
+                  </a>
+                </div>
+
+                <div class="update-actions">
+                  <button type="button" class="btn-clear" onclick="clearCart()">
+                    <i class="bx bx-trash"></i>
+                    <span>Clear Cart</span>
+                  </button>
+                  <button type="button" class="btn-update" onclick="updateCart()">
+                    <i class="bx bx-refresh"></i>
+                    <span>Update Cart</span>
+                  </button>
+                </div>
+              </div>
+            <% } %>
+          </div>
+        </form>
+      </div>
+
+      <!-- Summary Column -->
+      <div class="col-lg-4 col-md-12">
+        <div class="cart-summary">
+          <div class="summary-header">
+            <h3>Order Summary</h3>
+          </div>
+
+          <div class="summary-body">
+            <div class="summary-item">
+              <span class="label">Subtotal</span>
+              <span class="value">Rs.<%= cart && cart.cartTotal ? cart.cartTotal.toLocaleString() : 0 %></span>
+            </div>
+            
+            <div class="summary-item">
+              <span class="label">Shipping</span>
+              <span class="value">
+                <% if (cart && cart.cartTotal&& cart.cartTotal > 10000) { %>
+                  <span class="free-shipping">Free Shipping</span>
+                <% } else { %>
+                  Rs.100
+                <% } %>
+              </span>
+            </div>
+            
+            <div class="summary-divider"></div>
+            
+            <div class="summary-item total">
+              <span class="label">Total</span>
+              <span class="value">
+                <% if (cart && cart.cartTotal) { %>
+                  Rs.<%= (cart.cartTotal > 10000 ? cart.cartTotal : cart.cartTotal + 100).toLocaleString() %>
+                <% } else { %>
+                  Rs.0
+                <% } %>
+              </span>
+            </div>
+          </div>
+
+          <div class="summary-footer">
+            <% if (cart && cart.item && cart.item.length > 0) { %>
+              <a href="/checkout" class="btn-checkout">
+                <span>Proceed to Checkout</span>
+                <i class="bx bx-right-arrow-alt"></i>
+              </a>
+            <% } else { %>
+              <a href="/shop" class="btn-shop">
+                <span>Shop Now</span>
+                <i class="bx bx-shopping-bag"></i>
+              </a>
+            <% } %>
+          </div>
+        </div>
+
+        <div class="coupon-section">
+          <div class="coupon-header">
+            <h3>Apply Coupon</h3>
+          </div>
+
+          <div class="coupon-body">
+            <p>Enter your coupon code if you have one.</p>
+            
+            <div class="coupon-form">
+              <div class="form-group">
+                <div class="coupon-input-wrapper">
+                  <i class="bx bx-tag-alt coupon-icon"></i>
+                  <input type="text" class="coupon-input" placeholder="Enter coupon code" id="coupon-code">
+                </div>
+              </div>
+              
+              <button type="button" class="btn-apply-coupon" onclick="applyCoupon()">
+                <span>Apply Coupon</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End Cart Area -->
+
+<!-- Start Facility Area -->
+<section class="facility-area pb-70">
+  <div class="container">
+    <div class="facility-slides owl-carousel owl-theme">
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-tracking"></i>
+        </div>
+        <h3>Free Shipping Worldwide</h3>
+      </div>
+
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-return"></i>
+        </div>
+        <h3>Easy Return Policy</h3>
+      </div>
+
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-shuffle"></i>
+        </div>
+        <h3>7 Day Exchange Policy</h3>
+      </div>
+
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-sale"></i>
+        </div>
+        <h3>Weekend Discount Coupon</h3>
+      </div>
+
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-credit-card"></i>
+        </div>
+        <h3>Secure Payment Methods</h3>
+      </div>
+
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-location"></i>
+        </div>
+        <h3>Track Your Package</h3>
+      </div>
+
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-customer-service"></i>
+        </div>
+        <h3>24/7 Customer Support</h3>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End Facility Area -->
+
+<!-- Start Instagram Area -->
+<div class="instagram-area">
+  <div class="container-fluid">
+    <div class="instagram-title">
+      <a href="#" target="_blank"><i class="bx bxl-instagram"></i> Follow us on @xton</a>
+    </div>
+
+    <div class="instagram-slides owl-carousel owl-theme">
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img1.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img2.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img3.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img4.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img10.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img6.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img7.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img8.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img9.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img5.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Instagram Area -->
+
+
+
+<script>
+// // Cart functionality
+// function updateQuantity(productId, size, change) {
+//   const quantityInput = document.getElementById(`quantity-${productId}-${size}`);
+//   let quantity = parseInt(quantityInput.value) + change;
+  
+//   // Ensure quantity is at least 1
+//   if (quantity < 1) {
+//     quantity = 1;
+//   }
+  
+//   // Update input value
+//   quantityInput.value = quantity;
+  
+//   // Send AJAX request to update cart
+//   fetch('/cart/update', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({
+//       productId: productId,
+//       size: size,
+//       quantity: quantity
+//     })
+//   })
+//   .then(response => response.json())
+//   .then(data => {
+//     if (data.success) {
+//       // Refresh the page to update totals
+//       location.reload();
+//     } else {
+//       alert('Failed to update quantity. Please try again.');
+//     }
+//   })
+//   .catch(error => {
+//     console.error('Error:', error);
+//     alert('An error occurred. Please try again.');
+//   });
+// }
+// document.querySelectorAll('.remove-btn').forEach(button => {
+//   button.addEventListener('click', function() {
+//     const productId = this.getAttribute('data-product-id');
+//     const size = this.getAttribute('data-size');
+//     removeItem(productId, size);
+//   });
+// });
+
+
+function removeItem(productId,size) {
+  console.log("Function called with:", productId, size);
+      Swal.fire({
+        title: `Are you sure?`,
+        text: ` Do you want to remove this product from cart?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#000000",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Remove",
+        cancelButtonText: "Cancel",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = `/removeItem/${productId}/${size}`;
+        }
+      });
+    }
+
+
+
+  function clearCart() {
+      Swal.fire({
+        title: `Are you sure?`,
+        text: ` Do you want to Clear the cart?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#000000",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Clear",
+        cancelButtonText: "Cancel",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "/clearcart";
+        }
+      });
+    }
+
+
+    const quantitySelectors = document.querySelectorAll('.quantity-selector');
+
+// Add event listeners to each quantity selector
+quantitySelectors.forEach(selector => {
+  const minusBtn = selector.querySelector('.minus-btn');
+  const plusBtn = selector.querySelector('.plus-btn');
+  const quantityInput = selector.querySelector('.quantity-input');
+
+  minusBtn.addEventListener('click', () => {
+    let currentValue = parseInt(quantityInput.value);
+    if (currentValue > 1) {
+      quantityInput.value = currentValue - 1;
+    }
+  });
+
+  plusBtn.addEventListener('click', () => {
+    let currentValue = parseInt(quantityInput.value);
+    quantityInput.value = currentValue + 1;
+  });
+});
+// function updateCart() {
+//   alert('Cart updated successfully!');
+//   location.reload();
+// }
+
+// function applyCoupon() {
+//   const couponCode = document.getElementById('coupon-code').value.trim();
+  
+//   if (!couponCode) {
+//     alert('Please enter a coupon code.');
+//     return;
+//   }
+  
+//   fetch('/cart/apply-coupon', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({
+//       couponCode: couponCode
+//     })
+//   })
+//   .then(response => response.json())
+//   .then(data => {
+//     if (data.success) {
+//       alert('Coupon applied successfully!');
+//       location.reload();
+//     } else {
+//       alert(data.message || 'Invalid coupon code. Please try again.');
+//     }
+//   })
+//   .catch(error => {
+//     console.error('Error:', error);
+//     alert('An error occurred. Please try again.');
+//   });
+// }
+</script>
+
+<%- include('../partials/user/footer') %>

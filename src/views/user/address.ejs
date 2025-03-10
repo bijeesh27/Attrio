@@ -416,17 +416,17 @@
                   <% } %>
                 </div>
                 <div class="address-actions">
-                  <a href="/edit-address/<%= address.id %>" class="btn-address btn-edit">
+                  <a href="/editaddress/<%= address.id %>" class="btn-address btn-edit">
                     <i class="bx bx-edit"></i> Edit
                   </a>
                   <% if (!address.isDefault) { %>
-                    <a href="/set-default-address/<%= address.id %>" class="btn-address btn-default">
+                    <a href="/setdefaultaddress/<%= address.id %>" class="btn-address btn-default">
                       <i class="bx bx-check-circle"></i> Set Default
                     </a>
+                    <button class="btn-address btn-delete" onclick="deleteAddress('<%= address.id %>')">
+                      <i class="bx bx-trash"></i> Delete
+                    </button>
                   <% } %>
-                  <button class="btn-address btn-delete" onclick="deleteAddress('<%= address.id %>')">
-                    <i class="bx bx-trash"></i> Delete
-                  </button>
                 </div>
               </div>
             <% }); %>
@@ -494,7 +494,7 @@
       
       // Update the confirm button to include the ID
       document.getElementById('confirmDeleteBtn').onclick = function() {
-        window.location.href = '/delete-address/' + addressToDelete;
+        window.location.href =`/deleteaddress/${id}`;
       };
     }
 

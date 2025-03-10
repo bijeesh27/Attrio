@@ -1,5 +1,6 @@
 const User = require("../../models/userSchema");
 const Product = require("../../models/productSchema");
+const Cart=require("../../models/cartSchema")
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
 dotenv.config();
@@ -32,6 +33,8 @@ const login = async (req, res) => {
     req.session.isAuth = true;
     req.session.email = user.email;
     req.session.userId = user._id.toString();
+    const cart=await Cart.findOne({userId:req.session.userId})
+    req.session.cartItem=cart?.item.length
     req.flash("success_msg", "successfully loggined");
     return res.redirect("/");
   } catch (error) {

@@ -262,9 +262,6 @@
           <button class="wallet-btn" onclick="showAddFundsModal()">
             <i class="bx bx-plus-circle"></i> Add Funds
           </button>
-          <button class="wallet-btn withdraw" onclick="showWithdrawModal()">
-            <i class="bx bx-minus-circle"></i> Withdraw
-          </button>
         </div>
         
         <!-- Transaction History -->
@@ -345,39 +342,7 @@
       });
     }
     
-    // Withdraw modal
-    function showWithdrawModal() {
-      Swal.fire({
-        title: 'Withdraw Funds',
-        html: `
-          <div style="text-align: left; margin-bottom: 20px;">
-            <label for="withdraw-amount" style="display: block; margin-bottom: 5px;">Amount</label>
-            <input id="withdraw-amount" type="number" class="swal2-input" placeholder="Enter amount" min="1" max="<%= user.walletBalance || 0 %>" step="1">
-          </div>
-        `,
-        showCancelButton: true,
-        confirmButtonText: 'Withdraw',
-        confirmButtonColor: '#000000',
-        cancelButtonColor: '#d33',
-        preConfirm: () => {
-          const amount = document.getElementById('withdraw-amount').value;
-          if (!amount || amount <= 0) {
-            Swal.showValidationMessage('Please enter a valid amount');
-            return false;
-          }
-          if (amount > <%= user.walletBalance || 0 %>) {
-            Swal.showValidationMessage('Insufficient balance');
-            return false;
-          }
-          return { amount };
-        }
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // Submit to backend
-          window.location.href = `/withdraw-funds?amount=${result.value.amount}`;
-        }
-      });
-    }
+   
   </script>
 </body>
 <%- include('../partials/user/footer') %>

@@ -297,97 +297,97 @@
       <!-- Address Form Section -->
       <div class="address-form-section">
         <div class="section-header">
-          <h2>Add Address</h2>
+          <h2>Edit Address</h2>
           <a href="/address" class="btn-back">
             <i class="bx bx-arrow-back"></i> Back to Addresses
           </a>
         </div>
 
-        <form id="editAddressForm" action="/add-address/<%= address._id %>" method="POST">
-          <input type="hidden" name="id" value="<%= address._id %>">
-          
-          <div class="form-group">
-            <label for="saveAs">Address Type*</label>
-            <select id="saveAs" name="saveAs" class="form-control" required>
-              <option value="">Select Type</option>
-              <option value="Home" <%= address.saveAs === 'Home' ? 'selected' : '' %>>Home</option>
-              <option value="Work" <%= address.saveAs === 'Work' ? 'selected' : '' %>>Work</option>
-              <option value="Other" <%= address.saveAs === 'Other' ? 'selected' : '' %>>Other</option>
-            </select>
-          </div>
-          
-          <div class="form-group">
-            <label for="name">Full Name*</label>
-            <input type="text" id="name" name="name" class="form-control" value="<%= address.name %>" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="email">Email*</label>
-            <input type="email" id="email" name="email" class="form-control" value="<%= address.email %>" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="number">Phone Number*</label>
-            <input type="tel" id="number" name="number" class="form-control" value="<%= address.number %>" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="houseName">House/Apartment Name*</label>
-            <input type="text" id="houseName" name="houseName" class="form-control" value="<%= address.houseName %>" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="street">Street*</label>
-            <input type="text" id="street" name="street" class="form-control" value="<%= address.street %>" required>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-col">
-              <div class="form-group">
-                <label for="city">City*</label>
-                <input type="text" id="city" name="city" class="form-control" value="<%= address.city %>" required>
+        <form id="editAddressForm" action="/editaddress/<%= address.address[0]._id %>" method="POST">
+            <input type="hidden" name="id" value="<%= address._id %>">
+            
+            <!-- Assuming you've extracted the specific address object from the array -->
+            <% const specificAddress = address.address[0]; %>
+            
+            <div class="form-group">
+              <label for="saveAs">Address Type*</label>
+              <select id="saveAs" name="saveAs" class="form-control" required>
+                <option value="">Select Type</option>
+                <option value="Home" <%= specificAddress.saveAs === 'Home' ? 'selected' : '' %>>Home</option>
+                <option value="Work" <%= specificAddress.saveAs === 'Work' ? 'selected' : '' %>>Work</option>
+                <option value="Other" <%= specificAddress.saveAs === 'Other' ? 'selected' : '' %>>Other</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="name">Full Name*</label>
+              <input type="text" id="name" name="name" class="form-control" value="<%= specificAddress.name %>" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="email">Email*</label>
+              <input type="email" id="email" name="email" class="form-control" value="<%= specificAddress.email %>" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="number">Phone Number*</label>
+              <input type="tel" id="number" name="number" class="form-control" value="<%= specificAddress.number %>" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="houseName">House/Apartment Name*</label>
+              <input type="text" id="houseName" name="houseName" class="form-control" value="<%= specificAddress.houseName %>" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="street">Street*</label>
+              <input type="text" id="street" name="street" class="form-control" value="<%= specificAddress.street %>" required>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="city">City*</label>
+                  <input type="text" id="city" name="city" class="form-control" value="<%= specificAddress.city %>" required>
+                </div>
+              </div>
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="state">State/Province*</label>
+                  <input type="text" id="state" name="state" class="form-control" value="<%= specificAddress.state %>" required>
+                </div>
               </div>
             </div>
-            <div class="form-col">
-              <div class="form-group">
-                <label for="state">State/Province*</label>
-                <input type="text" id="state" name="state" class="form-control" value="<%= address.state %>" required>
+            
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="pincode">Postal/Zip Code*</label>
+                  <input type="text" id="pincode" name="pincode" class="form-control" value="<%= specificAddress.pincode %>" required>
+                </div>
+              </div>
+              <div class="form-col">
+                <div class="form-group">
+                  <label for="country">Country*</label>
+                  <input type="text" id="country" name="country" class="form-control" value="<%= specificAddress.country %>" required>
+                </div>
               </div>
             </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-col">
-              <div class="form-group">
-                <label for="pincode">Postal/Zip Code*</label>
-                <input type="text" id="pincode" name="pincode" class="form-control" value="<%= address.pincode %>" required>
-              </div>
+            
+            <div class="form-checkbox">
+              <input type="checkbox" id="isDefault" name="isDefault" <%= specificAddress.isDefault ? 'checked' : '' %>>
+              <label for="isDefault">Set as default address</label>
             </div>
-            <div class="form-col">
-              <div class="form-group">
-                <label for="country">Country*</label>
-                <input type="text" id="country" name="country" class="form-control" value="<%= address.country %>" required>
-              </div>
+            
+            <div class="form-actions">
+              <a href="/address" class="btn btn-secondary">
+                <i class="bx bx-x"></i> Cancel
+              </a>
+              <button type="submit" class="btn btn-primary">
+                <i class="bx bx-save"></i> Update Address
+              </button>
             </div>
-          </div>
-          
-          <div class="form-checkbox">
-            <input type="checkbox" id="isDefault" name="isDefault" <%= address.isDefault ? 'checked' : '' %>>
-            <label for="isDefault">Set as default address</label>
-          </div>
-          
-          <div class="form-actions">
-            <a href="/address" class="btn btn-secondary">
-              <i class="bx bx-x"></i> Cancel
-            </a>
-            <button type="submit" class="btn btn-primary">
-              <i class="bx bx-save"></i> Add Address
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
+          </form>
 
   <script>
     // Logout confirmation

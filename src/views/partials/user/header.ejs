@@ -227,7 +227,7 @@
                                 <% if (locals.session.isAuth) { %>
                                     <div class="option-item">
                                         <div class="cart-btn">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#shoppingCartModal"><i class='bx bx-shopping-bag'></i><span>0</span></a>
+                                            <a href="/cart" ><i class='bx bx-shopping-bag'></i><span><%= cartItem %></span></a>
                                         </div>
                                     </div>
                                 <% } %>
@@ -271,7 +271,7 @@
                                 <% if (locals.session.isAuth) { %>
                                     <div class="option-item">
                                         <div class="cart-btn">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#shoppingCartModal"><i class='bx bx-shopping-bag'></i><span>0</span></a>
+                                            <a href="#" data-bs-toggle="modal" data-bs-target="#shoppingCartModal"><i class='bx bx-shopping-bag'></i><span><%= cartItem %></span></a>
                                         </div>
                                     </div>
                                 <% } %>

@@ -51,7 +51,7 @@
     <div class="page-title-content">
       <h2><%= product.name %></h2>
       <ul>
-        <li><a href="index.html">Home</a></li>
+        <li><a href="/">Home</a></li>
         <li>Products Details</li>
       </ul>
     </div>
@@ -135,10 +135,10 @@
             <span>Size:</span>
 
             <ul>
-              <li><a href="#">XS</a></li>
-              <li><a href="#">S</a></li>
-              <li><a href="#">M</a></li>
-              <li><a href="#">XL</a></li>
+              <li><a href="#" data-size="XS">XS</a></li>
+              <li><a href="#" data-size="S">S</a></li>
+              <li><a href="#" data-size="M">M</a></li>
+              <li><a href="#" data-size="XL">XL</a></li>
             </ul>
           </div>
 
@@ -152,7 +152,7 @@
               data-bs-target="#productsShippingModal"
               ><i class="bx bxs-truck"></i> Shipping</a
             >
-            <a href="contact.html"
+            <a href="/contact"
               ><i class="bx bx-envelope"></i> Ask about this products</a
             >
           </div>
@@ -160,11 +160,11 @@
           <div class="products-add-to-cart">
             <div class="input-counter">
               <span class="minus-btn"><i class="bx bx-minus"></i></span>
-              <input type="text" value="1" />
+              <input type="text" id="quantity" value="1" min="1" />
               <span class="plus-btn"><i class="bx bx-plus"></i></span>
             </div>
 
-            <button type="submit" class="default-btn">
+            <button type="submit" class="default-btn" id="addToCartBtn">
               <i class="fas fa-cart-plus"></i> Add to Cart
             </button>
           </div>
@@ -1233,27 +1233,141 @@
   </div>
 </div>
 <!-- End Products Filter Modal Area -->
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const zoomContainers = document.querySelectorAll(".zoom-container");
+<script>document.addEventListener("DOMContentLoaded", function () {
+  // First, remove any existing event listeners (if possible)
+  const minusBtn = document.querySelector('.minus-btn');
+  const plusBtn = document.querySelector('.plus-btn');
+  const quantityInput = document.getElementById('quantity');
+  
+  // Clone and replace the elements to remove any existing event listeners
+  if (minusBtn && plusBtn && quantityInput) {
+    const minusBtnClone = minusBtn.cloneNode(true);
+    const plusBtnClone = plusBtn.cloneNode(true);
+    const quantityInputClone = quantityInput.cloneNode(true);
+    
+    minusBtn.parentNode.replaceChild(minusBtnClone, minusBtn);
+    plusBtn.parentNode.replaceChild(plusBtnClone, plusBtn);
+    quantityInput.parentNode.replaceChild(quantityInputClone, quantityInput);
+    
+    // Get the new references
+    const newMinusBtn = document.querySelector('.minus-btn');
+    const newPlusBtn = document.querySelector('.plus-btn');
+    const newQuantityInput = document.getElementById('quantity');
+    
+    // Direct manipulation approach instead of event listeners
+    newMinusBtn.onclick = function() {
+      let value = parseInt(newQuantityInput.value);
+      if (value > 1) {
+        newQuantityInput.value = value - 1;
+      }
+      return false; // Prevent default and bubbling
+    };
+    
+    newPlusBtn.onclick = function() {
+      let value = parseInt(newQuantityInput.value);
+      newQuantityInput.value = value + 1;
+      return false; // Prevent default and bubbling
+    };
+    
+    // Ensure input only accepts valid numbers
+    newQuantityInput.onchange = function() {
+      let value = parseInt(this.value);
+      if (isNaN(value) || value < 1) {
+        this.value = 1;
+      }
+    };
+  }
+  
+  // Rest of your code...
+  // Zoom functionality
+  const zoomContainers = document.querySelectorAll(".zoom-container");
+  zoomContainers.forEach((container) => {
+    const img = container.querySelector(".zoom-image");
 
-    zoomContainers.forEach((container) => {
-      const img = container.querySelector(".zoom-image");
+    container.addEventListener("mousemove", (e) => {
+      const { left, top, width, height } = container.getBoundingClientRect();
+      const x = ((e.pageX - left) / width) * 100;
+      const y = ((e.pageY - top) / height) * 100;
 
-      container.addEventListener("mousemove", (e) => {
-        const { left, top, width, height } = container.getBoundingClientRect();
-        const x = ((e.pageX - left) / width) * 100;
-        const y = ((e.pageY - top) / height) * 100;
+      img.style.transformOrigin = `${x}% ${y}%`;
+      img.style.transform = "scale(2)";
+    });
 
-        img.style.transformOrigin = `${x}% ${y}%`;
-        img.style.transform = "scale(2)"; // Adjust the scale factor as needed
-      });
-
-      container.addEventListener("mouseleave", () => {
-        img.style.transformOrigin = "center center";
-        img.style.transform = "scale(1)";
-      });
+    container.addEventListener("mouseleave", () => {
+      img.style.transformOrigin = "center center";
+      img.style.transform = "scale(1)";
     });
   });
-</script>
+
+  // Size selection functionality
+  let selectedSize = null;
+  const sizeButtons = document.querySelectorAll('.products-size-wrapper ul li a');
+  
+  sizeButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      sizeButtons.forEach(btn => {
+        btn.parentElement.classList.remove('active');
+      });
+      
+      this.parentElement.classList.add('active');
+      selectedSize = this.getAttribute('data-size');
+    });
+  });
+
+  // Add to cart functionality
+  const addToCartBtn = document.getElementById('addToCartBtn');
+  
+  if (addToCartBtn) {
+    addToCartBtn.addEventListener('click', function() {
+      const pathParts = window.location.pathname.split('/');
+      const productId = pathParts[pathParts.length - 1];
+      const quantity = parseInt(document.getElementById('quantity').value);
+      
+      if (!selectedSize) {
+        alert('Please select a size before adding to cart');
+        return;
+      }
+      
+      if (quantity > 5) {
+        if (typeof Swal !== 'undefined') {
+          Swal.fire({
+            title: 'Maximum Quantity Exceeded',
+            text: 'The maximum quantity is 5 items per product',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+          });
+        } else {
+          alert('The maximum quantity is 5 items per product');
+        }
+        return;
+      }
+      
+      fetch('/addtocart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          productId: productId,
+          quantity: quantity,
+          size: selectedSize
+        })
+      })
+      .then(response => {
+        if (response.ok) {
+          window.location.href = '/cart';
+        } else {
+          alert('Error adding to cart');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error adding to cart');
+      });
+    });
+  }
+});</script>
+
 <%- include('../partials/user/footer') %>

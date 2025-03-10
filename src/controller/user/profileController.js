@@ -1,12 +1,13 @@
 const User = require("../../models/userSchema");
 const Address=require("../../models/addressSchema")
+const bcrypt=require('bcrypt')
 const fs = require('fs');
 const path = require('path');
 
 
 const updateProfile = async (req, res) => {
   try {
-    console.log(req.body);
+    
     const { username, email, number, dob } = req.body;
     const userId = req.session.userId;
     
@@ -85,9 +86,41 @@ const updateProfileImage = async (req, res) => {
   }
 };
 
+
+const changeNewPassword=async (req,res) => {
+  try {
+    console.log(req.body);
+
+    const {currentPassword,newPassword,confirmPassword}=req.body
+
+    const user=await User.findOne({_id:req.session.userId})
+
+    const isMatch=await bcrypt.compare(currentPassword,user.password) 
+
+    if(!isMatch){
+      req.flash('error_msg',"The current password is wrong")
+      return res.redirect('/changenewpassword')
+    }
+
+    const HashedPassword=await bcrypt.hash(newPassword,10)
+
+    await User.updateOne({_id:user._id},{$set:{password:HashedPassword}})
+
+    res.redirect('/profile')
+
+    console.log(user);
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+
+
 const loadProfile = async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.session.email });
+    const user = await User.findOne({ _id: req.session.userId });
     
     // Add profileImage for the frontend if it exists
     if (user && user.profileimage && user.profileimage.length > 0) {
@@ -102,7 +135,7 @@ const loadProfile = async (req, res) => {
 
 const loadEditprofile = async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.session.email });
+    const user = await User.findOne({ _id: req.session.userId });
     
     // Add profileImage for the frontend if it exists
     if (user && user.profileimage && user.profileimage.length > 0) {
@@ -128,9 +161,9 @@ const loadAddress = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.session.email });
     const userId =req.session.userId
-    console.log(req.session.userId);
+  
     const addressDoc = await Address.findOne({ userId: userId });
-    console.log("addresDoc",addressDoc);
+
     const addresses = addressDoc ? addressDoc.address : [];
 
     return res.render("address", { user ,addresses});
@@ -138,6 +171,42 @@ const loadAddress = async (req, res) => {
     console.log(error);
   }
 };
+
+const setDefault=async (req,res) => {
+  try {
+    const addressId=req.params.addressId
+    const userId=req.session.userId
+
+    await Address.updateMany(
+      { userId:userId },
+      { $set: { "address.$[].isDefault": false } }
+    );
+    
+    // Then set the selected address as default
+    await Address.updateOne(
+      { userId: userId, "address._id": addressId },
+      { $set: { "address.$.isDefault": true } }
+    );
+    res.redirect("/address")
+
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const deleteAddress=async (req,res) => {
+  try {
+    const addressId=req.params.addressId
+
+    await Address.updateOne({"address._id":addressId},{ $pull: { address: { _id: addressId } } })
+
+    res.redirect("/address")
+
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 const loadChangeNewPassword = async (req, res) => {
   try {
@@ -164,10 +233,63 @@ const loadAddAddress = async (req, res) => {
     console.log(error);
   }
 };
+const loadEditAddress = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.session.email });
+    const addressId=req.params.addressId
+    
+    const addressDoc=await Address.findOne({ "address._id":addressId},{ "address.$": 1 })
 
+    const specificAddressIndex = addressDoc.address.findIndex(addr => 
+      addr._id.toString() === addressId
+    );
+    
+    if (specificAddressIndex === -1) {
+      return res.status(404).send("Specific address not found");
+    }
+
+    const address=addressDoc;
+    const specificAddress=addressDoc.address[specificAddressIndex]
+    
+    return res.render("editaddress", { user,address,specificAddress });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+const editAddress=async (req,res) => {
+  try {
+    const { saveAs, name, email, number, houseName, street, city, state, pincode, country } =req.body
+    const addressId=req.params.addressId
+    const userId=req.session.userId
+    const updatedAddress = await Address.findOneAndUpdate(
+      {  userId: userId,"address._id": addressId },
+      {
+        $set: {
+          "address.$.saveAs": saveAs,
+          "address.$.name": name,
+          "address.$.email": email,
+          "address.$.number": number,
+          "address.$.houseName": houseName,
+          "address.$.street": street,
+          "address.$.city": city,
+          "address.$.state": state,
+          "address.$.pincode": pincode,
+          "address.$.country": country
+        }
+      },
+      { new: true }
+    );
+        console.log("updatedAddress",updatedAddress);
+        res.redirect('/address')
+  } catch (error) {
+    console.log(error);
+  }
+}
 const addAddress=async (req,res) => {
   try {
-    console.log(req.session.userId);
+    
     const { saveAs, name, email, number, houseName, street, city, state, pincode, country } =req.body
 
     const newAddressData = {
@@ -214,5 +336,10 @@ module.exports = {
   updateProfileImage,
   loadWallet,
   loadAddAddress,
-  addAddress
+  addAddress,
+  changeNewPassword,
+  loadEditAddress,
+  editAddress,
+  setDefault,
+  deleteAddress
 };
