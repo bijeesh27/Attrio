@@ -1,22 +1,23 @@
 <%- include('../partials/user/header') %>
 
 <style>
-.zoom-container {
-  overflow: hidden;
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
+  .zoom-container {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
 
-.zoom-image {
-  transition: transform 0.5s ease;
-  width: 100%;
-  height: auto;
-}
+  .zoom-image {
+    transition: transform 0.5s ease;
+    width: 100%;
+    height: auto;
+  }
 
-.zoom-container:hover .zoom-image {
-  transform: scale(1.5); /* Adjust the scale factor as needed */
-}</style>
+  .zoom-container:hover .zoom-image {
+    transform: scale(1.5); /* Adjust the scale factor as needed */
+  }
+</style>
 <!-- Start Search Overlay -->
 <div class="search-overlay">
   <div class="d-table">
@@ -69,7 +70,11 @@
             <div class="col-lg-6 col-md-6">
               <div class="single-products-details-image">
                 <div class="zoom-container">
-                  <img src="/<%= product.image[0] %>" alt="image" class="zoom-image" />
+                  <img
+                    src="/<%= product.image[0] %>"
+                    alt="image"
+                    class="zoom-image"
+                  />
                 </div>
               </div>
             </div>
@@ -77,7 +82,11 @@
             <div class="col-lg-6 col-md-6">
               <div class="single-products-details-image">
                 <div class="zoom-container">
-                  <img src="/<%= product.image[1] %>" alt="image" class="zoom-image" />
+                  <img
+                    src="/<%= product.image[1] %>"
+                    alt="image"
+                    class="zoom-image"
+                  />
                 </div>
               </div>
             </div>
@@ -85,7 +94,11 @@
             <div class="col-lg-6 col-md-6">
               <div class="single-products-details-image">
                 <div class="zoom-container">
-                  <img src="/<%= product.image[2] %>" alt="image" class="zoom-image" />
+                  <img
+                    src="/<%= product.image[2] %>"
+                    alt="image"
+                    class="zoom-image"
+                  />
                 </div>
               </div>
             </div>
@@ -93,7 +106,11 @@
             <div class="col-lg-6 col-md-6">
               <div class="single-products-details-image">
                 <div class="zoom-container">
-                  <img src="/<%= product.image[0] %>" alt="image" class="zoom-image" />
+                  <img
+                    src="/<%= product.image[0] %>"
+                    alt="image"
+                    class="zoom-image"
+                  />
                 </div>
               </div>
             </div>
@@ -470,30 +487,34 @@
   </div>
 </div>
 <!-- End Instagram Area -->
-        <!-- Start Search Overlay -->
-        <div class="search-overlay">
-          <div class="d-table">
-              <div class="d-table-cell">
-                  <div class="search-overlay-layer"></div>
-                  <div class="search-overlay-layer"></div>
-                  <div class="search-overlay-layer"></div>
-                  
-                  <div class="search-overlay-close">
-                      <span class="search-overlay-close-line"></span>
-                      <span class="search-overlay-close-line"></span>
-                  </div>
+<!-- Start Search Overlay -->
+<div class="search-overlay">
+  <div class="d-table">
+    <div class="d-table-cell">
+      <div class="search-overlay-layer"></div>
+      <div class="search-overlay-layer"></div>
+      <div class="search-overlay-layer"></div>
 
-                  <div class="search-overlay-form">
-                      <form action="/search" method="GET" >
-                          <input type="text" class="input-search" placeholder="Search here..." name="query">
-                          <button type="submit"><i class='bx bx-search-alt'></i></button>
-                      </form>
-                      
-                  </div>
-              </div>
-          </div>
+      <div class="search-overlay-close">
+        <span class="search-overlay-close-line"></span>
+        <span class="search-overlay-close-line"></span>
       </div>
-      <!-- End Search Overlay -->
+
+      <div class="search-overlay-form">
+        <form action="/search" method="GET">
+          <input
+            type="text"
+            class="input-search"
+            placeholder="Search here..."
+            name="query"
+          />
+          <button type="submit"><i class="bx bx-search-alt"></i></button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Search Overlay -->
 <!-- Start Sidebar Modal -->
 <div
   class="modal right fade sidebarModal"
@@ -1233,141 +1254,152 @@
   </div>
 </div>
 <!-- End Products Filter Modal Area -->
-<script>document.addEventListener("DOMContentLoaded", function () {
-  // First, remove any existing event listeners (if possible)
-  const minusBtn = document.querySelector('.minus-btn');
-  const plusBtn = document.querySelector('.plus-btn');
-  const quantityInput = document.getElementById('quantity');
-  
-  // Clone and replace the elements to remove any existing event listeners
-  if (minusBtn && plusBtn && quantityInput) {
-    const minusBtnClone = minusBtn.cloneNode(true);
-    const plusBtnClone = plusBtn.cloneNode(true);
-    const quantityInputClone = quantityInput.cloneNode(true);
-    
-    minusBtn.parentNode.replaceChild(minusBtnClone, minusBtn);
-    plusBtn.parentNode.replaceChild(plusBtnClone, plusBtn);
-    quantityInput.parentNode.replaceChild(quantityInputClone, quantityInput);
-    
-    // Get the new references
-    const newMinusBtn = document.querySelector('.minus-btn');
-    const newPlusBtn = document.querySelector('.plus-btn');
-    const newQuantityInput = document.getElementById('quantity');
-    
-    // Direct manipulation approach instead of event listeners
-    newMinusBtn.onclick = function() {
-      let value = parseInt(newQuantityInput.value);
-      if (value > 1) {
-        newQuantityInput.value = value - 1;
-      }
-      return false; // Prevent default and bubbling
-    };
-    
-    newPlusBtn.onclick = function() {
-      let value = parseInt(newQuantityInput.value);
-      newQuantityInput.value = value + 1;
-      return false; // Prevent default and bubbling
-    };
-    
-    // Ensure input only accepts valid numbers
-    newQuantityInput.onchange = function() {
-      let value = parseInt(this.value);
-      if (isNaN(value) || value < 1) {
-        this.value = 1;
-      }
-    };
-  }
-  
-  // Rest of your code...
-  // Zoom functionality
-  const zoomContainers = document.querySelectorAll(".zoom-container");
-  zoomContainers.forEach((container) => {
-    const img = container.querySelector(".zoom-image");
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // First, remove any existing event listeners (if possible)
+    const minusBtn = document.querySelector(".minus-btn");
+    const plusBtn = document.querySelector(".plus-btn");
+    const quantityInput = document.getElementById("quantity");
 
-    container.addEventListener("mousemove", (e) => {
-      const { left, top, width, height } = container.getBoundingClientRect();
-      const x = ((e.pageX - left) / width) * 100;
-      const y = ((e.pageY - top) / height) * 100;
+    // Clone and replace the elements to remove any existing event listeners
+    if (minusBtn && plusBtn && quantityInput) {
+      const minusBtnClone = minusBtn.cloneNode(true);
+      const plusBtnClone = plusBtn.cloneNode(true);
+      const quantityInputClone = quantityInput.cloneNode(true);
 
-      img.style.transformOrigin = `${x}% ${y}%`;
-      img.style.transform = "scale(2)";
-    });
+      minusBtn.parentNode.replaceChild(minusBtnClone, minusBtn);
+      plusBtn.parentNode.replaceChild(plusBtnClone, plusBtn);
+      quantityInput.parentNode.replaceChild(quantityInputClone, quantityInput);
 
-    container.addEventListener("mouseleave", () => {
-      img.style.transformOrigin = "center center";
-      img.style.transform = "scale(1)";
-    });
-  });
+      // Get the new references
+      const newMinusBtn = document.querySelector(".minus-btn");
+      const newPlusBtn = document.querySelector(".plus-btn");
+      const newQuantityInput = document.getElementById("quantity");
 
-  // Size selection functionality
-  let selectedSize = null;
-  const sizeButtons = document.querySelectorAll('.products-size-wrapper ul li a');
-  
-  sizeButtons.forEach(button => {
-    button.addEventListener('click', function(e) {
-      e.preventDefault();
-      
-      sizeButtons.forEach(btn => {
-        btn.parentElement.classList.remove('active');
+      // Direct manipulation approach instead of event listeners
+      newMinusBtn.onclick = function () {
+        let value = parseInt(newQuantityInput.value);
+        if (value > 1) {
+          newQuantityInput.value = value - 1;
+        }
+        return false; // Prevent default and bubbling
+      };
+
+      newPlusBtn.onclick = function () {
+        let value = parseInt(newQuantityInput.value);
+        newQuantityInput.value = value + 1;
+        return false; // Prevent default and bubbling
+      };
+
+      // Ensure input only accepts valid numbers
+      newQuantityInput.onchange = function () {
+        let value = parseInt(this.value);
+        if (isNaN(value) || value < 1) {
+          this.value = 1;
+        }
+      };
+    }
+
+    // Rest of your code...
+    // Zoom functionality
+    const zoomContainers = document.querySelectorAll(".zoom-container");
+    zoomContainers.forEach((container) => {
+      const img = container.querySelector(".zoom-image");
+
+      container.addEventListener("mousemove", (e) => {
+        const { left, top, width, height } = container.getBoundingClientRect();
+        const x = ((e.pageX - left) / width) * 100;
+        const y = ((e.pageY - top) / height) * 100;
+
+        img.style.transformOrigin = `${x}% ${y}%`;
+        img.style.transform = "scale(2)";
       });
-      
-      this.parentElement.classList.add('active');
-      selectedSize = this.getAttribute('data-size');
-    });
-  });
 
-  // Add to cart functionality
-  const addToCartBtn = document.getElementById('addToCartBtn');
-  
-  if (addToCartBtn) {
-    addToCartBtn.addEventListener('click', function() {
-      const pathParts = window.location.pathname.split('/');
-      const productId = pathParts[pathParts.length - 1];
-      const quantity = parseInt(document.getElementById('quantity').value);
-      
-      if (!selectedSize) {
-        alert('Please select a size before adding to cart');
-        return;
-      }
-      
-      if (quantity > 5) {
-        if (typeof Swal !== 'undefined') {
+      container.addEventListener("mouseleave", () => {
+        img.style.transformOrigin = "center center";
+        img.style.transform = "scale(1)";
+      });
+    });
+
+    // Size selection functionality
+    let selectedSize = null;
+    const sizeButtons = document.querySelectorAll(
+      ".products-size-wrapper ul li a"
+    );
+
+    sizeButtons.forEach((button) => {
+      button.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        sizeButtons.forEach((btn) => {
+          btn.parentElement.classList.remove("active");
+        });
+
+        this.parentElement.classList.add("active");
+        selectedSize = this.getAttribute("data-size");
+      });
+    });
+
+    // Add to cart functionality
+    const addToCartBtn = document.getElementById("addToCartBtn");
+
+    if (addToCartBtn) {
+      addToCartBtn.addEventListener("click", function () {
+        const pathParts = window.location.pathname.split("/");
+        const productId = pathParts[pathParts.length - 1];
+        const quantity = parseInt(document.getElementById("quantity").value);
+
+        if (!selectedSize) {
           Swal.fire({
-            title: 'Maximum Quantity Exceeded',
-            text: 'The maximum quantity is 5 items per product',
-            icon: 'warning',
-            confirmButtonText: 'OK'
+            title: "Size Not Selected",
+            text: "Please choose a size before adding the product to your cart.",
+            icon: "info",
+            showConfirmButton: false,
+            timer: 1500, // Closes automatically after 2 seconds
           });
-        } else {
-          alert('The maximum quantity is 5 items per product');
+          return;
         }
-        return;
-      }
-      
-      fetch('/addtocart', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          productId: productId,
-          quantity: quantity,
-          size: selectedSize
+
+        if (quantity > 5) {
+          if (typeof Swal !== "undefined") {
+            Swal.fire({
+              title: "Maximum Quantity Exceeded",
+              text: "The maximum quantity is 5 items per product",
+              icon: "warning",
+              confirmButtonText: "OK",
+            });
+          } else {
+            alert("The maximum quantity is 5 items per product");
+          }
+          return;
+        }
+       
+
+        fetch("/addtocart", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            productId: productId,
+            quantity: quantity,
+            size: selectedSize,
+          }),
         })
-      })
-      .then(response => {
-        if (response.ok) {
-          window.location.href = '/cart';
-        } else {
-          alert('Error adding to cart');
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('Error adding to cart');
+          .then((response) => {
+            if (response.ok) {
+              window.location.href = "/cart";
+            } else {
+              alert("Error adding to cart");
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            alert("Error adding to cart");
+          });
       });
-    });
-  }
-});</script>
+    }
+  });
+</script>
 
 <%- include('../partials/user/footer') %>

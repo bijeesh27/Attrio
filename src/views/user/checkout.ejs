@@ -1,0 +1,918 @@
+<%- include('../partials/user/header') %>
+<link rel="stylesheet" href="/user/assets/css/checkoutstyle.css">
+
+<!-- Start Search Overlay -->
+<div class="search-overlay">
+  <div class="d-table">
+    <div class="d-table-cell">
+      <div class="search-overlay-layer"></div>
+      <div class="search-overlay-layer"></div>
+      <div class="search-overlay-layer"></div>
+      
+      <div class="search-overlay-close">
+        <span class="search-overlay-close-line"></span>
+        <span class="search-overlay-close-line"></span>
+      </div>
+
+      <div class="search-overlay-form">
+        <form action="/search" method="GET">
+          <input type="text" class="input-search" placeholder="Search here..." name="query">
+          <button type="submit"><i class='bx bx-search-alt'></i></button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Search Overlay -->
+
+<!-- Start Page Title -->
+<div class="page-title-area">
+  <div class="container">
+    <div class="page-title-content">
+      <h2>Checkout</h2>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/cart">Cart</a></li>
+        <li>Checkout</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<!-- End Page Title -->
+
+<!-- Start Checkout Area -->
+<section class="checkout-area ptb-100">
+  <div class="container">
+    <div class="row">
+      <!-- Left Column - Delivery Address & Payment -->
+      <div class="col-lg-8">
+        <div class="checkout-steps">
+          <!-- Step Indicator -->
+          <div class="checkout-steps-indicator">
+            <div class="step active">
+              <div class="step-number">1</div>
+              <div class="step-text">Shipping</div>
+            </div>
+            <div class="step-connector"></div>
+            <div class="step">
+              <div class="step-number">2</div>
+              <div class="step-text">Payment</div>
+            </div>
+            <div class="step-connector"></div>
+            <div class="step">
+              <div class="step-number">3</div>
+              <div class="step-text">Confirmation</div>
+            </div>
+          </div>
+
+          <!-- Delivery Address Section -->
+          <div class="checkout-section">
+            <div class="section-header">
+              <h3><i class='bx bx-map'></i> Delivery Address</h3>
+            </div>
+            
+            <div class="section-body">
+              <!-- Saved Addresses -->
+              <div class="saved-addresses">
+                <% if (user && user.addresses && user.addresses.length > 0) { %>
+                  <div class="address-selection">
+                    <% user.addresses.forEach((address, index) => { %>
+                      <div class="address-card <%= index === 0 ? 'selected' : '' %>">
+                        <div class="address-radio">
+                          <input type="radio" name="selectedAddress" id="address-<%= index %>" value="<%= index %>" <%= index === 0 ? 'checked' : '' %>>
+                          <label for="address-<%= index %>" class="address-selector"></label>
+                        </div>
+                        <div class="address-content">
+                          <h4><%= address.name %></h4>
+                          <p><%= address.street %>, <%= address.city %>, <%= address.state %> - <%= address.pincode %></p>
+                          <p><i class='bx bx-phone'></i> <%= address.phone %></p>
+                          <div class="address-actions">
+                           
+                          </div>
+                        </div>
+                      </div>
+                    <% }); %>
+                  </div>
+                <% } else { %>
+                  <div class="no-addresses">
+                    <div class="no-address-icon">
+                      <i class='bx bx-map-alt'></i>
+                    </div>
+                    <p>You don't have any saved addresses</p>
+                  </div>
+                <% } %>
+                
+                <button type="button" class="btn-add-address" id="addAddressBtn">
+                  <i class='bx bx-plus-circle'></i> Add New Address
+                </button>
+              </div>
+              
+              <!-- New Address Form (Hidden by default) -->
+              <div class="address-form-container" id="addressFormContainer" style="display: none;">
+                <form id="addressForm">
+                  <div class="form-header">
+                    <h4 id="addressFormTitle">Add New Address</h4>
+                    <button type="button" class="form-close" id="closeAddressForm">
+                      <i class='bx bx-x'></i>
+                    </button>
+                  </div>
+                  
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" class="form-control" required>
+                      </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" class="form-control" required>
+                      </div>
+                    </div>
+                    
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="street">Street Address</label>
+                        <input type="text" id="street" name="street" class="form-control" required>
+                      </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="city">City</label>
+                        <input type="text" id="city" name="city" class="form-control" required>
+                      </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="state">State</label>
+                        <input type="text" id="state" name="state" class="form-control" required>
+                      </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="pincode">PIN Code</label>
+                        <input type="text" id="pincode" name="pincode" class="form-control" required>
+                      </div>
+                    </div>
+                    
+                    <div class="col-md-12">
+                      <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="defaultAddress" name="defaultAddress">
+                        <label class="form-check-label" for="defaultAddress">Set as default address</label>
+                      </div>
+                    </div>
+                    
+                    <div class="col-md-12 mt-3">
+                      <button type="submit" class="btn-save-address">
+                        <i class='bx bx-save'></i> <span id="saveButtonText">Save Address</span>
+                      </button>
+                      <input type="hidden" id="addressIndex" value="-1">
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Payment Methods Section -->
+          <div class="checkout-section">
+            <div class="section-header">
+              <h3><i class='bx bx-credit-card'></i> Payment Method</h3>
+            </div>
+            
+            <div class="section-body">
+              <div class="payment-methods">
+                <div class="payment-method-option">
+                  <input type="radio" name="paymentMethod" id="creditCard" value="creditCard" checked>
+                  <label for="creditCard" class="payment-method-label">
+                    <div class="payment-method-icon">
+                      <i class='bx bx-credit-card'></i>
+                    </div>
+                    <div class="payment-method-info">
+                      <h4>Credit/Debit Card</h4>
+                      <p>Pay securely with your card</p>
+                    </div>
+                  </label>
+                </div>
+                
+                <div class="payment-method-option">
+                  <input type="radio" name="paymentMethod" id="netBanking" value="netBanking">
+                  <label for="netBanking" class="payment-method-label">
+                    <div class="payment-method-icon">
+                      <i class='bx bx-bank'></i>
+                    </div>
+                    <div class="payment-method-info">
+                      <h4>Net Banking</h4>
+                      <p>Pay using your internet banking</p>
+                    </div>
+                  </label>
+                </div>
+                
+                <div class="payment-method-option">
+                  <input type="radio" name="paymentMethod" id="upi" value="upi">
+                  <label for="upi" class="payment-method-label">
+                    <div class="payment-method-icon">
+                      <i class='bx bx-mobile-alt'></i>
+                    </div>
+                    <div class="payment-method-info">
+                      <h4>UPI Payment</h4>
+                      <p>Google Pay, PhonePe, PayTM & more</p>
+                    </div>
+                  </label>
+                </div>
+                
+                <div class="payment-method-option">
+                  <input type="radio" name="paymentMethod" id="cashOnDelivery" value="cashOnDelivery">
+                  <label for="cashOnDelivery" class="payment-method-label">
+                    <div class="payment-method-icon">
+                      <i class='bx bx-money'></i>
+                    </div>
+                    <div class="payment-method-info">
+                      <h4>Cash on Delivery</h4>
+                      <p>Pay when your order is delivered</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Right Column - Order Summary -->
+      <div class="col-lg-4">
+        <div class="order-summary">
+          <div class="summary-header">
+            <h3>Order Summary</h3>
+          </div>
+          
+          <div class="summary-body">
+            <!-- Items Summary -->
+            <div class="summary-items">
+              <% if (cart && cart.item && cart.item.length > 0) { %>
+                <div class="items-count">
+                  <span><%= cart.item.length %> item<%= cart.item.length > 1 ? 's' : '' %> in your cart</span>
+                  <a href="#" class="view-details-toggle" id="viewDetailsToggle">View Details <i class='bx bx-chevron-down'></i></a>
+                </div>
+                
+                <div class="items-details" id="itemsDetailsList" style="display: none;">
+                  <% cart.item.forEach(item => { %>
+                    <div class="summary-item-row">
+                      <div class="item-image">
+                        <img src="/<%= item.productId.image[0] %>" alt="<%= item.productId.name %>">
+                        <span class="item-quantity"><%= item.quantity %></span>
+                      </div>
+                      <div class="item-details">
+                        <h4 class="item-name"><%= item.productId.name %></h4>
+                        <p class="item-size">Size: <%= item.size %></p>
+                      </div>
+                      <div class="item-price">
+                        Rs.<%= item.total.toLocaleString() %>
+                      </div>
+                    </div>
+                  <% }); %>
+                </div>
+              <% } else { %>
+                <div class="empty-cart-message">
+                  <p>Your cart is empty. <a href="/shop">Continue shopping</a></p>
+                </div>
+              <% } %>
+            </div>
+            
+            <!-- Price Breakdown -->
+            <div class="price-breakdown">
+              <div class="summary-divider"></div>
+              
+              <div class="summary-row">
+                <span class="label">Subtotal</span>
+                <span class="value">Rs.<%= cart && cart.cartTotal ? cart.cartTotal.toLocaleString() : 0 %></span>
+              </div>
+              
+              <div class="summary-row">
+                <span class="label">Shipping</span>
+                <span class="value">
+                  <% if (cart && cart.cartTotal && cart.cartTotal > 10000) { %>
+                    <span class="free-shipping">Free</span>
+                  <% } else { %>
+                    Rs.100
+                  <% } %>
+                </span>
+              </div>
+              
+              <div class="summary-row discount-row" id="discountRow" style="display: none;">
+                <span class="label">Discount</span>
+                <span class="value discount-amount" id="discountAmount">-Rs.0</span>
+              </div>
+              
+              <div class="summary-divider"></div>
+              
+              <div class="summary-row total-row">
+                <span class="label">Total</span>
+                <span class="value" id="orderTotal">
+                  <% if (cart && cart.cartTotal) { %>
+                    Rs.<%= (cart.cartTotal > 10000 ? cart.cartTotal : cart.cartTotal + 100).toLocaleString() %>
+                  <% } else { %>
+                    Rs.0
+                  <% } %>
+                </span>
+              </div>
+            </div>
+            
+            <!-- Coupon Section -->
+            <div class="coupon-section">
+              <div class="coupon-toggle" id="couponToggle">
+                <i class='bx bx-tag-alt'></i> Apply Coupon
+                <i class='bx bx-chevron-down toggle-icon'></i>
+              </div>
+              
+              <div class="coupon-form" id="couponForm" style="display: none;">
+                <div class="input-group">
+                  <input type="text" class="form-control" placeholder="Enter coupon code" id="couponCode">
+                  <div class="input-group-append">
+                    <button class="btn-apply-coupon" type="button" onclick="applyCoupon()">Apply</button>
+                  </div>
+                </div>
+                <div class="coupon-message" id="couponMessage"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="summary-footer">
+            <button type="button" id="placeOrderBtn" class="btn-place-order">
+              <span>Place Order</span>
+              <i class='bx bx-check-circle'></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End Checkout Area -->
+
+<!-- Payment Modal (Credit Card) -->
+<div class="payment-modal" id="paymentModal">
+  <div class="payment-modal-overlay"></div>
+  <div class="payment-modal-content">
+    <div class="payment-card-container">
+      <!-- Credit Card Design -->
+      <div class="credit-card">
+        <div class="credit-card-inner">
+          <div class="card-front">
+            <div class="card-logo">
+              <i class='bx bxl-visa'></i>
+            </div>
+            <div class="card-chip">
+              <i class='bx bxs-microchip'></i>
+            </div>
+            <div class="card-number" id="cardNumberDisplay">•••• •••• •••• ••••</div>
+            <div class="card-info">
+              <div class="card-holder">
+                <div class="label">Card Holder</div>
+                <div class="value" id="cardHolderDisplay">YOUR NAME</div>
+              </div>
+              <div class="card-expiry">
+                <div class="label">Expires</div>
+                <div class="value" id="cardExpiryDisplay">MM/YY</div>
+              </div>
+            </div>
+          </div>
+          <div class="card-back">
+            <div class="card-stripe"></div>
+            <div class="card-signature">
+              <div class="signature-line"></div>
+              <div class="cvc" id="cardCvcDisplay">•••</div>
+            </div>
+            <div class="card-info-back">
+              <p>This card is property of your bank. Authorized signature - not valid unless signed</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Payment Form -->
+      <div class="payment-form">
+        <div class="form-header">
+          <h3>Enter Payment Details</h3>
+          <button type="button" class="close-modal" id="closePaymentModal">
+            <i class='bx bx-x'></i>
+          </button>
+        </div>
+        
+        <form id="cardPaymentForm">
+          <div class="form-group">
+            <label for="cardNumber">Card Number</label>
+            <div class="input-with-icon">
+              <i class='bx bx-credit-card'></i>
+              <input type="text" id="cardNumber" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19" onkeyup="formatCardNumber(this)">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="cardHolder">Card Holder Name</label>
+            <div class="input-with-icon">
+              <i class='bx bx-user'></i>
+              <input type="text" id="cardHolder" class="form-control" placeholder="Name on card">
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-7">
+              <div class="form-group">
+                <label for="expiryDate">Expiry Date</label>
+                <div class="input-with-icon">
+                  <i class='bx bx-calendar'></i>
+                  <input type="text" id="expiryDate" class="form-control" placeholder="MM/YY" maxlength="5" onkeyup="formatExpiryDate(this)">
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-5">
+              <div class="form-group">
+                <label for="cvv">CVV</label>
+                <div class="input-with-icon">
+                  <i class='bx bx-lock'></i>
+                  <input type="text" id="cvv" class="form-control" placeholder="123" maxlength="3">
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <div class="save-card-checkbox">
+              <input type="checkbox" id="saveCard">
+              <label for="saveCard">Save card for future payments</label>
+            </div>
+          </div>
+          
+          <button type="submit" class="btn-pay">
+            <span>Pay Rs.<span id="paymentAmount">0</span></span>
+            <i class='bx bx-lock-alt'></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Start Facility Area -->
+<section class="facility-area pb-70">
+  <div class="container">
+    <div class="facility-slides owl-carousel owl-theme">
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-tracking"></i>
+        </div>
+        <h3>Free Shipping Worldwide</h3>
+      </div>
+
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-return"></i>
+        </div>
+        <h3>Easy Return Policy</h3>
+      </div>
+
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-shuffle"></i>
+        </div>
+        <h3>7 Day Exchange Policy</h3>
+      </div>
+
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-sale"></i>
+        </div>
+        <h3>Weekend Discount Coupon</h3>
+      </div>
+
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-credit-card"></i>
+        </div>
+        <h3>Secure Payment Methods</h3>
+      </div>
+
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-location"></i>
+        </div>
+        <h3>Track Your Package</h3>
+      </div>
+
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-customer-service"></i>
+        </div>
+        <h3>24/7 Customer Support</h3>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End Facility Area -->
+<script>// View Details Toggle
+    document.getElementById('viewDetailsToggle').addEventListener('click', function(e) {
+      e.preventDefault();
+      const detailsList = document.getElementById('itemsDetailsList');
+      const toggleIcon = this.querySelector('i');
+      
+      if (detailsList.style.display === 'none') {
+        detailsList.style.display = 'block';
+        toggleIcon.classList.remove('bx-chevron-down');
+        toggleIcon.classList.add('bx-chevron-up');
+        this.textContent = 'Hide Details ';
+        this.appendChild(toggleIcon);
+      } else {
+        detailsList.style.display = 'none';
+        toggleIcon.classList.remove('bx-chevron-up');
+        toggleIcon.classList.add('bx-chevron-down');
+        this.textContent = 'View Details ';
+        this.appendChild(toggleIcon);
+      }
+    });
+    
+    // Coupon Toggle
+    document.getElementById('couponToggle').addEventListener('click', function() {
+      const couponForm = document.getElementById('couponForm');
+      const toggleIcon = this.querySelector('.toggle-icon');
+      
+      if (couponForm.style.display === 'none') {
+        couponForm.style.display = 'block';
+        toggleIcon.classList.remove('bx-chevron-down');
+        toggleIcon.classList.add('bx-chevron-up');
+      } else {
+        couponForm.style.display = 'none';
+        toggleIcon.classList.remove('bx-chevron-up');
+        toggleIcon.classList.add('bx-chevron-down');
+      }
+    });
+    
+    // Address Form Toggle
+    document.getElementById('addAddressBtn').addEventListener('click', function() {
+      const formContainer = document.getElementById('addressFormContainer');
+      formContainer.style.display = 'block';
+      document.getElementById('addressFormTitle').textContent = 'Add New Address';
+      document.getElementById('saveButtonText').textContent = 'Save Address';
+      document.getElementById('addressForm').reset();
+      document.getElementById('addressIndex').value = '-1';
+    });
+    
+    document.getElementById('closeAddressForm').addEventListener('click', function() {
+      document.getElementById('addressFormContainer').style.display = 'none';
+    });
+    
+    // Edit Address
+    function editAddress(index) {
+      // In a real application, you would get the address data from your user object
+      // This is a placeholder to show how it would work
+      const addresses = [
+        { name: "John Doe", phone: "9876543210", street: "123 Main St", city: "Mumbai", state: "Maharashtra", pincode: "400001" },
+        { name: "Jane Smith", phone: "8765432109", street: "456 Park Ave", city: "Delhi", state: "Delhi", pincode: "110001" }
+      ];
+      
+      const address = addresses[index];
+      
+      document.getElementById('name').value = address.name;
+      document.getElementById('phone').value = address.phone;
+      document.getElementById('street').value = address.street;
+      document.getElementById('city').value = address.city;
+      document.getElementById('state').value = address.state;
+      document.getElementById('pincode').value = address.pincode;
+      document.getElementById('addressIndex').value = index;
+      
+      document.getElementById('addressFormTitle').textContent = 'Edit Address';
+      document.getElementById('saveButtonText').textContent = 'Update Address';
+      document.getElementById('addressFormContainer').style.display = 'block';
+    }
+    
+    // Delete Address
+    function deleteAddress(index) {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you want to delete this address?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#000000',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // In a real application, you would send an AJAX request to delete the address
+          // For now, just show a success message
+          Swal.fire(
+            'Deleted!',
+            'Your address has been deleted.',
+            'success'
+          ).then(() => {
+            // Reload the page to reflect changes
+            location.reload();
+          });
+        }
+      });
+    }
+    
+    // Address Form Submission
+    document.getElementById('addressForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // In a real application, you would send an AJAX request to save the address
+      // For now, just show a success message
+      Swal.fire(
+        'Success!',
+        'Your address has been saved.',
+        'success'
+      ).then(() => {
+        document.getElementById('addressFormContainer').style.display = 'none';
+        // In a real app, you would update the address list without reloading
+      });
+    });
+    
+    // Apply Coupon
+    function applyCoupon() {
+      const couponCode = document.getElementById('couponCode').value.trim();
+      const couponMessage = document.getElementById('couponMessage');
+      
+      if (!couponCode) {
+        couponMessage.innerHTML = '<span class="text-danger">Please enter a coupon code</span>';
+        return;
+      }
+      
+      // Simulate coupon validation with a timeout
+      couponMessage.innerHTML = '<span class="text-info">Validating coupon...</span>';
+      
+      setTimeout(() => {
+        // Example coupon validation (in a real app, this would be server-side)
+        if (couponCode.toUpperCase() === 'WELCOME10') {
+          // Display discount in the order summary
+          document.getElementById('discountRow').style.display = 'flex';
+          document.getElementById('discountAmount').textContent = '-Rs.500';
+          
+          // Update total (in a real app, you would calculate this properly)
+          const currentTotal = parseFloat(document.getElementById('orderTotal').textContent.replace('Rs.', '').replace(',', ''));
+          const newTotal = currentTotal - 500;
+          document.getElementById('orderTotal').textContent = 'Rs.' + newTotal.toLocaleString();
+          document.getElementById('paymentAmount').textContent = newTotal.toLocaleString();
+          
+          couponMessage.innerHTML = '<span class="text-success">Coupon applied successfully!</span>';
+        } else {
+          couponMessage.innerHTML = '<span class="text-danger">Invalid coupon code</span>';
+        }
+      }, 1000);
+    }
+    
+    // Place Order Button
+    document.getElementById('placeOrderBtn').addEventListener('click', function() {
+      // Check if address is selected
+      const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
+      if (!selectedAddress && document.querySelectorAll('.address-card').length > 0) {
+        Swal.fire('Error', 'Please select a delivery address', 'error');
+        return;
+      }
+      
+      // Check if payment method is selected
+      const selectedPayment = document.querySelector('input[name="paymentMethod"]:checked');
+      if (!selectedPayment) {
+        Swal.fire('Error', 'Please select a payment method', 'error');
+        return;
+      }
+      
+      // If credit card is selected, show payment modal
+      if (selectedPayment.value === 'creditCard') {
+        document.getElementById('paymentModal').style.display = 'block';
+        // Set payment amount in the button
+        const orderTotal = document.getElementById('orderTotal').textContent.replace('Rs.', '');
+        document.getElementById('paymentAmount').textContent = orderTotal;
+      } else if (selectedPayment.value === 'cashOnDelivery') {
+        // For COD, just confirm and proceed
+        Swal.fire({
+          title: 'Confirm Order',
+          text: 'Do you want to place this order with Cash on Delivery?',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#000000',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, Place Order'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            processOrder();
+          }
+        });
+      } else {
+        // For other payment methods, you would implement their specific flows
+        Swal.fire('Coming Soon', 'This payment method will be available soon', 'info');
+      }
+    });
+    
+    // Close Payment Modal
+    document.getElementById('closePaymentModal').addEventListener('click', function() {
+      document.getElementById('paymentModal').style.display = 'none';
+    });
+    
+    // Credit Card Form Validation and Submission
+    document.getElementById('cardPaymentForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Basic validation (in a real app, you would do more thorough validation)
+      const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
+      const cardHolder = document.getElementById('cardHolder').value;
+      const expiryDate = document.getElementById('expiryDate').value;
+      const cvv = document.getElementById('cvv').value;
+      
+      if (cardNumber.length !== 16 || !/^\d+$/.test(cardNumber)) {
+        Swal.fire('Error', 'Please enter a valid 16-digit card number', 'error');
+        return;
+      }
+      
+      if (!cardHolder) {
+        Swal.fire('Error', 'Please enter the card holder name', 'error');
+        return;
+      }
+      
+      if (!expiryDate || expiryDate.length !== 5 || expiryDate.charAt(2) !== '/') {
+        Swal.fire('Error', 'Please enter a valid expiry date (MM/YY)', 'error');
+        return;
+      }
+      
+      if (!cvv || cvv.length !== 3 || !/^\d+$/.test(cvv)) {
+        Swal.fire('Error', 'Please enter a valid 3-digit CVV', 'error');
+        return;
+      }
+      
+      // Process payment (in a real app, you would send this to a payment processor)
+      document.getElementById('paymentModal').style.display = 'none';
+      processOrder();
+    });
+    
+    // Process Order Function
+    function processOrder() {
+      // Show loading indicator
+      Swal.fire({
+        title: 'Processing',
+        text: 'Please wait while we process your order...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+      
+      // Simulate order processing (in a real app, this would be an API call)
+      setTimeout(() => {
+        Swal.fire({
+          title: 'Order Placed Successfully!',
+          text: 'Thank you for your purchase. Your order has been confirmed.',
+          icon: 'success',
+          confirmButtonColor: '#000000'
+        }).then(() => {
+          // Redirect to order confirmation page
+          window.location.href = '/placeorder?id=' + generateOrderId();
+        });
+      }, 2000);
+    }
+    
+    // Generate a random order ID (for demo purposes)
+    function generateOrderId() {
+      return 'ORD' + Math.floor(100000 + Math.random() * 900000);
+    }
+    
+    // Format card number with spaces after every 4 digits
+    function formatCardNumber(input) {
+      // Remove existing spaces
+      let value = input.value.replace(/\s/g, '');
+      
+      // Add a space after every 4 characters
+      let formattedValue = '';
+      for (let i = 0; i < value.length; i++) {
+        if (i > 0 && i % 4 === 0) {
+          formattedValue += ' ';
+        }
+        formattedValue += value.charAt(i);
+      }
+      
+      // Update the input value
+      input.value = formattedValue;
+      
+      // Update the card display
+      document.getElementById('cardNumberDisplay').textContent = formattedValue || '•••• •••• •••• ••••';
+    }
+    
+    // Format expiry date (MM/YY)
+    function formatExpiryDate(input) {
+      let value = input.value.replace(/\D/g, '');
+      
+      if (value.length > 0) {
+        // Format as MM/YY
+        if (value.length <= 2) {
+          // Just month part
+          input.value = value;
+        } else {
+          // Month and year
+          const month = value.substring(0, 2);
+          const year = value.substring(2, 4);
+          input.value = month + '/' + year;
+        }
+      }
+      
+      // Update the card display
+      document.getElementById('cardExpiryDisplay').textContent = input.value || 'MM/YY';
+    }
+    
+    // Update card display as user types
+    document.getElementById('cardHolder').addEventListener('input', function() {
+      document.getElementById('cardHolderDisplay').textContent = this.value || 'YOUR NAME';
+    });
+    
+    document.getElementById('cvv').addEventListener('input', function() {
+      document.getElementById('cardCvcDisplay').textContent = this.value || '•••';
+    });
+    
+    // Flip card when focusing on CVV field
+    document.getElementById('cvv').addEventListener('focus', function() {
+      document.querySelector('.credit-card-inner').style.transform = 'rotateY(180deg)';
+    });
+    
+    document.getElementById('cvv').addEventListener('blur', function() {
+      document.querySelector('.credit-card-inner').style.transform = 'rotateY(0deg)';
+    });
+    
+    // Initialize Owl Carousel for facility area
+    $(document).ready(function() {
+      $('.facility-slides').owlCarousel({
+        loop: true,
+        nav: false,
+        dots: true,
+        autoplay: true,
+        autoplayHoverPause: true,
+        margin: 30,
+        responsive: {
+          0: {
+            items: 1
+          },
+          576: {
+            items: 2
+          },
+          768: {
+            items: 3
+          },
+          1200: {
+            items: 5
+          }
+        }
+      });
+    });
+    
+    // Steps navigation
+    const steps = document.querySelectorAll('.checkout-steps-indicator .step');
+    let currentStep = 0;
+    
+    function updateSteps(stepIndex) {
+      steps.forEach((step, index) => {
+        if (index < stepIndex) {
+          step.classList.add('completed');
+          step.classList.remove('active');
+        } else if (index === stepIndex) {
+          step.classList.add('active');
+          step.classList.remove('completed');
+        } else {
+          step.classList.remove('active', 'completed');
+        }
+      });
+    }
+    
+    // Possible function to proceed to next step (not used in this sample)
+    function nextStep() {
+      if (currentStep < steps.length - 1) {
+        currentStep++;
+        updateSteps(currentStep);
+      }
+    }
+    
+    // Possible function to go back to previous step (not used in this sample)
+    function prevStep() {
+      if (currentStep > 0) {
+        currentStep--;
+        updateSteps(currentStep);
+      }
+    }
+    
+    // Initialize steps
+    updateSteps(currentStep);
+    
+    // Handle clicks on step indicators (optional feature)
+    steps.forEach((step, index) => {
+      step.addEventListener('click', function() {
+        // Only allow clicking on previous steps or the next available step
+        if (index <= currentStep + 1) {
+          currentStep = index;
+          updateSteps(currentStep);
+        }
+      });
+    });
+    </script>
+
+    <%- include('../partials/user/footer') %>

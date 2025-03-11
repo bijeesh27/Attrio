@@ -1,0 +1,487 @@
+<%- include('../partials/user/header') %>
+<link rel="stylesheet" href="/user/assets/css/cartstyle.css">
+
+<!-- Start Page Title -->
+<div class="page-title-area">
+  <div class="container">
+    <div class="page-title-content">
+      <h2>Order Confirmation</h2>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li>Order Confirmation</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<!-- End Page Title -->
+
+<!-- Start Order Confirmation Area -->
+<section class="order-confirmation-area ptb-100">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="order-confirmation-box">
+          <div class="confirmation-animation">
+            <div class="checkmark-circle">
+              <div class="background"></div>
+              <div class="checkmark draw"></div>
+            </div>
+          </div>
+          
+          <div class="confirmation-content">
+            <h2>Thank You for Your Order!</h2>
+            <p class="order-id">Order ID: <strong>#<%= orderNumber %></strong></p>
+            <p class="confirmation-message">
+              We've received your order and are getting it ready. A confirmation email has been sent to <strong><%= user.email %></strong>.
+            </p>
+            
+            <div class="order-summary-card">
+              <div class="summary-header">
+                <h3>Order Summary</h3>
+              </div>
+              
+              <div class="summary-body">
+                <div class="order-details">
+                  <div class="detail-item">
+                    <span class="detail-label">Order Date</span>
+                    <span class="detail-value"><%= new Date().toLocaleDateString('en-US', {day: 'numeric', month: 'long', year: 'numeric'}) %></span>
+                  </div>
+                  
+                  <div class="detail-item">
+                    <span class="detail-label">Payment Method</span>
+                    <span class="detail-value"><%= paymentMethod %></span>
+                  </div>
+                  
+                  <div class="detail-item">
+                    <span class="detail-label">Shipping Address</span>
+                    <span class="detail-value">
+                      <%= shippingAddress.name %><br>
+                      <%= shippingAddress.street %><br>
+                      <%= shippingAddress.city %>, <%= shippingAddress.state %> <%= shippingAddress.zip %><br>
+                      <%= shippingAddress.country %>
+                    </span>
+                  </div>
+                </div>
+                
+                <div class="summary-divider"></div>
+                
+                <div class="price-summary">
+                  <div class="summary-item">
+                    <span class="label">Subtotal</span>
+                    <span class="value">Rs.<%= subtotal.toLocaleString() %></span>
+                  </div>
+                  
+                  <div class="summary-item">
+                    <span class="label">Shipping</span>
+                    <span class="value">
+                      <% if (subtotal > 10000) { %>
+                        <span class="free-shipping">Free Shipping</span>
+                      <% } else { %>
+                        Rs.100
+                      <% } %>
+                    </span>
+                  </div>
+                  
+                  <% if (discount > 0) { %>
+                    <div class="summary-item">
+                      <span class="label">Discount</span>
+                      <span class="value discount">-Rs.<%= discount.toLocaleString() %></span>
+                    </div>
+                  <% } %>
+                  
+                  <div class="summary-divider"></div>
+                  
+                  <div class="summary-item total">
+                    <span class="label">Total</span>
+                    <span class="value">Rs.<%= grandTotal.toLocaleString() %></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="action-buttons">
+              <a href="/shop" class="btn-continue-shopping">
+                <i class="bx bx-shopping-bag"></i>
+                <span>Continue Shopping</span>
+              </a>
+              
+              <a href="/orders" class="btn-view-orders">
+                <span>View Orders</span>
+                <i class="bx bx-list-ul"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End Order Confirmation Area -->
+
+<!-- Start Facility Area -->
+<section class="facility-area pb-70">
+  <div class="container">
+    <div class="facility-slides owl-carousel owl-theme">
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-tracking"></i>
+        </div>
+        <h3>Free Shipping Worldwide</h3>
+      </div>
+
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-return"></i>
+        </div>
+        <h3>Easy Return Policy</h3>
+      </div>
+
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-shuffle"></i>
+        </div>
+        <h3>7 Day Exchange Policy</h3>
+      </div>
+
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-sale"></i>
+        </div>
+        <h3>Weekend Discount Coupon</h3>
+      </div>
+
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-credit-card"></i>
+        </div>
+        <h3>Secure Payment Methods</h3>
+      </div>
+
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-location"></i>
+        </div>
+        <h3>Track Your Package</h3>
+      </div>
+
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-customer-service"></i>
+        </div>
+        <h3>24/7 Customer Support</h3>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End Facility Area -->
+
+<!-- Start Instagram Area -->
+<div class="instagram-area">
+  <div class="container-fluid">
+    <div class="instagram-title">
+      <a href="#" target="_blank"><i class="bx bxl-instagram"></i> Follow us on @xton</a>
+    </div>
+
+    <div class="instagram-slides owl-carousel owl-theme">
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img1.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img2.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img3.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img4.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img10.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img6.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img7.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img8.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img9.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img5.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Instagram Area -->
+
+<style>
+/* Order Confirmation Styles */
+.order-confirmation-box {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 5px 30px rgba(0, 0, 0, 0.05);
+  padding: 50px;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.confirmation-animation {
+  margin-bottom: 30px;
+}
+
+.checkmark-circle {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.checkmark-circle .background {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #f8f9fa;
+  position: absolute;
+}
+
+.checkmark-circle .checkmark {
+  border-radius: 5px;
+}
+
+.checkmark-circle .checkmark.draw:after {
+  animation-delay: 100ms;
+  animation-duration: 1s;
+  animation-timing-function: ease;
+  animation-name: checkmark;
+  transform: scaleX(-1) rotate(135deg);
+  animation-fill-mode: forwards;
+}
+
+.checkmark-circle .checkmark:after {
+  opacity: 0;
+  height: 60px;
+  width: 30px;
+  transform-origin: left top;
+  border-right: 8px solid #000;
+  border-top: 8px solid #000;
+  content: '';
+  left: 30px;
+  top: 60px;
+  position: absolute;
+}
+
+@keyframes checkmark {
+  0% {
+    height: 0;
+    width: 0;
+    opacity: 1;
+  }
+  20% {
+    height: 0;
+    width: 30px;
+    opacity: 1;
+  }
+  40% {
+    height: 60px;
+    width: 30px;
+    opacity: 1;
+  }
+  100% {
+    height: 60px;
+    width: 30px;
+    opacity: 1;
+  }
+}
+
+.confirmation-content h2 {
+  font-size: 28px;
+  margin-bottom: 15px;
+  color: #000000;
+}
+
+.order-id {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: #666666;
+}
+
+.confirmation-message {
+  font-size: 16px;
+  margin-bottom: 30px;
+  line-height: 1.6;
+  color: #555555;
+}
+
+.order-summary-card {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 25px;
+  text-align: left;
+  margin-bottom: 30px;
+}
+
+.order-summary-card .summary-header {
+  margin-bottom: 20px;
+}
+
+.order-summary-card .summary-header h3 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.order-details {
+  margin-bottom: 20px;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.detail-label {
+  font-weight: 500;
+  color: #555555;
+}
+
+.detail-value {
+  text-align: right;
+  color: #333333;
+}
+
+.summary-divider {
+  height: 1px;
+  background-color: #e0e0e0;
+  margin: 15px 0;
+}
+
+.price-summary .summary-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.price-summary .label {
+  font-weight: 500;
+  color: #555555;
+}
+
+.price-summary .value {
+  color: #333333;
+}
+
+.price-summary .value.discount {
+  color: #e74c3c;
+}
+
+.free-shipping {
+  color: #27ae60;
+}
+
+.summary-item.total {
+  font-size: 18px;
+  font-weight: 600;
+  color: #000000;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.btn-continue-shopping, .btn-view-orders {
+  display: inline-flex;
+  align-items: center;
+  padding: 14px 25px;
+  border-radius: 30px;
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-continue-shopping {
+  background-color: #f8f9fa;
+  color: #000000;
+  border: 1px solid #e0e0e0;
+}
+
+.btn-view-orders {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.btn-continue-shopping:hover {
+  background-color: #f0f0f0;
+}
+
+.btn-view-orders:hover {
+  background-color: #333333;
+}
+
+.btn-continue-shopping i, .btn-view-orders i {
+  font-size: 16px;
+}
+
+.btn-continue-shopping i {
+  margin-right: 8px;
+}
+
+.btn-view-orders i {
+  margin-left: 8px;
+}
+
+@media only screen and (max-width: 768px) {
+  .order-confirmation-box {
+    padding: 30px 20px;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .btn-continue-shopping, .btn-view-orders {
+    width: 100%;
+    justify-content: center;
+  }
+}
+</style>
+
+<%- include('../partials/user/footer') %>

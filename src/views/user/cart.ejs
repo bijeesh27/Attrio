@@ -106,18 +106,18 @@
 
                         <td class="quantity-col">
                           <div class="quantity-selector">
-                            <button type="button" class="quantity-btn minus-btn" onclick="updateQuantity('<%= item.productId %>', '<%= item.size %>', -1)">
+                            <button type="button" class="quantity-btn minus-btn" onclick="updateQuantity('<%= item.productId._id %>', '<%= item.size %>', -1)">
                               <i class="bx bx-minus"></i>
                             </button>
-                            <input type="text" value="<%= item.quantity %>" id="quantity-<%= item.productId %>-<%= item.size %>" min="1" class="quantity-input" readonly>
-                            <button type="button" class="quantity-btn plus-btn" onclick="updateQuantity('<%= item.productId %>', '<%= item.size %>', 1)">
+                            <input type="text" value="<%= item.quantity %>" id="quantity-<%= item.productId._id %>-<%= item.size %>" min="1" class="quantity-input" readonly>
+                            <button type="button" class="quantity-btn plus-btn" onclick="updateQuantity('<%= item.productId._id %>', '<%= item.size %>', 1)">
                               <i class="bx bx-plus"></i>
                             </button>
                           </div>
                         </td>
 
                         <td class="total-col">
-                          <span class="total">Rs.<%= item.total.toLocaleString() %></span>
+                          <span class="total" id="total-<%= item.productId._id %>-<%= item.size %>">Rs.<%= item.total.toLocaleString() %></span>
                         </td>
                         
                         <td class="action-col">
@@ -161,10 +161,6 @@
                   <button type="button" class="btn-clear" onclick="clearCart()">
                     <i class="bx bx-trash"></i>
                     <span>Clear Cart</span>
-                  </button>
-                  <button type="button" class="btn-update" onclick="updateCart()">
-                    <i class="bx bx-refresh"></i>
-                    <span>Update Cart</span>
                   </button>
                 </div>
               </div>
@@ -383,151 +379,112 @@
 </div>
 <!-- End Instagram Area -->
 
-
-
 <script>
-// // Cart functionality
-// function updateQuantity(productId, size, change) {
-//   const quantityInput = document.getElementById(`quantity-${productId}-${size}`);
-//   let quantity = parseInt(quantityInput.value) + change;
+function updateQuantity(productId, size, change) {
+  const quantityInput = document.getElementById(`quantity-${productId}-${size}`);
+  let quantity = parseInt(quantityInput.value) + change;
   
-//   // Ensure quantity is at least 1
-//   if (quantity < 1) {
-//     quantity = 1;
-//   }
+  // Ensure quantity is at least 1
+  if (quantity < 1) {
+    quantity = 1;
+  }
   
-//   // Update input value
-//   quantityInput.value = quantity;
+  // Update input value
+  quantityInput.value = quantity;
   
-//   // Send AJAX request to update cart
-//   fetch('/cart/update', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify({
-//       productId: productId,
-//       size: size,
-//       quantity: quantity
-//     })
-//   })
-//   .then(response => response.json())
-//   .then(data => {
-//     if (data.success) {
-//       // Refresh the page to update totals
-//       location.reload();
-//     } else {
-//       alert('Failed to update quantity. Please try again.');
-//     }
-//   })
-//   .catch(error => {
-//     console.error('Error:', error);
-//     alert('An error occurred. Please try again.');
-//   });
-// }
-// document.querySelectorAll('.remove-btn').forEach(button => {
-//   button.addEventListener('click', function() {
-//     const productId = this.getAttribute('data-product-id');
-//     const size = this.getAttribute('data-size');
-//     removeItem(productId, size);
-//   });
-// });
+  // Send AJAX request to update cart
+  fetch('/cart/update', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      productId: productId,
+      size: size,
+      quantity: quantity
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      // Update the total price for the item
+      const totalElement = document.getElementById(`total-${productId}-${size}`);
+      totalElement.textContent = `Rs.${data.itemTotal.toLocaleString()}`;
+      
+      // Update the cart total
+      const cartTotalElement = document.querySelector('.summary-item.total .value');
+      cartTotalElement.textContent = `Rs.${data.cartTotal.toLocaleString()}`;
+    } else {
+      alert('Failed to update quantity. Please try again.');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('An error occurred. Please try again.');
+  });
+}
 
-
-function removeItem(productId,size) {
-  console.log("Function called with:", productId, size);
-      Swal.fire({
-        title: `Are you sure?`,
-        text: ` Do you want to remove this product from cart?`,
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#000000",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Remove",
-        cancelButtonText: "Cancel",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          window.location.href = `/removeItem/${productId}/${size}`;
+function removeItem(productId, size) {
+  Swal.fire({
+    title: `Are you sure?`,
+    text: `Do you want to remove this product from cart?`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#000000",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Remove",
+    cancelButtonText: "Cancel",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      fetch(`/removeItem/${productId}/${size}`, {
+        method: 'get',
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          location.reload();
+        } else {
+          alert('Failed to remove item. Please try again.');
         }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
       });
     }
+  });
+}
 
-
-
-  function clearCart() {
-      Swal.fire({
-        title: `Are you sure?`,
-        text: ` Do you want to Clear the cart?`,
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#000000",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Clear",
-        cancelButtonText: "Cancel",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          window.location.href = "/clearcart";
+function clearCart() {
+  Swal.fire({
+    title: `Are you sure?`,
+    text: `Do you want to clear the cart?`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#000000",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Clear",
+    cancelButtonText: "Cancel",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      fetch('/clearcart', {
+        method: 'get',
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          location.reload();
+        } else {
+          alert('Failed to clear cart. Please try again.');
         }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
       });
     }
-
-
-    const quantitySelectors = document.querySelectorAll('.quantity-selector');
-
-// Add event listeners to each quantity selector
-quantitySelectors.forEach(selector => {
-  const minusBtn = selector.querySelector('.minus-btn');
-  const plusBtn = selector.querySelector('.plus-btn');
-  const quantityInput = selector.querySelector('.quantity-input');
-
-  minusBtn.addEventListener('click', () => {
-    let currentValue = parseInt(quantityInput.value);
-    if (currentValue > 1) {
-      quantityInput.value = currentValue - 1;
-    }
   });
-
-  plusBtn.addEventListener('click', () => {
-    let currentValue = parseInt(quantityInput.value);
-    quantityInput.value = currentValue + 1;
-  });
-});
-// function updateCart() {
-//   alert('Cart updated successfully!');
-//   location.reload();
-// }
-
-// function applyCoupon() {
-//   const couponCode = document.getElementById('coupon-code').value.trim();
-  
-//   if (!couponCode) {
-//     alert('Please enter a coupon code.');
-//     return;
-//   }
-  
-//   fetch('/cart/apply-coupon', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify({
-//       couponCode: couponCode
-//     })
-//   })
-//   .then(response => response.json())
-//   .then(data => {
-//     if (data.success) {
-//       alert('Coupon applied successfully!');
-//       location.reload();
-//     } else {
-//       alert(data.message || 'Invalid coupon code. Please try again.');
-//     }
-//   })
-//   .catch(error => {
-//     console.error('Error:', error);
-//     alert('An error occurred. Please try again.');
-//   });
-// }
+}
 </script>
 
 <%- include('../partials/user/footer') %>

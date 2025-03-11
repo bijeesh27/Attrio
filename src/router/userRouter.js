@@ -5,6 +5,7 @@ const productController = require("../controller/user/productController");
 const categoryController = require("../controller/user/categoryController");
 const profileController=require('../controller/user/profileController')
 const cartController=require('../controller/user/cartController')
+const orderController=require('../controller/user/orderController')
 const passport = require("../config/passport");
 const { ifLogged, logged } = require("../middleware/userMiddleware");
 const {upload,cropUpload}=require("../config/profilemulter")
@@ -63,6 +64,9 @@ router.get("/cart",logged,cartController.loadCart)
 router.post("/addtocart",logged,cartController.addToCart)
 router.get('/clearcart',logged,cartController.clearCart)
 router.get('/removeItem/:productId/:size',logged,cartController.removeItem)
+router.post('/cart/update',logged,cartController.updateCartQuantity)
+router.get("/checkout",logged,orderController.loadCheckout)
+router.get("/placeorder",logged,orderController.loadPlaceOrder)
 
 
 router.get("/auth/google",passport.authenticate("google", { scope: ["profile", "email"] })
