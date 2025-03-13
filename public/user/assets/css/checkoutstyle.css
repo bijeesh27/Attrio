@@ -1196,3 +1196,157 @@
   .text-info {
     color: #007bff;
   }
+
+  /* Pink Theme Color: #f53f85 */
+
+/* Global Color Overrides */
+.btn-add-address, 
+.btn-save-address, 
+.btn-place-order,
+.btn-pay,
+.btn-apply-coupon {
+  background-color: #f53f85;
+  border-color: #f53f85;
+}
+
+.btn-add-address:hover, 
+.btn-save-address:hover, 
+.btn-place-order:hover,
+.btn-pay:hover,
+.btn-apply-coupon:hover {
+  background-color: #d62d6f;
+  border-color: #d62d6f;
+}
+
+/* Step Indicator */
+.checkout-steps-indicator .step.active .step-number {
+  background-color: #f53f85;
+  border-color: #f53f85;
+}
+
+.checkout-steps-indicator .step.completed .step-number {
+  background-color: #f53f85;
+  border-color: #f53f85;
+}
+
+.checkout-steps-indicator .step-connector {
+  background-color: #e0e0e0;
+}
+
+.checkout-steps-indicator .step.active .step-text,
+.checkout-steps-indicator .step.completed .step-text {
+  color: #f53f85;
+}
+
+/* Radio Button Styling */
+.address-radio input[type="radio"]:checked + .address-selector {
+  border-color: #f53f85;
+}
+
+.address-radio input[type="radio"]:checked + .address-selector::after {
+  background-color: #f53f85;
+}
+
+/* Address Card Selected */
+.address-card.selected {
+  border-color: #f53f85;
+}
+
+/* Section Headers */
+.section-header h3 i {
+  color: #f53f85;
+}
+
+/* Payment Methods */
+.payment-method-option input[type="radio"]:checked + .payment-method-label {
+  border-color: #f53f85;
+}
+
+.payment-method-option input[type="radio"]:checked + .payment-method-label .payment-method-icon {
+  color: #ffffff;
+}
+
+/* Order Summary */
+.summary-header h3 {
+  color: #f53f85;
+}
+
+.view-details-toggle, 
+.coupon-toggle i {
+  color: #f53f85;
+}
+
+.free-shipping {
+  color: #f53f85;
+}
+
+/* Discount */
+.discount-amount {
+  color: #f53f85;
+}
+
+/* Coupon Message */
+.coupon-message .text-success {
+  color: #f53f85 !important;
+}
+
+/* Credit Card */
+.credit-card {
+  background: linear-gradient(135deg, #ffffff, #ffffff);
+}
+
+/* Sweet Alert Overrides */
+.swal2-styled.swal2-confirm {
+  background-color: #f53f85 !important;
+}
+
+/* Checkbox styling */
+.form-check-input:checked {
+  background-color: #f53f85;
+  border-color: #f53f85;
+}
+
+/* Links */
+a:hover {
+  color: #f53f85;
+}
+
+/* Breadcrumb active */
+.page-title-content ul li:last-child {
+  color: #f53f85;
+}
+
+/* Form focus states */
+.form-control:focus {
+  border-color: #f53f85;
+  box-shadow: 0 0 0 0.2rem rgba(245, 63, 133, 0.25);
+}
+
+/* Button hover transitions */
+.btn-add-address, 
+.btn-save-address, 
+.btn-place-order,
+.btn-pay,
+.btn-apply-coupon {
+  transition: all 0.3s ease;
+}
+
+/* Owl Carousel Dots */
+.owl-dots .owl-dot.active span {
+  background-color: #f53f85 !important;
+}
+
+/* Facility icons */
+.single-facility-box .icon {
+  color: #f53f85;
+}
+
+/* Search overlay */
+.search-overlay-form button {
+  background-color: #f53f85;
+}
+
+/* No address icon */
+.no-address-icon i {
+  color: #f53f85;
+}

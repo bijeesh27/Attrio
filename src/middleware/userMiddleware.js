@@ -15,7 +15,7 @@ const ifLogged = async (req, res, next) => {
 const logged = async (req, res, next) => {
   try {
     const user = await User.findOne({ _id: req.session.userId });
-    console.log("user:", user);
+    
     if (req.session.isAuth && user && user.status === true) {
       next();
     } else {

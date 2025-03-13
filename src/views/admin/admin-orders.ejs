@@ -1,0 +1,654 @@
+<%- include('../partials/admin/header') %>
+
+<style>
+  .table-container {
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  #orderList-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+  }
+
+  #orderList-table th,
+  #orderList-table td {
+    padding: 8px;
+    white-space: nowrap;
+  }
+
+  .order-status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .status-pending {
+    background-color: #ffedd5;
+    color: #c2410c;
+  }
+
+  .status-processing {
+    background-color: #e0f2fe;
+    color: #0369a1;
+  }
+
+  .status-shipped {
+    background-color: #dcfce7;
+    color: #15803d;
+  }
+
+  .status-delivered {
+    background-color: #d1fae5;
+    color: #047857;
+  }
+
+  .status-cancelled {
+    background-color: #fef2f2;
+    color: #b91c1c;
+  }
+
+  .payment-status-paid {
+    background-color: #dcfce7;
+    color: #15803d;
+  }
+
+  .payment-status-pending {
+    background-color: #ffedd5;
+    color: #c2410c;
+  }
+
+  .payment-status-failed {
+    background-color: #fef2f2;
+    color: #b91c1c;
+  }
+
+  .return-status-requested {
+    background-color: #ffedd5;
+    color: #c2410c;
+  }
+
+  .return-status-approved {
+    background-color: #e0f2fe;
+    color: #0369a1;
+  }
+
+  .return-status-completed {
+    background-color: #d1fae5;
+    color: #047857;
+  }
+
+  .return-status-rejected {
+    background-color: #fef2f2;
+    color: #b91c1c;
+  }
+
+  .return-status-none {
+    background-color: #f3f4f6;
+    color: #6b7280;
+  }
+
+  /* Compact Search component styles */
+  .search-container {
+    position: relative;
+    margin-bottom: 20px;
+    max-width: 400px;
+  }
+  
+  .search-form {
+    display: flex;
+    align-items: center;
+  }
+  
+  .search-input-wrapper {
+    position: relative;
+    flex-grow: 1;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 8px 35px 8px 35px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: all 0.3s;
+    outline: none;
+    height: 38px;
+  }
+  
+  .search-input:focus {
+    border-color: #556ee6;
+    box-shadow: 0 0 0 2px rgba(85, 110, 230, 0.1);
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-size: 16px;
+    pointer-events: none;
+  }
+  
+  .cancel-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-size: 16px;
+    cursor: pointer;
+    display: none;
+  }
+  
+  .search-input:not(:placeholder-shown) ~ .cancel-icon {
+    display: block;
+  }
+  
+  .search-button {
+    margin-left: 8px;
+    padding: 8px 15px;
+    background-color: #556ee6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    height: 38px;
+  }
+  
+  .search-button:hover {
+    background-color: #4458b8;
+  }
+
+  /* Filter styles */
+  .filter-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .filter-select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    min-width: 150px;
+  }
+  
+  /* Status dropdown styles */
+  .status-select {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid #ddd;
+    background-color: white;
+    cursor: pointer;
+  }
+  
+  .status-updating {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  
+  /* Toast notification */
+  .toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+  }
+  
+  .toast {
+    padding: 12px 20px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    font-weight: 500;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 300px;
+    animation: slideIn 0.3s ease-out forwards;
+  }
+  
+  .toast-success {
+    background-color: #dcfce7;
+    color: #15803d;
+    border-left: 4px solid #15803d;
+  }
+  
+  .toast-error {
+    background-color: #fef2f2;
+    color: #b91c1c;
+    border-left: 4px solid #b91c1c;
+  }
+  
+  .toast-close {
+    background: transparent;
+    border: none;
+    color: inherit;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideOut {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
+</style>
+
+<body data-sidebar="dark">
+  <div class="main-content">
+    <div class="page-content">
+      <div class="container-fluid">
+        <!-- Start page title -->
+        <div class="row">
+          <div class="col-12">
+            <div
+              class="page-title-box d-sm-flex align-items-center justify-content-between"
+            >
+              <h4 class="mb-sm-0 font-size-18">Orders</h4>
+              <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                  <li class="breadcrumb-item">
+                    <a href="javascript: void(0);">Ecommerce</a>
+                  </li>
+                  <li class="breadcrumb-item active">Orders</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End page title -->
+        
+        <!-- Toast notification container -->
+        <div class="toast-container" id="toastContainer"></div>
+        
+        <!-- New Compact Search Component and Filters -->
+        <div class="row mb-3">
+          <div class="col-sm-12 col-md-6">
+            <div class="search-container">
+              <form action="/admin/ordersearch" method="GET" class="search-form" id="searchForm">
+                <div class="search-input-wrapper">
+                  <i class="bx bx-search search-icon"></i>
+                  <input
+                    type="text"
+                    class="search-input form-control"
+                    id="searchOrderInput"
+                    placeholder="Search by order ID or customer..."
+                    name="query"
+                    value="<%= searchQuery %>"
+                  />
+                  <i class="bx bx-x cancel-icon" onclick="clearSearch()"></i>
+                </div>
+                <button type="submit" class="search-button">
+                  Search
+                </button>
+              </form>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <div class="filter-container">
+              <select class="filter-select" id="orderStatusFilter" onchange="applyFilters()">
+                <option value="">All Order Status</option>
+                <option value="pending">Pending</option>
+                <option value="processing">Processing</option>
+                <option value="shipped">Shipped</option>
+                <option value="delivered">Delivered</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+              <select class="filter-select" id="paymentStatusFilter" onchange="applyFilters()">
+                <option value="">All Payment Status</option>
+                <option value="paid">Paid</option>
+                <option value="pending">Pending</option>
+                <option value="failed">Failed</option>
+              </select>
+              <select class="filter-select" id="returnStatusFilter" onchange="applyFilters()">
+                <option value="">All Return Status</option>
+                <option value="none">None</option>
+                <option value="requested">Requested</option>
+                <option value="approved">Approved</option>
+                <option value="completed">Completed</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <!-- Orders Table -->
+                <div class="table-container">
+                  <table
+                    class="order-table table align-middle"
+                    id="orderList-table"
+                  >
+                    <thead class="table-light">
+                      <tr>
+                        <th>SL.No</th>
+                        <th>Order ID</th>
+                        <th>Customer Name</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Order Status</th>
+                        <th>Payment Status</th>
+                        <th>Return Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% if (orders && orders.length > 0) { %>
+                      <% orders.forEach((order, index) => { %>
+                      <tr data-order-id="<%= order.id %>">
+                        <td><%= index + 1 %></td>
+                        <td><%= order.orderNumber %></td>
+                        <td><%= order.userId.username%></td>
+                        <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
+                        <td>Rs.<%= order.orderAmount %></td>
+                        <td>
+                          <select 
+                            class="status-select order-status-select" 
+                            data-status-type="orderStatus" 
+                            data-original-value="<%= order.orderStatus.toLowerCase() %>"
+                            onchange="updateOrderStatus(this, '<%= order.id %>', 'orderStatus')"
+                          >
+                            <option value="pending" <%= order.orderStatus.toLowerCase() === 'pending' ? 'selected' : '' %>>Pending</option>
+                            <option value="processing" <%= order.orderStatus.toLowerCase() === 'processing' ? 'selected' : '' %>>Processing</option>
+                            <option value="shipped" <%= order.orderStatus.toLowerCase() === 'shipped' ? 'selected' : '' %>>Shipped</option>
+                            <option value="delivered" <%= order.orderStatus.toLowerCase() === 'delivered' ? 'selected' : '' %>>Delivered</option>
+                            <option value="cancelled" <%= order.orderStatus.toLowerCase() === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+                          </select>
+                        </td>
+                        <td>
+                          <select 
+                            class="status-select payment-status-select" 
+                            data-status-type="paymentStatus" 
+                            data-original-value="<%= order.paymentStatus.toLowerCase() %>"
+                            onchange="updateOrderStatus(this, '<%= order.id %>', 'paymentStatus')"
+                          >
+                            <option value="paid" <%= order.paymentStatus.toLowerCase() === 'paid' ? 'selected' : '' %>>Paid</option>
+                            <option value="pending" <%= order.paymentStatus.toLowerCase() === 'pending' ? 'selected' : '' %>>Pending</option>
+                            <option value="failed" <%= order.paymentStatus.toLowerCase() === 'failed' ? 'selected' : '' %>>Failed</option>
+                          </select>
+                        </td>
+                        <td>
+                          <select 
+                            class="status-select return-status-select" 
+                            data-status-type="returnStatus" 
+                            data-original-value="<%= order.returnStatus ? order.returnStatus.toLowerCase() : 'none' %>"
+                            onchange="updateOrderStatus(this, '<%= order.id %>', 'returnStatus')"
+                          >
+                            <option value="none" <%= !order.returnStatus || order.returnStatus.toLowerCase() === 'none' ? 'selected' : '' %>>None</option>
+                            <option value="requested" <%= order.returnStatus && order.returnStatus.toLowerCase() === 'requested' ? 'selected' : '' %>>Requested</option>
+                            <option value="approved" <%= order.returnStatus && order.returnStatus.toLowerCase() === 'approved' ? 'selected' : '' %>>Approved</option>
+                            <option value="completed" <%= order.returnStatus && order.returnStatus.toLowerCase() === 'completed' ? 'selected' : '' %>>Completed</option>
+                            <option value="rejected" <%= order.returnStatus && order.returnStatus.toLowerCase() === 'rejected' ? 'selected' : '' %>>Rejected</option>
+                          </select>
+                        </td>
+                        <td>
+                          <a href="/admin/adminorderdetails/<%= order.id %>">
+                            <button
+                              class="btn btn-primary btn-sm waves-effect waves-light"
+                            >
+                              View Details
+                            </button>
+                          </a>
+                        </td>
+                      </tr>
+                      <% }) %>
+                      <% } else { %>
+                        <tr>
+                          <td colspan="9" class="text-center">No orders found</td></tr>
+                          <% } %>
+                        </tbody>
+                      </table>
+                    </div>
+                    <!-- End Table -->
+    
+                    <!-- Pagination -->
+                    <div class="row mt-4">
+                      <div class="col-12">
+                        <nav aria-label="Order pagination">
+                          <ul class="pagination pagination-rounded justify-content-center">
+                            <!-- Previous page button -->
+                            <li class="page-item <%= pagination.currentPage === 1 ? 'disabled' : '' %>">
+                              <a class="page-link" href="/admin/orders?page=<%= pagination.currentPage - 1 %>&query=<%= searchQuery %>" tabindex="-1">
+                                <i class="mdi mdi-chevron-left"></i>
+                              </a>
+                            </li>
+                            
+                            <!-- Page numbers -->
+                            <% pages.forEach(pageNum => { %>
+                              <li class="page-item <%= pagination.currentPage === pageNum ? 'active' : '' %>">
+                                <a class="page-link" href="/admin/orders?page=<%= pageNum %>&query=<%= searchQuery %>"><%= pageNum %></a>
+                              </li>
+                            <% }) %>
+                            
+                            <!-- Next page button -->
+                            <li class="page-item <%= pagination.currentPage === pagination.totalPages ? 'disabled' : '' %>">
+                              <a class="page-link" href="/admin/orders?page=<%= pagination.currentPage + 1 %>&query=<%= searchQuery %>">
+                                <i class="mdi mdi-chevron-right"></i>
+                              </a>
+                            </li>
+                          </ul>
+                        </nav>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End Card Body -->
+                </div>
+                <!-- End Card -->
+              </div>
+              <!-- End Col -->
+            </div>
+            <!-- End Row -->
+          </div>
+          <!-- End Container Fluid -->
+        </div>
+        <!-- End Page Content -->
+      </div>
+      <!-- End Main Content -->
+    </body>
+    
+    <script>
+      function clearSearch() {
+        document.getElementById('searchOrderInput').value = '';
+        // Redirect to main orders page to show all orders
+        window.location.href = '/admin/orders';
+      }
+    
+      function applyFilters() {
+        const orderStatus = document.getElementById('orderStatusFilter').value;
+        const paymentStatus = document.getElementById('paymentStatusFilter').value;
+        const returnStatus = document.getElementById('returnStatusFilter').value;
+        const searchQuery = document.getElementById('searchOrderInput').value;
+        
+        let url = '/admin/orders?page=1';
+        
+        if (searchQuery) {
+          url += `&query=${encodeURIComponent(searchQuery)}`;
+        }
+        
+        if (orderStatus) {
+          url += `&orderStatus=${encodeURIComponent(orderStatus)}`;
+        }
+        
+        if (paymentStatus) {
+          url += `&paymentStatus=${encodeURIComponent(paymentStatus)}`;
+        }
+        
+        if (returnStatus) {
+          url += `&returnStatus=${encodeURIComponent(returnStatus)}`;
+        }
+        
+        window.location.href = url;
+      }
+    
+      // Show toast notification
+      function showToast(message, type = 'success') {
+        const toastContainer = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.innerHTML = `
+          <span>${message}</span>
+          <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+        `;
+        toastContainer.appendChild(toast);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+          toast.style.animation = 'slideOut 0.3s ease-in forwards';
+          setTimeout(() => {
+            if (toast.parentElement) {
+              toast.parentElement.removeChild(toast);
+            }
+          }, 300);
+        }, 5000);
+      }
+    
+      // Update order status
+      function updateOrderStatus(selectElement, orderId, statusType) {
+        const newStatus = selectElement.value;
+        const originalValue = selectElement.getAttribute('data-original-value');
+        
+        // If no change, do nothing
+        if (newStatus === originalValue) {
+          return;
+        }
+        
+        // Add loading state
+        selectElement.classList.add('status-updating');
+        
+        // Send AJAX request to update status
+        fetch('/admin/updateorderstatus', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            orderId: orderId,
+            statusType: statusType,
+            newStatus: newStatus
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Remove loading state
+          selectElement.classList.remove('status-updating');
+          
+          if (data.success) {
+            // Update the data-original-value attribute
+            selectElement.setAttribute('data-original-value', newStatus);
+            
+            // Success message
+            showToast(`Order ${statusType} updated successfully to ${newStatus}`, 'success');
+            
+            // Update the select element class for styling
+            if (statusType === 'orderStatus') {
+              selectElement.className = `status-select order-status-select status-${newStatus}`;
+            } else if (statusType === 'paymentStatus') {
+              selectElement.className = `status-select payment-status-select payment-status-${newStatus}`;
+            } else if (statusType === 'returnStatus') {
+              selectElement.className = `status-select return-status-select return-status-${newStatus}`;
+            }
+          } else {
+            // Error message
+            showToast(data.message || 'Failed to update status', 'error');
+            
+            // Revert back to original value
+            selectElement.value = originalValue;
+          }
+        })
+        .catch(error => {
+          // Remove loading state
+          selectElement.classList.remove('status-updating');
+          
+          // Error message
+          showToast('Server error occurred. Please try again.', 'error');
+          
+          // Revert back to original value
+          selectElement.value = originalValue;
+        });
+      }
+    
+      // Show cancel icon when input has text
+      document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchOrderInput');
+        const cancelIcon = document.querySelector('.cancel-icon');
+        
+        // Check if there's initial value
+        if (searchInput && searchInput.value.length > 0) {
+          cancelIcon.style.display = 'block';
+        }
+        
+        // Add event listener to handle input changes
+        if (searchInput) {
+          searchInput.addEventListener('input', function() {
+            if (this.value.length > 0) {
+              cancelIcon.style.display = 'block';
+            } else {
+              cancelIcon.style.display = 'none';
+            }
+          });
+        }
+        
+        // Set filter values from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderStatus = urlParams.get('orderStatus');
+        const paymentStatus = urlParams.get('paymentStatus');
+        const returnStatus = urlParams.get('returnStatus');
+        
+        if (orderStatus) {
+          document.getElementById('orderStatusFilter').value = orderStatus;
+        }
+        
+        if (paymentStatus) {
+          document.getElementById('paymentStatusFilter').value = paymentStatus;
+        }
+        
+        if (returnStatus) {
+          document.getElementById('returnStatusFilter').value = returnStatus;
+        }
+        
+        // Apply status-specific styling to dropdowns
+        document.querySelectorAll('.order-status-select').forEach(select => {
+          select.classList.add(`status-${select.value}`);
+        });
+        
+        document.querySelectorAll('.payment-status-select').forEach(select => {
+          select.classList.add(`payment-status-${select.value}`);
+        });
+        
+        document.querySelectorAll('.return-status-select').forEach(select => {
+          select.classList.add(`return-status-${select.value}`);
+        });
+      });
+    </script>
+    
+    <%- include('../partials/admin/footer') %>

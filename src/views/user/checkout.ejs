@@ -74,18 +74,19 @@
             <div class="section-body">
               <!-- Saved Addresses -->
               <div class="saved-addresses">
-                <% if (user && user.addresses && user.addresses.length > 0) { %>
+                <% if ( addresses && addresses.length > 0) { %>
                   <div class="address-selection">
-                    <% user.addresses.forEach((address, index) => { %>
+                    <% addresses.forEach((address, index) => { %>
                       <div class="address-card <%= index === 0 ? 'selected' : '' %>">
                         <div class="address-radio">
-                          <input type="radio" name="selectedAddress" id="address-<%= index %>" value="<%= index %>" <%= index === 0 ? 'checked' : '' %>>
+                          <input type="radio" name="selectedAddress" id="address-<%= index %>" 
+                                 value="<%= address._id %>" <%= index === 0 ? 'checked' : '' %>>
                           <label for="address-<%= index %>" class="address-selector"></label>
                         </div>
                         <div class="address-content">
                           <h4><%= address.name %></h4>
                           <p><%= address.street %>, <%= address.city %>, <%= address.state %> - <%= address.pincode %></p>
-                          <p><i class='bx bx-phone'></i> <%= address.phone %></p>
+                          <p><i class='bx bx-phone'></i> <%= address.number %></p>
                           <div class="address-actions">
                            
                           </div>
@@ -102,13 +103,13 @@
                   </div>
                 <% } %>
                 
-                <button type="button" class="btn-add-address" id="addAddressBtn">
+                <button type="button" class="btn-add-address" id="addAddressBtn" onclick="addAddress()">
                   <i class='bx bx-plus-circle'></i> Add New Address
                 </button>
               </div>
               
               <!-- New Address Form (Hidden by default) -->
-              <div class="address-form-container" id="addressFormContainer" style="display: none;">
+              <!-- <div class="address-form-container" id="addressFormContainer" style="display: none;">
                 <form id="addressForm">
                   <div class="form-header">
                     <h4 id="addressFormTitle">Add New Address</h4>
@@ -175,7 +176,7 @@
                     </div>
                   </div>
                 </form>
-              </div>
+              </div> -->
             </div>
           </div>
           
@@ -460,61 +461,7 @@
   </div>
 </div>
 
-<!-- Start Facility Area -->
-<section class="facility-area pb-70">
-  <div class="container">
-    <div class="facility-slides owl-carousel owl-theme">
-      <div class="single-facility-box">
-        <div class="icon">
-          <i class="flaticon-tracking"></i>
-        </div>
-        <h3>Free Shipping Worldwide</h3>
-      </div>
 
-      <div class="single-facility-box">
-        <div class="icon">
-          <i class="flaticon-return"></i>
-        </div>
-        <h3>Easy Return Policy</h3>
-      </div>
-
-      <div class="single-facility-box">
-        <div class="icon">
-          <i class="flaticon-shuffle"></i>
-        </div>
-        <h3>7 Day Exchange Policy</h3>
-      </div>
-
-      <div class="single-facility-box">
-        <div class="icon">
-          <i class="flaticon-sale"></i>
-        </div>
-        <h3>Weekend Discount Coupon</h3>
-      </div>
-
-      <div class="single-facility-box">
-        <div class="icon">
-          <i class="flaticon-credit-card"></i>
-        </div>
-        <h3>Secure Payment Methods</h3>
-      </div>
-
-      <div class="single-facility-box">
-        <div class="icon">
-          <i class="flaticon-location"></i>
-        </div>
-        <h3>Track Your Package</h3>
-      </div>
-
-      <div class="single-facility-box">
-        <div class="icon">
-          <i class="flaticon-customer-service"></i>
-        </div>
-        <h3>24/7 Customer Support</h3>
-      </div>
-    </div>
-  </div>
-</section>
 <!-- End Facility Area -->
 <script>// View Details Toggle
     document.getElementById('viewDetailsToggle').addEventListener('click', function(e) {
@@ -553,85 +500,37 @@
       }
     });
     
-    // Address Form Toggle
-    document.getElementById('addAddressBtn').addEventListener('click', function() {
-      const formContainer = document.getElementById('addressFormContainer');
-      formContainer.style.display = 'block';
-      document.getElementById('addressFormTitle').textContent = 'Add New Address';
-      document.getElementById('saveButtonText').textContent = 'Save Address';
-      document.getElementById('addressForm').reset();
-      document.getElementById('addressIndex').value = '-1';
-    });
+    // // Address Form Toggle
+    // document.getElementById('addAddressBtn').addEventListener('click', function() {
+    //   const formContainer = document.getElementById('addressFormContainer');
+    //   formContainer.style.display = 'block';
+    //   document.getElementById('addressFormTitle').textContent = 'Add New Address';
+    //   document.getElementById('saveButtonText').textContent = 'Save Address';
+    //   document.getElementById('addressForm').reset();
+    //   document.getElementById('addressIndex').value = '-1';
+    // });
     
-    document.getElementById('closeAddressForm').addEventListener('click', function() {
-      document.getElementById('addressFormContainer').style.display = 'none';
-    });
+    // document.getElementById('closeAddressForm').addEventListener('click', function() {
+    //   document.getElementById('addressFormContainer').style.display = 'none';
+    // });
     
-    // Edit Address
-    function editAddress(index) {
-      // In a real application, you would get the address data from your user object
-      // This is a placeholder to show how it would work
-      const addresses = [
-        { name: "John Doe", phone: "9876543210", street: "123 Main St", city: "Mumbai", state: "Maharashtra", pincode: "400001" },
-        { name: "Jane Smith", phone: "8765432109", street: "456 Park Ave", city: "Delhi", state: "Delhi", pincode: "110001" }
-      ];
-      
-      const address = addresses[index];
-      
-      document.getElementById('name').value = address.name;
-      document.getElementById('phone').value = address.phone;
-      document.getElementById('street').value = address.street;
-      document.getElementById('city').value = address.city;
-      document.getElementById('state').value = address.state;
-      document.getElementById('pincode').value = address.pincode;
-      document.getElementById('addressIndex').value = index;
-      
-      document.getElementById('addressFormTitle').textContent = 'Edit Address';
-      document.getElementById('saveButtonText').textContent = 'Update Address';
-      document.getElementById('addressFormContainer').style.display = 'block';
-    }
+
     
-    // Delete Address
-    function deleteAddress(index) {
-      Swal.fire({
-        title: 'Are you sure?',
-        text: "Do you want to delete this address?",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#000000',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // In a real application, you would send an AJAX request to delete the address
-          // For now, just show a success message
-          Swal.fire(
-            'Deleted!',
-            'Your address has been deleted.',
-            'success'
-          ).then(() => {
-            // Reload the page to reflect changes
-            location.reload();
-          });
-        }
-      });
-    }
-    
-    // Address Form Submission
-    document.getElementById('addressForm').addEventListener('submit', function(e) {
-      e.preventDefault();
+    // // Address Form Submission
+    // document.getElementById('addressForm').addEventListener('submit', function(e) {
+    //   e.preventDefault();
       
-      // In a real application, you would send an AJAX request to save the address
-      // For now, just show a success message
-      Swal.fire(
-        'Success!',
-        'Your address has been saved.',
-        'success'
-      ).then(() => {
-        document.getElementById('addressFormContainer').style.display = 'none';
-        // In a real app, you would update the address list without reloading
-      });
-    });
+    //   // In a real application, you would send an AJAX request to save the address
+    //   // For now, just show a success message
+    //   Swal.fire(
+    //     'Success!',
+    //     'Your address has been saved.',
+    //     'success'
+    //   ).then(() => {
+    //     document.getElementById('addressFormContainer').style.display = 'none';
+    //     // In a real app, you would update the address list without reloading
+    //   });
+    // });
     
     // Apply Coupon
     function applyCoupon() {
@@ -751,168 +650,119 @@
     
     // Process Order Function
     function processOrder() {
-      // Show loading indicator
-      Swal.fire({
-        title: 'Processing',
-        text: 'Please wait while we process your order...',
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-        }
-      });
-      
-      // Simulate order processing (in a real app, this would be an API call)
-      setTimeout(() => {
-        Swal.fire({
-          title: 'Order Placed Successfully!',
-          text: 'Thank you for your purchase. Your order has been confirmed.',
-          icon: 'success',
-          confirmButtonColor: '#000000'
-        }).then(() => {
-          // Redirect to order confirmation page
-          window.location.href = '/placeorder?id=' + generateOrderId();
+  // Get the selected address ID
+  const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
+  const addressId = selectedAddress ? selectedAddress.value : null;
+  
+  // Get the selected payment method
+  const selectedPayment = document.querySelector('input[name="paymentMethod"]:checked');
+  const paymentMethod = selectedPayment ? selectedPayment.value : null;
+  
+  // Show loading indicator
+  Swal.fire({
+    title: 'Processing',
+    text: 'Please wait while we process your order...',
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading();
+    }
+  });
+  
+  // Send order data to the server
+  fetch('/orderplaced', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ 
+      addressId: addressId,
+      paymentMethod: paymentMethod
+    }),
+    credentials: 'same-origin'
+  }).then(response => response.json()) 
+  .then(data => {
+    Swal.fire({
+      title: 'Order Placed Successfully!',
+      text: 'Thank you for your purchase. Your order has been confirmed.',
+      icon: 'success',
+      confirmButtonColor: '#000000'
+    }).then(() => {
+      // Redirect to order confirmation page
+      window.location.href = '/placeorder?id=' + data.orderId;
+    });
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    Swal.fire({
+      title: 'Error',
+      text: 'There was a problem processing your order. Please try again.',
+      icon: 'error',
+      confirmButtonColor: '#000000'
+    });
+  });
+}
+
+// You can remove or comment out the existing code that sends address to '/orderplaced'
+// In the current event listener for address radio buttons
+document.addEventListener('DOMContentLoaded', function() {
+  // Get all address radio buttons
+  const addressRadios = document.querySelectorAll('input[name="selectedAddress"]');
+  
+  // Add change event listeners to all radio buttons
+  addressRadios.forEach(radio => {
+    radio.addEventListener('change', function() {
+      if (this.checked) {
+        // Highlight the selected address card visually
+        document.querySelectorAll('.address-card').forEach(card => {
+          card.classList.remove('selected');
         });
-      }, 2000);
-    }
-    
-    // Generate a random order ID (for demo purposes)
-    function generateOrderId() {
-      return 'ORD' + Math.floor(100000 + Math.random() * 900000);
-    }
-    
-    // Format card number with spaces after every 4 digits
-    function formatCardNumber(input) {
-      // Remove existing spaces
-      let value = input.value.replace(/\s/g, '');
-      
-      // Add a space after every 4 characters
-      let formattedValue = '';
-      for (let i = 0; i < value.length; i++) {
-        if (i > 0 && i % 4 === 0) {
-          formattedValue += ' ';
-        }
-        formattedValue += value.charAt(i);
+        this.closest('.address-card').classList.add('selected');
+        
+        // No need to send the address to the backend here anymore
+        // We'll send it when the user clicks "Place Order"
       }
-      
-      // Update the input value
-      input.value = formattedValue;
-      
-      // Update the card display
-      document.getElementById('cardNumberDisplay').textContent = formattedValue || '•••• •••• •••• ••••';
-    }
-    
-    // Format expiry date (MM/YY)
-    function formatExpiryDate(input) {
-      let value = input.value.replace(/\D/g, '');
-      
-      if (value.length > 0) {
-        // Format as MM/YY
-        if (value.length <= 2) {
-          // Just month part
-          input.value = value;
-        } else {
-          // Month and year
-          const month = value.substring(0, 2);
-          const year = value.substring(2, 4);
-          input.value = month + '/' + year;
-        }
-      }
-      
-      // Update the card display
-      document.getElementById('cardExpiryDisplay').textContent = input.value || 'MM/YY';
-    }
-    
-    // Update card display as user types
-    document.getElementById('cardHolder').addEventListener('input', function() {
-      document.getElementById('cardHolderDisplay').textContent = this.value || 'YOUR NAME';
     });
-    
-    document.getElementById('cvv').addEventListener('input', function() {
-      document.getElementById('cardCvcDisplay').textContent = this.value || '•••';
-    });
-    
-    // Flip card when focusing on CVV field
-    document.getElementById('cvv').addEventListener('focus', function() {
-      document.querySelector('.credit-card-inner').style.transform = 'rotateY(180deg)';
-    });
-    
-    document.getElementById('cvv').addEventListener('blur', function() {
-      document.querySelector('.credit-card-inner').style.transform = 'rotateY(0deg)';
-    });
-    
-    // Initialize Owl Carousel for facility area
-    $(document).ready(function() {
-      $('.facility-slides').owlCarousel({
-        loop: true,
-        nav: false,
-        dots: true,
-        autoplay: true,
-        autoplayHoverPause: true,
-        margin: 30,
-        responsive: {
-          0: {
-            items: 1
-          },
-          576: {
-            items: 2
-          },
-          768: {
-            items: 3
-          },
-          1200: {
-            items: 5
-          }
-        }
-      });
-    });
-    
-    // Steps navigation
-    const steps = document.querySelectorAll('.checkout-steps-indicator .step');
-    let currentStep = 0;
-    
-    function updateSteps(stepIndex) {
-      steps.forEach((step, index) => {
-        if (index < stepIndex) {
-          step.classList.add('completed');
-          step.classList.remove('active');
-        } else if (index === stepIndex) {
-          step.classList.add('active');
-          step.classList.remove('completed');
-        } else {
-          step.classList.remove('active', 'completed');
-        }
-      });
-    }
-    
-    // Possible function to proceed to next step (not used in this sample)
-    function nextStep() {
-      if (currentStep < steps.length - 1) {
-        currentStep++;
-        updateSteps(currentStep);
-      }
-    }
-    
-    // Possible function to go back to previous step (not used in this sample)
-    function prevStep() {
-      if (currentStep > 0) {
-        currentStep--;
-        updateSteps(currentStep);
-      }
-    }
-    
-    // Initialize steps
-    updateSteps(currentStep);
-    
-    // Handle clicks on step indicators (optional feature)
-    steps.forEach((step, index) => {
-      step.addEventListener('click', function() {
-        // Only allow clicking on previous steps or the next available step
-        if (index <= currentStep + 1) {
-          currentStep = index;
-          updateSteps(currentStep);
-        }
-      });
-    });
+  });
+});
+
+// Update the card payment form submission to use our new processOrder function
+document.getElementById('cardPaymentForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  // Basic validation (in a real app, you would do more thorough validation)
+  const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
+  const cardHolder = document.getElementById('cardHolder').value;
+  const expiryDate = document.getElementById('expiryDate').value;
+  const cvv = document.getElementById('cvv').value;
+  
+  if (cardNumber.length !== 16 || !/^\d+$/.test(cardNumber)) {
+    Swal.fire('Error', 'Please enter a valid 16-digit card number', 'error');
+    return;
+  }
+  
+  if (!cardHolder) {
+    Swal.fire('Error', 'Please enter the card holder name', 'error');
+    return;
+  }
+  
+  if (!expiryDate || expiryDate.length !== 5 || expiryDate.charAt(2) !== '/') {
+    Swal.fire('Error', 'Please enter a valid expiry date (MM/YY)', 'error');
+    return;
+  }
+  
+  if (!cvv || cvv.length !== 3 || !/^\d+$/.test(cvv)) {
+    Swal.fire('Error', 'Please enter a valid 3-digit CVV', 'error');
+    return;
+  }
+  
+  // Process payment (in a real app, you would send this to a payment processor)
+  document.getElementById('paymentModal').style.display = 'none';
+  
+  // For credit card payments, you might want to include card details
+  // This is just for demonstration - in production, never send full card details to your server
+  // Instead, you'd use a payment processor like Stripe or PayPal
+  processOrder();
+});
     </script>
 
     <%- include('../partials/user/footer') %>

@@ -1,5 +1,6 @@
 const User = require("../../models/userSchema");
 const Address=require("../../models/addressSchema")
+const Orders=require("../../models/orderSchema")
 const bcrypt=require('bcrypt')
 const fs = require('fs');
 const path = require('path');
@@ -150,8 +151,12 @@ const loadEditprofile = async (req, res) => {
 
 const loadOrder = async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.session.email });
-    return res.render("order", { user });
+    const userId=req.session.userId
+    const user = await User.findOne({ _id:userId });
+    const orders=await Orders.find({userId}).sort({createdAt:-1})
+    console.log("user",user);
+    console.log("orders",orders);
+    return res.render("order", { user ,orders});
   } catch (error) {
     console.log(error);
   }

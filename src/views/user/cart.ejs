@@ -42,8 +42,8 @@
 <section class="cart-area ptb-100">
   <div class="container">
     <div class="row">
-      <!-- Main Cart Column -->
-      <div class="col-lg-8 col-md-12">
+      <!-- Main Cart Column - Full Width -->
+      <div class="col-12">
         <form>
           <div class="cart-table-container">
             <div class="cart-header">
@@ -59,6 +59,7 @@
             
             <div class="cart-table table-responsive">
               <table class="table table-spaced">
+                <% if (cart && cart.item && cart.item.length > 0) { %>
                 <thead>
                   <tr>
                     <th scope="col" class="sl-col">Sl <br> No </th>
@@ -71,7 +72,6 @@
                 </thead>
 
                 <tbody>
-                  <% if (cart && cart.item && cart.item.length > 0) { %>
                     <% cart.item.forEach((item, index) => { %>
                       <tr class="cart-item animate-item">
                         <td class="sl-col">
@@ -109,7 +109,7 @@
                             <button type="button" class="quantity-btn minus-btn" onclick="updateQuantity('<%= item.productId._id %>', '<%= item.size %>', -1)">
                               <i class="bx bx-minus"></i>
                             </button>
-                            <input type="text" value="<%= item.quantity %>" id="quantity-<%= item.productId._id %>-<%= item.size %>" min="1" class="quantity-input" readonly>
+                            <input type="text" value="<%= item.quantity %>" id="quantity-<%= item.productId._id %>-<%= item.size %>" min="1" max="5" class="quantity-input" readonly>
                             <button type="button" class="quantity-btn plus-btn" onclick="updateQuantity('<%= item.productId._id %>', '<%= item.size %>', 1)">
                               <i class="bx bx-plus"></i>
                             </button>
@@ -157,93 +157,26 @@
                   </a>
                 </div>
 
+                <div class="cart-total">
+                  <span class="total-label">Total: </span>
+                  <span class="total-value">Rs.<%= cart.cartTotal ? cart.cartTotal.toLocaleString() : 0 %></span>
+                </div>
+
                 <div class="update-actions">
                   <button type="button" class="btn-clear" onclick="clearCart()">
                     <i class="bx bx-trash"></i>
                     <span>Clear Cart</span>
                   </button>
+                  
+                  <a href="/checkout" class="btn-checkout">
+                    <span>Checkout</span>
+                    <i class="bx bx-right-arrow-alt"></i>
+                  </a>
                 </div>
               </div>
             <% } %>
           </div>
         </form>
-      </div>
-
-      <!-- Summary Column -->
-      <div class="col-lg-4 col-md-12">
-        <div class="cart-summary">
-          <div class="summary-header">
-            <h3>Order Summary</h3>
-          </div>
-
-          <div class="summary-body">
-            <div class="summary-item">
-              <span class="label">Subtotal</span>
-              <span class="value">Rs.<%= cart && cart.cartTotal ? cart.cartTotal.toLocaleString() : 0 %></span>
-            </div>
-            
-            <div class="summary-item">
-              <span class="label">Shipping</span>
-              <span class="value">
-                <% if (cart && cart.cartTotal&& cart.cartTotal > 10000) { %>
-                  <span class="free-shipping">Free Shipping</span>
-                <% } else { %>
-                  Rs.100
-                <% } %>
-              </span>
-            </div>
-            
-            <div class="summary-divider"></div>
-            
-            <div class="summary-item total">
-              <span class="label">Total</span>
-              <span class="value">
-                <% if (cart && cart.cartTotal) { %>
-                  Rs.<%= (cart.cartTotal > 10000 ? cart.cartTotal : cart.cartTotal + 100).toLocaleString() %>
-                <% } else { %>
-                  Rs.0
-                <% } %>
-              </span>
-            </div>
-          </div>
-
-          <div class="summary-footer">
-            <% if (cart && cart.item && cart.item.length > 0) { %>
-              <a href="/checkout" class="btn-checkout">
-                <span>Proceed to Checkout</span>
-                <i class="bx bx-right-arrow-alt"></i>
-              </a>
-            <% } else { %>
-              <a href="/shop" class="btn-shop">
-                <span>Shop Now</span>
-                <i class="bx bx-shopping-bag"></i>
-              </a>
-            <% } %>
-          </div>
-        </div>
-
-        <div class="coupon-section">
-          <div class="coupon-header">
-            <h3>Apply Coupon</h3>
-          </div>
-
-          <div class="coupon-body">
-            <p>Enter your coupon code if you have one.</p>
-            
-            <div class="coupon-form">
-              <div class="form-group">
-                <div class="coupon-input-wrapper">
-                  <i class="bx bx-tag-alt coupon-icon"></i>
-                  <input type="text" class="coupon-input" placeholder="Enter coupon code" id="coupon-code">
-                </div>
-              </div>
-              
-              <button type="button" class="btn-apply-coupon" onclick="applyCoupon()">
-                <span>Apply Coupon</span>
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -387,6 +320,19 @@ function updateQuantity(productId, size, change) {
   // Ensure quantity is at least 1
   if (quantity < 1) {
     quantity = 1;
+    return;
+  }
+  
+  // Check if quantity exceeds maximum of 5
+  if (quantity > 5) {
+    // Show SweetAlert error message
+    Swal.fire({
+      title: `Quantity Limit Reached`,
+      text: `Sorry, you can only add a maximum of 5 items per product.`,
+      icon: "error",
+      confirmButtonColor: "#000000",
+    });
+    return;
   }
   
   // Update input value
@@ -412,7 +358,7 @@ function updateQuantity(productId, size, change) {
       totalElement.textContent = `Rs.${data.itemTotal.toLocaleString()}`;
       
       // Update the cart total
-      const cartTotalElement = document.querySelector('.summary-item.total .value');
+      const cartTotalElement = document.querySelector('.cart-total .total-value');
       cartTotalElement.textContent = `Rs.${data.cartTotal.toLocaleString()}`;
     } else {
       alert('Failed to update quantity. Please try again.');

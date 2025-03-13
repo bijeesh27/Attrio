@@ -34,7 +34,7 @@ const login = async (req, res) => {
     req.session.email = user.email;
     req.session.userId = user._id.toString();
     const cart=await Cart.findOne({userId:req.session.userId})
-    req.session.cartItem=cart?.item.length
+   
     req.flash("success_msg", "successfully loggined");
     return res.redirect("/");
   } catch (error) {

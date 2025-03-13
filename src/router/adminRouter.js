@@ -4,8 +4,10 @@ const adminController = require("../controller/admin/adminController");
 const productController=require("../controller/admin/productController")
 const categoryController=require("../controller/admin/categoryController")
 const userController=require("../controller/admin/userController")
+const orderController=require("../controller/admin/orderController")
 const multer=require("multer");
 const { isAdmin, isAdminLogged } = require("../middleware/adminMiddleware");
+const { logged } = require("../middleware/userMiddleware");
 const upload = multer({ dest: 'uploads/' })
 
 
@@ -26,6 +28,12 @@ router.get("/blockCategory/:categoryId",isAdmin,categoryController.blockCategory
 router.get("/editCategory/:categoryId",isAdmin,categoryController.loadEditCategory)
 router.post("/editCategory/:categoryId",isAdmin,categoryController.editCategory)
 router.get("/blockProduct/:productId",isAdmin,productController.blockProduct)
+router.get("/orders",isAdmin,orderController.loadOrders)
+router.post('/updateorderstatus',isAdmin,orderController.updateOrderStatus)
+router.get('/adminorderdetails/:orderId',isAdmin,orderController.loadOrderdetails)
+
+
+
 router.get("/search",userController.loadUser)
 router.get("/productsearch",productController.loadProducts)
 router.get('/categorysearch',categoryController.loadCategories)

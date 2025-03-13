@@ -4,7 +4,7 @@ const Product = require("../../models/productSchema");
 const loadCart = async (req, res) => {
     try {
         const cart = await Cart.findOne({ userId: req.session.userId }).populate("item.productId", "name image");
-        console.log("cart", cart);
+        
         return res.render('cart', { cart });
     } catch (error) {
         console.log(error);
@@ -13,7 +13,7 @@ const loadCart = async (req, res) => {
 
 const addToCart = async (req, res) => {
     try {
-        console.log("cart Req,body", req.body);
+        
 
         const userId = req.session.userId;
         const { productId, quantity, size } = req.body;
@@ -66,7 +66,8 @@ const addToCart = async (req, res) => {
             });
             await newCart.save();
         }
-
+        const cart=await Cart.findOne({userId:req.session.userId})
+        req.session.cartItem=cart?.item.length
         res.redirect("/cart");
     } catch (error) {
         console.log(error);

@@ -1,0 +1,744 @@
+<%- include('../partials/user/header') %>
+
+<body>
+  <style>
+    :root {
+      --primary-color: #f53f85;
+      --secondary-color: #f8f9fa;
+      --accent-color: #4a6fdc;
+      --text-color: #333;
+      --border-color: #ddd;
+      --success-color: #28a745;
+    }
+
+    /* Dashboard Layout */
+    .dashboard-container {
+      display: flex;
+      max-width: 1200px;
+      margin: 20px auto;
+      gap: 20px;
+    }
+
+    .account-tabs-menu {
+      flex: 0 0 250px;
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      height: fit-content;
+    }
+
+    .account-tabs-menu ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .account-tabs-menu li {
+      margin-bottom: 10px;
+    }
+
+    .account-tabs-menu a {
+      display: flex;
+      align-items: center;
+      padding: 12px 15px;
+      border-radius: 8px;
+      color: var(--text-color);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .account-tabs-menu a i {
+      margin-right: 10px;
+      font-size: 18px;
+    }
+
+    .account-tabs-menu a.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .account-tabs-menu a:hover:not(.active) {
+      background-color: var(--secondary-color);
+    }
+
+    .dashboard-content {
+      flex: 1;
+    }
+
+    /* Order Detail Styles */
+    .order-detail-container {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+    }
+
+    .order-header {
+      background-color: var(--secondary-color);
+      padding: 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .order-header-left h2 {
+      margin: 0 0 5px 0;
+      font-size: 20px;
+    }
+
+    .order-header-left p {
+      margin: 0;
+      color: #666;
+    }
+
+    .order-status {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      margin-left: 10px;
+    }
+
+    .status-delivered {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+
+    .status-pending {
+      background-color: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-shipped {
+      background-color: #dbeafe;
+      color: #1e40af;
+    }
+
+    .status-cancelled {
+      background-color: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .order-body {
+      padding: 20px;
+    }
+
+    .order-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .summary-box {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 15px;
+    }
+
+    .summary-box h3 {
+      margin: 0 0 15px 0;
+      font-size: 16px;
+      color: #555;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .summary-box p {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+    }
+
+    .summary-box p span {
+      font-weight: bold;
+      display: inline-block;
+      min-width: 120px;
+    }
+
+    .summary-box address {
+      font-style: normal;
+      line-height: 1.5;
+      margin: 0;
+      font-size: 14px;
+    }
+
+    /* Order Items Table */
+    .order-items {
+      margin-top: 30px;
+    }
+
+    .order-items h3 {
+      margin: 0 0 15px 0;
+      font-size: 18px;
+    }
+
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .items-table th {
+      background-color: var(--secondary-color);
+      padding: 12px 15px;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .items-table td {
+      padding: 15px;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: middle;
+    }
+
+    .product-info {
+      display: flex;
+      align-items: center;
+    }
+
+    .product-image {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 5px;
+      margin-right: 15px;
+    }
+
+    .product-name {
+      font-weight: 500;
+      margin: 0 0 5px 0;
+      font-size: 15px;
+    }
+
+    .product-variant {
+      margin: 0;
+      font-size: 13px;
+      color: #666;
+    }
+
+    /* Order Totals */
+    .order-totals {
+      margin-top: 30px;
+      border-top: 1px solid var(--border-color);
+      padding-top: 20px;
+    }
+
+    .totals-table {
+      width: 100%;
+      max-width: 400px;
+      margin-left: auto;
+    }
+
+    .totals-table td {
+      padding: 8px 0;
+    }
+
+    .totals-table .total-label {
+      text-align: left;
+      color: #666;
+    }
+
+    .totals-table .total-value {
+      text-align: right;
+      font-weight: 500;
+    }
+
+    .grand-total td {
+      font-weight: 600;
+      font-size: 18px;
+      padding-top: 15px;
+      border-top: 2px solid var(--border-color);
+    }
+
+    .order-actions {
+      margin-top: 30px;
+      display: flex;
+      gap: 15px;
+      justify-content: flex-end;
+    }
+
+    .back-button, .tracking-button {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    .back-button {
+      background-color: var(--secondary-color);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+    }
+
+    .tracking-button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+    }
+
+    .back-button i, .tracking-button i {
+      margin-right: 8px;
+    }
+
+    .back-button:hover {
+      background-color: #e9ecef;
+    }
+
+    .tracking-button:hover {
+      background-color: #e52f75;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .logout-button {
+      background-color: #f53f85;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 10px 20px;
+      text-align: center;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .logout-button i {
+      margin-right: 8px;
+      font-size: 16px;
+    }
+
+    .logout-button:hover {
+      background-color: #f53f85;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      transform: translateY(-2px);
+    }
+
+    /* Timeline */
+    .order-timeline {
+      margin: 30px 0;
+      position: relative;
+      padding-left: 30px;
+    }
+
+    .timeline-track {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 10px;
+      width: 2px;
+      background-color: var(--border-color);
+    }
+
+    .timeline-step {
+      position: relative;
+      padding-bottom: 25px;
+    }
+
+    .timeline-step:last-child {
+      padding-bottom: 0;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -30px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: white;
+      border: 2px solid var(--accent-color);
+      z-index: 1;
+    }
+
+    .timeline-step.completed .timeline-dot {
+      background-color: var(--accent-color);
+    }
+
+    .timeline-content {
+      background-color: var(--secondary-color);
+      border-radius: 8px;
+      padding: 15px;
+    }
+
+    .timeline-date {
+      font-size: 12px;
+      color: #666;
+      margin: 0 0 5px 0;
+    }
+
+    .timeline-title {
+      margin: 0 0 5px 0;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .timeline-desc {
+      margin: 0;
+      font-size: 14px;
+      color: #555;
+    }
+
+    /* Product status badge */
+    .product-status {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .dashboard-container {
+        flex-direction: column;
+      }
+
+      .account-tabs-menu {
+        flex: auto;
+      }
+
+      .product-info {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .product-image {
+        margin-bottom: 10px;
+      }
+
+      .items-table thead {
+        display: none;
+      }
+
+      .items-table, .items-table tbody, .items-table tr, .items-table td {
+        display: block;
+        width: 100%;
+      }
+
+      .items-table tr {
+        margin-bottom: 20px;
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        padding: 10px;
+      }
+
+      .items-table td {
+        text-align: right;
+        padding: 8px 10px;
+        border: none;
+        position: relative;
+        padding-left: 50%;
+      }
+
+      .items-table td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 45%;
+        font-weight: 600;
+        text-align: left;
+      }
+
+      .product-info {
+        text-align: left;
+        padding-left: 0;
+      }
+
+      .order-actions {
+        flex-direction: column;
+      }
+
+      .back-button, .tracking-button {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+
+  <div class="dashboard-container">
+    <!-- Account Menu -->
+    <div class="account-tabs-menu">
+      <ul>
+        <li>
+          <a href="/profile"><i class="bx bxs-dashboard"></i> Dashboard</a>
+        </li>
+        <li>
+          <a href="/orders" class="active"><i class="bx bxs-shopping-bag"></i> Orders</a>
+        </li>
+        <li>
+          <a href="/address"><i class="bx bxs-map"></i> Addresses</a>
+        </li>
+        <li>
+          <a href="/wallet"><i class="bx bxs-wallet"></i>wallet</a>
+        </li>
+        <li>
+          <a href="/changenewpassword"><i class="bx bx-lock-alt"></i>Change Password</a>
+        </li>
+      </ul>
+      <br /><br /><br />
+      <button onclick="logout()" class="logout-button">
+        <i class="bx bx-log-out"></i> Logout
+      </button>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-content">
+      <div class="order-detail-container">
+        <!-- Order Header -->
+        <div class="order-header">
+          <div class="order-header-left">
+            <h2>Order #<%= order.orderNumber %></h2>
+            <p>Placed on <%= new Date(order.createdAt).toLocaleString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            }) %></p>
+          </div>
+          <div class="order-header-right">
+            <span class="order-status status-<%= order.paymentStatus.toLowerCase() %>">
+              <%= order.paymentStatus %>
+            </span>
+          </div>
+        </div>
+
+        <!-- Order Body -->
+        <div class="order-body">
+          <!-- Order Summary -->
+          <div class="order-summary">
+            <!-- Shipping Info -->
+            <div class="summary-box">
+              <h3>Shipping Information</h3>
+              <% if(order.deliveryAddress && typeof order.deliveryAddress === 'object') { %>
+                <address>
+                  <strong><%= address[0].name %></strong><br>
+                  <%= address[0].houseName %><br>
+                  <%= address[0].city %>, <%= address[0].state %> <%= address[0].pincode %><br>
+                  <%= address[0].country || 'India' %><br>
+                  Phone: <%= address[0].number %>
+                </address>
+              <% } else { %>
+                <p>Address information not available</p>
+              <% } %>
+            </div>
+
+            <!-- Payment Info -->
+            <div class="summary-box">
+              <h3>Payment Information</h3>
+              <p><span>Payment Method:</span> <%= order.paymentMethod %></p>
+              <p><span>Payment Status:</span> <%= order.paymentStatus %></p>
+              <% if(order.transactionId) { %>
+                <p><span>Transaction ID:</span> <%= order.transactionId %></p>
+              <% } %>
+              <p><span>Currency:</span> INR</p>
+              <% if(order.couponDiscount) { %>
+                <p><span>Coupon Discount:</span> Rs.<%= order.couponDiscount.toFixed(2) %></p>
+              <% } %>
+            </div>
+
+            <!-- Order Info -->
+            <div class="summary-box">
+              <h3>Order Information</h3>
+              <p><span>Order Date:</span> <%= new Date(order.createdAt).toLocaleDateString() %></p>
+              <% if(order.deliveryDate) { %>
+                <p><span>Expected Delivery:</span> <%= new Date(order.deliveryDate).toLocaleDateString() %></p>
+              <% } %>
+              <% if(order.shippingDate) { %>
+                <p><span>Shipped Date:</span> <%= new Date(order.shippingDate).toLocaleDateString() %></p>
+              <% } %>
+              <p><span>Total Amount:</span> Rs.<%= order.orderAmount.toFixed(2) %></p>
+            </div>
+          </div>
+
+          <!-- Order Status Timeline -->
+          <div class="order-timeline">
+            <div class="timeline-track"></div>
+            
+            <!-- Order Placed -->
+            <div class="timeline-step completed">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <p class="timeline-date"><%= new Date(order.createdAt).toLocaleString() %></p>
+                <h4 class="timeline-title">Order Placed</h4>
+                <p class="timeline-desc">Your order has been received and is being processed.</p>
+              </div>
+            </div>
+            
+            <!-- Order Processing - Check if any item is being processed -->
+            <% 
+              const isProcessing = order.orderedItem.some(item => 
+                item.productStatus === 'processing' || 
+                item.productStatus === 'shipped' || 
+                item.productStatus === 'delivered'
+              ); 
+            %>
+            <div class="timeline-step <%= isProcessing ? 'completed' : '' %>">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <p class="timeline-date"><%= isProcessing ? new Date(order.createdAt).toLocaleString() : '' %></p>
+                <h4 class="timeline-title">Processing</h4>
+                <p class="timeline-desc">Your order is being prepared for shipping.</p>
+              </div>
+            </div>
+            
+            <!-- Order Shipped - Check if any item has been shipped -->
+            <% 
+              const isShipped = order.shippingDate || order.orderedItem.some(item => 
+                item.productStatus === 'shipped' || 
+                item.productStatus === 'delivered'
+              ); 
+            %>
+            <div class="timeline-step <%= isShipped ? 'completed' : '' %>">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <p class="timeline-date"><%= isShipped ? (order.shippingDate ? new Date(order.shippingDate).toLocaleString() : new Date().toLocaleString()) : '' %></p>
+                <h4 class="timeline-title">Shipped</h4>
+                <p class="timeline-desc">Your order has been shipped and is on its way to you.</p>
+              </div>
+            </div>
+            
+            <!-- Order Delivered - Check if all items are delivered -->
+            <% 
+              const isDelivered = order.orderedItem.every(item => item.productStatus === 'delivered');
+            %>
+            <div class="timeline-step <%= isDelivered ? 'completed' : '' %>">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <p class="timeline-date"><%= isDelivered ? (order.deliveryDate ? new Date(order.deliveryDate).toLocaleString() : '') : '' %></p>
+                <h4 class="timeline-title">Delivered</h4>
+                <p class="timeline-desc">Your order has been delivered. Enjoy!</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order Items -->
+          <div class="order-items">
+            <h3>Order Items</h3>
+            <table class="items-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Status</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% order.orderedItem.forEach(item => { %>
+                  <tr>
+                    <td data-label="Product">
+                      <div class="product-info">
+                        <% if(item.productId && item.productId.image) { %>
+                            <img src="/<%= item.productId.image[0] %>" alt="Product Image" class="product-image">
+                        <% } else { %>
+                          <div class="product-image" style="background-color: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                            <i class="bx bx-package" style="font-size: 24px; color: #999;"></i>
+                          </div>
+                        <% } %>
+                        <div>
+                          <h4 class="product-name">
+                            <% if(item.productId && item.productId.name) { %>
+                              <%= item.productId.name %>
+                            <% } else { %>
+                              Product Name
+                            <% } %>
+                          </h4>
+                          <% if(item.size) { %>
+                            <p class="product-variant">Size: <%= item.size %></p>
+                          <% } %>
+                        </div>
+                      </div>
+                    </td>
+                    <td data-label="Price">Rs.<%= item.productPrice.toFixed(2) %></td>
+                    <td data-label="Quantity"><%= item.quantity %></td>
+                    <td data-label="Status">
+                      <% 
+                        let statusClass = '';
+                        switch(item.productStatus.toLowerCase()) {
+                          case 'delivered':
+                            statusClass = 'status-delivered';
+                            break;
+                          case 'shipped':
+                            statusClass = 'status-shipped';
+                            break;
+                          case 'cancelled':
+                            statusClass = 'status-cancelled';
+                            break;
+                          default:
+                            statusClass = 'status-pending';
+                        }
+                      %>
+                      <span class="product-status <%= statusClass %>">
+                        <%= item.productStatus.charAt(0).toUpperCase() + item.productStatus.slice(1) %>
+                      </span>
+                    </td>
+                    <td data-label="Total">Rs.<%= item.totalProductPrice.toFixed(2) %></td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Order Totals -->
+          <div class="order-totals">
+            <table class="totals-table">
+              <!-- Calculate subtotal -->
+              <% 
+                const subtotal = order.orderedItem.reduce((total, item) => {
+                  return total + item.totalProductPrice;
+                }, 0);
+              %>
+              <tr>
+                <td class="total-label">Subtotal:</td>
+                <td class="total-value">Rs.<%= subtotal.toFixed(2) %></td>
+              </tr>
+              <% if(order.couponDiscount) { %>
+              <tr>
+                <td class="total-label">Discount:</td>
+                <td class="total-value">-Rs.<%= order.couponDiscount.toFixed(2) %></td>
+              </tr>
+              <% } %>
+              <tr class="grand-total">
+                <td class="total-label">Grand Total:</td>
+                <td class="total-value">Rs.<%= order.orderAmount.toFixed(2) %></td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- Order Actions -->
+          <div class="order-actions">
+            <a href="/orders" class="back-button">
+              <i class="bx bx-arrow-back"></i> Back to Orders
+            </a>
+            <% if(isShipped && !isDelivered) { %>
+            <a href="/track/<%= order._id %>" class="tracking-button">
+              <i class="bx bx-map"></i> Track Order
+            </a>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><br><br><br>
+
+<%- include('../partials/user/footer') %>
+
+<script>
+  function logout() {
+    // Add your logout functionality here
+    window.location.href = "/logout";
+  }
+</script>
+</body>
