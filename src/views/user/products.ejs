@@ -37,12 +37,75 @@
             </div>
         </div>
         <!-- End Page Title -->
+         
 
         <!-- Start Products Area -->
         <section class="products-area pt-100 pb-70">
             <div class="container">
  
-
+                <section class="products-area pt-100 pb-70">
+                    <div class="container">
+                      <div class="products-filter-options">
+                        <div class="row align-items-center justify-content-center">
+                          <div class="col-lg-4 col-md-4">
+                            <div class="d-lg-flex d-md-flex align-items-center">
+                              <span class="sub-title"
+                                ><a
+                                  href="#"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#productsFilterModal"
+                                  ><i class="bx bx-filter-alt"></i> Filter</a
+                                ></span
+                              >
+                
+                              <span class="sub-title d-none d-lg-block d-md-block">View:</span>
+                
+                              <div class="view-list-row d-none d-lg-block d-md-block">
+                                <div class="view-column">
+                                  <a href="#" class="icon-view-two">
+                                    <span></span>
+                                    <span></span>
+                                  </a>
+                
+                                  <a href="#" class="icon-view-three active">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                  </a>
+                
+                                  <a href="#" class="icon-view-four">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                  </a>
+                
+                                  <a href="#" class="view-grid-switch">
+                                    <span></span>
+                                    <span></span>
+                                  </a>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                
+                          <div class="col-lg-4 col-md-4">
+                            <p>Showing 1 – 18 of <%= totalProducts %></p>
+                          </div>
+                
+                          <div class="col-lg-4 col-md-4">
+                            <div class="products-ordering-list">
+                              <select id="sortSelect">
+                                <option value="">Sort By</option>
+                                <option value="a-z"><a href="/az">Sort by Name:Aa-Zz</a></option>
+                                <option value="z-a">Sort by Name:Az-Zz</option>
+                                <option value="l-h">Sort by Price: Low to High</option>
+                                <option value="h-l">Sort by Price: High to Low</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                 <div id="products-collections-filter" class="row">
                      <% products.forEach(product => { %>
                     <div class="col-lg-4 col-md-6 col-sm-6 products-col-item">
@@ -597,7 +660,75 @@
         <!-- End Wishlist Modal -->
 
 
+        <div
+    class="modal left fade productsFilterModal"
+    id="productsFilterModal"
+    tabindex="-1"
+    role="dialog"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <button
+          type="button"
+          class="close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true"><i class="bx bx-x"></i> Close</span>
+        </button>
 
+        <div class="modal-body">
+          <div class="woocommerce-widget-area">
+            <div class="woocommerce-widget collections-list-widget">
+              <h3 class="woocommerce-widget-title">Categories</h3>
+
+              <ul class="collections-list-row">
+                <% categories.forEach(category => { %>
+                <li>
+                  <a href="/catfilter/<%= category._id %>"
+                    ><%= category.description %></a
+                  >
+                </li>
+                <% }) %>
+              </ul>
+            </div>
+
+            <div class="woocommerce-widget price-list-widget">
+              <h3 class="woocommerce-widget-title">Price</h3>
+
+              <div class="collection-filter-by-price">
+                <input
+                  class="js-range-of-price"
+                  type="text"
+                  data-min="0"
+                  data-max="1055"
+                  name="filter_by_price"
+                  data-step="10"
+                />
+              </div>
+            </div>
+
+            <div class="woocommerce-widget size-list-widget">
+              <h3 class="woocommerce-widget-title">Size</h3>
+
+              <ul class="size-list-row">
+                <li><a href="#">20</a></li>
+                <li><a href="#">24</a></li>
+                <li class="active"><a href="#">36</a></li>
+                <li><a href="#">30</a></li>
+                <li><a href="#">XS</a></li>
+                <li><a href="#">S</a></li>
+                <li><a href="#">M</a></li>
+                <li><a href="#">L</a></li>
+                <li><a href="#">L</a></li>
+                <li><a href="#">XL</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
 

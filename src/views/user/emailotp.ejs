@@ -1,0 +1,300 @@
+<%- include('../partials/user/header') %>
+
+<body>
+  <link rel="stylesheet" href="/user/assets/css/profilestyle.css" />
+
+  <div class="dashboard-container">
+    <!-- Account Menu -->
+    <div class="account-tabs-menu">
+      <ul>
+        <li>
+          <a href="/profile" class="active"><i class="bx bxs-dashboard"></i> Dashboard</a>
+        </li>
+        <li>
+          <a href="/orders"><i class="bx bxs-shopping-bag"></i> Orders</a>
+        </li>
+        <li>
+          <a href="/address"><i class="bx bxs-map"></i> Addresses</a>
+        </li>
+        <li>
+          <a href="/wallet"><i class="bx bxs-wallet"></i>wallet</a>
+        </li>
+        <li>
+          <a href="/changenewpassword"><i class="bx bx-lock-alt"></i>Change Password</a>
+        </li>
+      </ul>
+      <br /><br /><br />
+      <button onclick="logout()" class="logout-button">
+        <i class="bx bx-log-out"></i> Logout
+      </button>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-content">
+      <div class="dashboard-cards">
+        <div class="dashboard-card">
+          <div class="card-header">
+            <h3>Verify Email Change</h3>
+            <a href="/profile" class="back-link">
+              <i class="bx bx-arrow-back"></i> Back to Dashboard
+            </a>
+          </div>
+          
+          <!-- OTP Verification Form -->
+          <div class="otp-verification-container">
+            <p class="otp-message">We've sent a verification code to <strong><%= email %></strong></p>
+            <p class="otp-instruction">Enter the 6-digit code to verify your new email address</p>
+            
+            <form id="otpVerificationForm" class="otp-form">
+              <div class="otp-input-container">
+                <input type="text" maxlength="1" class="otp-input" autofocus>
+                <input type="text" maxlength="1" class="otp-input">
+                <input type="text" maxlength="1" class="otp-input">
+                <input type="text" maxlength="1" class="otp-input">
+                <input type="text" maxlength="1" class="otp-input">
+                <input type="text" maxlength="1" class="otp-input">
+              </div>
+              
+              <div id="otpError" class="otp-error"></div>
+              
+              <div class="otp-timer">
+                Code expires in <span id="timer">05:00</span>
+              </div>
+              
+              <div class="form-buttons">
+                <a href="/profile/edit" class="cancel-btn">Cancel</a>
+                <button type="submit" class="save-btn" id="verifyBtn">Verify</button>
+              </div>
+              
+              <div class="resend-container">
+                <p>Didn't receive the code? <a href="#" id="resendOtp" class="resend-link">Resend</a></p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Logout confirmation
+    function logout() {
+      Swal.fire({
+        title: `Are you sure?`,
+        text: ` Do you want to continue to logout?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#000000",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Logout",
+        cancelButtonText: "Cancel",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "/logout";
+        }
+      });
+    }
+
+    // Handle OTP input functionality
+    const otpInputs = document.querySelectorAll('.otp-input');
+    
+    otpInputs.forEach((input, index) => {
+      // Move to next input after entering a digit
+      input.addEventListener('input', function() {
+        if (this.value.length === 1) {
+          if (index < otpInputs.length - 1) {
+            otpInputs[index + 1].focus();
+          }
+        }
+      });
+      
+      // Handle backspace key to go back to previous input
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' && !this.value && index > 0) {
+          otpInputs[index - 1].focus();
+        }
+      });
+    });
+    
+    // Timer functionality
+    function startTimer(duration, display) {
+      let timer = duration;
+      let minutes, seconds;
+      const interval = setInterval(function() {
+        minutes = parseInt(timer / 60, 10);
+        seconds = parseInt(timer % 60, 10);
+        
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+        
+        display.textContent = minutes + ":" + seconds;
+        
+        if (--timer < 0) {
+          clearInterval(interval);
+          document.getElementById('verifyBtn').disabled = true;
+          display.textContent = "00:00";
+          document.getElementById('otpError').textContent = "OTP has expired. Please request a new one.";
+        }
+      }, 1000);
+      return interval;
+    }
+    
+    // Start the timer when page loads
+    let timerElement = document.getElementById('timer');
+    let timerInterval = startTimer(300, timerElement); // 5 minutes = 300 seconds
+    
+    // Handle form submission
+    document.getElementById('otpVerificationForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Collect OTP from inputs
+      let otp = '';
+      otpInputs.forEach(input => {
+        otp += input.value;
+      });
+      
+      // Validate OTP length
+      if (otp.length !== 6) {
+        document.getElementById('otpError').textContent = "Please enter the complete 6-digit code";
+        return;
+      }
+      
+      // Show loading
+      Swal.fire({
+        title: 'Verifying...',
+        text: 'Please wait while we verify your code',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+      
+      // Send verification request
+      fetch('/verify-email-change', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ otp })
+      })
+      .then(response => response.json())
+      .then(data => {
+        Swal.close();
+        
+        if (data.success) {
+          // Get stored form data from session storage
+          const formData = JSON.parse(sessionStorage.getItem('profileUpdateData'));
+          
+          // Show success message
+          Swal.fire({
+            title: 'Success!',
+            text: 'Email verified successfully. Your profile has been updated.',
+            icon: 'success',
+            confirmButtonColor: '#000000',
+            confirmButtonText: 'OK'
+          }).then(() => {
+            // Clear session storage
+            sessionStorage.removeItem('profileUpdateData');
+            // Redirect to profile page
+            window.location.href = '/profile';
+          });
+        } else {
+          // Show error message
+          document.getElementById('otpError').textContent = data.message || "Invalid verification code. Please try again.";
+          
+          // Clear OTP inputs
+          otpInputs.forEach(input => {
+            input.value = '';
+          });
+          otpInputs[0].focus();
+        }
+      })
+      .catch(error => {
+        Swal.close();
+        console.error('Error:', error);
+        document.getElementById('otpError').textContent = "An error occurred. Please try again.";
+      });
+    });
+    
+    // Handle resend OTP
+    document.getElementById('resendOtp').addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      // Disable resend button temporarily
+      this.classList.add('disabled');
+      this.textContent = 'Sending...';
+      
+      // Send resend request
+      fetch('/resend-email-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: '<%= email %>' })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Reset OTP inputs
+          otpInputs.forEach(input => {
+            input.value = '';
+          });
+          otpInputs[0].focus();
+          
+          // Reset timer
+          clearInterval(timerInterval);
+          timerInterval = startTimer(300, timerElement);
+          
+          // Enable verify button
+          document.getElementById('verifyBtn').disabled = false;
+          
+          // Clear error message
+          document.getElementById('otpError').textContent = '';
+          
+          // Show success message
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'New verification code sent!',
+            showConfirmButton: false,
+            timer: 3000
+          });
+          
+          // Reset resend button after 60 seconds
+          setTimeout(() => {
+            this.classList.remove('disabled');
+            this.textContent = 'Resend';
+          }, 60000);
+        } else {
+          // Show error message
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: data.message || 'Failed to send verification code. Please try again.',
+            confirmButtonColor: '#000000'
+          });
+          
+          // Reset resend button
+          this.classList.remove('disabled');
+          this.textContent = 'Resend';
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'An error occurred. Please try again.',
+          confirmButtonColor: '#000000'
+        });
+        
+        // Reset resend button
+        this.classList.remove('disabled');
+        this.textContent = 'Resend';
+      });
+    });
+  </script>
+
+  <%- include('../partials/user/footer') %>
+</body>

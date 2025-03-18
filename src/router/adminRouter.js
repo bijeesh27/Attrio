@@ -30,13 +30,16 @@ router.post("/editCategory/:categoryId",isAdmin,categoryController.editCategory)
 router.get("/blockProduct/:productId",isAdmin,productController.blockProduct)
 router.get("/orders",isAdmin,orderController.loadOrders)
 router.post('/updateorderstatus',isAdmin,orderController.updateOrderStatus)
+router.post('/updateproductstatus',isAdmin,orderController.updateProductStatus)
+router.post('/updatereturn',isAdmin,orderController.updateReturn)
 router.get('/adminorderdetails/:orderId',isAdmin,orderController.loadOrderdetails)
 
 
 
-router.get("/search",userController.loadUser)
-router.get("/productsearch",productController.loadProducts)
-router.get('/categorysearch',categoryController.loadCategories)
+router.get("/search",isAdmin,userController.loadUser)
+router.get("/productsearch",isAdmin,productController.loadProducts)
+router.get('/categorysearch',isAdmin,categoryController.loadCategories)
+router.get("/ordersearch",isAdmin,orderController.loadOrders)
 router.get("/new-arrivals")
 router.get("/logout",adminController.logout)
 

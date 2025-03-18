@@ -12,6 +12,8 @@ const multer = require("multer");
 const os = require("os");
 const flash = require("connect-flash");
 const fs = require('fs');
+const Razorpay = require('razorpay');
+const razorpay = require('./src/config/rozorpay');
 
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
@@ -47,19 +49,6 @@ app.use((req, res, next) => {
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Configure Passport Google Strategy
-// passport.use(
-//   new GoogleStrategy(
-//     {
-//       clientID: process.env.GOOGLE_CLIENT_ID,
-//       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-//       callbackURL: process.env.GOOGLE_CALLBACK_URL,
-//     },
-//     (accessToken, refreshToken, profile, done) => {
-//       return done(null, profile);
-//     }
-//   )
-// );
 
 app.use(express.static(path.join(os.homedir(), "Downloads")));
 
@@ -88,6 +77,7 @@ app.post("/uploads", upload.array("uploaded_file"), (req, res) => {
 app.use((req, res, next) => {
   res.locals.session = req.session;
   res.locals.cartItem = req.session.cartItem || 0
+  
   next();
 });
 

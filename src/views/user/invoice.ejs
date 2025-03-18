@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/user/assets/img/favicon.png">
+    
+    <title>Attiro Fashions - Invoice</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+        .download-container {
+            max-width: 800px;
+            margin: 0 auto 20px auto;
+            text-align: right;
+        }
+        .download-btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .download-btn:hover {
+            background-color: #0069d9;
+            color: white;
+        }
+        .invoice-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 40px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #000;
+        }
+        .company-info {
+            text-align: right;
+        }
+        .invoice-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #333;
+        }
+        .invoice-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        .client-info, .payment-info {
+            width: 48%;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+            padding: 10px;
+            border-bottom: 2px solid #ddd;
+        }
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .text-right {
+            text-align: right;
+        }
+        .total-row {
+            font-weight: bold;
+            background-color: #f5f5f5;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            color: #777;
+            font-size: 12px;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+        .terms {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            font-size: 12px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .status-pending {
+            background-color: #FFF3CD;
+            color: #856404;
+        }
+        .status-shipped {
+            background-color: #D4EDDA;
+            color: #155724;
+        }
+        .status-delivered {
+            background-color: #CCE5FF;
+            color: #004085;
+        }
+        .status-cancelled {
+            background-color: #F8D7DA;
+            color: #721C24;
+        }
+        .status-returned {
+            background-color: #E2E3E5;
+            color: #383D41;
+        }
+        @media print {
+            body {
+                background-color: #fff;
+            }
+            .invoice-container {
+                box-shadow: none;
+                padding: 0;
+            }
+            .download-container {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Download Button Outside Invoice Container -->
+    <div class="download-container">
+        <a href="/invoice/<%= order._id %>" id="downloadBtn" class="download-btn">
+            <i class="bi bi-file-earmark-arrow-down"></i> Download Invoice
+        </a>
+    </div>
+    
+    <div class="invoice-container" id="invoice">
+        <div class="invoice-header">
+            <div class="logo">
+                ATTIRO FASHIONS
+            </div>
+            <div class="company-info">
+                <p><strong>Attiro Fashions</strong></p>
+                <p><%= company.address %></p>
+                <p>Phone: <%= company.phone %></p>
+                <p>Email: <%= company.email %></p>
+            </div>
+        </div>
+
+        <div class="invoice-title">INVOICE #<%= order.orderNumber %></div>
+
+        <div class="invoice-details">
+            <div class="client-info">
+                <h3>Bill To:</h3>
+                <p><strong><%= order.userId.username %></strong></p>
+                <% if(address && address.length > 0) { %>
+                    <address>
+                        <%= address[0].houseName %><br>
+                        <% if(address[0].street) { %><%= address[0].street %><br><% } %>
+                        <%= address[0].city %>, <%= address[0].state %> <%= address[0].pincode %><br>
+                        <%= address[0].country || 'India' %><br>
+                        Phone: <%= address[0].number %>
+                    </address>
+                <% } %>
+                
+                <p>Email: <%= order.userId.email %></p>
+            </div>
+            <div class="payment-info">
+                <h3>Order Details:</h3>
+                <p><strong>Order Number:</strong> <%= order.orderNumber %></p>
+                <p><strong>Order Date:</strong> <%= new Date(order.createdAt).toLocaleDateString() %></p>
+                <% if (order.deliveryDate) { %>
+                <p><strong>Expected Delivery:</strong> <%= new Date(order.deliveryDate).toLocaleDateString() %></p>
+                <% } %>
+                <p><strong>Payment Method:</strong> <%= order.paymentMethod %></p>
+                <p><strong>Payment Status:</strong> <%= order.paymentStatus %></p>
+                <p><strong>Order Status:</strong> 
+                    <span class="status-badge status-<%= order.orderStatus.toLowerCase() %>">
+                        <%= order.orderStatus %>
+                    </span>
+                </p>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th width="40%">Product</th>
+                    <th width="15%">Size</th>
+                    <th width="10%">Qty</th>
+                    <th width="15%">Unit Price</th>
+                    <th width="20%">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% order.orderedItem.forEach(function(item) { %>
+                <tr>
+                    <td>
+                        <%= item.productId.name %>
+                        <% if (item.productStatus !== "Pending") { %>
+                        <br><small class="status-badge status-<%= item.productStatus.toLowerCase().replace(' ', '-') %>">
+                            <%= item.productStatus %>
+                        </small>
+                        <% } %>
+                    </td>
+                    <td><%= item.size %></td>
+                    <td><%= item.quantity %></td>
+                    <td class="text-right">Rs.<%= item.productPrice.toFixed(2) %></td>
+                    <td class="text-right">Rs.<%= item.totalProductPrice.toFixed(2) %></td>
+                </tr>
+                <% }); %>
+                
+                <tr>
+                    <td colspan="3"></td>
+                    <td class="text-right">Subtotal:</td>
+                    <td class="text-right">Rs.<%= (order.orderAmount - (order.shippingFee || 0) + (order.couponDiscount || 0)).toFixed(2) %></td>
+                </tr>
+                <% if (order.couponDiscount && order.couponDiscount > 0) { %>
+                <tr>
+                    <td colspan="3"></td>
+                    <td class="text-right">Discount:</td>
+                    <td class="text-right">-Rs.<%= order.couponDiscount.toFixed(2) %></td>
+                </tr>
+                <% } %>
+                <% if (order.shippingFee) { %>
+                <tr>
+                    <td colspan="3"></td>
+                    <td class="text-right">Shipping:</td>
+                    <td class="text-right">Rs.<%= order.shippingFee.toFixed(2) %></td>
+                </tr>
+                <% } %>
+                <tr class="total-row">
+                    <td colspan="3"></td>
+                    <td class="text-right">Total:</td>
+                    <td class="text-right">Rs.<%= order.orderAmount.toFixed(2) %></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <% if (order.orderStatus === "Returned" || order.orderedItem.some(item => item.productStatus === "Returned" || item.productStatus === "Return Requested" || item.productStatus === "Return Approved")) { %>
+        <div class="return-info">
+            <h3>Return Information</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Return Status</th>
+                        <th>Return Reason</th>
+                        <th>Refunded</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% order.orderedItem.forEach(function(item) { %>
+                    <% if (item.productStatus === "Returned" || item.productStatus === "Return Requested" || item.productStatus === "Return Approved") { %>
+                    <tr>
+                        <td><%= item.productId.name %></td>
+                        <td><%= item.returnStatus || item.productStatus %></td>
+                        <td><%= item.returnReason || "N/A" %></td>
+                        <td><%= item.refunded ? "Yes" : "No" %></td>
+                    </tr>
+                    <% } %>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+        <% } %>
+
+        <div class="terms">
+            <h4>Terms & Conditions</h4>
+            <p>For any questions regarding this order, please contact our customer support at <%= company.supportEmail %> or call <%= company.supportPhone %>.</p>
+            <p>Return policy: Items can be returned within 30 days of delivery. Please visit our website for complete return policy.</p>
+        </div>
+
+        <div class="footer">
+            <p>Thank you for shopping with Attiro Fashions!</p>
+            <p>www.attirofashions.com</p>
+        </div>
+        
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          // Find the download button
+          const downloadBtn = document.getElementById('downloadBtn');
+          
+          // Add click event listener
+          downloadBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Get the order number from the invoice title
+            const orderNumber = document.querySelector('.invoice-title').textContent.replace('INVOICE #', '').trim();
+            const fileName = `Attiro_Invoice_${orderNumber}.pdf`;
+            
+            // Get the invoice container
+            const element = document.getElementById('invoice');
+            
+            // Configure pdf options
+            const opt = {
+              margin: [10, 10, 10, 10],
+              filename: fileName,
+              image: { type: 'jpeg', quality: 0.98 },
+              html2canvas: { scale: 2, useCORS: true },
+              jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            // Generate and download PDF
+            html2pdf().set(opt).from(element).save();
+          });
+        });
+    </script>
+</body>
+</html>

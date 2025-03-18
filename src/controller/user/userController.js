@@ -1,6 +1,7 @@
 const User = require("../../models/userSchema");
 const Product = require("../../models/productSchema");
-const Cart=require("../../models/cartSchema")
+const Cart = require("../../models/cartSchema");
+const Wallet = require("../../models/walletSchema");
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
 dotenv.config();
@@ -33,8 +34,9 @@ const login = async (req, res) => {
     req.session.isAuth = true;
     req.session.email = user.email;
     req.session.userId = user._id.toString();
-    const cart=await Cart.findOne({userId:req.session.userId})
-   
+    req.session.user = user;
+    const cart = await Cart.findOne({ userId: req.session.userId });
+
     req.flash("success_msg", "successfully loggined");
     return res.redirect("/");
   } catch (error) {
@@ -77,7 +79,6 @@ let sendVerificationEmail = async (email, otp) => {
 
 const register = async (req, res) => {
   try {
-    console.log("req.body:", req.body);
     const { username, email, number, password, confirmPassword } = req.body;
     const user = await User.findOne({ email });
     if (user) {
@@ -135,9 +136,19 @@ const verifyOtp = async (req, res) => {
       });
       console.log("newUser", newUser);
       await newUser.save();
+
       req.session.isAuth = true;
       req.session.userId = newUser._id;
       req.session.email = newUser.email;
+
+      const userId = req.session.userId;
+      const newWallet = new Wallet({
+        userId,
+        balance: 0,
+        transaction: [],
+      });
+      await newWallet.save();
+
       req.flash("success_msg", "Registerd Successfully");
       res.redirect("/");
     } else {
@@ -155,7 +166,7 @@ const resendOtp = async (req, res) => {
     const newOtp = generateOtp();
     console.log(newOtp);
     req.session.userOtp = newOtp;
-    const user = req.session.userData
+    const user = req.session.userData;
     const email = user.email;
     console.log(email);
     const emailSent = await sendVerificationEmail(email, newOtp);
@@ -182,22 +193,22 @@ const authfailure = (req, res) => {
 
 const forgot = async (req, res) => {
   try {
-    const {email} = req.body;
+    const { email } = req.body;
     const otp = generateOtp();
     console.log("f otp", otp);
     console.log(email);
     const emailSent = await sendVerificationEmail(email, otp);
     console.log(emailSent);
-    const user = await User.findOne({email:email});
+    const user = await User.findOne({ email: email });
     console.log(user);
     if (!user) {
       req.flash("error_msg", "The user doesn't Exist");
       return res.redirect("/forgot");
     }
-    req.session.email=email
+    req.session.email = email;
     req.session.user = user._id;
     req.session.userOtp = otp;
-    req.flash('success_msg','Email Verified and OTP sent')
+    req.flash("success_msg", "Email Verified and OTP sent");
     res.redirect("/verifyfotp");
   } catch (error) {
     console.log("error occred while forgot password", error);
@@ -208,7 +219,7 @@ const verifyForgetOtp = async (req, res) => {
   try {
     const otp = Object.values(req.body).join("");
     if (otp == req.session.userOtp) {
-      req.flash('success_msg','OTP Verified')
+      req.flash("success_msg", "OTP Verified");
       return res.redirect("/changepassword");
     }
     req.flash("error_msg", "Invalid OTP");
@@ -230,7 +241,7 @@ const changePassword = async (req, res) => {
       { _id: userId },
       { $set: { password: HashedPassword } }
     );
-    req.flash('success_msg','Password change successfully')
+    req.flash("success_msg", "Password change successfully");
     res.redirect("/login");
   } catch (error) {
     console.log(error);
@@ -242,7 +253,7 @@ const resendForgetOtp = async (req, res) => {
     const newOtp = generateOtp();
     console.log(newOtp);
     req.session.userOtp = newOtp;
-    console.log("req.session.email",req.session.email);
+    console.log("req.session.email", req.session.email);
     const email = req.session.email;
     const emailSent = await sendVerificationEmail(email, newOtp);
     console.log(emailSent);
@@ -263,7 +274,12 @@ const loadHome = async (req, res) => {
     const totalPages = Math.ceil(totalProducts / limit);
 
     const category = await Category.find({ status: true });
-    const product = await Product.find({ status: true })
+    const activeCategories = await Category.find({ status: true });
+    const activeCategoryIds = activeCategories.map((category) => category._id);
+    const product = await Product.find({
+      status: true,
+      category: { $in: activeCategoryIds },
+    })
       .sort({ createdAt: -1 })
       .sort({ createdAt: -1 })
       .skip(skip)
@@ -313,8 +329,6 @@ const loadOtp = async (req, res) => {
   }
 };
 
-
-
 const loadChangePassword = async (req, res) => {
   try {
     return res.render("forgot");
@@ -325,7 +339,7 @@ const loadChangePassword = async (req, res) => {
 
 const loadvarifyForgotOtp = async (req, res) => {
   try {
-    res.render("f-otp",{email:req.session.email});
+    res.render("f-otp", { email: req.session.email });
   } catch (error) {
     console.log(error);
   }
@@ -368,8 +382,6 @@ module.exports = {
   loadOtp,
   logout,
   verifyOtp,
-  googleSignIn,
-  googleCallback,
   authfailure,
   loadAbout,
   loadContact,

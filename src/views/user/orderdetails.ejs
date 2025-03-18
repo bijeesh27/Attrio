@@ -397,6 +397,106 @@
       font-weight: 500;
     }
 
+    /* Return Button Styles */
+    .return-button {
+      padding: 6px 12px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 14px;
+      display: inline-block;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .return-button-active {
+      background-color: #dc3545;
+      color: white;
+      cursor: pointer;
+    }
+
+    .return-button-disabled {
+      background-color: #e9ecef;
+      color: #6c757d;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    /* Return Reason Modal */
+    .return-modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .return-modal-content {
+      background-color: white;
+      margin: 15% auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 500px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .return-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .return-modal-header h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .close-modal {
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .return-form textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .return-form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .return-form-actions button {
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .return-cancel {
+      background-color: var(--secondary-color);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+    }
+
+    .return-submit {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+    }
+
     /* Responsive Design */
     @media (max-width: 768px) {
       .dashboard-container {
@@ -462,15 +562,23 @@
         width: 100%;
         justify-content: center;
       }
+
+      .return-modal-content {
+        width: 95%;
+        margin: 20% auto;
+      }
     }
   </style>
 
-  <div class="dashboard-container">
+
+<div class="dashboard-container">
     <!-- Account Menu -->
     <div class="account-tabs-menu">
       <ul>
         <li>
-          <a href="/profile"><i class="bx bxs-dashboard"></i> Dashboard</a>
+          <a href="/profile" 
+            ><i class="bx bxs-user"></i>Profile</a
+          >
         </li>
         <li>
           <a href="/orders" class="active"><i class="bx bxs-shopping-bag"></i> Orders</a>
@@ -632,11 +740,12 @@
                   <th>Price</th>
                   <th>Quantity</th>
                   <th>Status</th>
+                  <th>Return</th>
                   <th>Total</th>
                 </tr>
               </thead>
               <tbody>
-                <% order.orderedItem.forEach(item => { %>
+                <% order.orderedItem.forEach((item, index) => { %>
                   <tr>
                     <td data-label="Product">
                       <div class="product-info">
@@ -684,6 +793,15 @@
                         <%= item.productStatus.charAt(0).toUpperCase() + item.productStatus.slice(1) %>
                       </span>
                     </td>
+                    <td data-label="Return">
+                      <% if(item.productStatus.toLowerCase() === 'delivered') { %>
+                        <button class="return-button return-button-active" onclick="openReturnModal('<%= order._id %>', '<%= item.productId._id %>', '<%= index %>')">
+                          Return Order
+                        </button>
+                      <% } else { %>
+                        <span class="return-button return-button-disabled">Return Order</span>
+                      <% } %>
+                    </td>
                     <td data-label="Total">Rs.<%= item.totalProductPrice.toFixed(2) %></td>
                   </tr>
                 <% }); %>
@@ -719,26 +837,99 @@
 
           <!-- Order Actions -->
           <div class="order-actions">
-            <a href="/orders" class="back-button">
-              <i class="bx bx-arrow-back"></i> Back to Orders
+            <a href="/orders" class="btn btn-secondary">
+                <i class="bx bx-arrow-back"></i> Back to Orders
             </a>
-            <% if(isShipped && !isDelivered) { %>
-            <a href="/track/<%= order._id %>" class="tracking-button">
-              <i class="bx bx-map"></i> Track Order
+            <% if (order.orderStatus==='Pending') { %>
+              <a class="btn btn-danger" href="/cancelorder/<%= order._id %>">
+                Cancel Order
             </a>
             <% } %>
+            <a href="/invoice/<%= order._id %>" class="btn btn-primary">
+                View Invoice
+            </a>
           </div>
         </div>
       </div>
     </div>
-  </div><br><br><br>
+  </div>
+  
+  <!-- Return Reason Modal -->
+  <div id="returnModal" class="return-modal">
+    <div class="return-modal-content">
+      <div class="return-modal-header">
+        <h3>Return Request</h3>
+        <span class="close-modal" onclick="closeReturnModal()">&times;</span>
+      </div>
+      <form id="returnForm" class="return-form" method="POST">
+        <input type="hidden" id="orderIdInput" name="orderId">
+        <input type="hidden" id="productIdInput" name="productId">
+        <input type="hidden" id="itemIndexInput" name="itemIndex">
+        
+        <div class="form-group">
+          <label for="returnReason">Please provide a reason for your return:</label>
+          <textarea id="returnReason" name="returnReason" required placeholder="e.g., Damaged product, wrong size, etc."></textarea>
+        </div>
+        
+        <div class="return-form-actions">
+          <button type="button" class="return-cancel" onclick="closeReturnModal()">Cancel</button>
+          <button type="submit" class="return-submit">Submit Return Request</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-<%- include('../partials/user/footer') %>
+  <br><br><br>
 
-<script>
-  function logout() {
-    // Add your logout functionality here
-    window.location.href = "/logout";
-  }
-</script>
+  <%- include('../partials/user/footer') %>
+
+  <script>
+    function logout() {
+      window.location.href = "/logout";
+    }
+    
+    // Return modal functionality
+    const returnModal = document.getElementById('returnModal');
+    const returnForm = document.getElementById('returnForm');
+    const orderIdInput = document.getElementById('orderIdInput');
+    const productIdInput = document.getElementById('productIdInput');
+    const itemIndexInput = document.getElementById('itemIndexInput');
+    
+    function openReturnModal(orderId, productId, itemIndex) {
+      returnModal.style.display = 'block';
+      orderIdInput.value = orderId;
+      productIdInput.value = productId;
+      itemIndexInput.value = itemIndex;
+      
+      // Set the form action dynamically
+      returnForm.action = `/returnorder/${orderId}/${productId}`;
+    }
+    
+    function closeReturnModal() {
+      returnModal.style.display = 'none';
+      // Reset form
+      returnForm.reset();
+    }
+    
+    // Close modal if clicking outside
+    window.onclick = function(event) {
+      if (event.target === returnModal) {
+        closeReturnModal();
+      }
+    }
+    
+    // Form submission
+    returnForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+      const returnReason = document.getElementById('returnReason').value;
+      if (!returnReason.trim()) {
+        alert('Please provide a reason for your return');
+        return;
+      }
+      
+      // Submit form
+      this.submit();
+    });
+  </script>
 </body>

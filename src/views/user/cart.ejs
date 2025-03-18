@@ -106,11 +106,11 @@
 
                         <td class="quantity-col">
                           <div class="quantity-selector">
-                            <button type="button" class="quantity-btn minus-btn" onclick="updateQuantity('<%= item.productId._id %>', '<%= item.size %>', -1)">
+                            <button type="button" class="quantity-btn minus-btn" onclick="updateQuantity('<%= item.productId._id %>', '<%= item.size %>', -1, '<%= item.stock %>')">
                               <i class="bx bx-minus"></i>
                             </button>
                             <input type="text" value="<%= item.quantity %>" id="quantity-<%= item.productId._id %>-<%= item.size %>" min="1" max="5" class="quantity-input" readonly>
-                            <button type="button" class="quantity-btn plus-btn" onclick="updateQuantity('<%= item.productId._id %>', '<%= item.size %>', 1)">
+                            <button type="button" class="quantity-btn plus-btn" onclick="updateQuantity('<%= item.productId._id %>', '<%= item.size %>', 1, '<%= item.stock %>')">
                               <i class="bx bx-plus"></i>
                             </button>
                           </div>
@@ -163,10 +163,7 @@
                 </div>
 
                 <div class="update-actions">
-                  <button type="button" class="btn-clear" onclick="clearCart()">
-                    <i class="bx bx-trash"></i>
-                    <span>Clear Cart</span>
-                  </button>
+                  
                   
                   <a href="/checkout" class="btn-checkout">
                     <span>Checkout</span>
@@ -313,13 +310,25 @@
 <!-- End Instagram Area -->
 
 <script>
-function updateQuantity(productId, size, change) {
+function updateQuantity(productId, size, change, stock) {
   const quantityInput = document.getElementById(`quantity-${productId}-${size}`);
   let quantity = parseInt(quantityInput.value) + change;
   
   // Ensure quantity is at least 1
   if (quantity < 1) {
     quantity = 1;
+    return;
+  }
+  
+  // Check if item is out of stock and user is trying to increase quantity
+  if (stock <quantity && change > 0) {
+    // Show SweetAlert error message
+    Swal.fire({
+      title: `Out of Stock`,
+      text: `Sorry, this item is currently out of stock.`,
+      icon: "error",
+      confirmButtonColor: "#000000",
+    });
     return;
   }
   
@@ -338,7 +347,7 @@ function updateQuantity(productId, size, change) {
   // Update input value
   quantityInput.value = quantity;
   
-  // Send AJAX request to update cart
+  // Rest of your code remains the same...
   fetch('/cart/update', {
     method: 'POST',
     headers: {
@@ -367,37 +376,6 @@ function updateQuantity(productId, size, change) {
   .catch(error => {
     console.error('Error:', error);
     alert('An error occurred. Please try again.');
-  });
-}
-
-function removeItem(productId, size) {
-  Swal.fire({
-    title: `Are you sure?`,
-    text: `Do you want to remove this product from cart?`,
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#000000",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Remove",
-    cancelButtonText: "Cancel",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      fetch(`/removeItem/${productId}/${size}`, {
-        method: 'get',
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          location.reload();
-        } else {
-          alert('Failed to remove item. Please try again.');
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred. Please try again.');
-      });
-    }
   });
 }
 
@@ -431,6 +409,37 @@ function clearCart() {
     }
   });
 }
+function removeItem(productId,size) {
+  Swal.fire({
+    title: `Are you sure?`,
+    text: `Do you want to remove the item in the cart?`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#000000",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Remove",
+    cancelButtonText: "Cancel",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      fetch(`/removeItem/${productId}/${size}`, {
+        method: 'get',
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          location.reload();
+        } else {
+          alert('Failed to clear cart. Please try again.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+      });
+    }
+  });
+}
+
 </script>
 
 <%- include('../partials/user/footer') %>

@@ -11,7 +11,7 @@
       <ul>
         <li>
           <a href="/profile" class="active"
-            ><i class="bx bxs-dashboard"></i> Dashboard</a
+            ><i class="bx bxs-user"></i>Profile</a
           >
         </li>
         <li>
@@ -68,11 +68,11 @@
               <h4>Personal Information</h4>
               <div class="form-group">
                 <label for="username">Full Name</label>
-                <input type="text" id="username" name="username" value="<%= user.username %>" required>
+                <input type="text" id="username" name="username" value="<%= user.username %>" >
               </div>
               <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" value="<%= user.email %>" required>
+                <input type="email" id="email" name="email" value="<%= user.email %>" >
               </div>
               <div class="form-group">
                 <label for="number">Phone</label>
@@ -422,6 +422,108 @@ profileImageInput.addEventListener('change', function(e) {
       cropperContainer.style.display = 'none';
       uploadActions.style.display = 'none';
     }
+    
+const emailInput = document.getElementById('email');
+let originalEmail = emailInput.value;
+
+if (editProfileForm) {
+  editProfileForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Basic validation
+    const email = emailInput.value;
+    const username = document.getElementById('username').value;
+    
+    if (!email || !username) {
+      Swal.fire({
+        title: 'Validation Error',
+        text: 'Please provide all required fields',
+        icon: 'error',
+        confirmButtonColor: '#000000'
+      });
+      return;
+    }
+    
+    // Email format validation
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      Swal.fire({
+        title: 'Validation Error',
+        text: 'Please provide a valid email address',
+        icon: 'error',
+        confirmButtonColor: '#000000'
+      });
+      return;
+    }
+    
+    // Check if email was changed
+    if (email !== originalEmail) {
+      // Email was changed, redirect to OTP verification
+      sendOTPForEmailVerification(email);
+    } else {
+      // No email change, submit form normally
+      this.submit();
+    }
+  });
+}
+
+// Function to handle OTP verification for email change
+function sendOTPForEmailVerification(newEmail) {
+  // Store form data in session storage to retrieve after OTP verification
+  const formData = {
+    username: document.getElementById('username').value,
+    email: newEmail,
+    number: document.getElementById('number').value,
+    dob: document.getElementById('dob').value
+  };
+  
+  sessionStorage.setItem('profileUpdateData', JSON.stringify(formData));
+  
+  // Show loading
+  Swal.fire({
+    title: 'Sending OTP...',
+    text: 'Please wait while we send a verification code to your new email',
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading();
+    }
+  });
+  
+  // Send request to backend to generate and send OTP
+  fetch('/send-email-change-otp', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ newEmail: newEmail })
+  })
+  .then(response => response.json())
+  .then(data => {
+    Swal.close();
+    
+    if (data.success) {
+      // Redirect to OTP verification page
+      window.location.href = '/verify-email-change';
+    } else {
+      Swal.fire({
+        title: 'Error',
+        text: data.message || 'Failed to send verification code',
+        icon: 'error',
+        confirmButtonColor: '#000000'
+      });
+    }
+  })
+  .catch(error => {
+    Swal.close();
+    console.error('Error:', error);
+    Swal.fire({
+      title: 'Error',
+      text: 'An error occurred while sending verification code',
+      icon: 'error',
+      confirmButtonColor: '#000000'
+    });
+  });
+}
   </script>
 
   <style>

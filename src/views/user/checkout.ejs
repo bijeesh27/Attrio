@@ -103,13 +103,13 @@
                   </div>
                 <% } %>
                 
-                <button type="button" class="btn-add-address" id="addAddressBtn" onclick="addAddress()">
+                <button type="button" class="btn-add-address" id="addAddressBtn" >
                   <i class='bx bx-plus-circle'></i> Add New Address
                 </button>
               </div>
               
               <!-- New Address Form (Hidden by default) -->
-              <!-- <div class="address-form-container" id="addressFormContainer" style="display: none;">
+              <div class="address-form-container" id="addressFormContainer" style="display: none;">
                 <form id="addressForm">
                   <div class="form-header">
                     <h4 id="addressFormTitle">Add New Address</h4>
@@ -176,7 +176,7 @@
                     </div>
                   </div>
                 </form>
-              </div> -->
+              </div>
             </div>
           </div>
           
@@ -460,6 +460,8 @@
     </div>
   </div>
 </div>
+<!-- Add Razorpay SDK -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 
 <!-- End Facility Area -->
@@ -500,37 +502,37 @@
       }
     });
     
-    // // Address Form Toggle
-    // document.getElementById('addAddressBtn').addEventListener('click', function() {
-    //   const formContainer = document.getElementById('addressFormContainer');
-    //   formContainer.style.display = 'block';
-    //   document.getElementById('addressFormTitle').textContent = 'Add New Address';
-    //   document.getElementById('saveButtonText').textContent = 'Save Address';
-    //   document.getElementById('addressForm').reset();
-    //   document.getElementById('addressIndex').value = '-1';
-    // });
+    // Address Form Toggle
+    document.getElementById('addAddressBtn').addEventListener('click', function() {
+      const formContainer = document.getElementById('addressFormContainer');
+      formContainer.style.display = 'block';
+      document.getElementById('addressFormTitle').textContent = 'Add New Address';
+      document.getElementById('saveButtonText').textContent = 'Save Address';
+      document.getElementById('addressForm').reset();
+      document.getElementById('addressIndex').value = '-1';
+    });
     
-    // document.getElementById('closeAddressForm').addEventListener('click', function() {
-    //   document.getElementById('addressFormContainer').style.display = 'none';
-    // });
+    document.getElementById('closeAddressForm').addEventListener('click', function() {
+      document.getElementById('addressFormContainer').style.display = 'none';
+    });
     
 
     
-    // // Address Form Submission
-    // document.getElementById('addressForm').addEventListener('submit', function(e) {
-    //   e.preventDefault();
+    // Address Form Submission
+    document.getElementById('addressForm').addEventListener('submit', function(e) {
+      e.preventDefault();
       
-    //   // In a real application, you would send an AJAX request to save the address
-    //   // For now, just show a success message
-    //   Swal.fire(
-    //     'Success!',
-    //     'Your address has been saved.',
-    //     'success'
-    //   ).then(() => {
-    //     document.getElementById('addressFormContainer').style.display = 'none';
-    //     // In a real app, you would update the address list without reloading
-    //   });
-    // });
+      // In a real application, you would send an AJAX request to save the address
+      // For now, just show a success message
+      Swal.fire(
+        'Success!',
+        'Your address has been saved.',
+        'success'
+      ).then(() => {
+        document.getElementById('addressFormContainer').style.display = 'none';
+        // In a real app, you would update the address list without reloading
+      });
+    });
     
     // Apply Coupon
     function applyCoupon() {
@@ -567,46 +569,52 @@
     
     // Place Order Button
     document.getElementById('placeOrderBtn').addEventListener('click', function() {
-      // Check if address is selected
-      const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
-      if (!selectedAddress && document.querySelectorAll('.address-card').length > 0) {
-        Swal.fire('Error', 'Please select a delivery address', 'error');
-        return;
-      }
+  // Check if address is selected
+  const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
+  if (!selectedAddress && document.querySelectorAll('.address-card').length > 0) {
+    Swal.fire('Error', 'Please select a delivery address', 'error');
+    return;
+  }
+  
+  // Check if payment method is selected
+  const selectedPayment = document.querySelector('input[name="paymentMethod"]:checked');
+  if (!selectedPayment) {
+    Swal.fire('Error', 'Please select a payment method', 'error');
+    return;
+  }
+  
+  const addressId = selectedAddress ? selectedAddress.value : null;
+  
+  // Handle different payment methods
+  switch (selectedPayment.value) {
+    case 'creditCard':
+    case 'netBanking':
+    case 'upi':
+      // Use Razorpay for online payments
+      payNow();
+      break;
       
-      // Check if payment method is selected
-      const selectedPayment = document.querySelector('input[name="paymentMethod"]:checked');
-      if (!selectedPayment) {
-        Swal.fire('Error', 'Please select a payment method', 'error');
-        return;
-      }
+    case 'cashOnDelivery':
+      // For COD, just confirm and proceed
+      Swal.fire({
+        title: 'Confirm Order',
+        text: 'Do you want to place this order with Cash on Delivery?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#000000',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, Place Order'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          processOrder(addressId, 'Cash On Delivery');
+        }
+      });
+      break;
       
-      // If credit card is selected, show payment modal
-      if (selectedPayment.value === 'creditCard') {
-        document.getElementById('paymentModal').style.display = 'block';
-        // Set payment amount in the button
-        const orderTotal = document.getElementById('orderTotal').textContent.replace('Rs.', '');
-        document.getElementById('paymentAmount').textContent = orderTotal;
-      } else if (selectedPayment.value === 'cashOnDelivery') {
-        // For COD, just confirm and proceed
-        Swal.fire({
-          title: 'Confirm Order',
-          text: 'Do you want to place this order with Cash on Delivery?',
-          icon: 'question',
-          showCancelButton: true,
-          confirmButtonColor: '#000000',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, Place Order'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            processOrder();
-          }
-        });
-      } else {
-        // For other payment methods, you would implement their specific flows
-        Swal.fire('Coming Soon', 'This payment method will be available soon', 'info');
-      }
-    });
+    default:
+      Swal.fire('Coming Soon', 'This payment method will be available soon', 'info');
+  }
+});
     
     // Close Payment Modal
     document.getElementById('closePaymentModal').addEventListener('click', function() {
@@ -647,17 +655,89 @@
       document.getElementById('paymentModal').style.display = 'none';
       processOrder();
     });
-    
-    // Process Order Function
-    function processOrder() {
+
+    function payNow() {
   // Get the selected address ID
   const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
   const addressId = selectedAddress ? selectedAddress.value : null;
   
-  // Get the selected payment method
-  const selectedPayment = document.querySelector('input[name="paymentMethod"]:checked');
-  const paymentMethod = selectedPayment ? selectedPayment.value : null;
+  if (!addressId) {
+    Swal.fire('Error', 'Please select a delivery address', 'error');
+    return;
+  }
+
+  // Show loading indicator
+  Swal.fire({
+    title: 'Processing',
+    text: 'Preparing your payment...',
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading();
+    }
+  });
   
+  // Get order total amount
+  const orderTotal = document.getElementById('orderTotal').textContent.replace('Rs.', '').replace(/,/g, '');
+
+  // Fetch order from backend
+  fetch('/create-order', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ 
+      amount: parseFloat(orderTotal) * 100, // Convert to paise
+      addressId: addressId
+    })
+  })
+  .then(response => response.json())
+  .then(order => {
+    Swal.close();
+    const options = {
+      key: order.key_id || 'YOUR_TEST_KEY_ID', // Use key from backend or fallback
+      amount: order.amount,     // Amount in paise
+      currency: order.currency,
+      name: 'Attiro Fashions',
+      description: 'Fashion Purchase',
+      order_id: order.id,       // Order ID from backend
+      handler: function (response) {
+        // Handle successful payment
+        processOrder(addressId, 'razorpay', response.razorpay_payment_id, response.razorpay_order_id);
+      },
+      prefill: {
+        name: document.getElementById('name')?.value || '',
+        email: '',
+        contact: document.getElementById('phone')?.value || ''
+      },
+      theme: {
+        color: '#000000'
+      }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+    
+    // Handle payment failures
+    rzp.on('payment.failed', function (response) {
+      Swal.fire({
+        title: 'Payment Failed',
+        text: response.error.description,
+        icon: 'error',
+        confirmButtonColor: '#000000'
+      });
+    });
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    Swal.fire({
+      title: 'Error',
+      text: 'There was a problem preparing your payment. Please try again.',
+      icon: 'error',
+      confirmButtonColor: '#000000'
+    });
+  });
+}
+
+    
+function processOrder(addressId, paymentMethod, paymentId = null, orderId = null) {
   // Show loading indicator
   Swal.fire({
     title: 'Processing',
@@ -668,16 +748,28 @@
     }
   });
   
+  // Payment data to send to server
+  const paymentData = {
+    addressId: addressId,
+    paymentMethod: paymentMethod
+  };
+  
+  // Add payment details if available
+  if (paymentId) {
+    paymentData.paymentId = paymentId;
+  }
+  
+  if (orderId) {
+    paymentData.razorpayOrderId = orderId;
+  }
+  
   // Send order data to the server
   fetch('/orderplaced', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ 
-      addressId: addressId,
-      paymentMethod: paymentMethod
-    }),
+    body: JSON.stringify(paymentData),
     credentials: 'same-origin'
   }).then(response => response.json()) 
   .then(data => {
@@ -725,44 +817,12 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-// Update the card payment form submission to use our new processOrder function
-document.getElementById('cardPaymentForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  
-  // Basic validation (in a real app, you would do more thorough validation)
-  const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
-  const cardHolder = document.getElementById('cardHolder').value;
-  const expiryDate = document.getElementById('expiryDate').value;
-  const cvv = document.getElementById('cvv').value;
-  
-  if (cardNumber.length !== 16 || !/^\d+$/.test(cardNumber)) {
-    Swal.fire('Error', 'Please enter a valid 16-digit card number', 'error');
-    return;
-  }
-  
-  if (!cardHolder) {
-    Swal.fire('Error', 'Please enter the card holder name', 'error');
-    return;
-  }
-  
-  if (!expiryDate || expiryDate.length !== 5 || expiryDate.charAt(2) !== '/') {
-    Swal.fire('Error', 'Please enter a valid expiry date (MM/YY)', 'error');
-    return;
-  }
-  
-  if (!cvv || cvv.length !== 3 || !/^\d+$/.test(cvv)) {
-    Swal.fire('Error', 'Please enter a valid 3-digit CVV', 'error');
-    return;
-  }
-  
-  // Process payment (in a real app, you would send this to a payment processor)
-  document.getElementById('paymentModal').style.display = 'none';
-  
-  // For credit card payments, you might want to include card details
-  // This is just for demonstration - in production, never send full card details to your server
-  // Instead, you'd use a payment processor like Stripe or PayPal
-  processOrder();
-});
+
+
+
+function addAddress(){
+  window.location.href="/addaddress"
+}
     </script>
 
     <%- include('../partials/user/footer') %>

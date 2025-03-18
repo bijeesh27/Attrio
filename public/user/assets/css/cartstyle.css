@@ -196,3 +196,26 @@
 .cart-actions .btn-clear i {
   margin-right: 8px;
 } 
+
+.btn-checkout {
+  display: flex;
+  align-items: center;
+  background-color: #f53f85;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.btn-checkout:hover {
+  background-color:  #b6265d;
+  color: white;
+}
+
+.btn-checkout i {
+  margin-left: 8px;
+  font-size: 20px;
+}

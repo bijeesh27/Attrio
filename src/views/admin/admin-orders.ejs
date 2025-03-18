@@ -30,7 +30,7 @@
     color: #c2410c;
   }
 
-  .status-processing {
+  .status-returned {
     background-color: #e0f2fe;
     color: #0369a1;
   }
@@ -311,32 +311,7 @@
               </form>
             </div>
           </div>
-          <div class="col-sm-12 col-md-6">
-            <div class="filter-container">
-              <select class="filter-select" id="orderStatusFilter" onchange="applyFilters()">
-                <option value="">All Order Status</option>
-                <option value="pending">Pending</option>
-                <option value="processing">Processing</option>
-                <option value="shipped">Shipped</option>
-                <option value="delivered">Delivered</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
-              <select class="filter-select" id="paymentStatusFilter" onchange="applyFilters()">
-                <option value="">All Payment Status</option>
-                <option value="paid">Paid</option>
-                <option value="pending">Pending</option>
-                <option value="failed">Failed</option>
-              </select>
-              <select class="filter-select" id="returnStatusFilter" onchange="applyFilters()">
-                <option value="">All Return Status</option>
-                <option value="none">None</option>
-                <option value="requested">Requested</option>
-                <option value="approved">Approved</option>
-                <option value="completed">Completed</option>
-                <option value="rejected">Rejected</option>
-              </select>
-            </div>
-          </div>
+         
         </div>
 
         <div class="row">
@@ -368,48 +343,25 @@
                       <tr data-order-id="<%= order.id %>">
                         <td><%= index + 1 %></td>
                         <td><%= order.orderNumber %></td>
-                        <td><%= order.userId.username%></td>
+                        <td><%= order.userId?.username%></td>
                         <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
                         <td>Rs.<%= order.orderAmount %></td>
                         <td>
-                          <select 
-                            class="status-select order-status-select" 
-                            data-status-type="orderStatus" 
-                            data-original-value="<%= order.orderStatus.toLowerCase() %>"
-                            onchange="updateOrderStatus(this, '<%= order.id %>', 'orderStatus')"
-                          >
-                            <option value="pending" <%= order.orderStatus.toLowerCase() === 'pending' ? 'selected' : '' %>>Pending</option>
-                            <option value="processing" <%= order.orderStatus.toLowerCase() === 'processing' ? 'selected' : '' %>>Processing</option>
-                            <option value="shipped" <%= order.orderStatus.toLowerCase() === 'shipped' ? 'selected' : '' %>>Shipped</option>
-                            <option value="delivered" <%= order.orderStatus.toLowerCase() === 'delivered' ? 'selected' : '' %>>Delivered</option>
-                            <option value="cancelled" <%= order.orderStatus.toLowerCase() === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
-                          </select>
+                          <span class="order-status status-<%= order.orderStatus.toLowerCase() %>">
+                            <%= order.orderStatus %>
+                          </span>
                         </td>
                         <td>
-                          <select 
-                            class="status-select payment-status-select" 
-                            data-status-type="paymentStatus" 
-                            data-original-value="<%= order.paymentStatus.toLowerCase() %>"
-                            onchange="updateOrderStatus(this, '<%= order.id %>', 'paymentStatus')"
-                          >
-                            <option value="paid" <%= order.paymentStatus.toLowerCase() === 'paid' ? 'selected' : '' %>>Paid</option>
-                            <option value="pending" <%= order.paymentStatus.toLowerCase() === 'pending' ? 'selected' : '' %>>Pending</option>
-                            <option value="failed" <%= order.paymentStatus.toLowerCase() === 'failed' ? 'selected' : '' %>>Failed</option>
-                          </select>
+                          <span class="payment-status payment-status-<%= order.paymentStatus.toLowerCase() %>">
+                            <%= order.paymentStatus %>
+                          </span>
                         </td>
                         <td>
-                          <select 
-                            class="status-select return-status-select" 
-                            data-status-type="returnStatus" 
-                            data-original-value="<%= order.returnStatus ? order.returnStatus.toLowerCase() : 'none' %>"
-                            onchange="updateOrderStatus(this, '<%= order.id %>', 'returnStatus')"
-                          >
-                            <option value="none" <%= !order.returnStatus || order.returnStatus.toLowerCase() === 'none' ? 'selected' : '' %>>None</option>
-                            <option value="requested" <%= order.returnStatus && order.returnStatus.toLowerCase() === 'requested' ? 'selected' : '' %>>Requested</option>
-                            <option value="approved" <%= order.returnStatus && order.returnStatus.toLowerCase() === 'approved' ? 'selected' : '' %>>Approved</option>
-                            <option value="completed" <%= order.returnStatus && order.returnStatus.toLowerCase() === 'completed' ? 'selected' : '' %>>Completed</option>
-                            <option value="rejected" <%= order.returnStatus && order.returnStatus.toLowerCase() === 'rejected' ? 'selected' : '' %>>Rejected</option>
-                          </select>
+                          <% if (order.orderStatus==="Returned") { %>
+                           <%= order.orderStatus %>
+                          <% } else { %>
+                              None
+                            <% } %>
                         </td>
                         <td>
                           <a href="/admin/adminorderdetails/<%= order.id %>">

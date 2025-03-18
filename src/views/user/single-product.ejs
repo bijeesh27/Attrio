@@ -1455,10 +1455,10 @@ document.addEventListener("DOMContentLoaded", function () {
               title: "Success!",
               text: "Product added to cart successfully",
               icon: "success",
-              showConfirmButton: false,
+              showConfirmButton: true,
               timer: 1500,
             }).then(() => {
-              window.location.href = "/cart";
+             location.reload()
             });
           } else {
             Swal.fire({

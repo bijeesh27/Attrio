@@ -26,7 +26,8 @@ router.get("/", userController.loadHome);
 router.get("/shop", productController.loadShop);
 router.get("/shopsingle/:productId", productController.loadShopSingle);
 router.get("/catfilter/:categoryId", productController.findByCategory);
-router.get("/singleproduct/:productId", productController.singleProduct);
+router.get("/singleproduct/:productId", productController.singleProductModal);
+router.get("/api/product/:id",productController.productModal)
 router.get('/about',userController.loadAbout)
 router.get('/contact',userController.loadContact)
 router.get('/search',productController.searchProduct)
@@ -69,6 +70,13 @@ router.get("/checkout",logged,orderController.loadCheckout)
 router.post('/orderplaced',logged,orderController.placeOrder)
 router.get("/placeorder",logged,orderController.loadPlaceOrder)
 router.get("/orderdetails/:orderId",logged,orderController.loadOrderDetails)
+router.get('/cancelorder/:orderId',logged,orderController.cancelOrder)
+router.post('/returnorder/:orderId/:productId',logged,orderController.returnOrder)
+router.get('/invoice/:orderId',logged,orderController.loadInvoice)
+router.post('/send-email-change-otp',logged,profileController.sendEmail)
+router.get('/verify-email-change',logged,profileController.veryfyChangeEmail)
+router.post("/verify-email-change",logged,profileController.changeEmail)
+router.post('/create-order', orderController.createOrder);
 
 
 router.get("/auth/google",passport.authenticate("google", { scope: ["profile", "email"] })

@@ -15,7 +15,7 @@ const categorySchema= new Schema({
         required:true,
         default:true
     }
-});
+},{ timestamps: true });
 
 const Category=mongoose.model("categories",categorySchema)
 module.exports=Category

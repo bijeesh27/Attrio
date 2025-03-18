@@ -81,7 +81,6 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
     deliveryDate: {
-      ref: "Address",
       type: Date,
     },
     shippingDate: {

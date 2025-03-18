@@ -22,6 +22,8 @@
         <link rel="stylesheet" href="/user/assets/css/dark.css">
         <link rel="stylesheet" href="/user/assets/css/responsive.css">
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        
         
         <title>Attiro Fashions</title>
 
@@ -161,7 +163,7 @@
                             <!-- New Search Input -->
                             <div class="option-item header-search">
                                 <div class="search-container">
-                                    <form action="/search" method="GET" id="searchForm">
+                                    <form action="/shop" method="GET" id="searchForm">
                                         <input type="text" class="header-search-input" placeholder="Search here..." name="query" id="userSearchInput" value="<%= locals.searchQuery || '' %>">
                                         <button type="submit"><i class='bx bx-search-alt'></i></button>
                                         <i class='bx bx-x search-clear-icon' id="searchClearBtn" onclick="clearUserSearch()"></i>

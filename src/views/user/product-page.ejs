@@ -32,7 +32,7 @@
   <div class="page-title-area">
     <div class="container">
       <div class="page-title-content">
-        <h2>Products</h2>
+        <h2>products</h2>
         <ul>
           <li><a href="/">Home</a></li>
           <li>Products</li>
@@ -95,12 +95,12 @@
 
           <div class="col-lg-4 col-md-4">
             <div class="products-ordering-list">
-              <select id="sortSelect">
+              <select id="sortSelect" onchange="sortProducts()">
                 <option value="">Sort By</option>
-                <option value="a-z"><a href="/az">Sort by Name:Aa-Zz</a></option>
-                <option value="z-a">Sort by Name:Az-Zz</option>
-                <option value="l-h">Sort by Price: Low to High</option>
-                <option value="h-l">Sort by Price: High to Low</option>
+                <option value="a-z" <%= sort === 'a-z' ? 'selected' : '' %>>Sort by Name: A-Z</option>
+                <option value="z-a" <%= sort === 'z-a' ? 'selected' : '' %>>Sort by Name: Z-A</option>
+                <option value="l-h" <%= sort === 'l-h' ? 'selected' : '' %>>Sort by Price: Low to High</option>
+                <option value="h-l" <%= sort === 'h-l' ? 'selected' : '' %>>Sort by Price: High to Low</option>
               </select>
             </div>
           </div>
@@ -196,10 +196,7 @@
         <% if (totalPages > 1) { %>
         <div class="pagination-container">
           <div class="pagination-area">
-            <a
-              href="?page=<%= currentPage > 1 ? currentPage - 1 : 1 %>"
-              class="pagination-arrow prev <%= currentPage === 1 ? 'disabled' : '' %>"
-            >
+            <a href="?page=<%= currentPage > 1 ? currentPage - 1 : 1 %>&query=<%= query %>&sort=<%= sort %>&categoryId=<%= categoryId %>" class="pagination-arrow prev <%= currentPage === 1 ? 'disabled' : '' %>">
               <i class="bx bx-chevron-left"></i>
             </a>
       
@@ -803,14 +800,12 @@
               <h3 class="woocommerce-widget-title">Categories</h3>
 
               <ul class="collections-list-row">
-                <% category.forEach(category => { %>
-                <li>
-                  <a href="/catfilter/<%= category._id %>"
-                    ><%= category.description %></a
-                  >
-                </li>
-                <% }) %>
-              </ul>
+  <% categories.forEach(category => { %>
+    <li>
+      <a href="/shop?categoryId=<%= category._id %>&query=<%= query %>&sort=<%= sort %>"><%= category.name %></a>
+    </li>
+  <% }) %>
+</ul>
             </div>
 
             <div class="woocommerce-widget price-list-widget">
@@ -828,22 +823,7 @@
               </div>
             </div>
 
-            <div class="woocommerce-widget size-list-widget">
-              <h3 class="woocommerce-widget-title">Size</h3>
-
-              <ul class="size-list-row">
-                <li><a href="#">20</a></li>
-                <li><a href="#">24</a></li>
-                <li class="active"><a href="#">36</a></li>
-                <li><a href="#">30</a></li>
-                <li><a href="#">XS</a></li>
-                <li><a href="#">S</a></li>
-                <li><a href="#">M</a></li>
-                <li><a href="#">L</a></li>
-                <li><a href="#">L</a></li>
-                <li><a href="#">XL</a></li>
-              </ul>
-            </div>
+            
           </div>
         </div>
       </div>
@@ -851,22 +831,23 @@
   </div>
   <!-- End Products Filter Modal Area -->
 
-//   <script>
-//     document.addEventListener("DOMContentLoaded", () => {
-//         const sortSelect = document.getElementById('sortSelect');
-//         if (sortSelect) {
-//             sortSelect.addEventListener('change', (e) => {
-//                 const currentUrl = new URL(window.location.href);
-//                 currentUrl.searchParams.set('sort', e.target.value);
-
-//                 // Reset to page 1 when sorting changes
-//                 currentUrl.searchParams.set('page', '1');
-
-//                 window.location.href = currentUrl.toString();
-//             });
-//         }
-//     });
-//   </script>
 
   <%- include('../partials/user/footer') %>
+
+  <script>
+    function sortProducts() {
+  const sortSelect = document.getElementById('sortSelect');
+  const sortOption = sortSelect.value;
+  const currentUrl = new URL(window.location.href);
+  
+  if (sortOption) {
+    currentUrl.searchParams.set('sort', sortOption);
+    currentUrl.searchParams.set('page', '1'); // Reset to page 1 when sorting changes
+  } else {
+    currentUrl.searchParams.delete('sort');
+  }
+  
+  window.location.href = currentUrl.toString();
+}
+</script>
 </body>

@@ -30,7 +30,7 @@ const loadCategories = async (req, res) => {
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });
-
+console.log("Categoriessssss",categories);
     return res.render("adminCategories", {
       categories,
       searchQuery,
@@ -61,8 +61,9 @@ const addCategory = async (req, res) => {
   try {
     console.log("req.body:", req.body);
     const { name, description } = req.body;
-    const existingCategory = await Product.findOne({ name: name });
+    const existingCategory = await Category.findOne({ name: name });
     if (existingCategory) {
+      req.flash("error_msg", "The Category Already Exist");
       return res.redirect("/admin/add-category");
     }
     const newCategory = new Category({
@@ -70,7 +71,7 @@ const addCategory = async (req, res) => {
       description,
     });
     await newCategory.save();
-    res.redirect("/admin//categories");
+    res.redirect("/admin/categories");
   } catch (error) {
     console.log("error occured while adding product");
   }

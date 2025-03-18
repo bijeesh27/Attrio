@@ -205,7 +205,9 @@
     <div class="account-tabs-menu">
       <ul>
         <li>
-          <a href="/profile"><i class="bx bxs-dashboard"></i> Dashboard</a>
+          <a href="/profile" 
+            ><i class="bx bxs-user"></i>Profile</a
+          >
         </li>
         <li>
           <a href="/orders"><i class="bx bxs-shopping-bag"></i> Orders</a>
@@ -252,7 +254,7 @@
               <div class="card-number">•••• •••• •••• <%= user.walletCardNumber || '1234' %></div>
             </div>
             <div class="card-back">
-              <div class="balance-amount">Rs.<%= user.walletBalance || '0.00' %></div>
+              <div class="balance-amount">Rs.<%= wallet.balance || '0.00' %></div>
               <div class="balance-label">Available Balance</div>
             </div>
           </div>
@@ -268,11 +270,11 @@
         <div class="transaction-history">
           <h3>Recent Transactions</h3>
           
-          <% if (user.transactions && user.transactions.length > 0) { %>
+          <% if (wallet.transactions && wallet.transactions.length > 0) { %>
             <% user.transactions.forEach(transaction => { %>
               <div class="transaction-item">
                 <div class="transaction-details">
-                  <div class="transaction-title"><%= transaction.description %></div>
+                  <div class="transaction-title"><%= transaction.amount %></div>
                   <div class="transaction-date"><%= new Date(transaction.date).toLocaleDateString() %></div>
                 </div>
                 <div class="transaction-amount <%= transaction.type === 'credit' ? 'credit' : 'debit' %>">

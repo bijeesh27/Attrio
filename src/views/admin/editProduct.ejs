@@ -1,5 +1,7 @@
 <%- include('../partials/admin/header') %>
-<body data-sidebar="dark"></body>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+<body data-sidebar="dark">
 
 <div class="main-content">
   <div class="page-content">
@@ -10,13 +12,13 @@
           <div
             class="page-title-box d-sm-flex align-items-center justify-content-between"
           >
-            <h4 class="mb-sm-0 font-size-18">Add Product</h4>
+            <h4 class="mb-sm-0 font-size-18">Edit Product</h4>
             <div class="page-title-right">
               <ol class="breadcrumb m-0">
                 <li class="breadcrumb-item">
                   <a href="javascript: void(0);">Ecommerce</a>
                 </li>
-                <li class="breadcrumb-item active">Add Product</li>
+                <li class="breadcrumb-item active">Edit Product</li>
               </ol>
             </div>
           </div>
@@ -31,13 +33,14 @@
             <div class="card-body">
               <h4 class="card-title">Product Details</h4>
               <p class="card-title-desc">
-                Fill in the product information below
+                Update the product information below
               </p>
 
               <form
                 action="/admin/edit-product/<%= product.id %>"
                 method="post"
                 enctype="multipart/form-data"
+                data-category-id="<%= product.category ? product.category._id || product.category : '' %>"
               >
                 <!-- Basic Information -->
                 <div class="row">
@@ -51,7 +54,7 @@
                         name="name"
                         placeholder="Enter product name"
                         value="<%= product.name %>"
-                        required
+                       
                       />
                     </div>
                     <div class="mb-3">
@@ -60,11 +63,11 @@
                         class="form-select"
                         id="category"
                         name="category"
-                        required
+                        
                       >
                         <option value="">Select category</option>
                         <% categories.forEach(category => { %>
-                        <option value="<%= category._id %>">
+                        <option value="<%= category._id %>" <%= (product.category && (product.category._id || product.category) == category._id) ? 'selected' : '' %>>
                           <%= category.name %>
                         </option>
                         <% }) %>
@@ -78,7 +81,7 @@
                         id="price"
                         name="price"
                         placeholder="Enter price"
-                        required
+                        
                         value="<%= product.price %>"
                       />
                     </div>
@@ -95,7 +98,7 @@
                         name="description"
                         rows="3"
                         placeholder="Enter product description"
-                        required
+                        
                       ><%= product.description %></textarea>
                     </div>
                   </div>
@@ -180,11 +183,33 @@
                   </div>
                 </div>
 
+                <!-- Existing Images -->
+                <div class="row mb-4">
+                  <div class="col-12">
+                    <label class="form-label">Current Images</label>
+                    <div id="existing-images" class="d-flex gap-2 flex-wrap">
+                      <% if (product.image && product.image.length > 0) { %>
+                        <% product.image.forEach((image, index) => { %>
+                          <div class="position-relative image-container mb-2">
+                            <img src="/<%= image %>" alt="Product Image" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;" data-index="<%= index %>">
+                            <button type="button" class="btn btn-danger btn-sm delete-image" data-index="<%= index %>" style="position: absolute; top: 0; right: 0; padding: 0.2rem 0.4rem;">
+                              <i class="bx bx-trash"></i>
+                            </button>
+                            <input type="hidden" name="existingImages[]" value="<%= image %>">
+                          </div>
+                        <% }) %>
+                      <% } else { %>
+                        <p class="text-muted">No images uploaded yet.</p>
+                      <% } %>
+                    </div>
+                  </div>
+                </div>
+
                 <!-- Image Upload -->
                 <div class="row">
                   <div class="col-12">
                     <div class="mb-3">
-                      <label class="form-label">Product Images (Max 3)</label>
+                      <label class="form-label">Add New Images (Max 3)</label>
                       <input
                         type="file"
                         class="form-control"
@@ -192,18 +217,35 @@
                         name="images"
                         multiple
                         accept="image/*"
-                        required
                       />
-                      <small class="form-text text-muted"
-                        >You can upload up to 3 images.</small
-                      >
+                      <small class="form-text text-muted">
+                        You can upload up to <%= 3 - (product.images ? product.images.length : 0) %> more images.
+                      </small>
 
                       <!-- Image Preview Container -->
-                      <div
-                        id="image-preview"
-                        class="mt-3 d-flex gap-2 flex-wrap"
-                      >
+                      <div id="image-preview" class="mt-3 d-flex gap-2 flex-wrap">
                         <!-- Preview images will be dynamically added here -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Cropping Modal -->
+                <div class="modal fade" id="cropModal" tabindex="-1" aria-labelledby="cropModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="cropModalLabel">Crop Image</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="img-container">
+                          <img id="crop-image" src="" alt="Image to crop">
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="crop-btn">Crop & Save</button>
                       </div>
                     </div>
                   </div>
@@ -212,14 +254,15 @@
                 <!-- Form Actions -->
                 <div class="d-flex gap-2">
                   <button type="submit" class="btn btn-primary">
-                    Save Product
+                    Update Product
                   </button>
-                  <a href="/admin/products"
-                    ><button type="button" class="btn btn-secondary">
-                      Cancel
-                    </button></a
-                  >
+                  <a href="/admin/products" class="btn btn-secondary">
+                    Cancel
+                  </a>
                 </div>
+                
+                <!-- Hidden input for removed images -->
+                <input type="hidden" id="removed-images" name="removedImages" value="">
               </form>
             </div>
           </div>
@@ -234,290 +277,393 @@
   <%- include('../partials/admin/footer') %>
 </div>
 
-<!-- Dynamic Stock Script -->
 
-<!-- Image Preview Script -->
-<script>
-  document
-    .getElementById("image-upload")
-    .addEventListener("change", function (event) {
-      const previewContainer = document.getElementById("image-preview");
-      const files = event.target.files;
 
-      // Clear existing previews
-      previewContainer.innerHTML = "";
-
-      // Validate number of files
-      if (files.length > 3) {
-        alert("You can only upload up to 3 images.");
-        event.target.value = ""; // Clear the input
-        return;
+<script>document.addEventListener('DOMContentLoaded', function() {
+  // Form validation
+  const form = document.querySelector('form[action^="/admin/edit-product/"]');
+  
+  // Get all input elements
+  const name = document.getElementById('name');
+  const category = document.getElementById('category');
+  const price = document.getElementById('price');
+  const description = document.getElementById('description');
+  const imageUpload = document.getElementById('image-upload');
+  const stockS = document.getElementById('stock-S');
+  const stockM = document.getElementById('stock-M');
+  const stockL = document.getElementById('stock-L');
+  const stockXL = document.getElementById('stock-XL');
+  const removedImagesInput = document.getElementById('removed-images');
+  
+  // Track removed images
+  let removedImages = [];
+  
+  // Create error elements
+  function createErrorElement(inputId) {
+      const errorElement = document.createElement('div');
+      errorElement.className = 'invalid-feedback';
+      errorElement.id = inputId + 'Error';
+      
+      // Insert error element after the input
+      const input = document.getElementById(inputId);
+      input.parentNode.insertBefore(errorElement, input.nextSibling);
+      
+      return errorElement;
+  }
+  
+  // Create error elements for all fields
+  const nameError = createErrorElement('name');
+  const categoryError = createErrorElement('category');
+  const priceError = createErrorElement('price');
+  const descriptionError = createErrorElement('description');
+  
+  // Create error for image upload
+  const imageError = document.createElement('div');
+  imageError.className = 'invalid-feedback';
+  imageError.id = 'imageError';
+  imageUpload.parentNode.insertBefore(imageError, imageUpload.nextSibling);
+  
+  // Create error for sizes
+  const sizeError = document.createElement('div');
+  sizeError.className = 'invalid-feedback d-block mt-2';
+  sizeError.id = 'sizeError';
+  sizeError.style.display = 'none';
+  document.getElementById('stock-container').appendChild(sizeError);
+  
+  // Function to show error
+  function showError(input, errorElement, message) {
+      input.classList.add('is-invalid');
+      input.classList.remove('is-valid');
+      errorElement.style.display = 'block';
+      errorElement.textContent = message;
+  }
+  
+  // Function to hide error
+  function hideError(input, errorElement) {
+      input.classList.remove('is-invalid');
+      input.classList.add('is-valid');
+      errorElement.style.display = 'none';
+  }
+  
+  // Name validation
+  name.addEventListener('blur', function() {
+      if (name.value.trim() === '') {
+          showError(name, nameError, 'Product name is required');
+      } else if (name.value.trim().length < 3) {
+          showError(name, nameError, 'Product name must be at least 3 characters');
+      } else {
+          hideError(name, nameError);
       }
-
+  });
+  
+  // Category validation
+  category.addEventListener('blur', function() {
+      if (category.value === '') {
+          showError(category, categoryError, 'Please select a category');
+      } else {
+          hideError(category, categoryError);
+      }
+  });
+  
+  // Price validation
+  price.addEventListener('blur', function() {
+      if (price.value.trim() === '') {
+          showError(price, priceError, 'Price is required');
+      } else if (isNaN(price.value) || Number(price.value) <= 0) {
+          showError(price, priceError, 'Please enter a valid price greater than 0');
+      } else {
+          hideError(price, priceError);
+      }
+  });
+  
+  // Description validation
+  description.addEventListener('blur', function() {
+      if (description.value.trim() === '') {
+          showError(description, descriptionError, 'Description is required');
+      } else if (description.value.trim().length < 20) {
+          showError(description, descriptionError, 'Description must be at least 20 characters long');
+      } else {
+          hideError(description, descriptionError);
+      }
+  });
+  
+  // Image validation
+  imageUpload.addEventListener('change', function() {
+      const files = imageUpload.files;
+      const existingImagesCount = document.querySelectorAll('#existing-images .image-container').length - removedImages.length;
+      const totalImages = existingImagesCount + files.length;
+      
+      if (totalImages > 3) {
+          showError(imageUpload, imageError, `You can only have up to 3 images total. You can upload ${3 - existingImagesCount} more.`);
+          imageUpload.value = ''; // Clear the input
+      } else {
+          hideError(imageUpload, imageError);
+          displayImagePreviews(files);
+      }
+  });
+  
+  // Validate at least one size has stock
+  function validateSizes() {
+      if (
+          (stockS.value === '' || stockS.value === '0') &&
+          (stockM.value === '' || stockM.value === '0') &&
+          (stockL.value === '' || stockL.value === '0') &&
+          (stockXL.value === '' || stockXL.value === '0')
+      ) {
+          sizeError.style.display = 'block';
+          sizeError.textContent = 'At least one size must have stock quantity';
+          return false;
+      } else {
+          sizeError.style.display = 'none';
+          return true;
+      }
+  }
+  
+  // Size input event listeners
+  stockS.addEventListener('input', validateSizes);
+  stockM.addEventListener('input', validateSizes);
+  stockL.addEventListener('input', validateSizes);
+  stockXL.addEventListener('input', validateSizes);
+  
+  // Clear errors when inputs change
+  name.addEventListener('input', function() {
+      if (name.value.trim().length >= 3) {
+          hideError(name, nameError);
+      }
+  });
+  
+  category.addEventListener('input', function() {
+      if (category.value !== '') {
+          hideError(category, categoryError);
+      }
+  });
+  
+  price.addEventListener('input', function() {
+      if (!isNaN(price.value) && Number(price.value) > 0) {
+          hideError(price, priceError);
+      }
+  });
+  
+  description.addEventListener('input', function() {
+      if (description.value.trim().length >= 20) {
+          hideError(description, descriptionError);
+      }
+  });
+  
+  // Image Preview Function
+  function displayImagePreviews(files) {
+      const previewContainer = document.getElementById('image-preview');
+      
       // Display preview for each file
       for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const reader = new FileReader();
-
-        reader.onload = function (e) {
-          const img = document.createElement("img");
-          img.src = e.target.result;
-          img.alt = "Preview";
-          img.style.width = "100px";
-          img.style.height = "100px";
-          img.style.objectFit = "cover";
-          img.style.border = "1px solid #ddd";
-          img.style.borderRadius = "4px";
-          previewContainer.appendChild(img);
-        };
-
-        reader.readAsDataURL(file);
+          const file = files[i];
+          const reader = new FileReader();
+          
+          reader.onload = function(e) {
+              // Create image container div
+              const imgContainer = document.createElement('div');
+              imgContainer.className = 'position-relative image-container mb-2';
+              
+              // Create image element
+              const img = document.createElement('img');
+              img.src = e.target.result;
+              img.className = 'img-thumbnail';
+              img.style.width = '100px';
+              img.style.height = '100px';
+              img.style.objectFit = 'cover';
+              
+              // Create crop button
+              const cropBtn = document.createElement('button');
+              cropBtn.type = 'button';
+              cropBtn.className = 'btn btn-primary btn-sm crop-image';
+              cropBtn.style.position = 'absolute';
+              cropBtn.style.top = '0';
+              cropBtn.style.left = '0';
+              cropBtn.style.padding = '0.2rem 0.4rem';
+              cropBtn.innerHTML = '<i class="bx bx-crop"></i>';
+              
+              // Add event for crop
+              cropBtn.addEventListener('click', function() {
+                  setupCropper(img, file);
+              });
+              
+              // Add elements to container
+              imgContainer.appendChild(img);
+              imgContainer.appendChild(cropBtn);
+              previewContainer.appendChild(imgContainer);
+          };
+          
+          reader.readAsDataURL(file);
       }
-    });
-    document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('form[action^="/admin/edit-product/"]');
-    
-    // Get all input elements
-    const name = document.getElementById('name');
-    const category = document.getElementById('category');
-    const price = document.getElementById('price');
-    const description = document.getElementById('description');
-    const imageUpload = document.getElementById('image-upload');
-    const stockS = document.getElementById('stock-S');
-    const stockM = document.getElementById('stock-M');
-    const stockL = document.getElementById('stock-L');
-    const stockXL = document.getElementById('stock-XL');
-    
-    // Create error elements
-    function createErrorElement(inputId) {
-        const errorElement = document.createElement('div');
-        errorElement.className = 'invalid-feedback';
-        errorElement.id = inputId + 'Error';
-        
-        // Insert error element after the input
-        const input = document.getElementById(inputId);
-        input.parentNode.insertBefore(errorElement, input.nextSibling);
-        
-        return errorElement;
-    }
-    
-    // Create error elements for all fields
-    const nameError = createErrorElement('name');
-    const categoryError = createErrorElement('category');
-    const priceError = createErrorElement('price');
-    const descriptionError = createErrorElement('description');
-    
-    // Create error for image upload
-    const imageError = document.createElement('div');
-    imageError.className = 'invalid-feedback';
-    imageError.id = 'imageError';
-    imageUpload.parentNode.insertBefore(imageError, imageUpload.nextSibling);
-    
-    // Create error for sizes
-    const sizeError = document.createElement('div');
-    sizeError.className = 'invalid-feedback d-block mt-2';
-    sizeError.id = 'sizeError';
-    sizeError.style.display = 'none';
-    document.getElementById('stock-container').appendChild(sizeError);
-    
-    // Function to show error
-    function showError(input, errorElement, message) {
-        input.classList.add('is-invalid');
-        input.classList.remove('is-valid');
-        errorElement.style.display = 'block';
-        errorElement.textContent = message;
-    }
-    
-    // Function to hide error
-    function hideError(input, errorElement) {
-        input.classList.remove('is-invalid');
-        input.classList.add('is-valid');
-        errorElement.style.display = 'none';
-    }
-    
-    // Name validation
-    name.addEventListener('blur', function() {
-        if (name.value.trim() === '') {
-            showError(name, nameError, 'Product name is required');
-        } else if (name.value.trim().length < 3) {
-            showError(name, nameError, 'Product name must be at least 3 characters');
-        } else {
-            hideError(name, nameError);
-        }
-    });
-    
-    // Category validation
-    category.addEventListener('blur', function() {
-        if (category.value === '') {
-            showError(category, categoryError, 'Please select a category');
-        } else {
-            hideError(category, categoryError);
-        }
-    });
-    
-    // Price validation
-    price.addEventListener('blur', function() {
-        if (price.value.trim() === '') {
-            showError(price, priceError, 'Price is required');
-        } else if (isNaN(price.value) || Number(price.value) <= 0) {
-            showError(price, priceError, 'Please enter a valid price greater than 0');
-        } else {
-            hideError(price, priceError);
-        }
-    });
-    
-    // Description validation
-    description.addEventListener('blur', function() {
-        if (description.value.trim() === '') {
-            showError(description, descriptionError, 'Description is required');
-        } else if (description.value.trim().length < 20) {
-            showError(description, descriptionError, 'Description must be at least 20 characters long');
-        } else {
-            hideError(description, descriptionError);
-        }
-    });
-    
-    // Image validation - for edit page, make it conditional if files are selected
-    imageUpload.addEventListener('change', function() {
-        const files = imageUpload.files;
-        
-        if (files.length > 3) {
-            showError(imageUpload, imageError, 'You can only upload up to 3 images');
-        } else {
-            hideError(imageUpload, imageError);
-        }
-    });
-    
-    // Validate at least one size has stock
-    function validateSizes() {
-        if (
-            (stockS.value === '' ) &&
-            (stockM.value === '' ) &&
-            (stockL.value === '' ) &&
-            (stockXL.value === '')
-        ) {
-            sizeError.style.display = 'block';
-            sizeError.textContent = 'At least one size must have stock quantity';
-            return false;
-        } else {
-            sizeError.style.display = 'none';
-            return true;
-        }
-    }
-    
-    // Size input event listeners
-    stockS.addEventListener('input', validateSizes);
-    stockM.addEventListener('input', validateSizes);
-    stockL.addEventListener('input', validateSizes);
-    stockXL.addEventListener('input', validateSizes);
-    
-    // Clear errors when inputs change
-    name.addEventListener('input', function() {
-        if (name.value.trim().length >= 3) {
-            hideError(name, nameError);
-        }
-    });
-    
-    category.addEventListener('input', function() {
-        if (category.value !== '') {
-            hideError(category, categoryError);
-        }
-    });
-    
-    price.addEventListener('input', function() {
-        if (!isNaN(price.value) && Number(price.value) > 0) {
-            hideError(price, priceError);
-        }
-    });
-    
-    description.addEventListener('input', function() {
-        if (description.value.trim().length >= 20) {
-            hideError(description, descriptionError);
-        }
-    });
-    
-    // Form submission validation
-    form.addEventListener('submit', function(e) {
-        let isValid = true;
-        
-        // Validate name
-        if (name.value.trim() === '') {
-            showError(name, nameError, 'Product name is required');
-            isValid = false;
-        } else if (name.value.trim().length < 3) {
-            showError(name, nameError, 'Product name must be at least 3 characters');
-            isValid = false;
-        } else {
-            hideError(name, nameError);
-        }
-        
-        // Validate category
-        if (category.value === '') {
-            showError(category, categoryError, 'Please select a category');
-            isValid = false;
-        } else {
-            hideError(category, categoryError);
-        }
-        
-        // Validate price
-        if (price.value.trim() === '') {
-            showError(price, priceError, 'Price is required');
-            isValid = false;
-        } else if (isNaN(price.value) || Number(price.value) <= 0) {
-            showError(price, priceError, 'Please enter a valid price greater than 0');
-            isValid = false;
-        } else {
-            hideError(price, priceError);
-        }
-        
-        // Validate description
-        if (description.value.trim() === '') {
-            showError(description, descriptionError, 'Description is required');
-            isValid = false;
-        } else if (description.value.trim().length < 20) {
-            showError(description, descriptionError, 'Description must be at least 20 characters long');
-            isValid = false;
-        } else {
-            hideError(description, descriptionError);
-        }
-        
-        // Validate images - only if new files are selected
-        const files = imageUpload.files;
-        if (files.length > 0 && files.length > 3) {
-            showError(imageUpload, imageError, 'You can only upload up to 3 images');
-            isValid = false;
-        }
-        
-        // Validate sizes
-        if (!validateSizes()) {
-            isValid = false;
-        }
-        
-        // Prevent form submission if validation fails
-        if (!isValid) {
-            e.preventDefault();
-        }
-    });
-    
-    // Pre-select the category if possible
-    try {
-        // Get the product category ID from a data attribute that we'll add to the form
-        if (form.dataset.categoryId) {
-            const categoryId = form.dataset.categoryId;
-            const options = category.querySelectorAll('option');
-            
-            for (let i = 0; i < options.length; i++) {
-                if (options[i].value === categoryId) {
-                    options[i].selected = true;
-                    break;
-                }
-            }
-        }
-    } catch (e) {
-        console.error("Could not pre-select category:", e);
-    }
-    
-    // Run initial validation for all fields
-    validateSizes();
-});
-</script>
+  }
+  
+  // Setup for image cropping
+  let cropper;
+  let currentImageElement;
+  let currentFile;
+  
+  function setupCropper(imgElement, file) {
+      currentImageElement = imgElement;
+      currentFile = file;
+      
+      // Set up the cropper modal
+      const cropImage = document.getElementById('crop-image');
+      cropImage.src = imgElement.src;
+      
+      // Initialize cropper
+      if (cropper) {
+          cropper.destroy();
+      }
+      
+      cropper = new Cropper(cropImage, {
+          aspectRatio: 1,
+          viewMode: 1,
+          autoCropArea: 1
+      });
+      
+      // Show the modal
+      const cropModal = new bootstrap.Modal(document.getElementById('cropModal'));
+      cropModal.show();
+  }
+  
+  // Handle crop button click
+  document.getElementById('crop-btn').addEventListener('click', function() {
+      if (!cropper) return;
+      
+      // Get the cropped canvas
+      const canvas = cropper.getCroppedCanvas({
+          width: 300,
+          height: 300
+      });
+      
+      // Convert to blob and create a new file
+      canvas.toBlob(function(blob) {
+          const newFile = new File([blob], currentFile.name, {
+              type: currentFile.type,
+              lastModified: new Date().getTime()
+          });
+          
+          // Update the image preview
+          currentImageElement.src = canvas.toDataURL();
+          
+          // Close the modal
+          const cropModal = bootstrap.Modal.getInstance(document.getElementById('cropModal'));
+          cropModal.hide();
+          
+          // Destroy the cropper
+          cropper.destroy();
+          cropper = null;
+      });
+  });
+  
+  // Handle delete of existing images
+  const deleteButtons = document.querySelectorAll('.delete-image');
+  deleteButtons.forEach(button => {
+      button.addEventListener('click', function() {
+          const index = this.getAttribute('data-index');
+          const imgContainer = this.closest('.image-container');
+          
+          // Add to removed images array
+          removedImages.push(index);
+          removedImagesInput.value = JSON.stringify(removedImages);
+          
+          // Hide the image container but keep in DOM for form submission
+          imgContainer.style.display = 'none';
+          
+          // Update the available image count for new uploads
+          const existingImagesCount = document.querySelectorAll('#existing-images .image-container:not([style*="display: none"])').length;
+          document.querySelector('.form-text.text-muted').textContent = `You can upload up to ${3 - existingImagesCount} more images.`;
+      });
+  });
+  
+  // Form submission validation
+  form.addEventListener('submit', function(e) {
+      let isValid = true;
+      
+      // Validate name
+      if (name.value.trim() === '') {
+          showError(name, nameError, 'Product name is required');
+          isValid = false;
+      } else if (name.value.trim().length < 3) {
+          showError(name, nameError, 'Product name must be at least 3 characters');
+          isValid = false;
+      } else {
+          hideError(name, nameError);
+      }
+      
+      // Validate category
+      if (category.value === '') {
+          showError(category, categoryError, 'Please select a category');
+          isValid = false;
+      } else {
+          hideError(category, categoryError);
+      }
+      
+      // Validate price
+      if (price.value.trim() === '') {
+          showError(price, priceError, 'Price is required');
+          isValid = false;
+      } else if (isNaN(price.value) || Number(price.value) <= 0) {
+          showError(price, priceError, 'Please enter a valid price greater than 0');
+          isValid = false;
+      } else {
+          hideError(price, priceError);
+      }
+      
+      // Validate description
+      if (description.value.trim() === '') {
+          showError(description, descriptionError, 'Description is required');
+          isValid = false;
+      } else if (description.value.trim().length < 20) {
+          showError(description, descriptionError, 'Description must be at least 20 characters long');
+          isValid = false;
+      } else {
+          hideError(description, descriptionError);
+      }
+      
+      // Validate images
+      const files = imageUpload.files;
+      const existingImagesCount = document.querySelectorAll('#existing-images .image-container:not([style*="display: none"])').length;
+      const totalImages = existingImagesCount + files.length;
+      
+      if (totalImages > 3) {
+          showError(imageUpload, imageError, 'You can only have up to 3 images total');
+          isValid = false;
+      }
+      
+      // Require at least one image
+      if (totalImages === 0) {
+          showError(imageUpload, imageError, 'At least one product image is required');
+          isValid = false;
+      }
+      
+      // Validate sizes
+      if (!validateSizes()) {
+          isValid = false;
+      }
+      
+      // Prevent form submission if validation fails
+      if (!isValid) {
+          e.preventDefault();
+      }
+  });
+  
+  // Pre-select the category
+  try {
+      const categoryId = form.dataset.categoryId;
+      if (categoryId) {
+          const options = category.querySelectorAll('option');
+          for (let i = 0; i < options.length; i++) {
+              if (options[i].value === categoryId) {
+                  options[i].selected = true;
+                  break;
+              }
+          }
+      }
+  } catch (e) {
+      console.error("Could not pre-select category:", e);
+  }
+  
+  // Run initial validation for sizes
+  validateSizes();
+});</script>

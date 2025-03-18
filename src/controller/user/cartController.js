@@ -174,7 +174,7 @@ const removeItem = async (req, res) => {
 
         const cart = await Cart.findOne({ userId });
 
-        // Calculate new total based on remaining items
+        
         let cartTotal = 0;
         if (cart && cart.item && cart.item.length > 0) {
             cartTotal = cart.item.reduce((total, item) => {
@@ -182,7 +182,7 @@ const removeItem = async (req, res) => {
             }, 0);
         }
 
-        // Update the cart with new total
+        
         await Cart.updateOne(
             { userId },
             { $set: { cartTotal: cartTotal } }
