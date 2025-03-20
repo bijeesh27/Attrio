@@ -1,0 +1,385 @@
+<%- include('../partials/admin/header') %>
+
+<style>
+  .table-container {
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  #couponList-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+  }
+
+  #couponList-table th,
+  #couponList-table td {
+    padding: 8px;
+    white-space: nowrap;
+  }
+
+  /* Compact Search component styles */
+  .search-container {
+    position: relative;
+    margin-bottom: 20px;
+    max-width: 400px;
+  }
+  
+  .search-form {
+    display: flex;
+    align-items: center;
+  }
+  
+  .search-input-wrapper {
+    position: relative;
+    flex-grow: 1;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 8px 35px 8px 35px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: all 0.3s;
+    outline: none;
+    height: 38px;
+  }
+  
+  .search-input:focus {
+    border-color: #556ee6;
+    box-shadow: 0 0 0 2px rgba(85, 110, 230, 0.1);
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-size: 16px;
+    pointer-events: none;
+  }
+  
+  .cancel-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-size: 16px;
+    cursor: pointer;
+    display: none;
+  }
+  
+  .search-input:not(:placeholder-shown) ~ .cancel-icon {
+    display: block;
+  }
+  
+  .search-button {
+    margin-left: 8px;
+    padding: 8px 15px;
+    background-color: #556ee6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    height: 38px;
+  }
+  
+  .search-button:hover {
+    background-color: #4458b8;
+  }
+
+  .coupon-badge {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .coupon-badge.percentage {
+    background-color: #dcf5dc;
+    color: #198754;
+  }
+
+  .coupon-badge.fixed {
+    background-color: #e0efff;
+    color: #0d6efd;
+  }
+</style>
+
+<body data-sidebar="dark">
+  <div class="main-content">
+    <div class="page-content">
+      <div class="container-fluid">
+        <!-- Start page title -->
+        <div class="row">
+          <div class="col-12">
+            <div
+              class="page-title-box d-sm-flex align-items-center justify-content-between"
+            >
+              <h4 class="mb-sm-0 font-size-18">Coupons</h4>
+              <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                  <li class="breadcrumb-item">
+                    <a href="javascript: void(0);">Ecommerce</a>
+                  </li>
+                  <li class="breadcrumb-item active">Coupons</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End page title -->
+        
+        <!-- New Compact Search Component and Add New Coupon Button -->
+        <div class="row mb-3">
+          <div class="col-sm-12 col-md-6">
+            <div class="search-container">
+              <form action="/admin/couponsearch" method="GET" class="search-form" id="searchForm">
+                <div class="search-input-wrapper">
+                  <i class="bx bx-search search-icon"></i>
+                  <input
+                    type="text"
+                    class="search-input form-control"
+                    id="searchCouponInput"
+                    placeholder="Search by coupon name..."
+                    name="query"
+                    value="<%= searchQuery %>"
+                  />
+                  <i class="bx bx-x cancel-icon" onclick="clearSearch()"></i>
+                </div>
+                <button type="submit" class="search-button">
+                  Search
+                </button>
+              </form>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <div class="text-sm-end">
+              <a href="/admin/addcoupon">
+                <button
+                  type="button"
+                  class="btn btn-success btn-rounded waves-effect waves-light mb-2 me-2"
+                >
+                  <i class="mdi mdi-plus me-1"></i> Add New Coupon
+                </button>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <!-- Coupons Table -->
+                <div class="table-container">
+                  <table
+                    class="user-table table align-middle"
+                    id="couponList-table"
+                  >
+                    <thead class="table-light">
+                      <tr>
+                        <th>SL.No</th>
+                        <th>Coupon Code</th>
+                        <th>Type</th>
+                        <th>Value</th>
+                        <th>Min Purchase</th>
+                        <th>Max Redemption</th>
+                        <th>Expiry Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% if (coupons && coupons.length > 0) { %>
+                      <% coupons.forEach((coupon, index) => { %>
+                      <tr>
+                        <td><%= index + 1 %></td>
+                        <td><strong><%= coupon.couponCode %></strong></td>
+                        <td>
+                          <span class="coupon-badge <%= coupon.type.toLowerCase() %>">
+                            <%= coupon.type === 'percentageDiscount' ? 'Percentage' : 'Fixed Amount' %>
+                          </span>
+                        </td>
+                        <td>
+                          <%= coupon.type === 'percentageDiscount' ? coupon.discount + '%' : '₹' + coupon.discount %>
+                        </td>
+                        <td>₹<%= coupon.minPurchase %></td>
+                        <td><%= coupon.maxRedeem %></td>
+                        <td><%= new Date(coupon.expiry).toLocaleDateString() %></td>
+                        <td>
+                          <% if (coupon.status===true) { %>
+                            <span class="badge bg-success">Active</span>
+                            <% } else { %>
+                              <span class="badge bg-danger">Expired</span>
+                              <% } %>
+                          
+                        </td>
+                        <td>
+                          <a href="/admin/editcoupon/<%= coupon._id %>">
+                            <button
+                              class="btn btn-edit btn-success btn-sm waves-effect waves-light"
+                            >
+                              Edit
+                            </button>
+                          </a>
+                          <% if (coupon.status===true) { %>
+                            <button
+                          
+                            onclick="confirmBlock('<%= coupon.id %>')"
+                            class="btn btn-danger btn-sm waves-effect waves-light"
+                          >
+                            block
+                          </button>
+                          <% } else {%>
+                            <button
+                          
+                            onclick="confirmBlock('<%= coupon.id %>')"
+                            class="btn btn-success btn-sm waves-effect waves-light"
+                          >
+                            unblock
+                          </button>
+                            <% } %>
+                        </td>
+                      </tr>
+                      <% }) %>
+                      <% } else { %>
+                        <tr>
+                          <td colspan="10" class="text-center">No coupons found</td>
+                        </tr>
+                      <% } %>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- End Table -->
+
+                <!-- Pagination -->
+                <div class="row mt-4">
+                  <div class="col-12">
+                    <nav aria-label="Coupon pagination">
+                      <ul class="pagination pagination-rounded justify-content-center">
+                        <!-- Previous page button -->
+                        <li class="page-item <%= pagination.currentPage === 1 ? 'disabled' : '' %>">
+                          <a class="page-link" href="/admin/coupons?page=<%= pagination.currentPage - 1 %>&query=<%= searchQuery %>" tabindex="-1">
+                            <i class="mdi mdi-chevron-left"></i>
+                          </a>
+                        </li>
+                        
+                        <!-- Page numbers -->
+                        <% pages.forEach(pageNum => { %>
+                          <li class="page-item <%= pagination.currentPage === pageNum ? 'active' : '' %>">
+                            <a class="page-link" href="/admin/coupons?page=<%= pageNum %>&query=<%= searchQuery %>"><%= pageNum %></a>
+                          </li>
+                        <% }) %>
+                        
+                        <!-- Next page button -->
+                        <li class="page-item <%= pagination.currentPage === pagination.totalPages ? 'disabled' : '' %>">
+                          <a class="page-link" href="/admin/coupons?page=<%= pagination.currentPage + 1 %>&query=<%= searchQuery %>">
+                            <i class="mdi mdi-chevron-right"></i>
+                          </a>
+                        </li>
+                      </ul>
+                    </nav>
+                  </div>
+                </div>
+              </div>
+              <!-- End Card Body -->
+            </div>
+            <!-- End Card -->
+          </div>
+          <!-- End Col -->
+        </div>
+        <!-- End Row -->
+      </div>
+      <!-- End Container Fluid -->
+    </div>
+    <!-- End Page Content -->
+  </div>
+  <!-- End Main Content -->
+</body>
+
+<script>
+function confirmBlock(couponId) {
+    // Get the current button to determine context
+    const button = event.target;
+    const isBlocking = button.innerText.trim().toLowerCase() === "block";
+    
+    Swal.fire({
+      title: `Are you sure?`,
+      text: isBlocking ? `Do you want to block this coupon?` : `Do you want to activate this coupon?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#000000",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, proceed!",
+      cancelButtonText: "No, cancel"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: `/admin/blockcoupon/${couponId}`,
+          type: 'POST',
+          data: { couponId },
+          success: function(response) {
+            if (response.success) {
+              Swal.fire({
+                title: "Success!",
+                text: response.message,
+                icon: "success"
+              }).then(() => {
+                // Reload the page to show updated status
+                location.reload();
+              });
+            } else {
+              Swal.fire({
+                title: "Error!",
+                text: response.message || "Failed to update coupon status.",
+                icon: "error"
+              });
+            }
+          },
+          error: function(xhr, status, error) {
+            Swal.fire({
+              title: "Error!",
+              text: "Something went wrong. Please try again.",
+              icon: "error"
+            });
+            console.error(error);
+          }
+        });
+      }
+    });
+}
+  
+  function clearSearch() {
+    document.getElementById('searchCouponInput').value = '';
+    // Redirect to main coupons page to show all coupons
+    window.location.href = '/admin/coupons';
+  }
+
+  // Show cancel icon when input has text
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchCouponInput');
+    const cancelIcon = document.querySelector('.cancel-icon');
+    
+    // Check if there's initial value
+    if (searchInput.value.length > 0) {
+      cancelIcon.style.display = 'block';
+    }
+    
+    // Add event listener to handle input changes
+    searchInput.addEventListener('input', function() {
+      if (this.value.length > 0) {
+        cancelIcon.style.display = 'block';
+      } else {
+        cancelIcon.style.display = 'none';
+      }
+    });
+  });
+</script>
+
+<%- include('../partials/admin/footer') %>

@@ -1,0 +1,511 @@
+<%- include('../partials/admin/header') %>
+<body data-sidebar="dark"></body>
+
+<div class="main-content">
+  <div class="page-content">
+    <div class="container-fluid">
+      <!-- Page Title -->
+      <div class="row">
+        <div class="col-12">
+          <div
+            class="page-title-box d-sm-flex align-items-center justify-content-between"
+          >
+            <h4 class="mb-sm-0 font-size-18">Add Coupon</h4>
+            <div class="page-title-right">
+              <ol class="breadcrumb m-0">
+                <li class="breadcrumb-item">
+                  <a href="javascript: void(0);">Ecommerce</a>
+                </li>
+                <li class="breadcrumb-item active">Add Coupon</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Page Title -->
+
+      <!-- Coupon Form -->
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Coupon Details</h4>
+              <p class="card-title-desc">
+                Fill in the coupon information below
+              </p>
+
+              <form
+                action="/admin/addcoupon"
+                method="post"
+                id="addCouponForm"
+              >
+                <!-- Basic Information -->
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="couponCode" class="form-label">Coupon Code</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="couponCode"
+                        name="couponCode"
+                        placeholder="Enter coupon code"
+                      />
+                      <div id="couponCodeError" class="invalid-feedback"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="discountType" class="form-label">Discount Type</label>
+                      <select
+                        class="form-select"
+                        id="discountType"
+                        name="discountType"
+                      >
+                        <option value="">Select discount type</option>
+                        <option value="percentage">Percentage</option>
+                        <option value="fixed">Fixed Amount</option>
+                      </select>
+                      <div id="discountTypeError" class="invalid-feedback"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="discountValue" class="form-label">Discount Value</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="discountValue"
+                        name="discountValue"
+                        placeholder="Enter discount value"
+                      />
+                      <div id="discountValueError" class="invalid-feedback"></div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="minPurchaseAmount" class="form-label">Minimum Purchase Amount</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="minPurchaseAmount"
+                        name="minPurchaseAmount"
+                        placeholder="Enter minimum purchase amount"
+                      />
+                      <div id="minPurchaseAmountError" class="invalid-feedback"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="maxRedemption" class="form-label">Maximum Redemption</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="maxRedemption"
+                        name="maxRedemption"
+                        placeholder="Enter maximum redemption limit"
+                      />
+                      <div id="maxRedemptionError" class="invalid-feedback"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="expiryDate" class="form-label">Expiry Date</label>
+                      <input
+                        type="date"
+                        class="form-control"
+                        id="expiryDate"
+                        name="expiryDate"
+                      />
+                      <div id="expiryDateError" class="invalid-feedback"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Status -->
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="status" class="form-label">Status</label>
+                      <select
+                        class="form-select force-visible"
+                        id="status"
+                        name="status"
+                      >
+                        <option value="">Select status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                      </select>
+                      <div id="statusError" class="invalid-feedback"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Description -->
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="mb-3">
+                      <label for="description" class="form-label">Description (Optional)</label>
+                      <textarea
+                        class="form-control"
+                        id="description"
+                        name="description"
+                        rows="3"
+                        placeholder="Enter coupon description"
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="d-flex gap-2">
+                  <button type="submit" class="btn btn-primary">
+                    Save Coupon
+                  </button>
+                  <a href="/admin/coupon"
+                    ><button type="button" class="btn btn-secondary">
+                      Cancel
+                    </button></a
+                  >
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Coupon Form -->
+    </div>
+    <!-- container-fluid -->
+  </div>
+  <!-- End Page-content -->
+
+  <%- include('../partials/admin/footer') %>
+</div>
+
+<!-- Add this style to ensure visibility -->
+<style>
+  .force-visible {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+</style>
+
+<!-- Form Validation Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Debug logging
+    console.log('DOM fully loaded');
+    
+    // Get form element
+    const form = document.getElementById('addCouponForm');
+    console.log('Form found:', form);
+    
+    // Get all input elements
+    const couponCode = document.getElementById('couponCode');
+    const discountType = document.getElementById('discountType');
+    const discountValue = document.getElementById('discountValue');
+    const minPurchaseAmount = document.getElementById('minPurchaseAmount');
+    const maxRedemption = document.getElementById('maxRedemption');
+    const expiryDate = document.getElementById('expiryDate');
+    const status = document.getElementById('status');
+    
+    // Debug status dropdown
+    console.log('Status dropdown found:', status);
+    if (status) {
+      console.log('Status dropdown display:', window.getComputedStyle(status).display);
+      console.log('Status dropdown visibility:', window.getComputedStyle(status).visibility);
+    }
+    
+    // Get all error elements (already created in HTML)
+    const couponCodeError = document.getElementById('couponCodeError');
+    const discountTypeError = document.getElementById('discountTypeError');
+    const discountValueError = document.getElementById('discountValueError');
+    const minPurchaseAmountError = document.getElementById('minPurchaseAmountError');
+    const maxRedemptionError = document.getElementById('maxRedemptionError');
+    const expiryDateError = document.getElementById('expiryDateError');
+    const statusError = document.getElementById('statusError');
+    
+    // Function to show error
+    function showError(input, errorElement, message) {
+      if (!input || !errorElement) return;
+      
+      input.classList.add('is-invalid');
+      input.classList.remove('is-valid');
+      errorElement.style.display = 'block';
+      errorElement.textContent = message;
+    }
+    
+    // Function to hide error
+    function hideError(input, errorElement) {
+      if (!input || !errorElement) return;
+      
+      input.classList.remove('is-invalid');
+      input.classList.add('is-valid');
+      errorElement.style.display = 'none';
+    }
+    
+    // Coupon code validation
+    if (couponCode && couponCodeError) {
+      couponCode.addEventListener('blur', function() {
+        if (couponCode.value.trim() === '') {
+          showError(couponCode, couponCodeError, 'Coupon code is required');
+        } else if (couponCode.value.trim().length < 3) {
+          showError(couponCode, couponCodeError, 'Coupon code must be at least 3 characters');
+        } else if (!/^[A-Z0-9]+$/.test(couponCode.value.trim())) {
+          showError(couponCode, couponCodeError, 'Coupon code must contain only uppercase letters and numbers');
+        } else {
+          hideError(couponCode, couponCodeError);
+        }
+      });
+      
+      couponCode.addEventListener('input', function() {
+        if (couponCode.value.trim().length >= 3 && /^[A-Z0-9]+$/.test(couponCode.value.trim())) {
+          hideError(couponCode, couponCodeError);
+        }
+      });
+    }
+    
+    // Discount type validation
+    if (discountType && discountTypeError) {
+      discountType.addEventListener('blur', function() {
+        if (discountType.value === '') {
+          showError(discountType, discountTypeError, 'Please select a discount type');
+        } else {
+          hideError(discountType, discountTypeError);
+        }
+      });
+      
+      discountType.addEventListener('change', function() {
+        if (discountType.value !== '') {
+          hideError(discountType, discountTypeError);
+        }
+        
+        // Validate discount value when type changes
+        if (discountValue && discountValueError && discountValue.value.trim() !== '') {
+          if (discountType.value === 'percentage' && Number(discountValue.value) > 100) {
+            showError(discountValue, discountValueError, 'Percentage discount cannot exceed 100%');
+          } else if (Number(discountValue.value) > 0) {
+            hideError(discountValue, discountValueError);
+          }
+        }
+      });
+    }
+    
+    // Discount value validation
+    if (discountValue && discountValueError) {
+      discountValue.addEventListener('blur', function() {
+        if (discountValue.value.trim() === '') {
+          showError(discountValue, discountValueError, 'Discount value is required');
+        } else if (isNaN(discountValue.value) || Number(discountValue.value) <= 0) {
+          showError(discountValue, discountValueError, 'Please enter a valid discount value greater than 0');
+        } else if (discountType && discountType.value === 'percentage' && Number(discountValue.value) > 100) {
+          showError(discountValue, discountValueError, 'Percentage discount cannot exceed 100%');
+        } else {
+          hideError(discountValue, discountValueError);
+        }
+      });
+      
+      discountValue.addEventListener('input', function() {
+        if (!isNaN(discountValue.value) && Number(discountValue.value) > 0) {
+          if (discountType && discountType.value === 'percentage' && Number(discountValue.value) > 100) {
+            showError(discountValue, discountValueError, 'Percentage discount cannot exceed 100%');
+          } else {
+            hideError(discountValue, discountValueError);
+          }
+        }
+      });
+    }
+    
+    // Minimum purchase amount validation
+    if (minPurchaseAmount && minPurchaseAmountError) {
+      minPurchaseAmount.addEventListener('blur', function() {
+        if (minPurchaseAmount.value.trim() !== '' && (isNaN(minPurchaseAmount.value) || Number(minPurchaseAmount.value) < 0)) {
+          showError(minPurchaseAmount, minPurchaseAmountError, 'Please enter a valid amount (0 or greater)');
+        } else {
+          hideError(minPurchaseAmount, minPurchaseAmountError);
+        }
+      });
+      
+      minPurchaseAmount.addEventListener('input', function() {
+        if (minPurchaseAmount.value.trim() === '' || (!isNaN(minPurchaseAmount.value) && Number(minPurchaseAmount.value) >= 0)) {
+          hideError(minPurchaseAmount, minPurchaseAmountError);
+        }
+      });
+    }
+    
+    // Maximum redemption validation
+    if (maxRedemption && maxRedemptionError) {
+      maxRedemption.addEventListener('blur', function() {
+        if (maxRedemption.value.trim() !== '' && (isNaN(maxRedemption.value) || Number(maxRedemption.value) <= 0 || !Number.isInteger(Number(maxRedemption.value)))) {
+          showError(maxRedemption, maxRedemptionError, 'Please enter a valid positive whole number');
+        } else {
+          hideError(maxRedemption, maxRedemptionError);
+        }
+      });
+      
+      maxRedemption.addEventListener('input', function() {
+        if (maxRedemption.value.trim() === '' || (!isNaN(maxRedemption.value) && Number(maxRedemption.value) > 0 && Number.isInteger(Number(maxRedemption.value)))) {
+          hideError(maxRedemption, maxRedemptionError);
+        }
+      });
+    }
+    
+    // Expiry date validation
+    if (expiryDate && expiryDateError) {
+      expiryDate.addEventListener('blur', function() {
+        if (expiryDate.value === '') {
+          showError(expiryDate, expiryDateError, 'Expiry date is required');
+        } else {
+          const selectedDate = new Date(expiryDate.value);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          
+          if (selectedDate < today) {
+            showError(expiryDate, expiryDateError, 'Expiry date cannot be in the past');
+          } else {
+            hideError(expiryDate, expiryDateError);
+          }
+        }
+      });
+      
+      expiryDate.addEventListener('input', function() {
+        if (expiryDate.value !== '') {
+          const selectedDate = new Date(expiryDate.value);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          
+          if (selectedDate >= today) {
+            hideError(expiryDate, expiryDateError);
+          }
+        }
+      });
+    }
+    
+    // Status validation
+    if (status && statusError) {
+      console.log('Setting up status event listeners');
+      
+      status.addEventListener('blur', function() {
+        console.log('Status blur event fired. Current value:', status.value);
+        if (status.value === '') {
+          showError(status, statusError, 'Please select a status');
+        } else {
+          hideError(status, statusError);
+        }
+      });
+      
+      status.addEventListener('change', function() {
+        console.log('Status change event fired. New value:', status.value);
+        if (status.value !== '') {
+          hideError(status, statusError);
+        }
+      });
+    }
+    
+    // Form submission validation
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        console.log('Form submission event fired');
+        let isValid = true;
+        
+        // Validate coupon code
+        if (couponCode && couponCodeError) {
+          if (couponCode.value.trim() === '') {
+            showError(couponCode, couponCodeError, 'Coupon code is required');
+            isValid = false;
+          } else if (couponCode.value.trim().length < 3) {
+            showError(couponCode, couponCodeError, 'Coupon code must be at least 3 characters');
+            isValid = false;
+          } else if (!/^[A-Z0-9]+$/.test(couponCode.value.trim())) {
+            showError(couponCode, couponCodeError, 'Coupon code must contain only uppercase letters and numbers');
+            isValid = false;
+          } else {
+            hideError(couponCode, couponCodeError);
+          }
+        }
+        
+        // Validate discount type
+        if (discountType && discountTypeError) {
+          if (discountType.value === '') {
+            showError(discountType, discountTypeError, 'Please select a discount type');
+            isValid = false;
+          } else {
+            hideError(discountType, discountTypeError);
+          }
+        }
+        
+        // Validate discount value
+        if (discountValue && discountValueError) {
+          if (discountValue.value.trim() === '') {
+            showError(discountValue, discountValueError, 'Discount value is required');
+            isValid = false;
+          } else if (isNaN(discountValue.value) || Number(discountValue.value) <= 0) {
+            showError(discountValue, discountValueError, 'Please enter a valid discount value greater than 0');
+            isValid = false;
+          } else if (discountType && discountType.value === 'percentage' && Number(discountValue.value) > 100) {
+            showError(discountValue, discountValueError, 'Percentage discount cannot exceed 100%');
+            isValid = false;
+          } else {
+            hideError(discountValue, discountValueError);
+          }
+        }
+        
+        // Validate minimum purchase (if provided)
+        if (minPurchaseAmount && minPurchaseAmountError) {
+          if (minPurchaseAmount.value.trim() !== '' && (isNaN(minPurchaseAmount.value) || Number(minPurchaseAmount.value) < 0)) {
+            showError(minPurchaseAmount, minPurchaseAmountError, 'Please enter a valid amount (0 or greater)');
+            isValid = false;
+          } else {
+            hideError(minPurchaseAmount, minPurchaseAmountError);
+          }
+        }
+        
+        // Validate maximum redemption (if provided)
+        if (maxRedemption && maxRedemptionError) {
+          if (maxRedemption.value.trim() !== '' && (isNaN(maxRedemption.value) || Number(maxRedemption.value) <= 0 || !Number.isInteger(Number(maxRedemption.value)))) {
+            showError(maxRedemption, maxRedemptionError, 'Please enter a valid positive whole number');
+            isValid = false;
+          } else {
+            hideError(maxRedemption, maxRedemptionError);
+          }
+        }
+        
+        // Validate expiry date
+        if (expiryDate && expiryDateError) {
+          if (expiryDate.value === '') {
+            showError(expiryDate, expiryDateError, 'Expiry date is required');
+            isValid = false;
+          } else {
+            const selectedDate = new Date(expiryDate.value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            if (selectedDate < today) {
+              showError(expiryDate, expiryDateError, 'Expiry date cannot be in the past');
+              isValid = false;
+            } else {
+              hideError(expiryDate, expiryDateError);
+            }
+          }
+        }
+        
+        // Validate status
+        if (status && statusError) {
+          console.log('Validating status on submit. Current value:', status.value);
+          if (status.value === '') {
+            showError(status, statusError, 'Please select a status');
+            isValid = false;
+          } else {
+            hideError(status, statusError);
+          }
+        }
+        
+        // Prevent form submission if validation fails
+        if (!isValid) {
+          console.log('Form validation failed. Preventing submission.');
+          e.preventDefault();
+        } else {
+          console.log('Form validation passed. Allowing submission.');
+        }
+      });
+    }
+  });
+</script>

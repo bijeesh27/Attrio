@@ -5,6 +5,8 @@ const productController=require("../controller/admin/productController")
 const categoryController=require("../controller/admin/categoryController")
 const userController=require("../controller/admin/userController")
 const orderController=require("../controller/admin/orderController")
+const couponController=require('../controller/admin/couponController')
+const offerController=require('../controller/admin/offerController')
 const multer=require("multer");
 const { isAdmin, isAdminLogged } = require("../middleware/adminMiddleware");
 const { logged } = require("../middleware/userMiddleware");
@@ -33,6 +35,15 @@ router.post('/updateorderstatus',isAdmin,orderController.updateOrderStatus)
 router.post('/updateproductstatus',isAdmin,orderController.updateProductStatus)
 router.post('/updatereturn',isAdmin,orderController.updateReturn)
 router.get('/adminorderdetails/:orderId',isAdmin,orderController.loadOrderdetails)
+router.get('/coupon',isAdmin,couponController.loadCoupon)
+router.get('/addcoupon',isAdmin,couponController.loadAddCoupon)
+router.post('/addcoupon',isAdmin,couponController.addCoupon)
+router.get('/editcoupon/:couponId',isAdmin,couponController.editCoupon)
+router.post('/blockcoupon/:couponId',isAdmin,couponController.blockCoupon)
+router.post('/updatecoupon/:couponId',isAdmin,couponController.updateCoupon)
+router.get('/offer',isAdmin,offerController.loadOffer)
+router.get('/addoffer',isAdmin,offerController.loadAddOffer)
+router.post('/addoffer',isAdmin,offerController.addOffer)
 
 
 

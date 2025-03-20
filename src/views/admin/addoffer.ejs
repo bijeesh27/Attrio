@@ -1,0 +1,590 @@
+<%- include('../partials/admin/header') %>
+<body data-sidebar="dark"></body>
+
+<div class="main-content">
+  <div class="page-content">
+    <div class="container-fluid">
+      <!-- Page Title -->
+      <div class="row">
+        <div class="col-12">
+          <div
+            class="page-title-box d-sm-flex align-items-center justify-content-between"
+          >
+            <h4 class="mb-sm-0 font-size-18">Add Offer</h4>
+            <div class="page-title-right">
+              <ol class="breadcrumb m-0">
+                <li class="breadcrumb-item">
+                  <a href="javascript: void(0);">Ecommerce</a>
+                </li>
+                <li class="breadcrumb-item active">Add Offer</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Page Title -->
+
+      <!-- Offer Form -->
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Offer Details</h4>
+              <p class="card-title-desc">
+                Fill in the offer information below
+              </p>
+
+              <form
+                action="/admin/addoffer"
+                method="post"
+                id="addOfferForm"
+              >
+                <!-- Basic Information -->
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="offerName" class="form-label">Offer Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="offerName"
+                        name="offerName"
+                        placeholder="Enter offer name"
+                      />
+                      <div id="offerNameError" class="invalid-feedback"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="discount" class="form-label">Discount Percentage</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="discount"
+                        name="discount"
+                        placeholder="Enter discount percentage"
+                      />
+                      <div id="discountError" class="invalid-feedback"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="offerType" class="form-label">Offer Type</label>
+                      <select
+                        class="form-select"
+                        id="offerType"
+                        name="offerType"
+                      >
+                        <option value="">Select offer type</option>
+                        <option value="category">Category</option>
+                        <option value="product">Product</option>
+                        
+                      </select>
+                      <div id="offerTypeError" class="invalid-feedback"></div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="startDate" class="form-label">Start Date</label>
+                      <input
+                        type="date"
+                        class="form-control"
+                        id="startDate"
+                        name="startDate"
+                      />
+                      <div id="startDateError" class="invalid-feedback"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="endDate" class="form-label">End Date</label>
+                      <input
+                        type="date"
+                        class="form-control"
+                        id="endDate"
+                        name="endDate"
+                      />
+                      <div id="endDateError" class="invalid-feedback"></div>
+                    </div>
+                    
+                   
+                  </div>
+                </div>
+
+                <!-- Dynamic Fields based on Offer Type -->
+                <div class="row" id="categorySection" style="display: none;">
+                  <div class="col-md-12">
+                    <div class="mb-3">
+                      <label for="categoryId" class="form-label">Select Categories</label>
+                      
+                       
+                      
+                      <select
+                      <% categories.forEach(category => { %>
+                        class="form-select"
+                        id="categoryId"
+                        name="categoryId"
+                        multiple
+                      >
+                        <!-- Categories will be populated dynamically -->
+                        <option value="<%= category._id %>"><%= category.name %></option>
+                        
+                        <% }) %>
+                      </select>
+                      <div id="categoryIdError" class="invalid-feedback"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row" id="productSection" style="display: none;">
+                  <div class="col-md-12">
+                    <div class="mb-3">
+                      <label for="productId" class="form-label">Select Products</label>
+                      <select
+                      <% products.forEach(product => { %>
+                       
+                      
+                        class="form-select"
+                        id="productId"
+                        name="productId"
+                        multiple
+                      >
+                        <!-- Products will be populated dynamically -->
+                        <option value="<%= product._id %>"><%= product.name %></option>
+                        <% }) %>
+                      </select>
+                      <div id="productIdError" class="invalid-feedback"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Status -->
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="status" class="form-label">Status</label>
+                      <select
+                        class="form-select force-visible"
+                        id="status"
+                        name="status"
+                      >
+                        <option value="">Select status</option>
+                        <option value="true">Active</option>
+                        <option value="false">Inactive</option>
+                      </select>
+                      <div id="statusError" class="invalid-feedback"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="d-flex gap-2">
+                  <button type="submit" class="btn btn-primary">
+                    Save Offer
+                  </button>
+                  <a href="/admin/offers"
+                    ><button type="button" class="btn btn-secondary">
+                      Cancel
+                    </button></a
+                  >
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Offer Form -->
+    </div>
+    <!-- container-fluid -->
+  </div>
+  <!-- End Page-content -->
+
+  <%- include('../partials/admin/footer') %>
+</div>
+
+<!-- Add this style to ensure visibility -->
+<style>
+  .force-visible {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+</style>
+
+<!-- Form Validation Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Debug logging
+    console.log('DOM fully loaded');
+    
+    // Get form element
+    const form = document.getElementById('addOfferForm');
+    console.log('Form found:', form);
+    
+    // Get all input elements
+    const offerName = document.getElementById('offerName');
+    const discount = document.getElementById('discount');
+    const offerType = document.getElementById('offerType');
+    const startDate = document.getElementById('startDate');
+    const endDate = document.getElementById('endDate');
+    
+    const categoryId = document.getElementById('categoryId');
+    const productId = document.getElementById('productId');
+    const status = document.getElementById('status');
+    
+    // Get sections
+    const categorySection = document.getElementById('categorySection');
+    const productSection = document.getElementById('productSection');
+    
+    // Debug status dropdown
+    console.log('Status dropdown found:', status);
+    if (status) {
+      console.log('Status dropdown display:', window.getComputedStyle(status).display);
+      console.log('Status dropdown visibility:', window.getComputedStyle(status).visibility);
+    }
+    
+    // Get all error elements
+    const offerNameError = document.getElementById('offerNameError');
+    const discountError = document.getElementById('discountError');
+    const offerTypeError = document.getElementById('offerTypeError');
+    const startDateError = document.getElementById('startDateError');
+    const endDateError = document.getElementById('endDateError');
+    const maxUsesError = document.getElementById('maxUsesError');
+    const categoryIdError = document.getElementById('categoryIdError');
+    const productIdError = document.getElementById('productIdError');
+    const statusError = document.getElementById('statusError');
+    
+    // Function to show error
+    function showError(input, errorElement, message) {
+      if (!input || !errorElement) return;
+      
+      input.classList.add('is-invalid');
+      input.classList.remove('is-valid');
+      errorElement.style.display = 'block';
+      errorElement.textContent = message;
+    }
+    
+    // Function to hide error
+    function hideError(input, errorElement) {
+      if (!input || !errorElement) return;
+      
+      input.classList.remove('is-invalid');
+      input.classList.add('is-valid');
+      errorElement.style.display = 'none';
+    }
+    
+    // Offer name validation
+    if (offerName && offerNameError) {
+      offerName.addEventListener('blur', function() {
+        if (offerName.value.trim() === '') {
+          showError(offerName, offerNameError, 'Offer name is required');
+        } else if (offerName.value.trim().length < 3) {
+          showError(offerName, offerNameError, 'Offer name must be at least 3 characters');
+        } else {
+          hideError(offerName, offerNameError);
+        }
+      });
+      
+      offerName.addEventListener('input', function() {
+        if (offerName.value.trim().length >= 3) {
+          hideError(offerName, offerNameError);
+        }
+      });
+    }
+    
+    // Discount validation
+    if (discount && discountError) {
+      discount.addEventListener('blur', function() {
+        if (discount.value.trim() === '') {
+          showError(discount, discountError, 'Discount percentage is required');
+        } else if (isNaN(discount.value) || Number(discount.value) <= 0) {
+          showError(discount, discountError, 'Please enter a valid discount percentage greater than 0');
+        } else if (Number(discount.value) > 100) {
+          showError(discount, discountError, 'Discount percentage cannot exceed 100%');
+        } else {
+          hideError(discount, discountError);
+        }
+      });
+      
+      discount.addEventListener('input', function() {
+        if (!isNaN(discount.value) && Number(discount.value) > 0 && Number(discount.value) <= 100) {
+          hideError(discount, discountError);
+        }
+      });
+    }
+    
+    // Offer type validation and dynamic field display
+    if (offerType && offerTypeError) {
+      offerType.addEventListener('blur', function() {
+        if (offerType.value === '') {
+          showError(offerType, offerTypeError, 'Please select an offer type');
+        } else {
+          hideError(offerType, offerTypeError);
+        }
+      });
+      
+      offerType.addEventListener('change', function() {
+        if (offerType.value !== '') {
+          hideError(offerType, offerTypeError);
+          
+          // Show/hide relevant sections based on offer type
+          if (offerType.value === 'category') {
+            categorySection.style.display = 'block';
+            productSection.style.display = 'none';
+          } else if (offerType.value === 'product') {
+            categorySection.style.display = 'none';
+            productSection.style.display = 'block';
+          } else {
+            categorySection.style.display = 'none';
+            productSection.style.display = 'none';
+          }
+        } else {
+          categorySection.style.display = 'none';
+          productSection.style.display = 'none';
+        }
+      });
+    }
+    
+    // Start date validation
+    if (startDate && startDateError) {
+      startDate.addEventListener('blur', function() {
+        if (startDate.value === '') {
+          showError(startDate, startDateError, 'Start date is required');
+        } else {
+          hideError(startDate, startDateError);
+          
+          // Check date range if end date is also set
+          if (endDate && endDate.value !== '') {
+            validateDateRange();
+          }
+        }
+      });
+      
+      startDate.addEventListener('input', function() {
+        if (startDate.value !== '') {
+          hideError(startDate, startDateError);
+          
+          // Check date range if end date is also set
+          if (endDate && endDate.value !== '') {
+            validateDateRange();
+          }
+        }
+      });
+    }
+    
+    // End date validation
+    if (endDate && endDateError) {
+      endDate.addEventListener('blur', function() {
+        if (endDate.value === '') {
+          showError(endDate, endDateError, 'End date is required');
+        } else {
+          hideError(endDate, endDateError);
+          
+          // Check date range if start date is also set
+          if (startDate && startDate.value !== '') {
+            validateDateRange();
+          }
+        }
+      });
+      
+      endDate.addEventListener('input', function() {
+        if (endDate.value !== '') {
+          hideError(endDate, endDateError);
+          
+          // Check date range if start date is also set
+          if (startDate && startDate.value !== '') {
+            validateDateRange();
+          }
+        }
+      });
+    }
+    
+    // Helper function to validate date range
+    function validateDateRange() {
+      if (!startDate || !endDate || !startDateError || !endDateError) return;
+      
+      const start = new Date(startDate.value);
+      const end = new Date(endDate.value);
+      
+      if (end < start) {
+        showError(endDate, endDateError, 'End date must be after start date');
+        return false;
+      } else {
+        hideError(endDate, endDateError);
+        return true;
+      }
+    }
+    
+  
+      
+  
+    
+    // Category validation (when applicable)
+    if (categoryId && categoryIdError) {
+      categoryId.addEventListener('change', function() {
+        if (offerType && offerType.value === 'category') {
+          if (categoryId.selectedOptions.length === 0) {
+            showError(categoryId, categoryIdError, 'Please select at least one category');
+          } else {
+            hideError(categoryId, categoryIdError);
+          }
+        }
+      });
+    }
+    
+    // Product validation (when applicable)
+    if (productId && productIdError) {
+      productId.addEventListener('change', function() {
+        if (offerType && offerType.value === 'product') {
+          if (productId.selectedOptions.length === 0) {
+            showError(productId, productIdError, 'Please select at least one product');
+          } else {
+            hideError(productId, productIdError);
+          }
+        }
+      });
+    }
+    
+    // Status validation
+    if (status && statusError) {
+      console.log('Setting up status event listeners');
+      
+      status.addEventListener('blur', function() {
+        console.log('Status blur event fired. Current value:', status.value);
+        if (status.value === '') {
+          showError(status, statusError, 'Please select a status');
+        } else {
+          hideError(status, statusError);
+        }
+      });
+      
+      status.addEventListener('change', function() {
+        console.log('Status change event fired. New value:', status.value);
+        if (status.value !== '') {
+          hideError(status, statusError);
+        }
+      });
+    }
+    
+    // Form submission validation
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        console.log('Form submission event fired');
+        let isValid = true;
+        
+        // Validate offer name
+        if (offerName && offerNameError) {
+          if (offerName.value.trim() === '') {
+            showError(offerName, offerNameError, 'Offer name is required');
+            isValid = false;
+          } else if (offerName.value.trim().length < 3) {
+            showError(offerName, offerNameError, 'Offer name must be at least 3 characters');
+            isValid = false;
+          } else {
+            hideError(offerName, offerNameError);
+          }
+        }
+        
+        // Validate discount
+        if (discount && discountError) {
+          if (discount.value.trim() === '') {
+            showError(discount, discountError, 'Discount percentage is required');
+            isValid = false;
+          } else if (isNaN(discount.value) || Number(discount.value) <= 0) {
+            showError(discount, discountError, 'Please enter a valid discount percentage greater than 0');
+            isValid = false;
+          } else if (Number(discount.value) > 100) {
+            showError(discount, discountError, 'Discount percentage cannot exceed 100%');
+            isValid = false;
+          } else {
+            hideError(discount, discountError);
+          }
+        }
+        
+        // Validate offer type
+        if (offerType && offerTypeError) {
+          if (offerType.value === '') {
+            showError(offerType, offerTypeError, 'Please select an offer type');
+            isValid = false;
+          } else {
+            hideError(offerType, offerTypeError);
+          }
+        }
+        
+        // Validate start date
+        if (startDate && startDateError) {
+          if (startDate.value === '') {
+            showError(startDate, startDateError, 'Start date is required');
+            isValid = false;
+          } else {
+            hideError(startDate, startDateError);
+          }
+        }
+        
+        // Validate end date
+        if (endDate && endDateError) {
+          if (endDate.value === '') {
+            showError(endDate, endDateError, 'End date is required');
+            isValid = false;
+          } else {
+            hideError(endDate, endDateError);
+          }
+        }
+        
+        // Validate date range
+        if (startDate && startDate.value !== '' && endDate && endDate.value !== '') {
+          if (!validateDateRange()) {
+            isValid = false;
+          }
+        }
+        
+        // Validate max uses (if provided)
+        if (maxUses && maxUsesError) {
+          if (maxUses.value.trim() !== '' && (isNaN(maxUses.value) || Number(maxUses.value) <= 0 || !Number.isInteger(Number(maxUses.value)))) {
+            showError(maxUses, maxUsesError, 'Please enter a valid positive whole number');
+            isValid = false;
+          } else {
+            hideError(maxUses, maxUsesError);
+          }
+        }
+        
+        // Validate categories (when applicable)
+        if (offerType && offerType.value === 'category' && categoryId && categoryIdError) {
+          if (categoryId.selectedOptions.length === 0) {
+            showError(categoryId, categoryIdError, 'Please select at least one category');
+            isValid = false;
+          } else {
+            hideError(categoryId, categoryIdError);
+          }
+        }
+        
+        // Validate products (when applicable)
+        if (offerType && offerType.value === 'product' && productId && productIdError) {
+          if (productId.selectedOptions.length === 0) {
+            showError(productId, productIdError, 'Please select at least one product');
+            isValid = false;
+          } else {
+            hideError(productId, productIdError);
+          }
+        }
+        
+        // Validate status
+        if (status && statusError) {
+          console.log('Validating status on submit. Current value:', status.value);
+          if (status.value === '') {
+            showError(status, statusError, 'Please select a status');
+            isValid = false;
+          } else {
+            hideError(status, statusError);
+          }
+        }
+        
+        // Prevent form submission if validation fails
+        if (!isValid) {
+          console.log('Form validation failed. Preventing submission.');
+          e.preventDefault();
+        } else {
+          console.log('Form validation passed. Allowing submission.');
+        }
+      });
+    }
+  });
+</script>

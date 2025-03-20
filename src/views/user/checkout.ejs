@@ -286,61 +286,92 @@
             </div>
             
             <!-- Price Breakdown -->
-            <div class="price-breakdown">
-              <div class="summary-divider"></div>
-              
-              <div class="summary-row">
-                <span class="label">Subtotal</span>
-                <span class="value">Rs.<%= cart && cart.cartTotal ? cart.cartTotal.toLocaleString() : 0 %></span>
-              </div>
-              
-              <div class="summary-row">
-                <span class="label">Shipping</span>
-                <span class="value">
-                  <% if (cart && cart.cartTotal && cart.cartTotal > 10000) { %>
-                    <span class="free-shipping">Free</span>
-                  <% } else { %>
-                    Rs.100
-                  <% } %>
-                </span>
-              </div>
-              
-              <div class="summary-row discount-row" id="discountRow" style="display: none;">
-                <span class="label">Discount</span>
-                <span class="value discount-amount" id="discountAmount">-Rs.0</span>
-              </div>
-              
-              <div class="summary-divider"></div>
-              
-              <div class="summary-row total-row">
-                <span class="label">Total</span>
-                <span class="value" id="orderTotal">
-                  <% if (cart && cart.cartTotal) { %>
-                    Rs.<%= (cart.cartTotal > 10000 ? cart.cartTotal : cart.cartTotal + 100).toLocaleString() %>
-                  <% } else { %>
-                    Rs.0
-                  <% } %>
-                </span>
-              </div>
-            </div>
+            <!-- Price Breakdown -->
+<div class="price-breakdown">
+  <div class="summary-divider"></div>
+  
+  <div class="summary-row">
+    <span class="label">Subtotal</span>
+    <span class="value">Rs.<%= cart && cart.cartTotal ? cart.cartTotal.toLocaleString() : 0 %></span>
+  </div>
+  
+  <div class="summary-row">
+    <span class="label">Shipping</span>
+    <span class="value">
+      <% if (cart && cart.cartTotal && cart.cartTotal > 10000) { %>
+        <span class="free-shipping">Free</span>
+      <% } else { %>
+        Rs.100
+      <% } %>
+    </span>
+  </div>
+  
+  <% if (appliedCoupon) { %>
+  <div class="summary-row discount-row">
+    <span class="label">Discount (<%= appliedCoupon.couponCode %>)</span>
+    <span class="value discount-amount">-Rs.<%= appliedCoupon.discountAmount.toFixed(2) %></span>
+  </div>
+  <% } %>
+  
+  <div class="summary-divider"></div>
+  
+  <div class="summary-row total-row">
+    <span class="label">Total</span>
+    <span class="value" id="orderTotal">
+      <% 
+      let finalTotal = 0;
+      if (cart && cart.cartTotal) {
+        finalTotal = cart.cartTotal > 10000 ? cart.cartTotal : cart.cartTotal + 100;
+        
+        // Apply discount if coupon is applied
+        if (appliedCoupon) {
+          finalTotal -= appliedCoupon.discountAmount;
+        }
+      }
+      %>
+      Rs.<%= finalTotal.toLocaleString() %>
+    </span>
+  </div>
+</div>
             
             <!-- Coupon Section -->
-            <div class="coupon-section">
-              <div class="coupon-toggle" id="couponToggle">
-                <i class='bx bx-tag-alt'></i> Apply Coupon
-                <i class='bx bx-chevron-down toggle-icon'></i>
-              </div>
-              
-              <div class="coupon-form" id="couponForm" style="display: none;">
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Enter coupon code" id="couponCode">
-                  <div class="input-group-append">
-                    <button class="btn-apply-coupon" type="button" onclick="applyCoupon()">Apply</button>
-                  </div>
-                </div>
-                <div class="coupon-message" id="couponMessage"></div>
-              </div>
-            </div>
+            <!-- Coupon Section -->
+<div class="coupon-section">
+  <div class="coupon-toggle" id="couponToggle">
+    <i class='bx bx-tag-alt'></i> Apply Coupon
+    <i class='bx bx-chevron-down toggle-icon'></i>
+  </div>
+  
+  <div class="coupon-form" id="couponForm" style="display: none;">
+    <% if (appliedCoupon) { %>
+      <div class="applied-coupon">
+        <div class="applied-coupon-code">
+          <span class="coupon-badge"><i class='bx bx-check'></i> APPLIED:</span> 
+          <span class="code-text"><%= appliedCoupon.couponCode %></span>
+        </div>
+        <div class="coupon-discount-amount">
+          -Rs.<%= appliedCoupon.discountAmount.toFixed(2) %>
+        </div>
+        <button type="button" class="btn-remove-coupon" onclick="removeCoupon()">
+          <i class='bx bx-x'></i>
+        </button>
+      </div>
+    <% } else { %>
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Enter coupon code" id="couponCode">
+        <div class="input-group-append">
+          <button class="btn-apply-coupon" type="button" onclick="applyCoupon()">Apply</button>
+        </div>
+      </div>
+      <div class="coupon-actions">
+        <button type="button" class="btn-view-coupons" id="viewCouponsBtn">
+          <i class='bx bx-list-ul'></i> View Available Coupons
+        </button>
+      </div>
+    <% } %>
+    <div class="coupon-message" id="couponMessage"></div>
+  </div>
+</div>
           </div>
           
           <div class="summary-footer">
@@ -460,6 +491,61 @@
     </div>
   </div>
 </div>
+
+
+
+
+
+<!-- Coupon Modal -->
+<div class="coupon-modal" id="couponModal">
+  <div class="coupon-modal-overlay"></div>
+  <div class="coupon-modal-content">
+    <div class="coupon-modal-header">
+      <h3>Available Coupons</h3>
+      <button type="button" class="close-modal" id="closeCouponModal">
+        <i class='bx bx-x'></i>
+      </button>
+    </div>
+    <div class="coupon-modal-body">
+      <% if (coupons && coupons.length > 0) { %>
+        <div class="coupon-list">
+          <% coupons.forEach(coupon => { %>
+            <div class="coupon-card">
+              <div class="coupon-card-left">
+                <div class="coupon-code"><%= coupon.couponCode %></div>
+                <div class="coupon-expiry">Valid till: <%= new Date(coupon.expiry).toLocaleDateString() %></div>
+              </div>
+              <div class="coupon-card-right">
+                <div class="coupon-discount">
+                  <% if (coupon.type === 'percentageDiscount') { %>
+                    <%= coupon.discount %>% OFF
+                  <% } else { %>
+                    Rs.<%= coupon.discount %> OFF
+                  <% } %>
+                </div>
+                <div class="coupon-min">Min. Purchase: Rs.<%= coupon.minPurchase %></div>
+                <button class="btn-apply" onclick="applyCouponFromModal('<%= coupon.couponCode %>')">
+                  APPLY
+                </button>
+              </div>
+              <div class="coupon-description"><%= coupon.description %></div>
+            </div>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <div class="no-coupons">
+          <div class="no-coupons-icon">
+            <i class='bx bx-tag-alt'></i>
+          </div>
+          <p>No coupons available at the moment</p>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+
+
 <!-- Add Razorpay SDK -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
@@ -817,6 +903,88 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+// Coupon Modal Toggle
+document.getElementById('viewCouponsBtn').addEventListener('click', function() {
+  document.getElementById('couponModal').style.display = 'block';
+});
+
+document.getElementById('closeCouponModal').addEventListener('click', function() {
+  document.getElementById('couponModal').style.display = 'none';
+});
+
+// Close modal when clicking on overlay
+document.querySelector('.coupon-modal-overlay').addEventListener('click', function() {
+  document.getElementById('couponModal').style.display = 'none';
+});
+
+// Apply Coupon from Modal
+function applyCouponFromModal(couponCode) {
+  document.getElementById('couponCode').value = couponCode;
+  document.getElementById('couponModal').style.display = 'none';
+  applyCoupon();
+}
+
+// Apply Coupon
+function applyCoupon() {
+  const couponCode = document.getElementById('couponCode').value.trim();
+  const couponMessage = document.getElementById('couponMessage');
+  
+  if (!couponCode) {
+    couponMessage.innerHTML = '<span class="text-danger">Please enter a coupon code</span>';
+    return;
+  }
+  
+  // Get cart total
+  const cartTotal =' <%= cart && cart.cartTotal ? cart.cartTotal : 0 %>';
+  
+  couponMessage.innerHTML = '<span class="text-info">Validating coupon...</span>';
+  
+  // Send AJAX request to validate coupon
+  fetch('/apply-coupon', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      couponCode: couponCode,
+      cartTotal: cartTotal
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      // Refresh the page to show applied coupon
+      window.location.reload();
+    } else {
+      couponMessage.innerHTML = `<span class="text-danger">${data.message}</span>`;
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    couponMessage.innerHTML = '<span class="text-danger">Failed to apply coupon. Please try again.</span>';
+  });
+}
+
+// Remove Coupon
+function removeCoupon() {
+  fetch('/remove-coupon', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      // Refresh the page
+      window.location.reload();
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    Swal.fire('Error', 'Failed to remove coupon', 'error');
+  });
+}
 
 
 

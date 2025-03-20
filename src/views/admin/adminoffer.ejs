@@ -1,0 +1,359 @@
+<%- include('../partials/admin/header') %>
+
+<style>
+  .table-container {
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  #offerList-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+  }
+
+  #offerList-table th,
+  #offerList-table td {
+    padding: 8px;
+    white-space: nowrap;
+  }
+
+  /* Compact Search component styles */
+  .search-container {
+    position: relative;
+    margin-bottom: 20px;
+    max-width: 400px;
+  }
+  
+  .search-form {
+    display: flex;
+    align-items: center;
+  }
+  
+  .search-input-wrapper {
+    position: relative;
+    flex-grow: 1;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 8px 35px 8px 35px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: all 0.3s;
+    outline: none;
+    height: 38px;
+  }
+  
+  .search-input:focus {
+    border-color: #556ee6;
+    box-shadow: 0 0 0 2px rgba(85, 110, 230, 0.1);
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-size: 16px;
+    pointer-events: none;
+  }
+  
+  .cancel-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-size: 16px;
+    cursor: pointer;
+    display: none;
+  }
+  
+  .search-input:not(:placeholder-shown) ~ .cancel-icon {
+    display: block;
+  }
+  
+  .search-button {
+    margin-left: 8px;
+    padding: 8px 15px;
+    background-color: #556ee6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    height: 38px;
+  }
+  
+  .search-button:hover {
+    background-color: #4458b8;
+  }
+
+  .offer-badge {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .offer-badge.category {
+    background-color: #f8d7da;
+    color: #dc3545;
+  }
+
+  .offer-badge.product {
+    background-color: #e0efff;
+    color: #0d6efd;
+  }
+  
+  .status-badge {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+</style>
+
+<body data-sidebar="dark">
+  <div class="main-content">
+    <div class="page-content">
+      <div class="container-fluid">
+        <!-- Start page title -->
+        <div class="row">
+          <div class="col-12">
+            <div
+              class="page-title-box d-sm-flex align-items-center justify-content-between"
+            >
+              <h4 class="mb-sm-0 font-size-18">Offers</h4>
+              <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                  <li class="breadcrumb-item">
+                    <a href="javascript: void(0);">Ecommerce</a>
+                  </li>
+                  <li class="breadcrumb-item active">Offers</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End page title -->
+        
+        <!-- New Compact Search Component and Add New Offer Button -->
+        <div class="row mb-3">
+          <div class="col-sm-12 col-md-6">
+            <div class="search-container">
+              <form action="/admin/offersearch" method="GET" class="search-form" id="searchForm">
+                <div class="search-input-wrapper">
+                  <i class="bx bx-search search-icon"></i>
+                  <input
+                    type="text"
+                    class="search-input form-control"
+                    id="searchOfferInput"
+                    placeholder="Search by offer name..."
+                    name="query"
+                    value="<%= searchQuery %>"
+                  />
+                  <i class="bx bx-x cancel-icon" onclick="clearSearch()"></i>
+                </div>
+                <button type="submit" class="search-button">
+                  Search
+                </button>
+              </form>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <div class="text-sm-end">
+              <a href="/admin/addoffer">
+                <button
+                  type="button"
+                  class="btn btn-success btn-rounded waves-effect waves-light mb-2 me-2"
+                >
+                  <i class="mdi mdi-plus me-1"></i> Add New Offer
+                </button>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <!-- Offers Table -->
+                <div class="table-container">
+                  <table
+                    class="user-table table align-middle"
+                    id="offerList-table"
+                  >
+                    <thead class="table-light">
+                      <tr>
+                        <th>SL.No</th>
+                        <th>Offer Name</th>
+                        <th>Offer Type</th>
+                        <th>Discount</th>
+                        <th>Applied To</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% if (offers && offers.length > 0) { %>
+                      <% offers.forEach((offer, index) => { %>
+                      <tr>
+                        <td><%= index + 1 %></td>
+                        <td><strong><%= offer.offerName %></strong></td>
+                        <td>
+                          <span class="offer-badge <%= offer.offerType.toLowerCase() %>">
+                            <%= offer.offerType %>
+                          </span>
+                        </td>
+                        <td><%= offer.discount %>%</td>
+                        <td>
+                          <% if (offer.offerType === 'product' && offer.productId && offer.productId.length > 0) { %>
+                            <%= offer.productId.length %> Product<%= offer.productId.length > 1 ? 's' : '' %>
+                          <% } else if (offer.offerType === 'category' && offer.categoryId && offer.categoryId.length > 0) { %>
+                            <%= offer.categoryId.length %> Categor<%= offer.categoryId.length > 1 ? 'ies' : 'y' %>
+                          <% } else { %>
+                            Not specified
+                          <% } %>
+                        </td>
+                        <td><%= new Date(offer.startDate).toLocaleDateString() %></td>
+                        <td><%= new Date(offer.endDate).toLocaleDateString() %></td>
+                        <td>
+                          <% if (offer.status) { %>
+                            <% const now = new Date(); %>
+                            <% if (new Date(offer.endDate) < now) { %>
+                              <span class="badge bg-danger">Expired</span>
+                            <% } else if (new Date(offer.startDate) > now) { %>
+                              <span class="badge bg-warning">Upcoming</span>
+                            <% } else { %>
+                              <span class="badge bg-success">Active</span>
+                            <% } %>
+                          <% } else { %>
+                            <span class="badge bg-secondary">Inactive</span>
+                          <% } %>
+                        </td>
+                        <td>
+                          <a href="/admin/edit-offer/<%= offer._id %>">
+                            <button
+                              class="btn btn-edit btn-success btn-sm waves-effect waves-light"
+                            >
+                              Edit
+                            </button>
+                          </a>
+                          <button
+                            onclick="confirmDelete('<%= offer._id %>')"
+                            class="btn btn-danger btn-sm waves-effect waves-light"
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                      <% }) %>
+                      <% } else { %>
+                        <tr>
+                          <td colspan="10" class="text-center">No offers found</td>
+                        </tr>
+                      <% } %>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- End Table -->
+
+                <!-- Pagination -->
+                <div class="row mt-4">
+                  <div class="col-12">
+                    <nav aria-label="Offer pagination">
+                      <ul class="pagination pagination-rounded justify-content-center">
+                        <!-- Previous page button -->
+                        <li class="page-item <%= pagination.currentPage === 1 ? 'disabled' : '' %>">
+                          <a class="page-link" href="/admin/offers?page=<%= pagination.currentPage - 1 %>&query=<%= searchQuery %>" tabindex="-1">
+                            <i class="mdi mdi-chevron-left"></i>
+                          </a>
+                        </li>
+                        
+                        <!-- Page numbers -->
+                        <% pages.forEach(pageNum => { %>
+                          <li class="page-item <%= pagination.currentPage === pageNum ? 'active' : '' %>">
+                            <a class="page-link" href="/admin/offers?page=<%= pageNum %>&query=<%= searchQuery %>"><%= pageNum %></a>
+                          </li>
+                        <% }) %>
+                        
+                        <!-- Next page button -->
+                        <li class="page-item <%= pagination.currentPage === pagination.totalPages ? 'disabled' : '' %>">
+                          <a class="page-link" href="/admin/offers?page=<%= pagination.currentPage + 1 %>&query=<%= searchQuery %>">
+                            <i class="mdi mdi-chevron-right"></i>
+                          </a>
+                        </li>
+                      </ul>
+                    </nav>
+                  </div>
+                </div>
+              </div>
+              <!-- End Card Body -->
+            </div>
+            <!-- End Card -->
+          </div>
+          <!-- End Col -->
+        </div>
+        <!-- End Row -->
+      </div>
+      <!-- End Container Fluid -->
+    </div>
+    <!-- End Page Content -->
+  </div>
+  <!-- End Main Content -->
+</body>
+
+<script>
+  function confirmDelete(offerId) {
+    Swal.fire({
+      title: `Are you sure?`,
+      text: `Do you want to delete this offer?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#000000",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No, cancel"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = `/admin/deleteOffer/${offerId}`;
+      }
+    });
+  }
+  
+  function clearSearch() {
+    document.getElementById('searchOfferInput').value = '';
+    // Redirect to main offers page to show all offers
+    window.location.href = '/admin/offers';
+  }
+
+  // Show cancel icon when input has text
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchOfferInput');
+    const cancelIcon = document.querySelector('.cancel-icon');
+    
+    // Check if there's initial value
+    if (searchInput.value.length > 0) {
+      cancelIcon.style.display = 'block';
+    }
+    
+    // Add event listener to handle input changes
+    searchInput.addEventListener('input', function() {
+      if (this.value.length > 0) {
+        cancelIcon.style.display = 'block';
+      } else {
+        cancelIcon.style.display = 'none';
+      }
+    });
+  });
+</script>
+
+<%- include('../partials/admin/footer') %>

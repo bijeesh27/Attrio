@@ -67,6 +67,8 @@ router.get('/clearcart',logged,cartController.clearCart)
 router.get('/removeItem/:productId/:size',logged,cartController.removeItem)
 router.post('/cart/update',logged,cartController.updateCartQuantity)
 router.get("/checkout",logged,orderController.loadCheckout)
+router.post('/remove-coupon', orderController.removeCoupon);
+router.post('/apply-coupon', orderController.applyCoupon);
 router.post('/orderplaced',logged,orderController.placeOrder)
 router.get("/placeorder",logged,orderController.loadPlaceOrder)
 router.get("/orderdetails/:orderId",logged,orderController.loadOrderDetails)

@@ -40,6 +40,10 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    usedCoupons: {
+      type: [String],
+      default: []
+    }
   },
   { timestamps: true }
 );
