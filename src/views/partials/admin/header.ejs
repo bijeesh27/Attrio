@@ -64,6 +64,28 @@
     margin-top: auto; /* Pushes the last item (logout) to the bottom */
 }
 
+.logout-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 16px;
+        background-color: #ff4d4d;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-size: 16px;
+    }
+
+    .logout-btn:hover {
+        background-color: #e63939;
+    }
+
+    .logout-btn .sidebar-icon {
+        margin-right: 8px;
+    }
+
     </style>
 </head>
 
@@ -276,14 +298,14 @@
                             <i class="bx bxs-gift sidebar-icon"></i>
                             <span>Offers</span>
                         </a>
-                    </li>
+                    </li><br><br><br><br>
                       <!-- Logout Button -->
                       <li>
-                          <a href="/admin/logout" class="menu-item">
-                              <i class="bx bx-log-out sidebar-icon"></i>
-                              <span>Logout</span>
-                          </a>
-                      </li>
+                        <button onclick="logout()" class="menu-item logout-btn">
+                            <i class="bx bx-log-out sidebar-icon"></i>
+                            <span>Logout</span>
+                        </button>
+                    </li>
                   </ul>
               </div>
           </div>
@@ -295,3 +317,21 @@
     <!-- JAVASCRIPT -->
     <script src="/admin/assets/js/plugin.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script> 
+    function logout() {
+        Swal.fire({
+          title: `Are you sure?`,
+          text: ` Do you want to continue to logout?`,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#000000",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Logout",
+          cancelButtonText: "Cancel",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = "/admin/logout";
+          }
+        });
+      }
+      </script>

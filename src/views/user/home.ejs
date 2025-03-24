@@ -1,5 +1,44 @@
 <%- include('../partials/user/header') %>
+<style>
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 9999;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.3s ease;
+    transition: opacity 0.3s ease;
+}
 
+.notification.success {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.notification.error {
+    background-color: #F44336;
+    color: white;
+}
+
+.notification .close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
     <body>
         <% if (error_msg && error_msg.length > 0) { %>
             <div class="flash-message error-message" id="flash-message">
@@ -145,9 +184,25 @@
                                     <div class="products-button">
                                         <ul>
                                             <li>
-                                                <div class="wishlist-btn">
-                                                   <a href="#" data-bs-toggle="modal" data-bs-target="#shoppingWishlistModal">
-                                                        <i class='bx bx-heart'></i>
+                                                <div class="wishlist-btn" data-product-id="<%= product._id %>">
+                                                    <a>
+                                                        <% if (wishlistProduct && wishlistProduct.length > 0) { %>
+                                                            <%
+                                                            let isInWishlist = false;
+                                                            wishlistProduct.forEach((item) => {
+                                                                if (item.toString() === product._id.toString()) {
+                                                                    isInWishlist = true;
+                                                                }
+                                                            });
+                                                            
+                                                            if (isInWishlist) { %>
+                                                                <i class='bx bxs-heart'></i>
+                                                            <% } else { %>
+                                                                <i class='bx bx-heart'></i>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <i class='bx bx-heart'></i>
+                                                        <% } %>
                                                         <span class="tooltip-label">Add to Wishlist</span>
                                                     </a>
                                                 </div>
@@ -823,7 +878,106 @@ function initQuantityButtons() {
         });
     }
 }
+  
+// Add this to your script.js file or inline in your home page
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize wishlist buttons
+    initWishlistButtons();
+});
+
+function initWishlistButtons() {
+    // Select all wishlist buttons
+    const wishlistBtns = document.querySelectorAll('.wishlist-btn');
     
+    wishlistBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const productId = this.getAttribute('data-product-id');
+            const size = this.getAttribute('data-size');
+            const icon = this.querySelector('i');
+            
+            // Show loading state
+            icon.className = 'bx bx-loader bx-spin';
+            
+            // Send AJAX request using Fetch API
+            fetch('/addtowishlist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    productId: productId,
+                    size: size
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Remove loading state
+                icon.classList.remove('bx-loader', 'bx-spin');
+                
+                if (data.success) {
+                    // Update icon based on whether item is in wishlist
+                    if (data.in_wishlist) {
+                        icon.className = 'bx bxs-heart'; // Filled heart
+                        showNotification('success', 'Product added to wishlist');
+                    } else {
+                        icon.className = 'bx bx-heart'; // Empty heart
+                        showNotification('success', 'Product removed from wishlist');
+                    }
+                    
+                    // Update wishlist counter in header if exists
+                    const wishlistCount = document.querySelector('.wishlist-count');
+                    if (wishlistCount) {
+                        wishlistCount.textContent = data.wishlist_count;
+                    }
+                } else {
+                    // If error, revert to original icon
+                    icon.className = 'bx bx-heart';
+                    
+                    // If login required, redirect to login page
+                    if (data.login_required) {
+                        window.location.href = '/login?redirect=' + encodeURIComponent(window.location.href);
+                        return;
+                    }
+                    
+                    // Show error message
+                    showNotification('error', data.message || 'Error updating wishlist');
+                }
+            })
+            .catch(error => {
+                // Remove loading state and restore original icon
+                icon.className = 'bx bx-heart';
+                
+                // Show error notification
+                showNotification('error', 'Failed to update wishlist. Please try again.');
+                console.error('Fetch error:', error);
+            });
+        });
+    });
+}
+
+// Helper function to show notifications
+function showNotification(type, message) {
+    const notification = document.createElement('div');
+    notification.className = 'notification ' + type;
+    notification.innerHTML = `
+        <span>${message}</span>
+        <button class="close-btn">&times;</button>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(function() {
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+    
+    notification.querySelector('.close-btn').addEventListener('click', function() {
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 300);
+    });
+}
     </script>
 
         <%- include('../partials/user/footer') %>

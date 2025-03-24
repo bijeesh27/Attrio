@@ -266,6 +266,9 @@ const resendForgetOtp = async (req, res) => {
 
 const loadHome = async (req, res) => {
   try {
+    const user=await User.findOne({_id:req.session.userId})
+    const wishlistProduct=user?.wishlist.map((val)=>val.productId)
+    console.log("whishlistprodyct",wishlistProduct);
     const page = parseInt(req.query.page) || 1;
     const limit = 3;
     const skip = (page - 1) * limit;
@@ -291,6 +294,7 @@ const loadHome = async (req, res) => {
       totalPages,
       totalProducts,
       category,
+      wishlistProduct
     });
   } catch (error) {
     console.log("error rendering home page", error);

@@ -11,22 +11,23 @@ const userSchema = new Schema(
       type: String,
       required: true,
       unique: true,
-      saprse:true,default:null
+      saprse: true,
+      default: null,
     },
     number: {
       type: String,
       required: false,
       unique: false,
-      saprse:true,
-      default:null
+      saprse: true,
+      default: null,
     },
     password: {
       type: String,
       required: false,
     },
-    dob:{
-      type:String,
-      required:false
+    dob: {
+      type: String,
+      required: false,
     },
     profileimage: {
       type: Array,
@@ -42,8 +43,21 @@ const userSchema = new Schema(
     },
     usedCoupons: {
       type: [String],
-      default: []
-    }
+      default: [],
+    },
+    wishlist: [
+      {
+        productId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+          required: true
+        },
+        dateAdded: {
+          type: Date,
+          default: Date.now
+        }
+      }
+    ],
   },
   { timestamps: true }
 );

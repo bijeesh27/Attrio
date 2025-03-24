@@ -188,6 +188,7 @@
                   <div class="col-12">
                     <label class="form-label">Current Images</label>
                     <div id="existing-images" class="d-flex gap-2 flex-wrap">
+                      <p><%= product.image %></p>
                       <% if (product.image && product.image.length > 0) { %>
                         <% product.image.forEach((image, index) => { %>
                           <div class="position-relative image-container mb-2">

@@ -1,0 +1,1159 @@
+<%- include('../partials/user/header') %>
+<link rel="stylesheet" href="/user/assets/css/wishliststyle.css">
+<style>
+    /* Wishlist Page Styles */
+.wishlist-area {
+  min-height: 500px;
+}
+
+.wishlist-table-container {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+  padding: 30px;
+  margin-bottom: 30px;
+}
+
+.wishlist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 15px;
+}
+
+.wishlist-header h3 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+}
+
+.wishlist-header h3 i {
+  margin-right: 10px;
+  color: #f53f85
+  ;
+}
+
+.items-count {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 0;
+}
+
+.wishlist-table {
+  margin-bottom: 25px;
+}
+
+.table-spaced th, .table-spaced td {
+  padding: 15px;
+  vertical-align: middle;
+}
+
+.wishlist-table thead {
+  background-color: #f8f8f8;
+}
+
+.wishlist-table th {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #e9e9e9;
+}
+
+.sl-col {
+  width: 60px;
+  text-align: center;
+}
+
+.sl-number {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  color: #333;
+  font-weight: 600;
+}
+
+.product-col {
+  width: 45%;
+}
+
+.price-col, .stock-col {
+  width: 15%;
+}
+
+.action-col {
+  width: 10%;
+  text-align: center;
+}
+
+.product-info {
+  display: flex;
+  align-items: center;
+}
+
+.product-image {
+  width: 80px;
+  height: 80px;
+  margin-right: 15px;
+  overflow: hidden;
+  border-radius: 5px;
+  border: 1px solid #eee;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-details {
+  flex: 1;
+}
+
+.product-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.product-title a {
+  color: #333;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.product-title a:hover {
+  color: #f53f85;
+}
+
+.product-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 13px;
+  color: #777;
+}
+
+.size-badge, .date-added {
+  display: inline-block;
+  padding: 2px 8px;
+  background-color: #f5f5f5;
+  border-radius: 3px;
+}
+
+.price {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.stock-badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.in-stock {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.out-stock {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.add-to-cart-btn, .remove-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  background-color: #fff;
+}
+
+.add-to-cart-btn {
+  color: #fff;
+  background-color: #000;
+}
+
+.add-to-cart-btn:hover {
+  background-color: #333;
+}
+
+.add-to-cart-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.remove-btn {
+  color: #fff;
+  background-color: #f53f85;
+}
+
+.remove-btn:hover {
+  background-color: #ca2766;
+}
+
+.empty-wishlist {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.empty-wishlist-icon {
+  font-size: 50px;
+  color: #ddd;
+  margin-bottom: 20px;
+}
+
+.empty-wishlist-icon i {
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+  line-height: 100px;
+  border-radius: 50%;
+  background-color: #f8f8f8;
+}
+
+.empty-wishlist h3 {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.empty-wishlist p {
+  color: #777;
+  margin-bottom: 20px;
+}
+
+.btn-shop-now {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 25px;
+  background-color: #000;
+  color: #fff;
+  border-radius: 5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.btn-shop-now:hover {
+  background-color: #333;
+}
+
+.btn-shop-now i {
+  margin-left: 8px;
+  transition: transform 0.3s;
+}
+
+.btn-shop-now:hover i {
+  transform: translateX(5px);
+}
+
+.wishlist-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.continue-shopping .btn-continue {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: transparent;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.continue-shopping .btn-continue:hover {
+  background-color: #f5f5f5;
+}
+
+.continue-shopping .btn-continue i {
+  margin-right: 8px;
+}
+
+.wishlist-controls {
+  display: flex;
+  gap: 15px;
+}
+
+.btn-clear, .btn-add-all {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
+}
+
+.btn-clear {
+  background-color: #f8f8f8;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.btn-clear:hover {
+  background-color: #eee;
+}
+
+.btn-add-all {
+  background-color: #000;
+  color: #fff;
+}
+
+.btn-add-all:hover {
+  background-color: #333;
+}
+
+.btn-clear i, .btn-add-all i {
+  margin-right: 8px;
+}
+
+.wishlist-item {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+  .product-col {
+    width: 40%;
+  }
+}
+
+@media (max-width: 768px) {
+  .wishlist-table-container {
+    padding: 20px 15px;
+  }
+  
+  .wishlist-actions {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .continue-shopping, .wishlist-controls {
+    width: 100%;
+  }
+  
+  .wishlist-controls {
+    justify-content: space-between;
+  }
+  
+  .btn-clear, .btn-add-all {
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .stock-col {
+    display: none;
+  }
+  
+  .product-col {
+    width: 50%;
+  }
+}
+
+@media (max-width: 576px) {
+  .sl-col, .price-col {
+    display: none;
+  }
+  
+  .product-col {
+    width: 70%;
+  }
+  
+  .action-col {
+    width: 30%;
+  }
+  
+  .product-image {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+
+  /* Size Selection Modal Styles */
+  .size-option-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    color: #333;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .size-option-btn:hover {
+    background-color: #f0f0f0;
+  }
+
+  .size-option-btn.selected {
+    background-color: #000;
+    color: #fff;
+    border-color: #000;
+  }
+
+  #confirmAddToCart:disabled {
+    background-color: #ccc;
+    border-color: #ccc;
+    cursor: not-allowed;
+  }
+
+  .modal-title {
+    font-weight: 700;
+  }
+
+  .modal-header {
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .modal-footer {
+    border-top: 1px solid #f0f0f0;
+  }
+
+</style>
+<!-- Start Search Overlay -->
+<div class="search-overlay">
+  <div class="d-table">
+    <div class="d-table-cell">
+      <div class="search-overlay-layer"></div>
+      <div class="search-overlay-layer"></div>
+      <div class="search-overlay-layer"></div>
+      
+      <div class="search-overlay-close">
+        <span class="search-overlay-close-line"></span>
+        <span class="search-overlay-close-line"></span>
+      </div>
+
+      <div class="search-overlay-form">
+        <form action="/search" method="GET">
+          <input type="text" class="input-search" placeholder="Search here..." name="query">
+          <button type="submit"><i class='bx bx-search-alt'></i></button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Search Overlay -->
+
+<!-- Start Page Title -->
+<div class="page-title-area">
+  <div class="container">
+    <div class="page-title-content">
+      <h2>Wishlist</h2>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li>Wishlist</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<!-- End Page Title -->
+
+<!-- Start Wishlist Area -->
+<section class="wishlist-area ptb-100">
+  <div class="container">
+    <div class="row">
+      <!-- Main Wishlist Column - Full Width -->
+      <div class="col-12">
+        <form>
+          <div class="wishlist-table-container">
+            <div class="wishlist-header">
+              <h3><i class='bx bx-heart'></i> Your Wishlist</h3>
+              <p class="items-count">
+                <% if (wishlist && wishlist.items && wishlist.items.length > 0) { %>
+                  <%= wishlist.items.length %> item<%= wishlist.items.length > 1 ? 's' : '' %> in your wishlist
+                <% } else { %>
+                  0 items in your wishlist
+                <% } %>
+              </p>
+            </div>
+            
+            <div class="wishlist-table table-responsive">
+              <table class="table table-spaced">
+                <% if (wishlist && wishlist.items && wishlist.items.length > 0) { %>
+                <thead>
+                  <tr>
+                    <th scope="col" class="sl-col">Sl <br> No </th>
+                    <th scope="col" class="product-col">Product</th>
+                    <th scope="col" class="price-col">Price</th>
+                    <th scope="col" class="stock-col">Stock Status</th>
+                    <th scope="col" class="action-col"></th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                    <% wishlist.items.forEach((item, index) => { %>
+                      <tr class="wishlist-item animate-item">
+                        <td class="sl-col">
+                          <span class="sl-number"><%= index + 1 %></span>
+                        </td>
+                        <td class="product-col">
+                          <div class="product-info">
+                            <div class="product-image">
+                              <a href="/shop-single/<%= item.productId?._id %>">
+                                <img src="/<%= item.productId?.image[0] %>" alt="<%= item.productId?.name %>" class="img-fluid">
+                              </a>
+                            </div>
+                            <div class="product-details">
+                              <h4 class="product-title">
+                                <a href="/shop-single/<%= item.productId?._id %>"><%= item.productId?.name %></a>
+                              </h4>
+                              <div class="product-meta">
+                                <% if (item.size) { %>
+                                  <span class="size-badge">Size: <strong><%= item?.size %></strong></span>
+                                <% } %>
+                                <span class="date-added">Added on: <%= new Date(item.dateAdded).toLocaleDateString() %></span>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+
+                        <td class="price-col">
+                          <span class="price">Rs.<%= item.productId?.price.toLocaleString() %></span>
+                        </td>
+
+                        <td class="stock-col">
+                          <% if (item.productId?.totalstock > 0) { %>
+                            <span class="stock-badge in-stock">In Stock</span>
+                          <% } else { %>
+                            <span class="stock-badge out-stock">Out of Stock</span>
+                          <% } %>
+                        </td>
+                        
+                        <td class="action-col">
+                          <div class="action-buttons">
+                            <button type="button" class="add-to-cart-btn" onclick="addToCart('<%= item.productId._id %>') " <%= item.productId.totalstock <= 0 ? 'disabled' : '' %>>
+                              <i class="bx bx-cart-add"></i>
+                            </button>
+                            <button type="button" class="remove-btn" onclick="removeFromWishlist('<%= item.productId._id %>')">
+                              <i class="bx bx-trash"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    <% }); %>
+                  <% } else { %>
+                    <tr>
+                      <td colspan="5">
+                        <div class="empty-wishlist">
+                          <div class="empty-wishlist-icon">
+                            <i class="bx bx-heart"></i>
+                          </div>
+                          <h3>Your wishlist is empty</h3>
+                          <p>Save items you love for later or share with friends!</p>
+                          <a href="/shop" class="btn-shop-now">
+                            <span>Discover Products</span>
+                            <i class="bx bx-right-arrow-alt"></i>
+                          </a>
+                        </div>
+                      </td>
+                    </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+
+            <% if (wishlist && wishlist.items && wishlist.items.length > 0) { %>
+              <div class="wishlist-actions">
+                <div class="continue-shopping">
+                  <a href="/shop" class="btn-continue">
+                    <i class="bx bx-chevron-left"></i>
+                    <span>Continue Shopping</span>
+                  </a>
+                </div>
+
+                <div class="wishlist-controls">
+                  <button type="button" class="btn-clear" onclick="clearWishlist()">
+                    <i class="bx bx-x"></i>
+                    <span>Clear Wishlist</span>
+                  </button>
+                  
+                  <!-- <button type="button" class="btn-add-all" onclick="addAllToCart()">
+                    <i class="bx bx-cart"></i>
+                    <span>Add All to Cart</span>
+                  </button> -->
+                </div>
+              </div>
+            <% } %>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End Wishlist Area -->
+
+<!-- Start Facility Area -->
+<section class="facility-area pb-70">
+  <div class="container">
+    <div class="facility-slides owl-carousel owl-theme">
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-tracking"></i>
+        </div>
+        <h3>Free Shipping Worldwide</h3>
+      </div>
+
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-return"></i>
+        </div>
+        <h3>Easy Return Policy</h3>
+      </div>
+
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-shuffle"></i>
+        </div>
+        <h3>7 Day Exchange Policy</h3>
+      </div>
+
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-sale"></i>
+        </div>
+        <h3>Weekend Discount Coupon</h3>
+      </div>
+
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-credit-card"></i>
+        </div>
+        <h3>Secure Payment Methods</h3>
+      </div>
+
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-location"></i>
+        </div>
+        <h3>Track Your Package</h3>
+      </div>
+
+      <div class="single-facility-box">
+        <div class="icon">
+          <i class="flaticon-customer-service"></i>
+        </div>
+        <h3>24/7 Customer Support</h3>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End Facility Area -->
+
+<!-- Start Instagram Area -->
+<div class="instagram-area">
+  <div class="container-fluid">
+    <div class="instagram-title">
+      <a href="#" target="_blank"><i class="bx bxl-instagram"></i> Follow us on @xton</a>
+    </div>
+
+    <div class="instagram-slides owl-carousel owl-theme">
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img1.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img2.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img3.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img4.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img10.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img6.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img7.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img8.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img9.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+
+      <div class="single-instagram-post">
+        <img src="/user/assets/img/instagram/img5.jpg" alt="image" />
+        <i class="bx bxl-instagram"></i>
+        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Instagram Area -->
+
+
+<!-- Size Selection Modal -->
+<div class="modal fade" id="sizeSelectionModal" tabindex="-1" role="dialog" aria-labelledby="sizeSelectionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header border-bottom">
+        <h5 class="modal-title font-weight-bold" id="sizeSelectionModalLabel">Select Size</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body py-4">
+        <!-- Product Information Section -->
+        <div class="product-summary mb-4 pb-3 border-bottom">
+          <div class="d-flex align-items-center">
+            <div class="product-thumbnail mr-4">
+              <img id="modalProductImage" src="" alt="Product" class="img-fluid rounded" style="width: 100px; height: 100px; object-fit: cover;">
+            </div>
+            <div class="product-details">
+              <h6 id="modalProductName" class="font-weight-bold mb-2"></h6>
+              <p id="modalProductPrice" class="text-primary font-weight-medium mb-0"></p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Size Selection Section -->
+        <!-- Size Selection Section -->
+<div class="size-selection" id="pSize">
+  <h6 class="font-weight-bold mb-3">Please select a size:</h6>
+  <div class="size-options d-flex flex-wrap">
+    <!-- Size buttons will be populated dynamically by JavaScript -->
+  </div>
+  
+  <!-- Stock Information (hidden by default) -->
+  <div id="stockInfo" class="mt-3 p-3 bg-light rounded" style="display: none;">
+    <div class="d-flex align-items-center">
+      <i class="fa fa-box-open mr-2 text-secondary"></i>
+      <span id="stockMessage" class="font-weight-medium"></span>
+    </div>
+  </div>
+  
+  <small id="sizeHelper" class="form-text text-muted mt-2">Select a size to view availability</small>
+</div>
+      </div>
+      <div class="modal-footer border-top">
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="confirmAddToCart" disabled>Add to Cart</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Custom styles for the size selection modal */
+  .modal-content {
+    border-radius: 0.5rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+  
+  .size-option-btn {
+    min-width: 45px;
+    border: 1px solid #dee2e6;
+    background-color: #fff;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+  }
+  
+  .size-option-btn:hover {
+    border-color: #adb5bd;
+  }
+  
+  .size-option-btn.selected {
+    background-color: #212529;
+    color: white;
+    border-color: #212529;
+  }
+  
+  .font-weight-medium {
+    font-weight: 500;
+  }
+  
+  #confirmAddToCart:disabled {
+    cursor: not-allowed;
+  }
+  
+  .product-thumbnail {
+    flex-shrink: 0;
+  }
+  
+  #stockInfo {
+    transition: all 0.3s ease;
+  }
+  
+  .stock-available {
+    color: #28a745;
+  }
+  
+  .stock-limited {
+    color: #ffc107;
+  }
+  
+  .stock-low {
+    color: #dc3545;
+  }
+</style>
+
+<script>
+  // Activate the selected size button, show stock info, and enable Add to Cart
+  $(document).ready(function() {
+    $('.size-option-btn').click(function() {
+      // Update button styles
+      $('.size-option-btn').removeClass('selected');
+      $(this).addClass('selected');
+      
+      // Get stock information
+      var size = $(this).data('size');
+      var stock = $(this).data('stock');
+      
+      // Show stock information with appropriate styling
+      $('#stockInfo').show();
+      var stockClass = '';
+      var stockText = '';
+      
+      if (stock > 10) {
+        stockClass = 'stock-available';
+        stockText = 'In stock: ' + stock + ' items available';
+      } else if (stock > 5) {
+        stockClass = 'stock-limited';
+        stockText = 'Limited stock: ' + stock + ' items remaining';
+      } else if (stock > 0) {
+        stockClass = 'stock-low';
+        stockText = 'Low stock: Only ' + stock + ' items left!';
+      } else {
+        stockClass = 'stock-low';
+        stockText = 'Out of stock';
+        $('#confirmAddToCart').prop('disabled', true);
+        return;
+      }
+      
+      // Update stock message with appropriate class
+      $('#stockMessage').removeClass('stock-available stock-limited stock-low')
+                        .addClass(stockClass)
+                        .text(stockText);
+      
+      // Enable add to cart button if stock available
+      $('#confirmAddToCart').prop('disabled', stock <= 0);
+      
+      // Update helper text
+      $('#sizeHelper').text('Size ' + size + ' selected');
+    });
+  });
+</script>
+<!-- Replace your existing addToCart function with this updated version -->
+<script>
+// Global variables to store current product details for the modal
+let currentProductId = null;
+let selectedSize = null;
+
+function addToCart(productId) {
+  // Get product details for the modal
+  fetch(`/addingtocart/${productId}`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        const product = data.product;
+        
+        // Store product ID for later use
+        currentProductId = productId;
+        
+        // Populate modal with product details
+        document.getElementById('modalProductName').textContent = product.name;
+        document.getElementById('modalProductPrice').textContent = `Rs.${product.price.toLocaleString()}`;
+        document.getElementById('modalProductImage').src = `/${product.image[0]}`;
+        
+        // Generate and insert size options HTML
+        const sizeOptionsContainer = document.querySelector('.size-options');
+        sizeOptionsContainer.innerHTML = '';
+        
+        // Reset state
+        selectedSize = null;
+        document.getElementById('confirmAddToCart').disabled = true;
+        document.getElementById('stockInfo').style.display = 'none';
+        document.getElementById('sizeHelper').textContent = 'Select a size to view availability';
+        
+        // Add size options based on product stock
+        if (product.stock && product.stock.length > 0) {
+          product.stock.forEach(item => {
+            const sizeBtn = document.createElement('button');
+            sizeBtn.type = 'button';
+            sizeBtn.className = 'size-option-btn btn mr-2 mb-2 px-3 py-2';
+            sizeBtn.setAttribute('data-size', item.size);
+            sizeBtn.setAttribute('data-stock', item.quantity);
+            sizeBtn.textContent = item.size;
+            
+            // Add click event to each size button
+            sizeBtn.addEventListener('click', function() {
+              // Remove selected class from all buttons
+              document.querySelectorAll('.size-option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+              });
+              
+              // Add selected class to clicked button
+              this.classList.add('selected');
+              
+              // Store selected size
+              selectedSize = this.getAttribute('data-size');
+              
+              // Get stock quantity
+              const stockQty = parseInt(this.getAttribute('data-stock'));
+              
+              // Show stock information
+              const stockInfo = document.getElementById('stockInfo');
+              const stockMessage = document.getElementById('stockMessage');
+              stockInfo.style.display = 'block';
+              
+              // Update stock message with appropriate class
+              stockMessage.classList.remove('stock-available', 'stock-limited', 'stock-low');
+              
+              if (stockQty > 10) {
+                stockMessage.classList.add('stock-available');
+                stockMessage.textContent = `In stock: ${stockQty} items available`;
+              } else if (stockQty > 5) {
+                stockMessage.classList.add('stock-limited');
+                stockMessage.textContent = `Limited stock: ${stockQty} items remaining`;
+              } else if (stockQty > 0) {
+                stockMessage.classList.add('stock-low');
+                stockMessage.textContent = `Low stock: Only ${stockQty} items left!`;
+              } else {
+                stockMessage.classList.add('stock-low');
+                stockMessage.textContent = 'Out of stock';
+                document.getElementById('confirmAddToCart').disabled = true;
+                return;
+              }
+              
+              // Enable add to cart button if stock available
+              document.getElementById('confirmAddToCart').disabled = stockQty <= 0;
+              
+              // Update helper text
+              document.getElementById('sizeHelper').textContent = `Size ${selectedSize} selected`;
+            });
+            
+            sizeOptionsContainer.appendChild(sizeBtn);
+          });
+        } else {
+          sizeOptionsContainer.innerHTML = '<p class="text-muted">No size information available</p>';
+        }
+        
+        // Show the modal
+        $('#sizeSelectionModal').modal('show');
+      } else {
+        Swal.fire({
+          title: 'Error',
+          text: 'Could not retrieve product details. Please try again.',
+          icon: 'error',
+          confirmButtonColor: '#000000',
+        });
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      Swal.fire({
+        title: 'Error',
+        text: 'An error occurred. Please try again.',
+        icon: 'error',
+        confirmButtonColor: '#000000',
+      });
+    });
+}
+
+function processAddToCart(productId, size) {
+  fetch('/addTocart/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      productId: productId,
+      size: size,
+      quantity: 1
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      Swal.fire({
+        title: 'Added to Cart',
+        text: 'Item has been added to your shopping cart',
+        icon: 'success',
+        confirmButtonColor: '#000000',
+      });
+    } else {
+      Swal.fire({
+        title: 'Error',
+        text: data.message || 'Failed to add item to cart. Please try again.',
+        icon: 'error',
+        confirmButtonColor: '#000000',
+      });
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    Swal.fire({
+      title: 'Error',
+      text: 'An error occurred. Please try again.',
+      icon: 'error',
+      confirmButtonColor: '#000000',
+    });
+  });
+}
+
+// Setup event handlers when the document is ready
+document.addEventListener('DOMContentLoaded', function() {
+  // Confirm Add to Cart button
+  document.getElementById('confirmAddToCart').addEventListener('click', function() {
+    if (selectedSize && currentProductId) {
+      // Close modal
+      $('#sizeSelectionModal').modal('hide');
+      
+      // Process add to cart with selected size
+      processAddToCart(currentProductId, selectedSize);
+      
+      // Reset variables
+      currentProductId = null;
+      selectedSize = null;
+    }
+  });
+});
+
+
+function removeFromWishlist(productId) {
+  
+  
+  fetch(`/removefromwhishlist/${productId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      
+    }
+  })
+  .then(response => {
+    if (!response.ok) {
+      return response.json().then(data => Promise.reject(data));
+    }
+    return response.json();
+  })
+  .then(data => {
+    if (data.success) {
+      // Update UI to reflect item removal
+      const itemElement = document.querySelector(`[data-product-id="${productId}"]`);
+      if (itemElement) {
+        itemElement.remove();
+      } else {
+        // Alternatively, refresh the page to show updated wishlist
+        // window.location.reload();
+      }
+      // Show success message to user
+      Swal.fire({
+        title: `Are you sure?`,
+        text: ` Do you want to Remove the product in wishlist?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#000000",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes",
+        cancelButtonText: "No",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          location.reload()
+        }
+      });
+      
+    }
+  })
+  .catch(error => {
+    console.error('Error removing item from wishlist:', error);
+    alert('Failed to remove item from wishlist');
+  });
+}
+function clearWishlist(){
+  Swal.fire({
+        title: `Are you sure?`,
+        text: ` Do you want to clear the wishlist?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#000000",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes",
+        cancelButtonText: "No",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "/clearwishlist";
+        }
+      });
+}
+
+</script>
+
+<%- include('../partials/user/footer') %>

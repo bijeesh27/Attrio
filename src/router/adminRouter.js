@@ -44,6 +44,9 @@ router.post('/updatecoupon/:couponId',isAdmin,couponController.updateCoupon)
 router.get('/offer',isAdmin,offerController.loadOffer)
 router.get('/addoffer',isAdmin,offerController.loadAddOffer)
 router.post('/addoffer',isAdmin,offerController.addOffer)
+router.get('/editoffer/:offerId',isAdmin,offerController.loadEditOffer)
+router.post('/updateoffer/:offerId',isAdmin,offerController.editOffer)
+router.post('/blockoffer/:offerId',isAdmin,offerController.blockOffer)
 
 
 

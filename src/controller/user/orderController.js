@@ -99,17 +99,17 @@ const applyCoupon = async (req, res) => {
     try {
       const userId = req.session.userId;
       
-      // Add the removed coupon to user's usedCoupons array
+      
       if (req.session.appliedCoupon) {
-        await User.findByIdAndUpdate(userId, {
-          $addToSet: { usedCoupons: req.session.appliedCoupon.couponCode }
-        });
+      //   await User.findByIdAndUpdate(userId, {
+      //     $addToSet: { usedCoupons: req.session.appliedCoupon.couponCode }
+      //   });
         
-        // Decrement the coupon's maxRedeem counter
-        await Coupon.findOneAndUpdate(
-          { couponCode: req.session.appliedCoupon.couponCode },
-          { $inc: { maxRedeem: -1 } }
-        );
+        // // Decrement the coupon's maxRedeem counter
+        // await Coupon.findOneAndUpdate(
+        //   { couponCode: req.session.appliedCoupon.couponCode },
+        //   { $inc: { maxRedeem: -1 } }
+        // );
         
         // Remove coupon from session
         delete req.session.appliedCoupon;
@@ -172,7 +172,12 @@ const applyCoupon = async (req, res) => {
       
       // Determine payment status based on payment method
       const paymentStatus = paymentMethod === 'Cash On Delivery' ? 'Pending' : 'Paid';
-      
+      if (req.session.appliedCoupon) {
+        await User.findByIdAndUpdate(userId, {
+          $addToSet: { usedCoupons: req.session.appliedCoupon.couponCode }
+        });
+      }
+        
       const newOrder = new Orders({
         userId,
         cartId: cart._id,
@@ -193,6 +198,7 @@ const applyCoupon = async (req, res) => {
       await newOrder.save();
       await Cart.deleteMany({ userId });
       
+    
       // Clear applied coupon from session
       delete req.session.appliedCoupon;
   

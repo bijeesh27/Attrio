@@ -65,6 +65,15 @@ const addOffer = async (req, res) => {
       status,
     } = req.body;
 
+    const offer=await Offer.find({offerName})
+
+    if (offer) {
+      return res.status(409).json({
+          success: false,
+          message: "Offer already exists. Please add a new offer."
+      });
+  }
+
     const newOffer = new Offer({
       offerName,
       discount,
@@ -75,10 +84,95 @@ const addOffer = async (req, res) => {
       offerType,
       status: status === "true" ? true : false,
     });
+
+    
     await newOffer.save();
     res.redirect("/admin/offer");
   } catch (error) {
     console.log(error);
+  }
+};
+const loadEditOffer = async (req, res) => {
+  try {
+    const offerId = req.params.offerId;
+    const offer = await Offer.findOne({ _id: offerId });
+    const categories = await Category.find();
+    const products = await Product.find();
+    return res.render("editoffer", { offer, categories, products });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const editOffer = async (req, res) => {
+  try {
+    console.log(req.body);
+    const {
+      offerName,
+      discount,
+      offerType,
+      startDate,
+      endDate,
+      categoryId,
+      productId,
+    } = req.body;
+    const offerId = req.params.offerId;
+    const offer = await Offer.find({ _id: offerId });
+
+    if (!offer) {
+      return res.status(404).json({
+        success: false,
+        message: "Offer not found",
+      });
+    }
+
+    await Offer.findOneAndUpdate(
+      { _id: offerId },
+      {
+        $set: {
+          offerName,
+          discount,
+          offerType,
+          startDate,
+          endDate,
+          categoryId,
+          productId,
+        },
+      }
+    );
+    res.redirect('/admin/offer')
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const blockOffer = async (req, res) => {
+  try {
+    const offerId = req.params.offerId;
+    const offer = await Offer.findOne({ _id: offerId });
+
+    if (!offer) {
+      return res.status(404).json({
+        success: false,
+        message: "Offer not found",
+      });
+    }
+
+    const status = !offer.status;
+    await Offer.updateOne({ _id: offerId }, { $set: { status: status } });
+
+    // Only send JSON response, no redirect
+    return res.json({
+      success: true,
+      message: `Coupon ${status ? "activated" : "blocked"} successfully`,
+      newStatus: status,
+    });
+  } catch (error) {
+    console.error("Error updating coupon status:", error);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while updating the coupon status.",
+    });
   }
 };
 
@@ -86,4 +180,7 @@ module.exports = {
   loadOffer,
   loadAddOffer,
   addOffer,
+  blockOffer,
+  editOffer,
+  loadEditOffer,
 };

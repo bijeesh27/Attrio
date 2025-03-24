@@ -79,6 +79,12 @@ router.post('/send-email-change-otp',logged,profileController.sendEmail)
 router.get('/verify-email-change',logged,profileController.veryfyChangeEmail)
 router.post("/verify-email-change",logged,profileController.changeEmail)
 router.post('/create-order', orderController.createOrder);
+router.get('/wishlist',logged,productController.loadWishlist)
+router.post('/addtowishlist',logged,productController.addToWishlist)
+router.get('/addingtocart/:productId',logged,productController.addingTocart)
+router.post('/addTocart',logged,cartController.addTOcart)
+router.delete('/removefromwhishlist/:productId',logged,productController.removeItemWishlist)
+router.get('/clearwishlist',logged,productController.clearWishlist)
 
 
 router.get("/auth/google",passport.authenticate("google", { scope: ["profile", "email"] })
