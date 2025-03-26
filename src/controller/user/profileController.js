@@ -233,9 +233,19 @@ const loadWallet = async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.session.userId });
     const wallet = await Wallet.findOne({ userId: req.session.userId });
-    return res.render("wallet", { user, wallet });
+    
+    // Sort transactions by date in descending order (most recent first)
+    if (wallet && wallet.transaction) {
+      wallet.transaction.sort((a, b) => b.date - a.date);
+    }
+    
+    return res.render("wallet", { 
+      user, 
+      wallet 
+    });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    res.status(500).send("An error occurred while loading wallet");
   }
 };
 const loadAddAddress = async (req, res) => {

@@ -219,3 +219,28 @@
   margin-left: 8px;
   font-size: 20px;
 }
+
+.price del {
+  color: #999;
+  font-size: 0.9em;
+}
+
+.discounted-price {
+  color: #e74c3c; /* Red or any color to highlight discount */
+  font-weight: bold;
+}
+
+.total del {
+  color: #999;
+  font-size: 0.9em;
+}
+
+.discounted-total {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.cart-total .discounted {
+  color: #e74c3c;
+  font-weight: bold;
+}

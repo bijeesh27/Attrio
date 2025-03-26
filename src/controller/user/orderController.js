@@ -126,79 +126,94 @@ const applyCoupon = async (req, res) => {
     try {
       const { addressId, paymentMethod, paymentId, razorpayOrderId } = req.body;
       const userId = req.session.userId;
-      const cart = await Cart.findOne({ userId }).populate("item.productId");
-      
-      let totalAmount = 0;
-      const orderedItem = cart.item.map((item) => {
-        const itemTotal = item.quantity * item.productId.price;
-        totalAmount += itemTotal;
+  
+      // Fetch cart with populated product details
+      const cart = await Cart.findOne({ userId }).populate('item.productId');
+      if (!cart || !cart.item.length) {
+        return res.status(400).json({ success: false, error: 'Cart is empty' });
+      }
+  
+      let subtotalBeforeDiscounts = 0; // Original subtotal without offers
+      let subtotalAfterOffers = 0;     // Subtotal after applying offers
+  
+      // Map cart items to ordered items, applying offer prices
+      const orderedItem = cart.item.map(item => {
+        const originalPrice = item.price; // Original price from cart
+        let offerPrice = item.offerPrice || originalPrice; // Use offerPrice if available
+        const itemOriginalTotal = originalPrice * item.quantity;
+        const itemDiscountedTotal = offerPrice * item.quantity;
+  
+        subtotalBeforeDiscounts += itemOriginalTotal;
+        subtotalAfterOffers += itemDiscountedTotal;
+  
         return {
           productId: item.productId._id,
           quantity: item.quantity,
           size: item.size,
-          productPrice: item.productId.price,
-          productStatus: "Pending",
-          totalProductPrice: itemTotal
+          productPrice: originalPrice,         // Store original price
+          totalProductPrice: itemDiscountedTotal, // Store discounted total (with offer)
+          productStatus: 'Pending',
+          offer_id: item.offer_id || null      // Store offer ID if applied
         };
       });
-      
+  
       // Apply coupon discount if any
       let discount = 0;
       let usedCoupon = null;
-      
+      let totalAmount = subtotalAfterOffers; // Start with subtotal after offers
+  
       if (req.session.appliedCoupon) {
         discount = req.session.appliedCoupon.discountAmount;
         usedCoupon = req.session.appliedCoupon.couponCode;
-        
+  
         // Add to user's used coupons
         await User.findByIdAndUpdate(userId, {
           $addToSet: { usedCoupons: usedCoupon }
         });
-        
+  
         // Decrement coupon's maxRedeem
         await Coupon.findOneAndUpdate(
           { couponCode: usedCoupon },
           { $inc: { maxRedeem: -1 } }
         );
-        
-        // Adjust the total amount
-        totalAmount -= discount;
+  
+        // Adjust the total amount with coupon discount
+        totalAmount = Math.max(0, totalAmount - discount); // Ensure total doesn't go negative
       }
-      
+  
+      // Set shipping date (5 days from now)
       const shippingDate = new Date();
       shippingDate.setDate(shippingDate.getDate() + 5);
   
-      const orderNumber = "ORD" + Math.floor(Math.random() * 1000000);
-      
-      // Determine payment status based on payment method
+      // Generate order number
+      const orderNumber = 'ORD' + Math.floor(Math.random() * 1000000);
+  
+      // Determine payment status
       const paymentStatus = paymentMethod === 'Cash On Delivery' ? 'Pending' : 'Paid';
-      if (req.session.appliedCoupon) {
-        await User.findByIdAndUpdate(userId, {
-          $addToSet: { usedCoupons: req.session.appliedCoupon.couponCode }
-        });
-      }
-        
+  
+      // Create new order
       const newOrder = new Orders({
         userId,
         cartId: cart._id,
-        orderedItem: orderedItem,
+        orderedItem,
         deliveryAddress: addressId,
-        orderAmount: totalAmount,
+        orderAmount: totalAmount, // Final amount after offers and coupon
         deliveryDate: new Date(),
         shippingDate,
-        paymentMethod: paymentMethod,
-        paymentStatus: paymentStatus,
+        paymentMethod,
+        paymentStatus,
         orderNumber,
         paymentId: paymentId || null,
         razorpayOrderId: razorpayOrderId || null,
         couponDiscount: discount,
         couponCode: usedCoupon
       });
-      
+  
       await newOrder.save();
+  
+      // Clear the cart
       await Cart.deleteMany({ userId });
-      
-    
+  
       // Clear applied coupon from session
       delete req.session.appliedCoupon;
   
@@ -206,10 +221,10 @@ const applyCoupon = async (req, res) => {
       for (let i = 0; i < orderedItem.length; i++) {
         const item = orderedItem[i];
         await Product.updateOne(
-          { _id: item.productId, "stock.size": item.size },
+          { _id: item.productId, 'stock.size': item.size },
           {
             $inc: {
-              "stock.$.quantity": -item.quantity,
+              'stock.$.quantity': -item.quantity,
               totalstock: -item.quantity,
             },
           }
@@ -218,7 +233,7 @@ const applyCoupon = async (req, res) => {
   
       res.json({ success: true, orderId: newOrder._id });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(500).json({ success: false, error: 'Order processing failed' });
     }
   };

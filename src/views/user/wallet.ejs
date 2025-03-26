@@ -270,15 +270,28 @@
         <div class="transaction-history">
           <h3>Recent Transactions</h3>
           
-          <% if (wallet.transactions && wallet.transactions.length > 0) { %>
-            <% user.transactions.forEach(transaction => { %>
+          <% if (wallet && wallet.transaction && wallet.transaction.length > 0) { %>
+            <% wallet.transaction.slice(0, 5).forEach(transaction => { 
+              // Determine transaction type and style
+              let transactionClass = 'debit';
+              let transactionSign = '-';
+              
+              if (transaction.transactionsMethod === 'Refund' || transaction.transactionsMethod === 'Credit') {
+                transactionClass = 'credit';
+                transactionSign = '+';
+              }
+            %>
               <div class="transaction-item">
                 <div class="transaction-details">
-                  <div class="transaction-title"><%= transaction.amount %></div>
+                  <div class="transaction-title">
+                    <%= transaction.transactionsMethod === 'Payment' ? 'Product Purchase' : 
+                        transaction.transactionsMethod === 'Refund' ? 'Refund' : 
+                        transaction.transactionsMethod %>
+                  </div>
                   <div class="transaction-date"><%= new Date(transaction.date).toLocaleDateString() %></div>
                 </div>
-                <div class="transaction-amount <%= transaction.type === 'credit' ? 'credit' : 'debit' %>">
-                  <%= transaction.type === 'credit' ? '+' : '-' %>$<%= transaction.amount.toFixed(2) %>
+                <div class="transaction-amount <%= transactionClass %>">
+                  <%= transactionSign %>₹<%= transaction.amount.toFixed(2) %>
                 </div>
               </div>
             <% }); %>

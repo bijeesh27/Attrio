@@ -48,7 +48,14 @@ router.get('/editoffer/:offerId',isAdmin,offerController.loadEditOffer)
 router.post('/updateoffer/:offerId',isAdmin,offerController.editOffer)
 router.post('/blockoffer/:offerId',isAdmin,offerController.blockOffer)
 
-
+router.get('/reports/daily',isAdmin,adminController.dailyReport);
+router.get('/reports/weekly',isAdmin,adminController.weeklyReport);
+router.get('/reports/monthly',isAdmin,adminController.monthlyReport);
+router.get('/reports/yearly',isAdmin,adminController.yearlyReport);
+router.get('/reports/daily/download',isAdmin,adminController.dailyReport);
+router.get('/reports/weekly/download',isAdmin,adminController.weeklyReport);
+router.get('/reports/monthly/download',isAdmin,adminController.monthlyReport);
+router.get('/reports/yearly/download',isAdmin,adminController.yearlyReport);
 
 router.get("/search",isAdmin,userController.loadUser)
 router.get("/productsearch",isAdmin,productController.loadProducts)

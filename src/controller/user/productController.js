@@ -1,11 +1,49 @@
 const Product = require("../../models/productSchema");
 const Category = require("../../models/categorySchema");
 const User=require('../../models/userSchema')
+const Offer=require('../../models/offerSchema')
+
+const applyOffers = async (products) => {
+  const currentDate = new Date();
+  
+  // Find active offers
+  const activeOffers = await Offer.find({
+    status: true,
+    startDate: { $lte: currentDate },
+    endDate: { $gte: currentDate }
+  });
+
+  return products.map(product => {
+    // Create a new object to avoid modifying the original product
+    const productWithOffer = product.toObject();
+    
+    // Find applicable offers
+    const applicableOffers = activeOffers.filter(offer => 
+      (offer.offerType === 'product' && offer.productId.includes(product._id)) ||
+      (offer.offerType === 'category' && offer.categoryId.includes(product.category))
+    );
+
+    // Calculate maximum discount
+    if (applicableOffers.length > 0) {
+      const maxDiscount = Math.max(...applicableOffers.map(offer => offer.discount));
+      
+      // Calculate discounted price
+      const discountedPrice = product.price * (1 - maxDiscount / 100);
+      
+      productWithOffer.originalPrice = product.price;
+      productWithOffer.discountedPrice = Math.round(discountedPrice);
+      productWithOffer.discountPercentage = maxDiscount;
+    }
+
+    return productWithOffer;
+  });
+};
 
 const loadShop = async (req, res) => {
   try {
-    const user=await User.findOne({_id:req.session.userId})
-    const wishlistProduct=user?.wishlist.map((val)=>val.productId)
+    const user = await User.findOne({_id: req.session.userId});
+    const wishlistProduct = user?.wishlist.map((val) => val.productId);
+    
     let sortOption = { createdAt: -1 };
     const { sort, query, categoryId } = req.query;
     const page = parseInt(req.query.page) || 1;
@@ -30,7 +68,7 @@ const loadShop = async (req, res) => {
     // Filter logic
     let filter = { 
       status: true,
-      category: { $in: activeCategoryIds } // Only include products with active categories
+      category: { $in: activeCategoryIds }
     };
     
     // If categoryId is specified, ensure it's active before applying the filter
@@ -39,7 +77,6 @@ const loadShop = async (req, res) => {
       if (requestedCategory && requestedCategory.status) {
         filter.category = categoryId;
       } else {
-        // If the requested category is inactive, return no products
         filter.category = null;
       }
     }
@@ -62,9 +99,12 @@ const loadShop = async (req, res) => {
       .sort(sortOption)
       .skip(skip)
       .limit(limit);
+    
+    // Apply offers to products
+    const productsWithOffers = await applyOffers(products);
 
     res.render("product-page", {
-      products,
+      products: productsWithOffers,
       categories,
       currentPage: page,
       totalPages,
@@ -79,6 +119,81 @@ const loadShop = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+
+const loadShopSingle = async (req, res) => {
+  try {
+    const productId = req.params.productId;
+    
+    const user = await User.findOne({_id: req.session.userId});
+    const wishlistProduct = user?.wishlist.map((val) => val.productId);
+    
+    const product = await Product.findOne({ _id: productId, status: true });
+    
+    if (!product) {
+      return res.redirect('/shop'); 
+    }
+   
+    const categoryId = product.category;
+    const category = await Category.findById(categoryId);
+    
+    if (!category || !category.status) {
+      return res.redirect('/shop'); 
+    }
+    
+    // Find active offers for this product
+    const currentDate = new Date();
+    const applicableOffers = await Offer.find({
+      $or: [
+        { 
+          offerType: 'product', 
+          productId: productId,
+          startDate: { $lte: currentDate },
+          endDate: { $gte: currentDate },
+          status: true
+        },
+        { 
+          offerType: 'category', 
+          categoryId: categoryId,
+          startDate: { $lte: currentDate },
+          endDate: { $gte: currentDate },
+          status: true
+        }
+      ]
+    });
+
+    // Calculate the highest discount
+    let maxDiscount = 0;
+    if (applicableOffers.length > 0) {
+      maxDiscount = Math.max(...applicableOffers.map(offer => offer.discount));
+    }
+
+    // Calculate discounted price
+    const originalPrice = product.price;
+    const discountedPrice = originalPrice * (1 - (maxDiscount / 100));
+
+    const allProducts = await Product.find({ 
+      category: categoryId,
+      status: true,
+      _id: { $ne: productId } 
+    }).limit(4); 
+    
+    res.render("single-product", { 
+      product: {
+        ...product.toObject(), // Convert Mongoose document to plain object
+        originalPrice,
+        discountedPrice,
+        maxDiscount,
+        applicableOffers
+      }, 
+      allProducts,
+      wishlistProduct 
+    });
+  } catch (error) {
+    console.log("Error loading shop single page:", error);
+    res.redirect('/shop');
+  }
+};
+
 
 const singleProductModal = async (req, res) => {
   try {
@@ -116,39 +231,39 @@ const productModal=async (req,res) => {
 } 
 }
 
-const loadShopSingle = async (req, res) => {
-  try {
-    const productId = req.params.productId;
+// const loadShopSingle = async (req, res) => {
+//   try {
+//     const productId = req.params.productId;
     
-    const user=await User.findOne({_id:req.session.userId})
-    const wishlistProduct=user?.wishlist.map((val)=>val.productId)
-    const product = await Product.findOne({ _id: productId, status: true });
+//     const user=await User.findOne({_id:req.session.userId})
+//     const wishlistProduct=user?.wishlist.map((val)=>val.productId)
+//     const product = await Product.findOne({ _id: productId, status: true });
     
-    if (!product) {
-      return res.redirect('/shop'); 
-    }
+//     if (!product) {
+//       return res.redirect('/shop'); 
+//     }
     
    
-    const categoryId = product.category;
-    const category = await Category.findById(categoryId);
+//     const categoryId = product.category;
+//     const category = await Category.findById(categoryId);
     
-    if (!category || !category.status) {
-      return res.redirect('/shop'); 
-    }
+//     if (!category || !category.status) {
+//       return res.redirect('/shop'); 
+//     }
     
   
-    const allProducts = await Product.find({ 
-      category: categoryId,
-      status: true,
-      _id: { $ne: productId } 
-    }).limit(4); 
+//     const allProducts = await Product.find({ 
+//       category: categoryId,
+//       status: true,
+//       _id: { $ne: productId } 
+//     }).limit(4); 
     
-    res.render("single-product", { product, allProducts,wishlistProduct });
-  } catch (error) {
-    console.log("Error loading shop single page:", error);
-    res.redirect('/shop');
-  }
-};
+//     res.render("single-product", { product, allProducts,wishlistProduct });
+//   } catch (error) {
+//     console.log("Error loading shop single page:", error);
+//     res.redirect('/shop');
+//   }
+// };
 const findByCategory = async (req, res) => {
   try {
     console.log("rendering the categorywise filtering page");

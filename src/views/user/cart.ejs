@@ -101,7 +101,18 @@
                         </td>
 
                         <td class="price-col">
-                          <span class="price">Rs.<%= item.price.toLocaleString() %></span>
+                          <div class="price-wrapper">
+                            <% if (item.offerPrice) { %>
+                              <span class="original-price" style="text-decoration: line-through; color: #999;">
+                                Rs.<%= item.price.toLocaleString() %>
+                              </span>
+                              <span class="offer-price" style="color: #e74c3c; font-weight: bold;">
+                                Rs.<%= item.offerPrice.toLocaleString() %>
+                              </span>
+                            <% } else { %>
+                              <span class="price">Rs.<%= item.price.toLocaleString() %></span>
+                            <% } %>
+                          </div>
                         </td>
 
                         <td class="quantity-col">
@@ -117,7 +128,9 @@
                         </td>
 
                         <td class="total-col">
-                          <span class="total" id="total-<%= item.productId._id %>-<%= item.size %>">Rs.<%= item.total.toLocaleString() %></span>
+                          <span class="total" id="total-<%= item.productId._id %>-<%= item.size %>">
+                            Rs.<%= item.total.toLocaleString() %>
+                          </span>
                         </td>
                         
                         <td class="action-col">
@@ -180,134 +193,7 @@
 </section>
 <!-- End Cart Area -->
 
-<!-- Start Facility Area -->
-<section class="facility-area pb-70">
-  <div class="container">
-    <div class="facility-slides owl-carousel owl-theme">
-      <div class="single-facility-box">
-        <div class="icon">
-          <i class="flaticon-tracking"></i>
-        </div>
-        <h3>Free Shipping Worldwide</h3>
-      </div>
 
-      <div class="single-facility-box">
-        <div class="icon">
-          <i class="flaticon-return"></i>
-        </div>
-        <h3>Easy Return Policy</h3>
-      </div>
-
-      <div class="single-facility-box">
-        <div class="icon">
-          <i class="flaticon-shuffle"></i>
-        </div>
-        <h3>7 Day Exchange Policy</h3>
-      </div>
-
-      <div class="single-facility-box">
-        <div class="icon">
-          <i class="flaticon-sale"></i>
-        </div>
-        <h3>Weekend Discount Coupon</h3>
-      </div>
-
-      <div class="single-facility-box">
-        <div class="icon">
-          <i class="flaticon-credit-card"></i>
-        </div>
-        <h3>Secure Payment Methods</h3>
-      </div>
-
-      <div class="single-facility-box">
-        <div class="icon">
-          <i class="flaticon-location"></i>
-        </div>
-        <h3>Track Your Package</h3>
-      </div>
-
-      <div class="single-facility-box">
-        <div class="icon">
-          <i class="flaticon-customer-service"></i>
-        </div>
-        <h3>24/7 Customer Support</h3>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- End Facility Area -->
-
-<!-- Start Instagram Area -->
-<div class="instagram-area">
-  <div class="container-fluid">
-    <div class="instagram-title">
-      <a href="#" target="_blank"><i class="bx bxl-instagram"></i> Follow us on @xton</a>
-    </div>
-
-    <div class="instagram-slides owl-carousel owl-theme">
-      <div class="single-instagram-post">
-        <img src="/user/assets/img/instagram/img1.jpg" alt="image" />
-        <i class="bx bxl-instagram"></i>
-        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
-      </div>
-
-      <div class="single-instagram-post">
-        <img src="/user/assets/img/instagram/img2.jpg" alt="image" />
-        <i class="bx bxl-instagram"></i>
-        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
-      </div>
-
-      <div class="single-instagram-post">
-        <img src="/user/assets/img/instagram/img3.jpg" alt="image" />
-        <i class="bx bxl-instagram"></i>
-        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
-      </div>
-
-      <div class="single-instagram-post">
-        <img src="/user/assets/img/instagram/img4.jpg" alt="image" />
-        <i class="bx bxl-instagram"></i>
-        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
-      </div>
-
-      <div class="single-instagram-post">
-        <img src="/user/assets/img/instagram/img10.jpg" alt="image" />
-        <i class="bx bxl-instagram"></i>
-        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
-      </div>
-
-      <div class="single-instagram-post">
-        <img src="/user/assets/img/instagram/img6.jpg" alt="image" />
-        <i class="bx bxl-instagram"></i>
-        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
-      </div>
-
-      <div class="single-instagram-post">
-        <img src="/user/assets/img/instagram/img7.jpg" alt="image" />
-        <i class="bx bxl-instagram"></i>
-        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
-      </div>
-
-      <div class="single-instagram-post">
-        <img src="/user/assets/img/instagram/img8.jpg" alt="image" />
-        <i class="bx bxl-instagram"></i>
-        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
-      </div>
-
-      <div class="single-instagram-post">
-        <img src="/user/assets/img/instagram/img9.jpg" alt="image" />
-        <i class="bx bxl-instagram"></i>
-        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
-      </div>
-
-      <div class="single-instagram-post">
-        <img src="/user/assets/img/instagram/img5.jpg" alt="image" />
-        <i class="bx bxl-instagram"></i>
-        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- End Instagram Area -->
 
 <script>
 
@@ -316,13 +202,11 @@ function updateQuantity(productId, size, change, stock) {
   const quantityInput = document.getElementById(`quantity-${productId}-${size}`);
   let quantity = parseInt(quantityInput.value) + change;
 
-  // Ensure quantity is at least 1
   if (quantity < 1) {
     quantity = 1;
     return;
   }
 
-  // Check if item is out of stock and user is trying to increase quantity
   if (stock < quantity && change > 0) {
     Swal.fire({
       title: `Out of Stock`,
@@ -333,7 +217,6 @@ function updateQuantity(productId, size, change, stock) {
     return;
   }
 
-  // Check if quantity exceeds maximum of 5
   if (quantity > 5) {
     Swal.fire({
       title: `Quantity Limit Reached`,
@@ -344,10 +227,8 @@ function updateQuantity(productId, size, change, stock) {
     return;
   }
 
-  // Update input value
   quantityInput.value = quantity;
 
-  // Send request to update quantity
   fetch('/cart/update', {
     method: 'POST',
     headers: {
@@ -359,33 +240,27 @@ function updateQuantity(productId, size, change, stock) {
       quantity: quantity,
     }),
   })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("data:",data)
+    .then(response => response.json())
+    .then(data => {
       if (data.success) {
-        // Update the total price for the item
         const totalElement = document.getElementById(`total-${productId}-${size}`);
         totalElement.textContent = `Rs.${data.itemTotal.toLocaleString()}`;
 
-        // Update the cart total
         const cartTotalElement = document.querySelector('.cart-total .total-value');
         cartTotalElement.textContent = `Rs.${data.cartTotal.toLocaleString()}`;
       } else {
-        // Display error message from the back-end
         Swal.fire({
           title: `Error`,
           text: data.message || 'Failed to update quantity. Please try again.',
           icon: "error",
           confirmButtonColor: "#000000",
         });
-
-        // Reset the quantity to the maximum allowed value
         if (data.message.includes("exceeds available stock")) {
-          quantityInput.value = data.value.quantity; // Reset to available stock
+          quantityInput.value = data.value.quantity;
         }
       }
     })
-    .catch((error) => {
+    .catch(error => {
       console.error('Error:', error);
       Swal.fire({
         title: `Error`,

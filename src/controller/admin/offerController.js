@@ -65,7 +65,7 @@ const addOffer = async (req, res) => {
       status,
     } = req.body;
 
-    const offer=await Offer.find({offerName})
+    const offer=await Offer.findOne({offerName})
 
     if (offer) {
       return res.status(409).json({

@@ -152,65 +152,99 @@ const updateProductStatus = async (req, res) => {
 
 const updateReturn = async (req, res) => {
   try {
-    
     const { orderId, itemId, status } = req.body;
-    console.log("entering update return controller");
-    
-    const order=await Orders.findOne({_id:orderId})
-    const userId=order.userId
-    const ReturnedProduct=order.orderedItem.find(item=>item._id.toString()===itemId)
-    const productId=ReturnedProduct.productId
-    const product=await Product.findOne({_id:productId})
-    const stock=product.stock.find(item=>item.size===ReturnedProduct.size)
-    console.log("stock",stock);
-    
-    ReturnedProduct.productStatus=status
-    if(ReturnedProduct.productStatus==="Return Approved"){
-      ReturnedProduct.returnStatus="Approved";
-      ReturnedProduct.returnApproved=true
-      stock.quantity=stock.quantity+ReturnedProduct.quantity
-      
+    console.log("Entering update return controller");
 
+    // Fetch the order
+    const order = await Orders.findOne({ _id: orderId });
+    if (!order) {
+      return res.status(404).json({ success: false, message: 'Order not found' });
+    }
 
+    const userId = order.userId;
+    const returnedItem = order.orderedItem.find(item => item._id.toString() === itemId);
+    if (!returnedItem) {
+      return res.status(400).json({ success: false, message: 'Item not found in order' });
+    }
 
-      const userWallet = await Wallet.findOne({ userId });
-  
-      // If wallet exists, update it
+    const productId = returnedItem.productId;
+    const product = await Product.findOne({ _id: productId });
+    const stock = product.stock.find(item => item.size === returnedItem.size);
+    console.log("Stock:", stock);
+
+    // Update return status
+    returnedItem.productStatus = status;
+
+    if (status === 'Return Approved') {
+      returnedItem.returnStatus = 'Approved';
+      returnedItem.returnApproved = true;
+      returnedItem.returnApprovedDate = new Date();
+
+      // Increment stock
+      stock.quantity += returnedItem.quantity;
+
+      // Calculate refund amount considering offers and coupons
+      let refundAmount = returnedItem.totalProductPrice; // Base refund on totalProductPrice (includes offer discount)
+
+      // Adjust for coupon discount if applied to the order
+      if (order.couponDiscount && order.couponDiscount > 0) {
+        const totalOrderBeforeCoupon = order.orderedItem.reduce(
+          (sum, item) => sum + item.totalProductPrice,
+          0
+        );
+        const couponShare = (returnedItem.totalProductPrice / totalOrderBeforeCoupon) * order.couponDiscount;
+        refundAmount = Math.max(0, refundAmount - couponShare); // Ensure refund isn't negative
+      }
+
+      // Update wallet
+      let userWallet = await Wallet.findOne({ userId });
       if (userWallet) {
-        userWallet.balance += (ReturnedProduct.productPrice * ReturnedProduct.quantity);
+        userWallet.balance += refundAmount;
         userWallet.transaction.push({
-          amount: ReturnedProduct.productPrice* ReturnedProduct.quantity,
-          transactionsMethod: "Refund",
-          orderId: ReturnedProduct.orderId
+          amount: refundAmount,
+          transactionsMethod: 'Refund',
+          date: new Date(),
+          orderId: order._id // Use the order ID, not item.orderId
         });
         await userWallet.save();
       } else {
         // Create a new wallet if it doesn't exist
         const newWallet = new Wallet({
-          userId: ReturnedProduct.userId,
-          balance: ReturnedProduct.productPrice * ReturnedProduct.quantity,
+          userId,
+          balance: refundAmount,
           transaction: [{
-            amount: ReturnedProduct.productPrice* ReturnedProduct.quantity,
-            transactionsMethod: "Refund",
-            orderId: ReturnedProduct.orderId
+            amount: refundAmount,
+            transactionsMethod: 'Refund',
+            date: new Date(),
+            orderId: order._id
           }]
         });
         await newWallet.save();
       }
 
-
-    }else{
-      ReturnedProduct.returnStatus="Rejected";
-      ReturnedProduct.returnApproved=false
+      // Update order status if all items are returned
+      const allReturned = order.orderedItem.every(item => item.productStatus === 'Returned');
+      if (allReturned) {
+        order.orderStatus = 'Returned';
+      }
+    } else if (status === 'Return Rejected') {
+      returnedItem.returnStatus = 'Rejected';
+      returnedItem.returnApproved = false;
+    } else {
+      return res.status(400).json({ success: false, message: 'Invalid status provided' });
     }
-    await order.save()
-    await product.save()
+
+    // Save changes
+    await order.save();
+    await product.save();
+
     return res.status(200).json({
       success: true,
       message: `Return request ${status.toLowerCase()} successfully`,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Server error' });
   }
 };
 

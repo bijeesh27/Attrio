@@ -1,6 +1,6 @@
 <%- include('../partials/user/header') %>
 <style>
-.notification {
+  .notification {
     position: fixed;
     top: 20px;
     right: 20px;
@@ -13,786 +13,571 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     animation: fadeIn 0.3s ease;
     transition: opacity 0.3s ease;
-}
+  }
 
-.notification.success {
-    background-color: #4CAF50;
+  .notification.success {
+    background-color: #4caf50;
     color: white;
-}
+  }
 
-.notification.error {
-    background-color: #F44336;
+  .notification.error {
+    background-color: #f44336;
     color: white;
-}
+  }
 
-.notification .close-btn {
+  .notification .close-btn {
     background: none;
     border: none;
     color: white;
     font-size: 20px;
     cursor: pointer;
     margin-left: 10px;
-}
+  }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 </style>
-    <body>
-        <% if (error_msg && error_msg.length > 0) { %>
-            <div class="flash-message error-message" id="flash-message">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="feather feather-alert-circle"
-              >
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="8" x2="12" y2="12"></line>
-                <line x1="12" y1="16" x2="12.01" y2="16"></line>
-              </svg>
-              <span><%= error_msg %></span>
-            </div>
-            <% } %> <% if (success_msg && success_msg.length > 0) { %>
-            <div class="flash-message success-message" id="flash-message">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="feather feather-check-circle"
-              >
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-              </svg>
-              <span><%= success_msg %></span>
-            </div>
-            <%}%>
+<body>
+  <% if (error_msg && error_msg.length > 0) { %>
+  <div class="flash-message error-message" id="flash-message">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="feather feather-alert-circle"
+    >
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="8" x2="12" y2="12"></line>
+      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+    </svg>
+    <span><%= error_msg %></span>
+  </div>
+  <% } %> <% if (success_msg && success_msg.length > 0) { %>
+  <div class="flash-message success-message" id="flash-message">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="feather feather-check-circle"
+    >
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+    </svg>
+    <span><%= success_msg %></span>
+  </div>
+  <%}%>
 
-
-        <!-- Start Main Banner Area -->
-        <div class="home-slides-three owl-carousel owl-theme">
-            <div class="hero-banner">
-                <div class="d-table">
-                    <div class="d-table-cell">
-                        <div class="container">
-                            <div class="row align-items-center justify-content-center">
-                                <div class="col-lg-6">
-                                    <div class="main-banner-content">
-                                        <span class="sub-title">Limited Time Offer!</span>
-                                        <h1>Winter-Spring!</h1>
-                                        <p>Take 20% Off ‘Sale Must-Haves'</p>
-                                        <div class="btn-box">
-                                            <a href="/shop" class="default-btn">Shop Now</a>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6">
-                                    <div class="banner-image">
-                                        <div class="circle"></div>
-                                        <img src="user/assets/img/img.png" alt="image">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+  <!-- Start Main Banner Area -->
+  <div class="home-slides-three owl-carousel owl-theme">
+    <div class="hero-banner">
+      <div class="d-table">
+        <div class="d-table-cell">
+          <div class="container">
+            <div class="row align-items-center justify-content-center">
+              <div class="col-lg-6">
+                <div class="main-banner-content">
+                  <span class="sub-title">Limited Time Offer!</span>
+                  <h1>Winter-Spring!</h1>
+                  <p>Take 20% Off ‘Sale Must-Haves'</p>
+                  <div class="btn-box">
+                    <a href="/shop" class="default-btn">Shop Now</a>
+                  </div>
                 </div>
-            </div>
+              </div>
 
-            <div class="hero-banner">
-                <div class="d-table">
-                    <div class="d-table-cell">
-                        <div class="container">
-                            <div class="row align-items-center justify-content-center">
-                                <div class="col-lg-6">
-                                    <div class="main-banner-content">
-                                        <span class="sub-title">Exclusive Offer!</span>
-                                        <h1>Summer-Fashion!</h1>
-                                        <p>Leap year offer ‘Sale Must-Haves'</p>
-                                        <div class="btn-box">
-                                            <a href="/shop" class="default-btn">Shop Now</a>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6">
-                                    <div class="banner-image">
-                                        <div class="circle"></div>
-                                        <img src="user/assets/img/img2.png" alt="image">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+              <div class="col-lg-6">
+                <div class="banner-image">
+                  <div class="circle"></div>
+                  <img src="user/assets/img/img.png" alt="image" />
                 </div>
+              </div>
             </div>
+          </div>
         </div>
-        <!-- End Main Banner Area -->
+      </div>
+    </div>
 
-        <!-- Start Categories Banner Area -->
-        <section class="categories-banner-area pt-100 pb-70">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <% category.forEach(category => { %>
-                     
-                        <div class="col-lg-4 col-md-4 col-sm-4">
-                            <div class="single-categories-box">
-                                <img src="user/assets/img/categories/img1.jpg" alt="image">
-    
-                                <div class="content text-white">
-                                    <span>Dress for </span>
-                                    <h3><%= category.description %></h3>
-                                    <a href="/catfilter/<%= category._id %>"><button class="default-btn">Shop Now</button></a>
-                                    
-                                </div>
-                                
-                            </div>
-                        </div>
-                    <% }) %>
+    <div class="hero-banner">
+      <div class="d-table">
+        <div class="d-table-cell">
+          <div class="container">
+            <div class="row align-items-center justify-content-center">
+              <div class="col-lg-6">
+                <div class="main-banner-content">
+                  <span class="sub-title">Exclusive Offer!</span>
+                  <h1>Summer-Fashion!</h1>
+                  <p>Leap year offer ‘Sale Must-Haves'</p>
+                  <div class="btn-box">
+                    <a href="/shop" class="default-btn">Shop Now</a>
+                  </div>
                 </div>
-            </div>
-        </section>
-        <!-- End Categories Banner Area -->
+              </div>
 
-        <!-- Start Products Area -->
-        <section class="products-area pb-70">
-            <div class="container">
-                <div class="section-title">
-                    <span class="sub-title">See Our Collection</span>
-                    <h2>Recent Products</h2>
+              <div class="col-lg-6">
+                <div class="banner-image">
+                  <div class="circle"></div>
+                  <img src="user/assets/img/img2.png" alt="image" />
                 </div>
-                
-                <div class="row justify-content-center">
-                        <% product.forEach(product => { %>
-                        <div class="col-lg-4 col-md-6 col-sm-6">
-                            <div class="single-productsBox">
-                                <div class="products-image">
-                                    <a href="/shopsingle/<%= product._id %>">
-                                        <img src="/<%= product.image[0] %>" class="main-image" alt="<%= product.name %>">
-                                        <img src="/<%= product.image[1] %>" class="hover-image" alt="<%= product.name %>">
-                                    </a>
-    
-                                    <div class="products-button">
-                                        <ul>
-                                            <li>
-                                                <div class="wishlist-btn" data-product-id="<%= product._id %>">
-                                                    <a>
-                                                        <% if (wishlistProduct && wishlistProduct.length > 0) { %>
-                                                            <%
-                                                            let isInWishlist = false;
-                                                            wishlistProduct.forEach((item) => {
-                                                                if (item.toString() === product._id.toString()) {
-                                                                    isInWishlist = true;
-                                                                }
-                                                            });
-                                                            
-                                                            if (isInWishlist) { %>
-                                                                <i class='bx bxs-heart'></i>
-                                                            <% } else { %>
-                                                                <i class='bx bx-heart'></i>
-                                                            <% } %>
-                                                        <% } else { %>
-                                                            <i class='bx bx-heart'></i>
-                                                        <% } %>
-                                                        <span class="tooltip-label">Add to Wishlist</span>
-                                                    </a>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="quick-view-btn">
-                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#productsQuickView" data-product-id="<%= product._id %>">
-                                                        <i class='bx bx-search-alt'></i>
-                                                        <span class="tooltip-label">Quick View</span>
-                                                    </a>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </div>
-    
-                                    <div class="new-tag">New!</div>
-                                </div>
-    
-                                <div class="products-content">
-                                    <!-- <span class="category">T-Shirt</span> -->
-                                    <h3><a href="products-type-3.html"><%= product.name %></a></h3>
-                                    <div class="star-rating">
-                                        <i class='bx bxs-star'></i>
-                                        <i class='bx bxs-star'></i>
-                                        <i class='bx bxs-star'></i>
-                                        <i class='bx bxs-star'></i>
-                                        <i class='bx bxs-star'></i>
-                                    </div>
-                                    <div class="price">
-                                        <span class="old-price">Rs.3500</span>
-                                        <span class="new-price">Rs.<%= product.price %></span>
-                                    </div>
-                                    <a href="cart.html" class="add-to-cart">Add to Cart</a>
-                                </div>
-    
-                                <span class="products-discount">
-                                    <span>
-                                        20% OFF
-                                    </span>
-                                </span>
-                            </div>
-                        </div>
-    
-                        <% }) %>
-                    </div>
+              </div>
             </div>
-        </section>
-        <!-- End Products Area -->
-        <div class="pagination-area text-center">
-            <% if (totalPages > 1) { %>
-                <div class="pagination-container">
-                  <div class="pagination-area">
-                    <a href="?page=<%= currentPage > 1 ? currentPage - 1 : 1 %>" class="pagination-arrow prev <%= currentPage === 1 ? 'disabled' : '' %>">
-                      <i class='bx bx-chevron-left'></i>
-                    </a>
-                    
-                    <div class="pagination-numbers">
-                      <% 
-                      const maxPagesToShow = 5;
-                      let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
-                      let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
-                      
-                     
-                      if (endPage - startPage + 1 < maxPagesToShow) {
-                        startPage = Math.max(1, endPage - maxPagesToShow + 1);
-                      }
-                      
-                      
-                      if (startPage > 1) { %>
-                        <a href="?page=1" class="pagination-number">1</a>
-                        <% if (startPage > 2) { %>
-                          <span class="pagination-ellipsis">...</span>
-                        <% } %>
-                      <% } %>
-                      
-                      <% for(let i = startPage; i <= endPage; i++) { %>
-                        <% if(i === currentPage) { %>
-                          <span class="pagination-number active"><%= i %></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Main Banner Area -->
+
+  <!-- Start Categories Banner Area -->
+  <section class="categories-banner-area pt-100 pb-70">
+    <div class="container">
+      <div class="row justify-content-center">
+        <% category.forEach(category => { %>
+
+        <div class="col-lg-4 col-md-4 col-sm-4">
+          <div class="single-categories-box">
+            <img src="user/assets/img/categories/img1.jpg" alt="image" />
+
+            <div class="content text-white">
+              <span>Dress for </span>
+              <h3><%= category.description %></h3>
+              <a href="/catfilter/<%= category._id %>"
+                ><button class="default-btn">Shop Now</button></a
+              >
+            </div>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+  <!-- End Categories Banner Area -->
+
+  <!-- Start Products Area -->
+  <section class="products-area pb-70">
+    <div class="container">
+      <div class="section-title">
+        <span class="sub-title">See Our Collection</span>
+        <h2>Recent Products</h2>
+      </div>
+
+      <div class="row justify-content-center">
+        <% product.forEach(product => { %>
+        <div class="col-lg-4 col-md-6 col-sm-6">
+          <div class="single-productsBox">
+            <div class="products-image">
+              <a href="/shopsingle/<%= product._id %>">
+                <img
+                  src="/<%= product.image[0] %>"
+                  class="main-image"
+                  alt="<%= product.name %>"
+                />
+                <img
+                  src="/<%= product.image[1] %>"
+                  class="hover-image"
+                  alt="<%= product.name %>"
+                />
+              </a>
+
+              <div class="products-button">
+                <ul>
+                  <li>
+                    <div
+                      class="wishlist-btn"
+                      data-product-id="<%= product._id %>"
+                    >
+                      <a>
+                        <% if (wishlistProduct && wishlistProduct.length > 0) {
+                        %> <% let isInWishlist = false;
+                        wishlistProduct.forEach((item) => { if (item.toString()
+                        === product._id.toString()) { isInWishlist = true; } });
+                        if (isInWishlist) { %>
+                        <i class="bx bxs-heart"></i>
                         <% } else { %>
-                          <a href="?page=<%= i %>" class="pagination-number"><%= i %></a>
+                        <i class="bx bx-heart"></i>
+                        <% } %> <% } else { %>
+                        <i class="bx bx-heart"></i>
                         <% } %>
-                      <% } %>
-                      
-                      <% if (endPage < totalPages) { %>
-                        <% if (endPage < totalPages - 1) { %>
-                          <span class="pagination-ellipsis">...</span>
-                        <% } %>
-                        <a href="?page=<%= totalPages %>" class="pagination-number"><%= totalPages %></a>
-                      <% } %>
+                        <span class="tooltip-label">Add to Wishlist</span>
+                      </a>
                     </div>
-                    
-                    <a href="?page=<%= currentPage < totalPages ? currentPage + 1 : totalPages %>" class="pagination-arrow next <%= currentPage === totalPages ? 'disabled' : '' %>">
-                      <i class='bx bx-chevron-right'></i>
-                    </a>
+                  </li>
+                  <li>
+                    <div class="quick-view-btn">
+                      <a
+                        href="#"
+                        data-bs-toggle="modal"
+                        data-bs-target="#productsQuickView"
+                        data-product-id="<%= product._id %>"
+                      >
+                        <i class="bx bx-search-alt"></i>
+                        <span class="tooltip-label">Quick View</span>
+                      </a>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <% if (product.createdAt) { const createdAtDate = new
+              Date(product.createdAt); const fiveDaysAgo = new Date();
+              fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5); if (createdAtDate
+              >= fiveDaysAgo) { %>
+              <div class="new-tag">New!</div>
+              <% } } %>
+            </div>
+
+            <div class="products-content">
+              <!-- <span class="category">T-Shirt</span> -->
+              <h3><a href="products-type-3.html"><%= product.name %></a></h3>
+              <div class="star-rating">
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+              </div>
+              <div class="price">
+                <span class="old-price">Rs.3500</span>
+                <span class="new-price">Rs.<%= product.price %></span>
+              </div>
+              <a href="cart.html" class="add-to-cart">Add to Cart</a>
+            </div>
+
+            <span class="products-discount">
+              <span> 20% OFF </span>
+            </span>
+          </div>
+        </div>
+
+        <% }) %>
+      </div>
+    </div>
+  </section>
+  <!-- End Products Area -->
+  <div class="pagination-area text-center">
+    <% if (totalPages > 1) { %>
+    <div class="pagination-container">
+      <div class="pagination-area">
+        <a
+          href="?page=<%= currentPage > 1 ? currentPage - 1 : 1 %>"
+          class="pagination-arrow prev <%= currentPage === 1 ? 'disabled' : '' %>"
+        >
+          <i class="bx bx-chevron-left"></i>
+        </a>
+
+        <div class="pagination-numbers">
+          <% const maxPagesToShow = 5; let startPage = Math.max(1, currentPage -
+          Math.floor(maxPagesToShow / 2)); let endPage = Math.min(totalPages,
+          startPage + maxPagesToShow - 1); if (endPage - startPage + 1 <
+          maxPagesToShow) { startPage = Math.max(1, endPage - maxPagesToShow +
+          1); } if (startPage > 1) { %>
+          <a href="?page=1" class="pagination-number">1</a>
+          <% if (startPage > 2) { %>
+          <span class="pagination-ellipsis">...</span>
+          <% } %> <% } %> <% for(let i = startPage; i <= endPage; i++) { %> <%
+          if(i === currentPage) { %>
+          <span class="pagination-number active"><%= i %></span>
+          <% } else { %>
+          <a href="?page=<%= i %>" class="pagination-number"><%= i %></a>
+          <% } %> <% } %> <% if (endPage < totalPages) { %> <% if (endPage <
+          totalPages - 1) { %>
+          <span class="pagination-ellipsis">...</span>
+          <% } %>
+          <a href="?page=<%= totalPages %>" class="pagination-number"
+            ><%= totalPages %></a
+          >
+          <% } %>
+        </div>
+
+        <a
+          href="?page=<%= currentPage < totalPages ? currentPage + 1 : totalPages %>"
+          class="pagination-arrow next <%= currentPage === totalPages ? 'disabled' : '' %>"
+        >
+          <i class="bx bx-chevron-right"></i>
+        </a>
+      </div>
+
+      <div class="pagination-info">
+        Showing page <%= currentPage %> of <%= totalPages %>
+      </div>
+    </div>
+    <% } %>
+  </div>
+  <!-- Start Offer Products Area -->
+  <section class="offer-products-area">
+    <div class="container">
+      <div class="offer-products-slides owl-carousel owl-theme">
+        <div class="single-offer-products">
+          <div class="content">
+            <h3><a href="/shop">New Collections!</a></h3>
+            <p>Stylist Allison Taylor take on the summer season's trends.</p>
+            <a href="/shop" class="default-btn">Discover Now!</a>
+          </div>
+
+          <div class="image">
+            <a href="/shop"
+              ><img src="user/assets/img/offer/img3.jpg" alt="image"
+            /></a>
+          </div>
+        </div>
+
+        <div class="single-offer-products">
+          <div class="content">
+            <h3><a href="/shop">Our Popular Products</a></h3>
+            <p>Stylist Allison Taylor take on the summer season's trends.</p>
+            <a href="/shop" class="default-btn">Discover Now!</a>
+          </div>
+
+          <div class="image">
+            <a href="/shop"
+              ><img src="user/assets/img/offer/img2.jpg" alt="image"
+            /></a>
+          </div>
+        </div>
+
+        <div class="single-offer-products">
+          <div class="content">
+            <h3><a href="/shop">Hot Trending Products</a></h3>
+            <p>Stylist Allison Taylor take on the summer season's trends.</p>
+            <a href="/shop" class="default-btn">Discover Now!</a>
+          </div>
+
+          <div class="image">
+            <a href="/shop"
+              ><img src="user/assets/img/offer/img3.jpg" alt="image"
+            /></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br /><br />
+  </section>
+  <!-- End Offer Products Area -->
+
+  <!-- Start QuickView Modal Area -->
+  <div
+    class="modal fade productsQuickView"
+    id="productsQuickView"
+    tabindex="-1"
+    role="dialog"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <button
+          type="button"
+          class="close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true"><i class="bx bx-x"></i></span>
+        </button>
+
+        <div id="quickViewContent">
+          <div class="row align-items-center justify-content-center">
+            <div class="col-lg-6 col-md-6">
+              <div class="products-image">
+                <img src="user/assets/img/quick-view-img.jpg" alt="image" />
+              </div>
+            </div>
+
+            <div class="col-lg-6 col-md-6">
+              <div class="products-content">
+                <h3><a href="#">Long Sleeve Leopard T-Shirt</a></h3>
+
+                <div class="price">
+                  <span class="old-price">$210.00</span>
+                  <span class="new-price">$200.00</span>
+                </div>
+
+                <div class="products-review">
+                  <div class="rating">
+                    <i class="bx bxs-star"></i>
+                    <i class="bx bxs-star"></i>
+                    <i class="bx bxs-star"></i>
+                    <i class="bx bxs-star"></i>
+                    <i class="bx bxs-star"></i>
                   </div>
-                  
-                  <div class="pagination-info">
-                    Showing page <%= currentPage %> of <%= totalPages %>
+                  <a href="#" class="rating-count">3 reviews</a>
+                </div>
+
+                <ul class="products-info">
+                  <li><span>Vendor:</span> <a href="#">Lereve</a></li>
+                  <li>
+                    <span>Availability:</span>
+                    <a href="#">In stock (7 items)</a>
+                  </li>
+                  <li><span>Products Type:</span> <a href="#">T-Shirt</a></li>
+                </ul>
+
+                <div class="products-color-switch">
+                  <h4>Color:</h4>
+
+                  <ul>
+                    <li>
+                      <a
+                        href="#"
+                        data-bs-toggle="tooltip"
+                        data-placement="top"
+                        title="Black"
+                        class="color-black"
+                      ></a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        data-bs-toggle="tooltip"
+                        data-placement="top"
+                        title="White"
+                        class="color-white"
+                      ></a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        data-bs-toggle="tooltip"
+                        data-placement="top"
+                        title="Green"
+                        class="color-green"
+                      ></a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        data-bs-toggle="tooltip"
+                        data-placement="top"
+                        title="Yellow Green"
+                        class="color-yellowgreen"
+                      ></a>
+                    </li>
+                    <li>
+                      <a
+                        href="#"
+                        data-bs-toggle="tooltip"
+                        data-placement="top"
+                        title="Teal"
+                        class="color-teal"
+                      ></a>
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="products-size-wrapper">
+                  <h4>Size:</h4>
+
+                  <ul>
+                    <li><a href="#">XS</a></li>
+                    <li class="active"><a href="#">S</a></li>
+                    <li><a href="#">M</a></li>
+                    <li><a href="#">XL</a></li>
+                    <li><a href="#">XXL</a></li>
+                  </ul>
+                </div>
+
+                <div class="products-add-to-cart">
+                  <div class="input-counter">
+                    <span class="minus-btn"><i class="bx bx-minus"></i></span>
+                    <input type="text" value="1" />
+                    <span class="plus-btn"><i class="bx bx-plus"></i></span>
                   </div>
+
+                  <button type="submit" class="default-btn">Add to Cart</button>
                 </div>
-              <% } %>
-        </div>
-        <!-- Start Offer Products Area -->
-        <section class="offer-products-area">
-            <div class="container">
-                <div class="offer-products-slides owl-carousel owl-theme">
-                    <div class="single-offer-products">
-                        <div class="content">
-                            <h3><a href="/shop">New Collections!</a></h3>
-                            <p>Stylist Allison Taylor take on the summer season's trends.</p>
-                            <a href="/shop" class="default-btn">Discover Now!</a>
-                        </div>
 
-                        <div class="image">
-                            <a href="/shop"><img src="user/assets/img/offer/img3.jpg" alt="image"></a>
-                        </div>
-                    </div>
-
-                    <div class="single-offer-products">
-                        <div class="content">
-                            <h3><a href="/shop">Our Popular Products</a></h3>
-                            <p>Stylist Allison Taylor take on the summer season's trends.</p>
-                            <a href="/shop" class="default-btn">Discover Now!</a>
-                        </div>
-
-                        <div class="image">
-                            <a href="/shop"><img src="user/assets/img/offer/img2.jpg" alt="image"></a>
-                        </div>
-                    </div>
-
-                    <div class="single-offer-products">
-                        <div class="content">
-                            <h3><a href="/shop">Hot Trending Products</a></h3>
-                            <p>Stylist Allison Taylor take on the summer season's trends.</p>
-                            <a href="/shop" class="default-btn">Discover Now!</a>
-                        </div>
-
-                        <div class="image">
-                            <a href="/shop"><img src="user/assets/img/offer/img3.jpg" alt="image"></a>
-                        </div>
-                    </div>
-                </div>
-            </div><br><br>
-        </section>
-        <!-- End Offer Products Area -->
-
-
-
-        <!-- Start Facility Area -->
-        <section class="facility-area pb-70">
-            <div class="container">
-                <div class="facility-slides owl-carousel owl-theme">
-                    <div class="single-facility-box">
-                        <div class="icon">
-                            <i class='flaticon-tracking'></i>
-                        </div>
-                        <h3>Free Shipping Worldwide</h3>
-                    </div>
-
-                    <div class="single-facility-box">
-                        <div class="icon">
-                            <i class='flaticon-return'></i>
-                        </div>
-                        <h3>Easy Return Policy</h3>
-                    </div>
-
-                    <div class="single-facility-box">
-                        <div class="icon">
-                            <i class='flaticon-shuffle'></i>
-                        </div>
-                        <h3>7 Day Exchange Policy</h3>
-                    </div>
-
-                    <div class="single-facility-box">
-                        <div class="icon">
-                            <i class='flaticon-sale'></i>
-                        </div>
-                        <h3>Weekend Discount Coupon</h3>
-                    </div>
-
-                    <div class="single-facility-box">
-                        <div class="icon">
-                            <i class='flaticon-credit-card'></i>
-                        </div>
-                        <h3>Secure Payment Methods</h3>
-                    </div>
-
-                    <div class="single-facility-box">
-                        <div class="icon">
-                            <i class='flaticon-location'></i>
-                        </div>
-                        <h3>Track Your Package</h3>
-                    </div>
-
-                    <div class="single-facility-box">
-                        <div class="icon">
-                            <i class='flaticon-customer-service'></i>
-                        </div>
-                        <h3>24/7 Customer Support</h3>
-                    </div>
-                </div>
+                <a href="#" class="view-full-info">View Full Info</a>
+              </div>
             </div>
-        </section>
-        <!-- End Facility Area -->
-
-        
-
-
-
-        
-        <!-- Start Instagram Area -->
-        <div class="instagram-area">
-            <div class="container-fluid">
-                <div class="instagram-title">
-                    <a href="#" target="_blank"><i class='bx bxl-instagram'></i> Follow us on @xton</a>
-                </div>
-
-                <div class="instagram-slides owl-carousel owl-theme">
-                    <div class="single-instagram-post">
-                        <img src="user/assets/img/instagram/img1.jpg" alt="image">
-                        <i class='bx bxl-instagram'></i>
-                        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
-                    </div>
-
-                    <div class="single-instagram-post">
-                        <img src="user/assets/img/instagram/img2.jpg" alt="image">
-                        <i class='bx bxl-instagram'></i>
-                        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
-                    </div>
-
-                    <div class="single-instagram-post">
-                        <img src="user/assets/img/instagram/img3.jpg" alt="image">
-                        <i class='bx bxl-instagram'></i>
-                        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
-                    </div>
-                    
-                    <div class="single-instagram-post">
-                        <img src="user/assets/img/instagram/img4.jpg" alt="image">
-                        <i class='bx bxl-instagram'></i>
-                        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
-                    </div>
-                    
-                    <div class="single-instagram-post">
-                        <img src="user/assets/img/instagram/img10.jpg" alt="image">
-                        <i class='bx bxl-instagram'></i>
-                        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
-                    </div>
-                    
-                    <div class="single-instagram-post">
-                        <img src="user/assets/img/instagram/img6.jpg" alt="image">
-                        <i class='bx bxl-instagram'></i>
-                        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
-                    </div>
-                    
-                    <div class="single-instagram-post">
-                        <img src="user/assets/img/instagram/img7.jpg" alt="image">
-                        <i class='bx bxl-instagram'></i>
-                        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
-                    </div>
-                    
-                    <div class="single-instagram-post">
-                        <img src="user/assets/img/instagram/img8.jpg" alt="image">
-                        <i class='bx bxl-instagram'></i>
-                        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
-                    </div>
-                    
-                    <div class="single-instagram-post">
-                        <img src="user/assets/img/instagram/img9.jpg" alt="image">
-                        <i class='bx bxl-instagram'></i>
-                        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
-                    </div>
-                    
-                    <div class="single-instagram-post">
-                        <img src="user/assets/img/instagram/img5.jpg" alt="image">
-                        <i class='bx bxl-instagram'></i>
-                        <a href="https://www.instagram.com/" target="_blank" class="link-btn"></a>
-                    </div>
-                </div>
-            </div>
+          </div>
+          -->
         </div>
-        <!-- End Instagram Area -->
+      </div>
+    </div>
+  </div>
+  <!-- End QuickView Modal Area -->
 
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Flash message handling
+      removeFlashMessage();
 
-        <!-- Start QuickView Modal Area -->
-        <div class="modal fade productsQuickView" id="productsQuickView" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true"><i class='bx bx-x'></i></span>
-                    </button>
+      // Quick View functionality
+      initQuickView();
 
-                    <div id="quickViewContent">
+      // Initialize other components
+      initQuantityButtons();
+    });
 
-                        <div class="row align-items-center justify-content-center">
-                            <div class="col-lg-6 col-md-6">
-                                <div class="products-image">
-                                    <img src="user/assets/img/quick-view-img.jpg" alt="image">
-                                </div>
-                            </div>
-    
-                            <div class="col-lg-6 col-md-6">
-                                <div class="products-content">
-                                    <h3><a href="#">Long Sleeve Leopard T-Shirt</a></h3>
-    
-                                    <div class="price">
-                                        <span class="old-price">$210.00</span>
-                                        <span class="new-price">$200.00</span>
-                                    </div>
-    
-                                    <div class="products-review">
-                                        <div class="rating">
-                                            <i class='bx bxs-star'></i>
-                                            <i class='bx bxs-star'></i>
-                                            <i class='bx bxs-star'></i>
-                                            <i class='bx bxs-star'></i>
-                                            <i class='bx bxs-star'></i>
-                                        </div>
-                                        <a href="#" class="rating-count">3 reviews</a>
-                                    </div>
-    
-                                    <ul class="products-info">
-                                        <li><span>Vendor:</span> <a href="#">Lereve</a></li>
-                                        <li><span>Availability:</span> <a href="#">In stock (7 items)</a></li>
-                                        <li><span>Products Type:</span> <a href="#">T-Shirt</a></li>
-                                    </ul>
-    
-                                    <div class="products-color-switch">
-                                        <h4>Color:</h4>
-    
-                                        <ul>
-                                            <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Black" class="color-black"></a></li>
-                                            <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="White" class="color-white"></a></li>
-                                            <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Green" class="color-green"></a></li>
-                                            <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Yellow Green" class="color-yellowgreen"></a></li>
-                                            <li><a href="#" data-bs-toggle="tooltip" data-placement="top" title="Teal" class="color-teal"></a></li>
-                                        </ul>
-                                    </div>
-    
-                                    <div class="products-size-wrapper">
-                                        <h4>Size:</h4>
-    
-                                        <ul>
-                                            <li><a href="#">XS</a></li>
-                                            <li class="active"><a href="#">S</a></li>
-                                            <li><a href="#">M</a></li>
-                                            <li><a href="#">XL</a></li>
-                                            <li><a href="#">XXL</a></li>
-                                        </ul>
-                                    </div>
-    
-                                    <div class="products-add-to-cart">
-                                        <div class="input-counter">
-                                            <span class="minus-btn"><i class='bx bx-minus'></i></span>
-                                            <input type="text" value="1">
-                                            <span class="plus-btn"><i class='bx bx-plus'></i></span>
-                                        </div>
-    
-                                        <button type="submit" class="default-btn">Add to Cart</button>
-                                    </div>
-    
-                                    <a href="#" class="view-full-info">View Full Info</a>
-                                </div>
-                            </div>
-                        </div> -->
-                    </div>
+    // Also handle flash messages on window load (backup)
+    window.addEventListener("load", removeFlashMessage);
 
-
-                </div>
-            </div>
-        </div>
-        <!-- End QuickView Modal Area -->
-
-        <!-- Start Shopping Cart Modal -->
-        <div class="modal right fade shoppingCartModal" id="shoppingCartModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true"><i class='bx bx-x'></i></span>
-                    </button>
-
-                    <div class="modal-body">
-                        <h3>My Cart (3)</h3>
-
-                        <div class="products-cart-content">
-                            <div class="products-cart">
-                                <div class="products-image">
-                                    <a href="#"><img src="user/assets/img/products/img1.jpg" alt="image"></a>
-                                </div>
-
-                                <div class="products-content">
-                                    <h3><a href="#">Long Sleeve Leopard T-Shirt</a></h3>
-                                    <span>Blue / XS</span>
-                                    <div class="products-price">
-                                        <span>1</span>
-                                        <span>x</span>
-                                        <span class="price">$250.00</span>
-                                    </div>
-                                    <a href="#" class="remove-btn"><i class='bx bx-trash'></i></a>
-                                </div>
-                            </div>
-
-                            <div class="products-cart">
-                                <div class="products-image">
-                                    <a href="#"><img src="user/assets/img/products/img2.jpg" alt="image"></a>
-                                </div>
-
-                                <div class="products-content">
-                                    <h3><a href="#">Causal V-Neck Soft Raglan</a></h3>
-                                    <span>Blue / XS</span>
-                                    <div class="products-price">
-                                        <span>1</span>
-                                        <span>x</span>
-                                        <span class="price">$200.00</span>
-                                    </div>
-                                    <a href="#" class="remove-btn"><i class='bx bx-trash'></i></a>
-                                </div>
-                            </div>
-
-                            <div class="products-cart">
-                                <div class="products-image">
-                                    <a href="#"><img src="user/assets/img/products/img3.jpg" alt="image"></a>
-                                </div>
-
-                                <div class="products-content">
-                                    <h3><a href="#">Hanes Men's Pullover</a></h3>
-                                    <span>Blue / XS</span>
-                                    <div class="products-price">
-                                        <span>1</span>
-                                        <span>x</span>
-                                        <span class="price">$200.00</span>
-                                    </div>
-                                    <a href="#" class="remove-btn"><i class='bx bx-trash'></i></a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="products-cart-subtotal">
-                            <span>Subtotal</span>
-
-                            <span class="subtotal">$524.00</span>
-                        </div>
-
-                        <div class="products-cart-btn">
-                            <a href="#" class="default-btn">Proceed to Checkout</a>
-                            <a href="#" class="optional-btn">View Shopping Cart</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End Shopping Cart Modal -->
-
-        <!-- Start Wishlist Modal -->
-        <div class="modal right fade shoppingWishlistModal" id="shoppingWishlistModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true"><i class='bx bx-x'></i></span>
-                    </button>
-
-                    <div class="modal-body">
-                        <h3>My Wish List (3)</h3>
-
-                        <div class="products-cart-content">
-                            <div class="products-cart">
-                                <div class="products-image">
-                                    <a href="#"><img src="user/assets/img/products/img1.jpg" alt="image"></a>
-                                </div>
-
-                                <div class="products-content">
-                                    <h3><a href="#">Long Sleeve Leopard T-Shirt</a></h3>
-                                    <span>Blue / XS</span>
-                                    <div class="products-price">
-                                        <span>1</span>
-                                        <span>x</span>
-                                        <span class="price">$250.00</span>
-                                    </div>
-                                    <a href="#" class="remove-btn"><i class='bx bx-trash'></i></a>
-                                </div>
-                            </div>
-
-                            <div class="products-cart">
-                                <div class="products-image">
-                                    <a href="#"><img src="user/assets/img/products/img2.jpg" alt="image"></a>
-                                </div>
-
-                                <div class="products-content">
-                                    <h3><a href="#">Causal V-Neck Soft Raglan</a></h3>
-                                    <span>Blue / XS</span>
-                                    <div class="products-price">
-                                        <span>1</span>
-                                        <span>x</span>
-                                        <span class="price">$200.00</span>
-                                    </div>
-                                    <a href="#" class="remove-btn"><i class='bx bx-trash'></i></a>
-                                </div>
-                            </div>
-
-                            <div class="products-cart">
-                                <div class="products-image">
-                                    <a href="#"><img src="user/assets/img/products/img3.jpg" alt="image"></a>
-                                </div>
-
-                                <div class="products-content">
-                                    <h3><a href="#">Hanes Men's Pullover</a></h3>
-                                    <span>Blue / XS</span>
-                                    <div class="products-price">
-                                        <span>1</span>
-                                        <span>x</span>
-                                        <span class="price">$200.00</span>
-                                    </div>
-                                    <a href="#" class="remove-btn"><i class='bx bx-trash'></i></a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="products-cart-btn">
-                            <a href="#" class="optional-btn">View Shopping Cart</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End Wishlist Modal -->
-
-
-
- <script>
-    
-    document.addEventListener('DOMContentLoaded', function() {
-    // Flash message handling
-    removeFlashMessage();
-    
-    // Quick View functionality
-    initQuickView();
-    
-    // Initialize other components
-    initQuantityButtons();
-});
-
-// Also handle flash messages on window load (backup)
-window.addEventListener("load", removeFlashMessage);
-
-// Flash message handling function
-function removeFlashMessage() {
-    const flashMessage = document.getElementById("flash-message");
-    if (flashMessage) {
+    // Flash message handling function
+    function removeFlashMessage() {
+      const flashMessage = document.getElementById("flash-message");
+      if (flashMessage) {
         console.log("Flash message found, will remove in 3 seconds");
         setTimeout(() => {
-            flashMessage.remove();
-            console.log("Flash message removed");
+          flashMessage.remove();
+          console.log("Flash message removed");
         }, 1500);
-    } else {
+      } else {
         console.log("Flash message element not found");
+      }
     }
-}
 
-// Quick View initialization
-function initQuickView() {
-    const quickViewBtns = document.querySelectorAll('.quick-view-btn a');
-    const quickViewContent = document.getElementById('quickViewContent');
-    
-    quickViewBtns.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const productId = this.getAttribute('data-product-id');
-            
-            // Fetch product details via AJAX
-            fetch(`/singleproduct/${productId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if(data.success) {
-                        const product = data.product;
-                        
-                        // Create HTML for the quick view modal
-                        const quickViewHTML = `
+    // Quick View initialization
+    function initQuickView() {
+      const quickViewBtns = document.querySelectorAll(".quick-view-btn a");
+      const quickViewContent = document.getElementById("quickViewContent");
+
+      quickViewBtns.forEach((btn) => {
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          const productId = this.getAttribute("data-product-id");
+
+          // Fetch product details via AJAX
+          fetch(`/singleproduct/${productId}`)
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                const product = data.product;
+
+                // Create HTML for the quick view modal
+                const quickViewHTML = `
                             <div class="row align-items-center justify-content-center">
                                 <div class="col-lg-6 col-md-6">
                                     <div class="products-image">
-                                        <img src="/${product.image[0]}" alt="${product.name}">
+                                        <img src="/${product.image[0]}" alt="${
+                  product.name
+                }">
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6 col-md-6">
                                     <div class="products-content">
-                                        <h3><a href="/product/${product._id}">${product.name}</a></h3>
+                                        <h3><a href="/product/${product._id}">${
+                  product.name
+                }</a></h3>
 
                                         <div class="price">
                                             <span class="old-price">Rs.3500</span>
-                                            <span class="new-price">Rs.${product.price}</span>
+                                            <span class="new-price">Rs.${
+                                              product.price
+                                            }</span>
                                         </div>
 
                                         <div class="products-review">
@@ -803,11 +588,19 @@ function initQuickView() {
                                                 <i class='bx bxs-star'></i>
                                                 <i class='bx bxs-star'></i>
                                             </div>
-                                            <a href="#" class="rating-count">${product.reviews ? product.reviews.length : 0} reviews</a>
+                                            <a href="#" class="rating-count">${
+                                              product.reviews
+                                                ? product.reviews.length
+                                                : 0
+                                            } reviews</a>
                                         </div>
 
                                         <ul class="products-info">
-                                            <li><span>Availability:</span> <a href="#">${product.totalstock > 0 ? `In stock (${product.totalstock} items)` : 'Out of stock'}</a></li><br>
+                                            <li><span>Availability:</span> <a href="#">${
+                                              product.totalstock > 0
+                                                ? `In stock (${product.totalstock} items)`
+                                                : "Out of stock"
+                                            }</a></li><br>
                                         </ul>
 
                                         <div class="products-add-to-cart">
@@ -817,167 +610,186 @@ function initQuickView() {
                                                 <span class="plus-btn"><i class='bx bx-plus'></i></span>
                                             </div>
 
-                                            <button type="button" class="default-btn add-to-cart-btn" data-product-id="${product._id}">Add to Cart</button>
+                                            <button type="button" class="default-btn add-to-cart-btn" data-product-id="${
+                                              product._id
+                                            }">Add to Cart</button>
                                         </div>
 
-                                        <a href="/shopsingle/${product._id}" class="view-full-info">View Full Info</a>
+                                        <a href="/shopsingle/${
+                                          product._id
+                                        }" class="view-full-info">View Full Info</a>
                                     </div>
                                 </div>
                             </div>
                         `;
-                        
-                        // Insert the HTML into the modal
-                        quickViewContent.innerHTML = quickViewHTML;
-                        
-                        // Initialize quantity buttons in the modal
-                        initQuantityButtons();
-                    } else {
-                        quickViewContent.innerHTML = '<p class="text-center">Product details not found!</p>';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching product details:', error);
-                    quickViewContent.innerHTML = '<p class="text-center">Error loading product details!</p>';
-                });
-        });
-    });
-}
 
-// Initialize quantity buttons and add-to-cart functionality
-function initQuantityButtons() {
-    const minusBtn = document.querySelector('.minus-btn');
-    const plusBtn = document.querySelector('.plus-btn');
-    const quantityInput = document.getElementById('quantity');
-    
-    if(minusBtn && plusBtn && quantityInput) {
-        minusBtn.addEventListener('click', function() {
-            let value = parseInt(quantityInput.value);
-            if(value > 1) {
-                value--;
-                quantityInput.value = value;
-            }
-        });
-        
-        plusBtn.addEventListener('click', function() {
-            let value = parseInt(quantityInput.value);
-            value++;
-            quantityInput.value = value;
-        });
-    }
-    
-    // Add to cart functionality
-    const addToCartBtn = document.querySelector('.add-to-cart-btn');
-    if(addToCartBtn) {
-        addToCartBtn.addEventListener('click', function() {
-            const productId = this.getAttribute('data-product-id');
-            const quantity = document.getElementById('quantity').value;
-            
-            // Add to cart logic - you can implement AJAX call here
-            console.log(`Adding product ${productId} to cart with quantity ${quantity}`);
-            // Implement your add to cart functionality here
-        });
-    }
-}
-  
-// Add this to your script.js file or inline in your home page
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize wishlist buttons
-    initWishlistButtons();
-});
+                // Insert the HTML into the modal
+                quickViewContent.innerHTML = quickViewHTML;
 
-function initWishlistButtons() {
-    // Select all wishlist buttons
-    const wishlistBtns = document.querySelectorAll('.wishlist-btn');
-    
-    wishlistBtns.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            const productId = this.getAttribute('data-product-id');
-            const size = this.getAttribute('data-size');
-            const icon = this.querySelector('i');
-            
-            // Show loading state
-            icon.className = 'bx bx-loader bx-spin';
-            
-            // Send AJAX request using Fetch API
-            fetch('/addtowishlist', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    productId: productId,
-                    size: size
-                })
+                // Initialize quantity buttons in the modal
+                initQuantityButtons();
+              } else {
+                quickViewContent.innerHTML =
+                  '<p class="text-center">Product details not found!</p>';
+              }
             })
-            .then(response => response.json())
-            .then(data => {
-                // Remove loading state
-                icon.classList.remove('bx-loader', 'bx-spin');
-                
-                if (data.success) {
-                    // Update icon based on whether item is in wishlist
-                    if (data.in_wishlist) {
-                        icon.className = 'bx bxs-heart'; // Filled heart
-                        showNotification('success', 'Product added to wishlist');
-                    } else {
-                        icon.className = 'bx bx-heart'; // Empty heart
-                        showNotification('success', 'Product removed from wishlist');
-                    }
-                    
-                    // Update wishlist counter in header if exists
-                    const wishlistCount = document.querySelector('.wishlist-count');
-                    if (wishlistCount) {
-                        wishlistCount.textContent = data.wishlist_count;
-                    }
-                } else {
-                    // If error, revert to original icon
-                    icon.className = 'bx bx-heart';
-                    
-                    // If login required, redirect to login page
-                    if (data.login_required) {
-                        window.location.href = '/login?redirect=' + encodeURIComponent(window.location.href);
-                        return;
-                    }
-                    
-                    // Show error message
-                    showNotification('error', data.message || 'Error updating wishlist');
-                }
-            })
-            .catch(error => {
-                // Remove loading state and restore original icon
-                icon.className = 'bx bx-heart';
-                
-                // Show error notification
-                showNotification('error', 'Failed to update wishlist. Please try again.');
-                console.error('Fetch error:', error);
+            .catch((error) => {
+              console.error("Error fetching product details:", error);
+              quickViewContent.innerHTML =
+                '<p class="text-center">Error loading product details!</p>';
             });
         });
-    });
-}
+      });
+    }
 
-// Helper function to show notifications
-function showNotification(type, message) {
-    const notification = document.createElement('div');
-    notification.className = 'notification ' + type;
-    notification.innerHTML = `
+    // Initialize quantity buttons and add-to-cart functionality
+    function initQuantityButtons() {
+      const minusBtn = document.querySelector(".minus-btn");
+      const plusBtn = document.querySelector(".plus-btn");
+      const quantityInput = document.getElementById("quantity");
+
+      if (minusBtn && plusBtn && quantityInput) {
+        minusBtn.addEventListener("click", function () {
+          let value = parseInt(quantityInput.value);
+          if (value > 1) {
+            value--;
+            quantityInput.value = value;
+          }
+        });
+
+        plusBtn.addEventListener("click", function () {
+          let value = parseInt(quantityInput.value);
+          value++;
+          quantityInput.value = value;
+        });
+      }
+
+      // Add to cart functionality
+      const addToCartBtn = document.querySelector(".add-to-cart-btn");
+      if (addToCartBtn) {
+        addToCartBtn.addEventListener("click", function () {
+          const productId = this.getAttribute("data-product-id");
+          const quantity = document.getElementById("quantity").value;
+
+          // Add to cart logic - you can implement AJAX call here
+          console.log(
+            `Adding product ${productId} to cart with quantity ${quantity}`
+          );
+          // Implement your add to cart functionality here
+        });
+      }
+    }
+
+    // Add this to your script.js file or inline in your home page
+    document.addEventListener("DOMContentLoaded", function () {
+      // Initialize wishlist buttons
+      initWishlistButtons();
+    });
+
+    function initWishlistButtons() {
+      // Select all wishlist buttons
+      const wishlistBtns = document.querySelectorAll(".wishlist-btn");
+
+      wishlistBtns.forEach((btn) => {
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+
+          const productId = this.getAttribute("data-product-id");
+          const size = this.getAttribute("data-size");
+          const icon = this.querySelector("i");
+
+          // Show loading state
+          icon.className = "bx bx-loader bx-spin";
+
+          // Send AJAX request using Fetch API
+          fetch("/addtowishlist", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              productId: productId,
+              size: size,
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              // Remove loading state
+              icon.classList.remove("bx-loader", "bx-spin");
+
+              if (data.success) {
+                // Update icon based on whether item is in wishlist
+                if (data.in_wishlist) {
+                  icon.className = "bx bxs-heart"; // Filled heart
+                  showNotification("success", "Product added to wishlist");
+                } else {
+                  icon.className = "bx bx-heart"; // Empty heart
+                  showNotification("success", "Product removed from wishlist");
+                }
+
+                // Update wishlist counter in header if exists
+                const wishlistCount = document.querySelector(".wishlist-count");
+                if (wishlistCount) {
+                  wishlistCount.textContent = data.wishlist_count;
+                }
+              } else {
+                // If error, revert to original icon
+                icon.className = "bx bx-heart";
+
+                // If login required, redirect to login page
+                if (data.login_required) {
+                  window.location.href =
+                    "/login?redirect=" +
+                    encodeURIComponent(window.location.href);
+                  return;
+                }
+
+                // Show error message
+                showNotification(
+                  "error",
+                  data.message || "Error updating wishlist"
+                );
+              }
+            })
+            .catch((error) => {
+              // Remove loading state and restore original icon
+              icon.className = "bx bx-heart";
+
+              // Show error notification
+              showNotification(
+                "error",
+                "Failed to update wishlist. Please try again."
+              );
+              console.error("Fetch error:", error);
+            });
+        });
+      });
+    }
+
+    // Helper function to show notifications
+    function showNotification(type, message) {
+      const notification = document.createElement("div");
+      notification.className = "notification " + type;
+      notification.innerHTML = `
         <span>${message}</span>
         <button class="close-btn">&times;</button>
     `;
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(function() {
-        notification.style.opacity = '0';
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
-    
-    notification.querySelector('.close-btn').addEventListener('click', function() {
-        notification.style.opacity = '0';
-        setTimeout(() => notification.remove(), 300);
-    });
-}
-    </script>
 
-        <%- include('../partials/user/footer') %>
+      document.body.appendChild(notification);
+
+      setTimeout(function () {
+        notification.style.opacity = "0";
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+
+      notification
+        .querySelector(".close-btn")
+        .addEventListener("click", function () {
+          notification.style.opacity = "0";
+          setTimeout(() => notification.remove(), 300);
+        });
+    }
+  </script>
+
+  <%- include('../partials/user/footer') %>
+</body>

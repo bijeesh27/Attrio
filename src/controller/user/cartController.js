@@ -1,20 +1,84 @@
 const Cart = require("../../models/cartSchema");
 const Product = require("../../models/productSchema");
 
+const Offer = require('../../models/offerSchema'); // Adjust path
 const loadCart = async (req, res) => {
   try {
     console.log("entering the cart controller rendering the cart page");
+
     const cart = await Cart.findOne({ userId: req.session.userId }).populate({
       path: "item.productId",
-      select: "name image stock",
+      select: "name image stock price category", // Ensure category is populated
     });
+
+    if (!cart || !cart.item.length) {
+      return res.render("cart", { cart: null });
+    }
+
+    const currentDate = new Date();
+    const offers = await Offer.find({
+      status: true,
+      startDate: { $lte: currentDate },
+      endDate: { $gte: currentDate },
+    });
+
+    // Update each item's total and offer price
+    for (let item of cart.item) {
+      const product = item.productId;
+      let applicableOffer = null;
+
+      // Find applicable offer with more robust checking
+      applicableOffer = offers.find(offer => {
+        // Check for product-specific offer
+        const isProductOffer = 
+          offer.offerType === 'product' && 
+          offer.productId &&
+          offer.productId.length > 0 &&
+          product &&
+          product._id &&
+          offer.productId.some(id => 
+            id && id.toString() === product._id.toString()
+          );
+
+        // Check for category offer
+        const isCategoryOffer = 
+          offer.offerType === 'category' && 
+          offer.categoryId &&
+          offer.categoryId.length > 0 &&
+          product &&
+          product.category &&
+          offer.categoryId.some(id => 
+            id && id.toString() === product.category.toString()
+          );
+
+        return isProductOffer || isCategoryOffer;
+      });
+
+      // Calculate pricing
+      if (applicableOffer) {
+        item.offer_id = applicableOffer._id;
+        const discountAmount = (item.price * applicableOffer.discount) / 100;
+        item.offerPrice = item.price - discountAmount;
+        item.total = item.offerPrice * item.quantity;
+      } else {
+        item.offerPrice = null;
+        item.total = item.price * item.quantity;
+      }
+    }
+
+    // Recalculate cart total
+    cart.cartTotal = cart.item.reduce((sum, item) => sum + item.total, 0);
+
+    // Save the updated cart
+    await cart.save();
+
     console.log("Cart:", cart);
     return res.render("cart", { cart });
   } catch (error) {
-    console.log(error);
+    console.error("Error in loadCart:", error);
+    return res.status(500).send("Server Error");
   }
 };
-
 const addToCart = async (req, res) => {
   try {
     const userId = req.session.userId;

@@ -1,0 +1,86 @@
+<%- include('../partials/admin/header') %>
+
+<div class="main-content">
+    <div class="page-content">
+        <div class="container-fluid">
+            <!-- Page Title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                        <h4 class="mb-sm-0 font-size-18"><%= pageTitle %></h4>
+                        <div class="page-title-right">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item"><a href="/admin/dashboard">Dashboard</a></li>
+                                <li class="breadcrumb-item active"><%= pageTitle %></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title mb-4">Filters</h4>
+                            <form id="filterForm" method="GET" action="<%= filterAction %>">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label for="dateRange" class="form-label">Date Range</label>
+                                            <select class="form-select" id="dateRange" name="range" onchange="toggleCustomDate(this)">
+                                                <option value="custom" <%= filter.range === 'custom' ? 'selected' : '' %>>Custom</option>
+                                                <option value="day" <%= filter.range === 'day' ? 'selected' : '' %>>1 Day</option>
+                                                <option value="week" <%= filter.range === 'week' ? 'selected' : '' %>>1 Week</option>
+                                                <option value="month" <%= filter.range === 'month' ? 'selected' : '' %>>1 Month</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 custom-date" style="display: '<%= filter.range === 'custom' ? 'block' : 'none' %>';">
+                                        <div class="mb-3">
+                                            <label for="startDate" class="form-label">Start Date</label>
+                                            <input type="date" class="form-control" id="startDate" name="startDate" value="<%= filter.startDate || '' %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 custom-date" style="display: '<%= filter.range === 'custom' ? 'block' : 'none' %>';">
+                                        <div class="mb-3">
+                                            <label for="endDate" class="form-label">End Date</label>
+                                            <input type="date" class="form-control" id="endDate" name="endDate" value="<%= filter.endDate || '' %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mt-4">
+                                            <button type="submit" class="btn btn-primary">Apply Filters</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Content -->
+            <%- body %>
+
+            <!-- Download Buttons -->
+            <div class="row mt-3">
+                <div class="col-lg-12 text-end">
+                    <a href="<%= downloadUrl %>?format=pdf" class="btn btn-success me-2">Download PDF</a>
+                    <a href="<%= downloadUrl %>?format=excel" class="btn btn-info">Download Excel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%- include('../partials/admin/footer') %>
+</div>
+
+<script>
+    function toggleCustomDate(select) {
+        const customFields = document.querySelectorAll('.custom-date');
+        customFields.forEach(field => {
+            field.style.display = select.value === 'custom' ? 'block' : 'none';
+        });
+    }
+</script>

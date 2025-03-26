@@ -18,7 +18,7 @@
     transform: scale(1.5); /* Adjust the scale factor as needed */
   }
 
-.notification {
+  .notification {
     position: fixed;
     top: 20px;
     right: 20px;
@@ -31,69 +31,101 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     animation: fadeIn 0.3s ease;
     transition: opacity 0.3s ease;
-}
+  }
 
-.notification.success {
-    background-color: #4CAF50;
+  .notification.success {
+    background-color: #4caf50;
     color: white;
-}
+  }
 
-.notification.error {
-    background-color: #F44336;
+  .notification.error {
+    background-color: #f44336;
     color: white;
-}
+  }
 
-.notification .close-btn {
+  .notification .close-btn {
     background: none;
     border: none;
     color: white;
     font-size: 20px;
     cursor: pointer;
     margin-left: 10px;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .wishlist-btn button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    padding: 5px;
+    transition: all 0.3s ease;
+  }
+
+  .wishlist-btn i {
+    font-size: 24px;
+    transition: all 0.3s ease;
+  }
+
+  .wishlist-btn button:hover i {
+    transform: scale(1.2);
+  }
+
+  .tooltip-label {
+    position: absolute;
+    background: #f53f85;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .wishlist-btn button:hover .tooltip-label {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .discount-badge {
+  background-color: #ff6b6b;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-left: 10px;
+  font-size: 0.8em;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+.offer-details {
+  margin-top: 15px;
+  background-color: #f7f7f7;
+  padding: 10px;
+  border-radius: 5px;
 }
-.wishlist-btn button {
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        position: relative;
-        padding: 5px;
-        transition: all 0.3s ease;
-    }
-    
-    .wishlist-btn i {
-        font-size: 24px;
-        transition: all 0.3s ease;
-    }
-    
-    .wishlist-btn button:hover i {
-        transform: scale(1.2);
-    }
-    
-    .tooltip-label {
-        position: absolute;
-        background: #f53f85;
-        color: white;
-        padding: 5px 10px;
-        border-radius: 4px;
-        font-size: 12px;
-        bottom: -30px;
-        left: 50%;
-        transform: translateX(-50%);
-        white-space: nowrap;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.3s ease;
-    }
-    
-    .wishlist-btn button:hover .tooltip-label {
-        opacity: 1;
-        visibility: visible;
-    }
+
+.offer-details h4 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.offer-details ul {
+  list-style-type: disc;
+  padding-left: 20px;
+}
 </style>
 <!-- Start Search Overlay -->
 <div class="search-overlay">
@@ -200,9 +232,29 @@
           <h3><%= product.name %></h3>
 
           <div class="price">
-            <span class="new-price">Rs.<%= product.price %></span>
-            <span class="old-price">Rs.3000</span>
+            <% if (product.maxDiscount > 0) { %>
+              <span class="old-price">Rs.<%= product.originalPrice.toFixed(2) %></span>
+              <span class="new-price">Rs.<%= product.discountedPrice.toFixed(2) %></span>
+              <span class="discount-badge"><%= product.maxDiscount %>% OFF</span>
+            <% } else { %>
+              <span class="new-price">Rs.<%= product.price %></span>
+            <% } %>
           </div>
+        
+          <% if (product.applicableOffers && product.applicableOffers.length > 0) { %>
+            <div class="offer-details">
+              <h4>Active Offers:</h4>
+              <ul>
+                <% product.applicableOffers.forEach(offer => { %>
+                  <li>
+                    <%= offer.offerName %> - 
+                    <%= offer.discount %>% off 
+                    (Valid till <%= offer.endDate.toLocaleDateString() %>)
+                  </li>
+                <% }); %>
+              </ul>
+            </div>
+          <% } %>
 
           <div class="products-review">
             <div class="rating">
@@ -246,9 +298,6 @@
               data-bs-target="#productsShippingModal"
               ><i class="bx bxs-truck"></i> Shipping</a
             >
-            <a href="/contact"
-              ><i class="bx bx-envelope"></i> Ask about this products</a
-            >
           </div>
 
           <div class="products-add-to-cart">
@@ -265,26 +314,19 @@
 
           <div class="wishlist-btn" data-product-id="<%= product._id %>">
             <button>
-                <% if (wishlistProduct && wishlistProduct.length > 0) { %>
-                    <%
-                    let isInWishlist = false;
-                    wishlistProduct.forEach((item) => {
-                        if (item.toString() === product._id.toString()) {
-                            isInWishlist = true;
-                        }
-                    });
-                    
-                    if (isInWishlist) { %>
-                        <i class='bx bxs-heart' style="color: #f53f85;"></i>
-                    <% } else { %>
-                        <i class='bx bx-heart' style="color: #f53f85;"></i>
-                    <% } %>
-                <% } else { %>
-                    <i class='bx bx-heart' style="color: #f53f85;"></i>
-                <% } %>
-                <span class="tooltip-label">Add to Wishlist</span>
+              <% if (wishlistProduct && wishlistProduct.length > 0) { %> <% let
+              isInWishlist = false; wishlistProduct.forEach((item) => { if
+              (item.toString() === product._id.toString()) { isInWishlist =
+              true; } }); if (isInWishlist) { %>
+              <i class="bx bxs-heart" style="color: #f53f85"></i>
+              <% } else { %>
+              <i class="bx bx-heart" style="color: #f53f85"></i>
+              <% } %> <% } else { %>
+              <i class="bx bx-heart" style="color: #f53f85"></i>
+              <% } %>
+              <span class="tooltip-label">Add to Wishlist</span>
             </button>
-        </div>
+          </div>
           <div class="buy-checkbox-btn">
             <div class="item">
               <input class="inp-cbx" id="cbx" type="checkbox" />
@@ -298,9 +340,9 @@
               </label>
             </div>
 
-            <!-- <div class="item">
+             <div class="item">
               <a href="#" class="default-btn">Buy it now!</a>
-            </div> -->
+            </div> 
           </div>
 
           <div class="products-details-accordion">
@@ -410,176 +452,6 @@
 </section>
 <!-- End Product Details Area -->
 
-<!-- Start Facility Area -->
-<section class="facility-area pb-70">
-  <div class="container">
-    <div class="facility-slides owl-carousel owl-theme">
-      <div class="single-facility-box">
-        <div class="icon">
-          <i class="flaticon-tracking"></i>
-        </div>
-        <h3>Free Shipping Worldwide</h3>
-      </div>
-
-      <div class="single-facility-box">
-        <div class="icon">
-          <i class="flaticon-return"></i>
-        </div>
-        <h3>Easy Return Policy</h3>
-      </div>
-
-      <div class="single-facility-box">
-        <div class="icon">
-          <i class="flaticon-shuffle"></i>
-        </div>
-        <h3>7 Day Exchange Policy</h3>
-      </div>
-
-      <div class="single-facility-box">
-        <div class="icon">
-          <i class="flaticon-sale"></i>
-        </div>
-        <h3>Weekend Discount Coupon</h3>
-      </div>
-
-      <div class="single-facility-box">
-        <div class="icon">
-          <i class="flaticon-credit-card"></i>
-        </div>
-        <h3>Secure Payment Methods</h3>
-      </div>
-
-      <div class="single-facility-box">
-        <div class="icon">
-          <i class="flaticon-location"></i>
-        </div>
-        <h3>Track Your Package</h3>
-      </div>
-
-      <div class="single-facility-box">
-        <div class="icon">
-          <i class="flaticon-customer-service"></i>
-        </div>
-        <h3>24/7 Customer Support</h3>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- End Facility Area -->
-
-<!-- Start Instagram Area -->
-<div class="instagram-area">
-  <div class="container-fluid">
-    <div class="instagram-title">
-      <a href="#" target="_blank"
-        ><i class="bx bxl-instagram"></i> Follow us on @xton</a
-      >
-    </div>
-
-    <div class="instagram-slides owl-carousel owl-theme">
-      <div class="single-instagram-post">
-        <img src="/user/assets/img/instagram/img1.jpg" alt="image" />
-        <i class="bx bxl-instagram"></i>
-        <a
-          href="https://www.instagram.com/"
-          target="_blank"
-          class="link-btn"
-        ></a>
-      </div>
-
-      <div class="single-instagram-post">
-        <img src="/user/assets/img/instagram/img2.jpg" alt="image" />
-        <i class="bx bxl-instagram"></i>
-        <a
-          href="https://www.instagram.com/"
-          target="_blank"
-          class="link-btn"
-        ></a>
-      </div>
-
-      <div class="single-instagram-post">
-        <img src="/user/assets/img/instagram/img3.jpg" alt="image" />
-        <i class="bx bxl-instagram"></i>
-        <a
-          href="https://www.instagram.com/"
-          target="_blank"
-          class="link-btn"
-        ></a>
-      </div>
-
-      <div class="single-instagram-post">
-        <img src="/user/assets/img/instagram/img4.jpg" alt="image" />
-        <i class="bx bxl-instagram"></i>
-        <a
-          href="https://www.instagram.com/"
-          target="_blank"
-          class="link-btn"
-        ></a>
-      </div>
-
-      <div class="single-instagram-post">
-        <img src="/user/assets/img/instagram/img10.jpg" alt="image" />
-        <i class="bx bxl-instagram"></i>
-        <a
-          href="https://www.instagram.com/"
-          target="_blank"
-          class="link-btn"
-        ></a>
-      </div>
-
-      <div class="single-instagram-post">
-        <img src="/user/assets/img/instagram/img6.jpg" alt="image" />
-        <i class="bx bxl-instagram"></i>
-        <a
-          href="https://www.instagram.com/"
-          target="_blank"
-          class="link-btn"
-        ></a>
-      </div>
-
-      <div class="single-instagram-post">
-        <img src="/user/assets/img/instagram/img7.jpg" alt="image" />
-        <i class="bx bxl-instagram"></i>
-        <a
-          href="https://www.instagram.com/"
-          target="_blank"
-          class="link-btn"
-        ></a>
-      </div>
-
-      <div class="single-instagram-post">
-        <img src="/user/assets/img/instagram/img8.jpg" alt="image" />
-        <i class="bx bxl-instagram"></i>
-        <a
-          href="https://www.instagram.com/"
-          target="_blank"
-          class="link-btn"
-        ></a>
-      </div>
-
-      <div class="single-instagram-post">
-        <img src="/user/assets/img/instagram/img9.jpg" alt="image" />
-        <i class="bx bxl-instagram"></i>
-        <a
-          href="https://www.instagram.com/"
-          target="_blank"
-          class="link-btn"
-        ></a>
-      </div>
-
-      <div class="single-instagram-post">
-        <img src="/user/assets/img/instagram/img5.jpg" alt="image" />
-        <i class="bx bxl-instagram"></i>
-        <a
-          href="https://www.instagram.com/"
-          target="_blank"
-          class="link-btn"
-        ></a>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- End Instagram Area -->
 <!-- Start Search Overlay -->
 <div class="search-overlay">
   <div class="d-table">
@@ -608,467 +480,6 @@
   </div>
 </div>
 <!-- End Search Overlay -->
-<!-- Start Sidebar Modal -->
-<div
-  class="modal right fade sidebarModal"
-  id="sidebarModal"
-  tabindex="-1"
-  role="dialog"
->
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <button
-        type="button"
-        class="close"
-        data-bs-dismiss="modal"
-        aria-label="Close"
-      >
-        <span aria-hidden="true"><i class="bx bx-x"></i></span>
-      </button>
-
-      <div class="modal-body">
-        <div class="sidebar-about-content">
-          <h3>About The Store</h3>
-
-          <div class="about-the-store">
-            <p>
-              One of the most popular on the web is shopping. Lorem ipsum dolor
-              sit amet, consectetur adipiscing elit.
-            </p>
-
-            <ul class="sidebar-contact-info">
-              <li>
-                <i class="bx bx-map"></i>
-                <a href="#" target="_blank">Wonder Street, USA, New York</a>
-              </li>
-              <li>
-                <i class="bx bx-phone-call"></i>
-                <a href="tel:+01321654214">+01 321 654 214</a>
-              </li>
-              <li>
-                <i class="bx bx-envelope"></i>
-                <a
-                  href="https://templates.hibootstrap.com/cdn-cgi/l/email-protection#d2bab7bebebd92aaa6bdbcfcb1bdbf"
-                  ><span
-                    class="__cf_email__"
-                    data-cfemail="670f020b0b08271f1308094904080a"
-                    >[email&#160;protected]</span
-                  ></a
-                >
-              </li>
-            </ul>
-          </div>
-
-          <ul class="social-link">
-            <li>
-              <a
-                href="https://www.facebook.com/"
-                class="d-block"
-                target="_blank"
-                ><i class="bx bxl-facebook"></i
-              ></a>
-            </li>
-            <li>
-              <a
-                href="https://twitter.com/login"
-                class="d-block"
-                target="_blank"
-                ><i class="bx bxl-twitter"></i
-              ></a>
-            </li>
-            <li>
-              <a
-                href="https://www.instagram.com/"
-                class="d-block"
-                target="_blank"
-                ><i class="bx bxl-instagram"></i
-              ></a>
-            </li>
-            <li>
-              <a
-                href="https://www.linkedin.com/login"
-                class="d-block"
-                target="_blank"
-                ><i class="bx bxl-linkedin"></i
-              ></a>
-            </li>
-            <li>
-              <a
-                href="https://www.pinterest.com/"
-                class="d-block"
-                target="_blank"
-                ><i class="bx bxl-pinterest-alt"></i
-              ></a>
-            </li>
-          </ul>
-        </div>
-
-        <div class="sidebar-new-in-store">
-          <h3>New In Store</h3>
-
-          <ul class="products-list">
-            <li>
-              <a href="products-one-row-2.html"
-                ><img src="/user/assets/img/products/img1.jpg" alt="image"
-              /></a>
-            </li>
-
-            <li>
-              <a href="products-one-row-2.html"
-                ><img src="/user/assets/img/products/img2.jpg" alt="image"
-              /></a>
-            </li>
-
-            <li>
-              <a href="products-one-row-2.html"
-                ><img src="/user/assets/img/products/img3.jpg" alt="image"
-              /></a>
-            </li>
-
-            <li>
-              <a href="products-one-row-2.html"
-                ><img src="/user/assets/img/products/img4.jpg" alt="image"
-              /></a>
-            </li>
-          </ul>
-
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </p>
-          <a
-            href="products-left-sidebar-with-categories-3.html"
-            class="shop-now-btn"
-            >Shop Now</a
-          >
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- End Sidebar Modal -->
-
-<!-- Start QuickView Modal Area -->
-<div
-  class="modal fade productsQuickView"
-  id="productsQuickView"
-  tabindex="-1"
-  role="dialog"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <button
-        type="button"
-        class="close"
-        data-bs-dismiss="modal"
-        aria-label="Close"
-      >
-        <span aria-hidden="true"><i class="bx bx-x"></i></span>
-      </button>
-
-      <div class="row align-items-center justify-content-center">
-        <div class="col-lg-6 col-md-6">
-          <div class="products-image">
-            <img src="/user/assets/img/quick-view-img.jpg" alt="image" />
-          </div>
-        </div>
-
-        <div class="col-lg-6 col-md-6">
-          <div class="products-content">
-            <h3><a href="#">Long Sleeve Leopard T-Shirt</a></h3>
-
-            <div class="price">
-              <span class="old-price">$210.00</span>
-              <span class="new-price">$200.00</span>
-            </div>
-
-            <div class="products-review">
-              <div class="rating">
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-              </div>
-              <a href="#" class="rating-count">3 reviews</a>
-            </div>
-
-            <ul class="products-info">
-              <li><span>Vendor:</span> <a href="#">Lereve</a></li>
-              <li>
-                <span>Availability:</span> <a href="#">In stock (7 items)</a>
-              </li>
-              <li><span>Products Type:</span> <a href="#">T-Shirt</a></li>
-            </ul>
-
-            <div class="products-color-switch">
-              <h4>Color:</h4>
-
-              <ul>
-                <li>
-                  <a
-                    href="#"
-                    data-bs-toggle="tooltip"
-                    data-placement="top"
-                    title="Black"
-                    class="color-black"
-                  ></a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    data-bs-toggle="tooltip"
-                    data-placement="top"
-                    title="White"
-                    class="color-white"
-                  ></a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    data-bs-toggle="tooltip"
-                    data-placement="top"
-                    title="Green"
-                    class="color-green"
-                  ></a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    data-bs-toggle="tooltip"
-                    data-placement="top"
-                    title="Yellow Green"
-                    class="color-yellowgreen"
-                  ></a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    data-bs-toggle="tooltip"
-                    data-placement="top"
-                    title="Teal"
-                    class="color-teal"
-                  ></a>
-                </li>
-              </ul>
-            </div>
-
-            <div class="products-size-wrapper">
-              <h4>Size:</h4>
-
-              <ul>
-                <li><a href="#">XS</a></li>
-                <li class="active"><a href="#">S</a></li>
-                <li><a href="#">M</a></li>
-                <li><a href="#">XL</a></li>
-                <li><a href="#">XXL</a></li>
-              </ul>
-            </div>
-
-            <div class="products-add-to-cart">
-              <div class="input-counter">
-                <span class="minus-btn"><i class="bx bx-minus"></i></span>
-                <input type="text" value="1" />
-                <span class="plus-btn"><i class="bx bx-plus"></i></span>
-              </div>
-
-              <button type="submit" class="default-btn">Add to Cart</button>
-            </div>
-
-            <a href="#" class="view-full-info">View Full Info</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- End QuickView Modal Area -->
-
-<!-- Start Shopping Cart Modal -->
-<div
-  class="modal right fade shoppingCartModal"
-  id="shoppingCartModal"
-  tabindex="-1"
-  role="dialog"
->
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <button
-        type="button"
-        class="close"
-        data-bs-dismiss="modal"
-        aria-label="Close"
-      >
-        <span aria-hidden="true"><i class="bx bx-x"></i></span>
-      </button>
-
-      <div class="modal-body">
-        <h3>My Cart (3)</h3>
-
-        <div class="products-cart-content">
-          <div class="products-cart">
-            <div class="products-image">
-              <a href="#"
-                ><img src="/user/assets/img/products/img1.jpg" alt="image"
-              /></a>
-            </div>
-
-            <div class="products-content">
-              <h3><a href="#">Long Sleeve Leopard T-Shirt</a></h3>
-              <span>Blue / XS</span>
-              <div class="products-price">
-                <span>1</span>
-                <span>x</span>
-                <span class="price">$250.00</span>
-              </div>
-              <a href="#" class="remove-btn"><i class="bx bx-trash"></i></a>
-            </div>
-          </div>
-
-          <div class="products-cart">
-            <div class="products-image">
-              <a href="#"
-                ><img src="/user/assets/img/products/img2.jpg" alt="image"
-              /></a>
-            </div>
-
-            <div class="products-content">
-              <h3><a href="#">Causal V-Neck Soft Raglan</a></h3>
-              <span>Blue / XS</span>
-              <div class="products-price">
-                <span>1</span>
-                <span>x</span>
-                <span class="price">$200.00</span>
-              </div>
-              <a href="#" class="remove-btn"><i class="bx bx-trash"></i></a>
-            </div>
-          </div>
-
-          <div class="products-cart">
-            <div class="products-image">
-              <a href="#"
-                ><img src="/user/assets/img/products/img3.jpg" alt="image"
-              /></a>
-            </div>
-
-            <div class="products-content">
-              <h3><a href="#">Hanes Men's Pullover</a></h3>
-              <span>Blue / XS</span>
-              <div class="products-price">
-                <span>1</span>
-                <span>x</span>
-                <span class="price">$200.00</span>
-              </div>
-              <a href="#" class="remove-btn"><i class="bx bx-trash"></i></a>
-            </div>
-          </div>
-        </div>
-
-        <div class="products-cart-subtotal">
-          <span>Subtotal</span>
-
-          <span class="subtotal">$524.00</span>
-        </div>
-
-        <div class="products-cart-btn">
-          <a href="#" class="default-btn">Proceed to Checkout</a>
-          <a href="#" class="optional-btn">View Shopping Cart</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- End Shopping Cart Modal -->
-
-<!-- Start Wishlist Modal -->
-<div
-  class="modal right fade shoppingWishlistModal"
-  id="shoppingWishlistModal"
-  tabindex="-1"
-  role="dialog"
->
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <button
-        type="button"
-        class="close"
-        data-bs-dismiss="modal"
-        aria-label="Close"
-      >
-        <span aria-hidden="true"><i class="bx bx-x"></i></span>
-      </button>
-
-      <div class="modal-body">
-        <h3>My Wish List (3)</h3>
-
-        <div class="products-cart-content">
-          <div class="products-cart">
-            <div class="products-image">
-              <a href="#"
-                ><img src="/user/assets/img/products/img1.jpg" alt="image"
-              /></a>
-            </div>
-
-            <div class="products-content">
-              <h3><a href="#">Long Sleeve Leopard T-Shirt</a></h3>
-              <span>Blue / XS</span>
-              <div class="products-price">
-                <span>1</span>
-                <span>x</span>
-                <span class="price">$250.00</span>
-              </div>
-              <a href="#" class="remove-btn"><i class="bx bx-trash"></i></a>
-            </div>
-          </div>
-
-          <div class="products-cart">
-            <div class="products-image">
-              <a href="#"
-                ><img src="/user/assets/img/products/img2.jpg" alt="image"
-              /></a>
-            </div>
-
-            <div class="products-content">
-              <h3><a href="#">Causal V-Neck Soft Raglan</a></h3>
-              <span>Blue / XS</span>
-              <div class="products-price">
-                <span>1</span>
-                <span>x</span>
-                <span class="price">$200.00</span>
-              </div>
-              <a href="#" class="remove-btn"><i class="bx bx-trash"></i></a>
-            </div>
-          </div>
-
-          <div class="products-cart">
-            <div class="products-image">
-              <a href="#"
-                ><img src="/user/assets/img/products/img3.jpg" alt="image"
-              /></a>
-            </div>
-
-            <div class="products-content">
-              <h3><a href="#">Hanes Men's Pullover</a></h3>
-              <span>Blue / XS</span>
-              <div class="products-price">
-                <span>1</span>
-                <span>x</span>
-                <span class="price">$200.00</span>
-              </div>
-              <a href="#" class="remove-btn"><i class="bx bx-trash"></i></a>
-            </div>
-          </div>
-        </div>
-
-        <div class="products-cart-btn">
-          <a href="#" class="optional-btn">View Shopping Cart</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- End Wishlist Modal -->
 
 <!-- Start Size Guide Modal Area -->
 <div
@@ -1078,7 +489,7 @@
   role="dialog"
   aria-hidden="true"
 >
-  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-dialog-entered" role="document">
     <div class="modal-content">
       <button
         type="button"
@@ -1275,7 +686,7 @@
     </div>
   </div>
 </div>
-<div id="productData" data-product='<%= JSON.stringify(product) %>'></div>
+<div id="productData" data-product="<%= JSON.stringify(product) %>"></div>
 <!-- End Shipping Modal Area -->
 
 <!-- Start Products Filter Modal Area -->
@@ -1349,332 +760,353 @@
 </div>
 <!-- End Products Filter Modal Area -->
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-  // First, remove any existing event listeners (if possible)
-  const minusBtn = document.querySelector(".minus-btn");
-  const plusBtn = document.querySelector(".plus-btn");
-  const quantityInput = document.getElementById("quantity");
+  document.addEventListener("DOMContentLoaded", function () {
+    // First, remove any existing event listeners (if possible)
+    const minusBtn = document.querySelector(".minus-btn");
+    const plusBtn = document.querySelector(".plus-btn");
+    const quantityInput = document.getElementById("quantity");
 
-  // Clone and replace the elements to remove any existing event listeners
-  if (minusBtn && plusBtn && quantityInput) {
-    const minusBtnClone = minusBtn.cloneNode(true);
-    const plusBtnClone = plusBtn.cloneNode(true);
-    const quantityInputClone = quantityInput.cloneNode(true);
+    // Clone and replace the elements to remove any existing event listeners
+    if (minusBtn && plusBtn && quantityInput) {
+      const minusBtnClone = minusBtn.cloneNode(true);
+      const plusBtnClone = plusBtn.cloneNode(true);
+      const quantityInputClone = quantityInput.cloneNode(true);
 
-    minusBtn.parentNode.replaceChild(minusBtnClone, minusBtn);
-    plusBtn.parentNode.replaceChild(plusBtnClone, plusBtn);
-    quantityInput.parentNode.replaceChild(quantityInputClone, quantityInput);
+      minusBtn.parentNode.replaceChild(minusBtnClone, minusBtn);
+      plusBtn.parentNode.replaceChild(plusBtnClone, plusBtn);
+      quantityInput.parentNode.replaceChild(quantityInputClone, quantityInput);
 
-    // Get the new references
-    const newMinusBtn = document.querySelector(".minus-btn");
-    const newPlusBtn = document.querySelector(".plus-btn");
-    const newQuantityInput = document.getElementById("quantity");
+      // Get the new references
+      const newMinusBtn = document.querySelector(".minus-btn");
+      const newPlusBtn = document.querySelector(".plus-btn");
+      const newQuantityInput = document.getElementById("quantity");
 
-    // Direct manipulation approach instead of event listeners
-    newMinusBtn.onclick = function () {
-      let value = parseInt(newQuantityInput.value);
-      if (value > 1) {
-        newQuantityInput.value = value - 1;
-      }
-      return false; // Prevent default and bubbling
-    };
+      // Direct manipulation approach instead of event listeners
+      newMinusBtn.onclick = function () {
+        let value = parseInt(newQuantityInput.value);
+        if (value > 1) {
+          newQuantityInput.value = value - 1;
+        }
+        return false; // Prevent default and bubbling
+      };
 
-    newPlusBtn.onclick = function () {
-      let value = parseInt(newQuantityInput.value);
-      newQuantityInput.value = value + 1;
-      return false; // Prevent default and bubbling
-    };
+      newPlusBtn.onclick = function () {
+        let value = parseInt(newQuantityInput.value);
+        newQuantityInput.value = value + 1;
+        return false; // Prevent default and bubbling
+      };
 
-    // Ensure input only accepts valid numbers
-    newQuantityInput.onchange = function () {
-      let value = parseInt(this.value);
-      if (isNaN(value) || value < 1) {
-        this.value = 1;
-      }
-    };
-  }
-
-  // Zoom functionality
-  const zoomContainers = document.querySelectorAll(".zoom-container");
-  zoomContainers.forEach((container) => {
-    const img = container.querySelector(".zoom-image");
-
-    container.addEventListener("mousemove", (e) => {
-      const { left, top, width, height } = container.getBoundingClientRect();
-      const x = ((e.pageX - left) / width) * 100;
-      const y = ((e.pageY - top) / height) * 100;
-
-      img.style.transformOrigin = `${x}% ${y}%`;
-      img.style.transform = "scale(2)";
-    });
-
-    container.addEventListener("mouseleave", () => {
-      img.style.transformOrigin = "center center";
-      img.style.transform = "scale(1)";
-    });
-  });
-
-  // Get the product stock data from a data attribute or the global window object
-  // This assumes you've set the product stock data in your EJS template
-  
-  let productStock = [];
-  
-  try {
-    // Option 1: Try to get from a data attribute if you set it in your EJS template
-    const productDataEl = document.getElementById('productData');
-    if (productDataEl && productDataEl.dataset.product) {
-      const productData = JSON.parse(productDataEl.dataset.product);
-      productStock = productData.stock || [];
-    } 
-    // Option 2: If you set it as a global variable in your EJS template
-    else if (typeof window.productData !== 'undefined' && window.productData.stock) {
-      productStock = window.productData.stock;
+      // Ensure input only accepts valid numbers
+      newQuantityInput.onchange = function () {
+        let value = parseInt(this.value);
+        if (isNaN(value) || value < 1) {
+          this.value = 1;
+        }
+      };
     }
-  } catch (error) {
-    console.error("Error parsing product data:", error);
-    productStock = [];
-  }
 
-  // Function to get stock quantity for a specific size
-  function getStockForSize(size) {
-    const stockItem = productStock.find(item => item.size === size);
-    return stockItem ? stockItem.quantity : 0;
-  }
+    // Zoom functionality
+    const zoomContainers = document.querySelectorAll(".zoom-container");
+    zoomContainers.forEach((container) => {
+      const img = container.querySelector(".zoom-image");
 
-  // Size selection functionality
-  let selectedSize = null;
-  const sizeButtons = document.querySelectorAll(".products-size-wrapper ul li a");
-  const availabilityElement = document.querySelector(".products-info li a");
+      container.addEventListener("mousemove", (e) => {
+        const { left, top, width, height } = container.getBoundingClientRect();
+        const x = ((e.pageX - left) / width) * 100;
+        const y = ((e.pageY - top) / height) * 100;
 
-  sizeButtons.forEach((button) => {
-    button.addEventListener("click", function (e) {
-      e.preventDefault();
-
-      sizeButtons.forEach((btn) => {
-        btn.parentElement.classList.remove("active");
+        img.style.transformOrigin = `${x}% ${y}%`;
+        img.style.transform = "scale(2)";
       });
 
-      this.parentElement.classList.add("active");
-      selectedSize = this.getAttribute("data-size");
-      
-      // Update availability display based on selected size
-      updateAvailabilityDisplay(selectedSize);
+      container.addEventListener("mouseleave", () => {
+        img.style.transformOrigin = "center center";
+        img.style.transform = "scale(1)";
+      });
     });
-  });
 
-  // Function to update availability display
-  function updateAvailabilityDisplay(size) {
-    if (!size) {
-      availabilityElement.textContent = "Please select a size to see availability";
-      return;
+    // Get the product stock data from a data attribute or the global window object
+    // This assumes you've set the product stock data in your EJS template
+
+    let productStock = [];
+
+    try {
+      // Option 1: Try to get from a data attribute if you set it in your EJS template
+      const productDataEl = document.getElementById("productData");
+      if (productDataEl && productDataEl.dataset.product) {
+        const productData = JSON.parse(productDataEl.dataset.product);
+        productStock = productData.stock || [];
+      }
+      // Option 2: If you set it as a global variable in your EJS template
+      else if (
+        typeof window.productData !== "undefined" &&
+        window.productData.stock
+      ) {
+        productStock = window.productData.stock;
+      }
+    } catch (error) {
+      console.error("Error parsing product data:", error);
+      productStock = [];
     }
 
-    const stockForSize = getStockForSize(size);
-    if (stockForSize === 0) {
-      availabilityElement.textContent = "Out Of Stock for " + size;
-    } else {
-      availabilityElement.textContent = stockForSize + " items available for " + size;
+    // Function to get stock quantity for a specific size
+    function getStockForSize(size) {
+      const stockItem = productStock.find((item) => item.size === size);
+      return stockItem ? stockItem.quantity : 0;
     }
-  }
 
-  // Add to cart functionality
-  const addToCartBtn = document.getElementById("addToCartBtn");
+    // Size selection functionality
+    let selectedSize = null;
+    const sizeButtons = document.querySelectorAll(
+      ".products-size-wrapper ul li a"
+    );
+    const availabilityElement = document.querySelector(".products-info li a");
 
-  if (addToCartBtn) {
-    addToCartBtn.addEventListener("click", function () {
-      const pathParts = window.location.pathname.split("/");
-      const productId = pathParts[pathParts.length - 1];
-      const quantity = parseInt(document.getElementById("quantity").value);
+    sizeButtons.forEach((button) => {
+      button.addEventListener("click", function (e) {
+        e.preventDefault();
 
-      if (!selectedSize) {
-        Swal.fire({
-          title: "Size Not Selected",
-          text: "Please choose a size before adding the product to your cart.",
-          icon: "info",
-          showConfirmButton: false,
-          timer: 1500,
+        sizeButtons.forEach((btn) => {
+          btn.parentElement.classList.remove("active");
         });
+
+        this.parentElement.classList.add("active");
+        selectedSize = this.getAttribute("data-size");
+
+        // Update availability display based on selected size
+        updateAvailabilityDisplay(selectedSize);
+      });
+    });
+
+    // Function to update availability display
+    function updateAvailabilityDisplay(size) {
+      if (!size) {
+        availabilityElement.textContent =
+          "Please select a size to see availability";
         return;
       }
 
-      // Check if the selected size is in stock
-      const stockForSelectedSize = getStockForSize(selectedSize);
-      if (stockForSelectedSize === 0) {
-        Swal.fire({
-          title: "Out of Stock",
-          text: "Sorry, this product is currently out of stock in size " + selectedSize,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-        return;
+      const stockForSize = getStockForSize(size);
+      if (stockForSize === 0) {
+        availabilityElement.textContent = "Out Of Stock for " + size;
+      } else {
+        availabilityElement.textContent =
+          stockForSize + " items available for " + size;
       }
+    }
 
-      // Check if requested quantity exceeds available stock
-      if (quantity > stockForSelectedSize) {
-        Swal.fire({
-          title: "Insufficient Stock",
-          text: "Sorry, we only have " + stockForSelectedSize + " items available in size " + selectedSize,
-          icon: "warning",
-          confirmButtonText: "OK",
-        });
-        return;
-      }
+    // Add to cart functionality
+    const addToCartBtn = document.getElementById("addToCartBtn");
 
-      // Check if quantity exceeds max limit (5)
-      if (quantity > 5) {
-        Swal.fire({
-          title: "Maximum Quantity Exceeded",
-          text: "The maximum quantity is 5 items per product",
-          icon: "warning",
-          confirmButtonText: "OK",
-        });
-        return;
-      }
+    if (addToCartBtn) {
+      addToCartBtn.addEventListener("click", function () {
+        const pathParts = window.location.pathname.split("/");
+        const productId = pathParts[pathParts.length - 1];
+        const quantity = parseInt(document.getElementById("quantity").value);
 
-      fetch("/addtocart", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          productId: productId,
-          quantity: quantity,
-          size: selectedSize,
-        }),
-      })
-        .then((response) => {
-          if (response.ok) {
-            Swal.fire({
-              title: "Success!",
-              text: "Product added to cart successfully",
-              icon: "success",
-              showConfirmButton: true,
-              timer: 1500,
-            }).then(() => {
-             location.reload()
-            });
-          } else {
+        if (!selectedSize) {
+          Swal.fire({
+            title: "Size Not Selected",
+            text: "Please choose a size before adding the product to your cart.",
+            icon: "info",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          return;
+        }
+
+        // Check if the selected size is in stock
+        const stockForSelectedSize = getStockForSize(selectedSize);
+        if (stockForSelectedSize === 0) {
+          Swal.fire({
+            title: "Out of Stock",
+            text:
+              "Sorry, this product is currently out of stock in size " +
+              selectedSize,
+            icon: "error",
+            confirmButtonText: "OK",
+          });
+          return;
+        }
+
+        // Check if requested quantity exceeds available stock
+        if (quantity > stockForSelectedSize) {
+          Swal.fire({
+            title: "Insufficient Stock",
+            text:
+              "Sorry, we only have " +
+              stockForSelectedSize +
+              " items available in size " +
+              selectedSize,
+            icon: "warning",
+            confirmButtonText: "OK",
+          });
+          return;
+        }
+
+        // Check if quantity exceeds max limit (5)
+        if (quantity > 5) {
+          Swal.fire({
+            title: "Maximum Quantity Exceeded",
+            text: "The maximum quantity is 5 items per product",
+            icon: "warning",
+            confirmButtonText: "OK",
+          });
+          return;
+        }
+
+        fetch("/addtocart", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            productId: productId,
+            quantity: quantity,
+            size: selectedSize,
+          }),
+        })
+          .then((response) => {
+            if (response.ok) {
+              Swal.fire({
+                title: "Success!",
+                text: "Product added to cart successfully",
+                icon: "success",
+                showConfirmButton: true,
+                timer: 1500,
+              }).then(() => {
+                location.reload();
+              });
+            } else {
+              Swal.fire({
+                title: "Error",
+                text: "There was an error adding to cart",
+                icon: "error",
+                confirmButtonText: "OK",
+              });
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
             Swal.fire({
               title: "Error",
               text: "There was an error adding to cart",
               icon: "error",
               confirmButtonText: "OK",
             });
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          Swal.fire({
-            title: "Error",
-            text: "There was an error adding to cart",
-            icon: "error",
-            confirmButtonText: "OK",
           });
-        });
-    });
-  }
-});
-  
-// Add this to your script.js file or inline in your home page
-document.addEventListener('DOMContentLoaded', function() {
+      });
+    }
+  });
+
+  // Add this to your script.js file or inline in your home page
+  document.addEventListener("DOMContentLoaded", function () {
     // Initialize wishlist buttons
     initWishlistButtons();
-});
+  });
 
-function initWishlistButtons() {
+  function initWishlistButtons() {
     // Select all wishlist buttons
-    const wishlistBtns = document.querySelectorAll('.wishlist-btn');
-    
-    wishlistBtns.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            const productId = this.getAttribute('data-product-id');
-            const size = this.getAttribute('data-size');
-            const icon = this.querySelector('i');
-            
-            // Show loading state
-            icon.className = 'bx bx-loader bx-spin';
-            
-            // Send AJAX request using Fetch API
-            fetch('/addtowishlist', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    productId: productId,
-                    size: size
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Remove loading state
-                icon.classList.remove('bx-loader', 'bx-spin');
-                
-                if (data.success) {
-                    // Update icon based on whether item is in wishlist
-                    if (data.in_wishlist) {
-                        icon.className = 'bx bxs-heart'; // Filled heart
-                        showNotification('success', 'Product added to wishlist');
-                    } else {
-                        icon.className = 'bx bx-heart'; // Empty heart
-                        showNotification('success', 'Product removed from wishlist');
-                    }
-                    
-                    // Update wishlist counter in header if exists
-                    const wishlistCount = document.querySelector('.wishlist-count');
-                    if (wishlistCount) {
-                        wishlistCount.textContent = data.wishlist_count;
-                    }
-                } else {
-                    // If error, revert to original icon
-                    icon.className = 'bx bx-heart';
-                    
-                    // If login required, redirect to login page
-                    if (data.login_required) {
-                        window.location.href = '/login?redirect=' + encodeURIComponent(window.location.href);
-                        return;
-                    }
-                    
-                    // Show error message
-                    showNotification('error', data.message || 'Error updating wishlist');
-                }
-            })
-            .catch(error => {
-                // Remove loading state and restore original icon
-                icon.className = 'bx bx-heart';
-                
-                // Show error notification
-                showNotification('error', 'Failed to update wishlist. Please try again.');
-                console.error('Fetch error:', error);
-            });
-        });
-    });
-}
+    const wishlistBtns = document.querySelectorAll(".wishlist-btn");
 
-// Helper function to show notifications
-function showNotification(type, message) {
-    const notification = document.createElement('div');
-    notification.className = 'notification ' + type;
+    wishlistBtns.forEach((btn) => {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        const productId = this.getAttribute("data-product-id");
+        const size = this.getAttribute("data-size");
+        const icon = this.querySelector("i");
+
+        // Show loading state
+        icon.className = "bx bx-loader bx-spin";
+
+        // Send AJAX request using Fetch API
+        fetch("/addtowishlist", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            productId: productId,
+            size: size,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // Remove loading state
+            icon.classList.remove("bx-loader", "bx-spin");
+
+            if (data.success) {
+              // Update icon based on whether item is in wishlist
+              if (data.in_wishlist) {
+                icon.className = "bx bxs-heart"; // Filled heart
+                showNotification("success", "Product added to wishlist");
+              } else {
+                icon.className = "bx bx-heart"; // Empty heart
+                showNotification("success", "Product removed from wishlist");
+              }
+
+              // Update wishlist counter in header if exists
+              const wishlistCount = document.querySelector(".wishlist-count");
+              if (wishlistCount) {
+                wishlistCount.textContent = data.wishlist_count;
+              }
+            } else {
+              // If error, revert to original icon
+              icon.className = "bx bx-heart";
+
+              // If login required, redirect to login page
+              if (data.login_required) {
+                window.location.href =
+                  "/login?redirect=" + encodeURIComponent(window.location.href);
+                return;
+              }
+
+              // Show error message
+              showNotification(
+                "error",
+                data.message || "Error updating wishlist"
+              );
+            }
+          })
+          .catch((error) => {
+            // Remove loading state and restore original icon
+            icon.className = "bx bx-heart";
+
+            // Show error notification
+            showNotification(
+              "error",
+              "Failed to update wishlist. Please try again."
+            );
+            console.error("Fetch error:", error);
+          });
+      });
+    });
+  }
+
+  // Helper function to show notifications
+  function showNotification(type, message) {
+    const notification = document.createElement("div");
+    notification.className = "notification " + type;
     notification.innerHTML = `
         <span>${message}</span>
         <button class="close-btn">&times;</button>
     `;
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(function() {
-        notification.style.opacity = '0';
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
-    
-    notification.querySelector('.close-btn').addEventListener('click', function() {
-        notification.style.opacity = '0';
-        setTimeout(() => notification.remove(), 300);
-    });
-}
 
+    document.body.appendChild(notification);
+
+    setTimeout(function () {
+      notification.style.opacity = "0";
+      setTimeout(() => notification.remove(), 300);
+    }, 3000);
+
+    notification
+      .querySelector(".close-btn")
+      .addEventListener("click", function () {
+        notification.style.opacity = "0";
+        setTimeout(() => notification.remove(), 300);
+      });
+  }
 </script>
 
 <%- include('../partials/user/footer') %>

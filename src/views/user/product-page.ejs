@@ -38,6 +38,48 @@
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+.product-sizes {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.single-productsBox .products-image:hover .product-sizes {
+  opacity: 1;
+}
+
+.size-selection {
+  margin-bottom: 10px;
+}
+
+.size-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.size-btn {
+  background-color: rgba(255,255,255,0.8);
+  border: 1px solid #ddd;
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.size-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.size-btn.selected {
+  background-color: #000;
+  color: #fff;
+}
 </style>
 <body>
   
@@ -207,11 +249,32 @@
                   </li>
                 </ul>
               </div>
+              <% if (product.createdAt) { 
+     const createdAtDate = new Date(product.createdAt);
+     const fiveDaysAgo = new Date();
+     fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
 
-              <div class="new-tag">New!</div>
+     if (createdAtDate >= fiveDaysAgo) { 
+%>
+    <div class="new-tag">New!</div>
+<% 
+    } 
+} 
+%>
+              
+              
             </div>
 
             <div class="products-content">
+              <div class="size-selection">
+                <div class="size-buttons">
+                  <button class="size-btn">S</button>
+                  <button class="size-btn">M</button>
+                  <button class="size-btn">L</button>
+                  <button class="size-btn">XL</button>
+                </div>
+              </div>
+
               <span class="category">T-Shirt</span>
               <h3>
                 <a href="/shopsingle/<%= product._id %>"><%= product.name %></a>
@@ -224,16 +287,29 @@
                 <i class="bx bxs-star"></i>
               </div>
               <div class="price">
-                <span class="old-price">Rs.3000</span>
-                <span class="new-price">Rs.<%= product.price %></span>
-              </div>
+        <% if (product.discountedPrice) { %>
+          <span class="old-price">Rs.<%= product.originalPrice %></span>
+          <span class="new-price">Rs.<%= product.discountedPrice %></span>
+          <span class="products-discount">
+            
+          </span>
+        <% } else { %>
+          <span class="new-price">Rs.<%= product.price %></span>
+          <span class="products-discount">
+            <span>No Offer</span>
+          </span>
+        <% } %>
+      </div>
+
               <a href="cart.html" class="add-to-cart">Add to Cart</a>
             </div>
 
             <span class="products-discount">
-              <span> 20% OFF </span>
+              <span><%= product.discountPercentage %>% OFF</span>
             </span>
           </div>
+
+
         </div>
         <% }) %>
       </div>
@@ -466,177 +542,7 @@
     </div>
   </div>
   <!-- End Search Overlay -->
-  <!-- Start Facility Area -->
-  <section class="facility-area pb-70">
-    <div class="container">
-      <div class="facility-slides owl-carousel owl-theme">
-        <div class="single-facility-box">
-          <div class="icon">
-            <i class="flaticon-tracking"></i>
-          </div>
-          <h3>Free Shipping Worldwide</h3>
-        </div>
-
-        <div class="single-facility-box">
-          <div class="icon">
-            <i class="flaticon-return"></i>
-          </div>
-          <h3>Easy Return Policy</h3>
-        </div>
-
-        <div class="single-facility-box">
-          <div class="icon">
-            <i class="flaticon-shuffle"></i>
-          </div>
-          <h3>7 Day Exchange Policy</h3>
-        </div>
-
-        <div class="single-facility-box">
-          <div class="icon">
-            <i class="flaticon-sale"></i>
-          </div>
-          <h3>Weekend Discount Coupon</h3>
-        </div>
-
-        <div class="single-facility-box">
-          <div class="icon">
-            <i class="flaticon-credit-card"></i>
-          </div>
-          <h3>Secure Payment Methods</h3>
-        </div>
-
-        <div class="single-facility-box">
-          <div class="icon">
-            <i class="flaticon-location"></i>
-          </div>
-          <h3>Track Your Package</h3>
-        </div>
-
-        <div class="single-facility-box">
-          <div class="icon">
-            <i class="flaticon-customer-service"></i>
-          </div>
-          <h3>24/7 Customer Support</h3>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!-- End Facility Area -->
-
-  <!-- Start Instagram Area -->
-  <div class="instagram-area">
-    <div class="container-fluid">
-      <div class="instagram-title">
-        <a href="#" target="_blank"
-          ><i class="bx bxl-instagram"></i> Follow us on @xton</a
-        >
-      </div>
-
-      <div class="instagram-slides owl-carousel owl-theme">
-        <div class="single-instagram-post">
-          <img src="user/assets/img/instagram/img1.jpg" alt="image" />
-          <i class="bx bxl-instagram"></i>
-          <a
-            href="https://www.instagram.com/"
-            target="_blank"
-            class="link-btn"
-          ></a>
-        </div>
-
-        <div class="single-instagram-post">
-          <img src="user/assets/img/instagram/img2.jpg" alt="image" />
-          <i class="bx bxl-instagram"></i>
-          <a
-            href="https://www.instagram.com/"
-            target="_blank"
-            class="link-btn"
-          ></a>
-        </div>
-
-        <div class="single-instagram-post">
-          <img src="user/assets/img/instagram/img3.jpg" alt="image" />
-          <i class="bx bxl-instagram"></i>
-          <a
-            href="https://www.instagram.com/"
-            target="_blank"
-            class="link-btn"
-          ></a>
-        </div>
-
-        <div class="single-instagram-post">
-          <img src="user/assets/img/instagram/img4.jpg" alt="image" />
-          <i class="bx bxl-instagram"></i>
-          <a
-            href="https://www.instagram.com/"
-            target="_blank"
-            class="link-btn"
-          ></a>
-        </div>
-
-        <div class="single-instagram-post">
-          <img src="user/assets/img/instagram/img10.jpg" alt="image" />
-          <i class="bx bxl-instagram"></i>
-          <a
-            href="https://www.instagram.com/"
-            target="_blank"
-            class="link-btn"
-          ></a>
-        </div>
-
-        <div class="single-instagram-post">
-          <img src="user/assets/img/instagram/img6.jpg" alt="image" />
-          <i class="bx bxl-instagram"></i>
-          <a
-            href="https://www.instagram.com/"
-            target="_blank"
-            class="link-btn"
-          ></a>
-        </div>
-
-        <div class="single-instagram-post">
-          <img src="user/assets/img/instagram/img7.jpg" alt="image" />
-          <i class="bx bxl-instagram"></i>
-          <a
-            href="https://www.instagram.com/"
-            target="_blank"
-            class="link-btn"
-          ></a>
-        </div>
-
-        <div class="single-instagram-post">
-          <img src="user/assets/img/instagram/img8.jpg" alt="image" />
-          <i class="bx bxl-instagram"></i>
-          <a
-            href="https://www.instagram.com/"
-            target="_blank"
-            class="link-btn"
-          ></a>
-        </div>
-
-        <div class="single-instagram-post">
-          <img src="user/assets/img/instagram/img9.jpg" alt="image" />
-          <i class="bx bxl-instagram"></i>
-          <a
-            href="https://www.instagram.com/"
-            target="_blank"
-            class="link-btn"
-          ></a>
-        </div>
-
-        <div class="single-instagram-post">
-          <img src="user/assets/img/instagram/img5.jpg" alt="image" />
-          <i class="bx bxl-instagram"></i>
-          <a
-            href="https://www.instagram.com/"
-            target="_blank"
-            class="link-btn"
-          ></a>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- End Instagram Area -->
-
+ 
   <!-- Start Shopping Cart Modal -->
   <div
     class="modal right fade shoppingCartModal"
@@ -996,6 +902,23 @@ function showNotification(type, message) {
         setTimeout(() => notification.remove(), 300);
     });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const sizeButtons = document.querySelectorAll('.size-btn');
+  
+  sizeButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      // Remove selected class from all buttons in the same group
+      const parentGroup = button.closest('.size-buttons');
+      parentGroup.querySelectorAll('.size-btn').forEach(btn => {
+        btn.classList.remove('selected');
+      });
+      
+      // Add selected class to clicked button
+      button.classList.add('selected');
+    });
+  });
+});
 
 </script>
 </body>
