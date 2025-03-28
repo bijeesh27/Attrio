@@ -675,7 +675,7 @@
 </div>
       </div>
       <div class="modal-footer border-top">
-        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" onclick="canecl()">Cancel</button>
         <button type="button" class="btn btn-primary" id="confirmAddToCart" disabled>Add to Cart</button>
       </div>
     </div>
@@ -1024,7 +1024,9 @@ function clearWishlist(){
         }
       });
 }
-
+function canecl(){
+  window.location.href="/wishlist"
+}
 </script>
 
 <%- include('../partials/user/footer') %>

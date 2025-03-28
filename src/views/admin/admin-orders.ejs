@@ -275,9 +275,9 @@
               <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                   <li class="breadcrumb-item">
-                    <a href="javascript: void(0);">Ecommerce</a>
+                    <a href="javascript: void(0);">Ecommerce/</a>
                   </li>
-                  <li class="breadcrumb-item active">Orders</li>
+                  <li class="">Orders</li>
                 </ol>
               </div>
             </div>
@@ -345,7 +345,7 @@
                         <td><%= order.orderNumber %></td>
                         <td><%= order.userId?.username%></td>
                         <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
-                        <td>Rs.<%= order.orderAmount %></td>
+                        <td>Rs.<%= order.orderAmount.toFixed(2) %></td>
                         <td>
                           <span class="order-status status-<%= order.orderStatus.toLowerCase() %>">
                             <%= order.orderStatus %>

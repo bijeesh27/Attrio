@@ -84,10 +84,10 @@
                                         <tr>
                                             <td><%= order.orderNumber %></td>
                                             <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
-                                            <td>$<%= order.subtotal.toFixed(2) %></td>
-                                            <td>$<%= order.offerDiscount.toFixed(2) %></td>
-                                            <td>$<%= order.couponDiscount.toFixed(2) %></td>
-                                            <td>$<%= order.orderAmount.toFixed(2) %></td>
+                                            <td>₹<%= order.subtotal.toFixed(2) %></td>
+                                            <td>₹<%= order.offerDiscount.toFixed(2) %></td>
+                                            <td>₹<%= order.couponDiscount.toFixed(2) %></td>
+                                            <td>₹<%= order.orderAmount.toFixed(2) %></td>
                                         </tr>
                                         <% }) %>
                                     </tbody>
@@ -96,10 +96,10 @@
                             <div class="mt-4">
                                 <h5>Summary</h5>
                                 <p>Total Orders: <%= summary.totalOrders %></p>
-                                <p>Overall Subtotal: $<%= summary.overallSubtotal.toFixed(2) %></p>
-                                <p>Overall Offer Discount: $<%= summary.overallOfferDiscount.toFixed(2) %></p>
-                                <p>Overall Coupon Discount: $<%= summary.overallCouponDiscount.toFixed(2) %></p>
-                                <p>Overall Sales Amount: $<%= summary.overallOrderAmount.toFixed(2) %></p>
+                                <p>Overall Subtotal: ₹<%= summary.overallSubtotal.toFixed(2) %></p>
+                                <p>Overall Offer Discount: ₹<%= summary.overallOfferDiscount.toFixed(2) %></p>
+                                <p>Overall Coupon Discount: ₹<%= summary.overallCouponDiscount.toFixed(2) %></p>
+                                <p>Overall Sales Amount: ₹<%= summary.overallOrderAmount.toFixed(2) %></p>
                             </div>
                         </div>
                     </div>

@@ -275,7 +275,7 @@
                 </div>
               </div>
 
-              <span class="category">T-Shirt</span>
+              
               <h3>
                 <a href="/shopsingle/<%= product._id %>"><%= product.name %></a>
               </h3>
@@ -290,23 +290,20 @@
         <% if (product.discountedPrice) { %>
           <span class="old-price">Rs.<%= product.originalPrice %></span>
           <span class="new-price">Rs.<%= product.discountedPrice %></span>
-          <span class="products-discount">
-            
-          </span>
+          <span class="products-discount"></span>
         <% } else { %>
           <span class="new-price">Rs.<%= product.price %></span>
-          <span class="products-discount">
-            <span>No Offer</span>
-          </span>
+          
         <% } %>
       </div>
 
               <a href="cart.html" class="add-to-cart">Add to Cart</a>
             </div>
-
+            <% if (product.discountedPrice) { %>
             <span class="products-discount">
               <span><%= product.discountPercentage %>% OFF</span>
             </span>
+            <% } %>
           </div>
 
 

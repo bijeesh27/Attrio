@@ -180,13 +180,13 @@ const updateReturn = async (req, res) => {
       returnedItem.returnApproved = true;
       returnedItem.returnApprovedDate = new Date();
 
-      // Increment stock
+      
       stock.quantity += returnedItem.quantity;
 
-      // Calculate refund amount considering offers and coupons
-      let refundAmount = returnedItem.totalProductPrice; // Base refund on totalProductPrice (includes offer discount)
+      
+      let refundAmount = returnedItem.totalProductPrice;
 
-      // Adjust for coupon discount if applied to the order
+      
       if (order.couponDiscount && order.couponDiscount > 0) {
         const totalOrderBeforeCoupon = order.orderedItem.reduce(
           (sum, item) => sum + item.totalProductPrice,
@@ -204,11 +204,11 @@ const updateReturn = async (req, res) => {
           amount: refundAmount,
           transactionsMethod: 'Refund',
           date: new Date(),
-          orderId: order._id // Use the order ID, not item.orderId
+          orderId: order._id 
         });
         await userWallet.save();
       } else {
-        // Create a new wallet if it doesn't exist
+       
         const newWallet = new Wallet({
           userId,
           balance: refundAmount,

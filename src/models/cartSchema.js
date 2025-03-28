@@ -25,7 +25,7 @@ var cartSchema = new mongoose.Schema({
             type: Number,
             required: true,
         },
-        offerPrice: {  // Add this field
+        offerPrice: {  
             type: Number,
             default: null
         },
@@ -38,7 +38,7 @@ var cartSchema = new mongoose.Schema({
             required: true
         },
         offer_id: {
-            type: mongoose.Schema.Types.ObjectId,  // Changed to ObjectId
+            type: mongoose.Schema.Types.ObjectId, 
             ref: 'Offer'
         },
     }],

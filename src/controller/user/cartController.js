@@ -81,25 +81,42 @@ const loadCart = async (req, res) => {
 };
 const addToCart = async (req, res) => {
   try {
+    console.log("entering the aDDtocart");
     const userId = req.session.userId;
+    console.log("userIDDDDD:",userId);
+
+    // Check if user is logged in
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        login_required: true,
+        message: "Please login to add items to your cart"
+      });
+    }
+
     const { productId, quantity, size } = req.body;
     const product = await Product.findOne({ _id: productId, status: true });
-    const total = quantity * product.price;
+    
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found"
+      });
+    }
 
+    const total = quantity * product.price;
     const existingCart = await Cart.findOne({ userId: userId });
 
     if (existingCart) {
-      // Check if this product with same size already exists in cart
       const existingItemIndex = existingCart.item.findIndex(
         (item) => item.productId.toString() === productId && item.size === size
       );
 
       if (existingItemIndex !== -1) {
-        // Product with same size exists, update quantity
-        existingCart.item[existingItemIndex].quantity = quantity;
-        existingCart.item[existingItemIndex].total = quantity * product.price;
+        existingCart.item[existingItemIndex].quantity += quantity;
+        existingCart.item[existingItemIndex].total = 
+          existingCart.item[existingItemIndex].quantity * product.price;
       } else {
-        // Product doesn't exist in cart, add new item
         const item = {
           productId,
           quantity,
@@ -111,14 +128,12 @@ const addToCart = async (req, res) => {
         existingCart.item.push(item);
       }
 
-      // Recalculate cart total
       existingCart.cartTotal = existingCart.item.reduce(
         (acc, curr) => acc + curr.total,
         0
       );
       await existingCart.save();
     } else {
-      // Create new cart if no cart exists
       const item = {
         productId,
         quantity,
@@ -135,12 +150,20 @@ const addToCart = async (req, res) => {
       });
       await newCart.save();
     }
+
     const cart = await Cart.findOne({ userId: req.session.userId });
     req.session.cartItem = cart?.item.length;
-    res.redirect("/cart");
+    res.json({
+      success: true,
+      message: "Product added to cart successfully"
+    });
+
   } catch (error) {
     console.log(error);
-    res.status(500).send("An error occurred");
+    res.status(500).json({
+      success: false,
+      message: "An error occurred",
+    });
   }
 };
 

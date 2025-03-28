@@ -257,7 +257,7 @@ const generateReport = async (req, res, period) => {
       createdAt: { $gte: start.toDate(), $lte: end.toDate() },
     }).populate("orderedItem.productId");
 
-    // Fetch offers for discount calculation
+    
     const offerIds = [
       ...new Set(
         orders.flatMap((o) =>
@@ -267,7 +267,7 @@ const generateReport = async (req, res, period) => {
     ];
     const offers = await Offer.find({ _id: { $in: offerIds } });
 
-    // Process orders
+
     const processedOrders = orders.map((order) => {
       let subtotal = 0;
       let offerDiscount = 0;

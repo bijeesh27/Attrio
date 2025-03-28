@@ -14,10 +14,10 @@ const applyOffers = async (products) => {
   });
 
   return products.map(product => {
-    // Create a new object to avoid modifying the original product
+   
     const productWithOffer = product.toObject();
     
-    // Find applicable offers
+    
     const applicableOffers = activeOffers.filter(offer => 
       (offer.offerType === 'product' && offer.productId.includes(product._id)) ||
       (offer.offerType === 'category' && offer.categoryId.includes(product.category))
@@ -47,7 +47,7 @@ const loadShop = async (req, res) => {
     let sortOption = { createdAt: -1 };
     const { sort, query, categoryId } = req.query;
     const page = parseInt(req.query.page) || 1;
-    const limit = 6;
+    const limit = 9;
     const skip = (page - 1) * limit;
     
     // Sorting logic
@@ -61,7 +61,6 @@ const loadShop = async (req, res) => {
       sortOption = { price: -1 };
     }
     
-    // Get active categories
     const activeCategories = await Category.find({ status: true });
     const activeCategoryIds = activeCategories.map(category => category._id);
     
@@ -71,7 +70,7 @@ const loadShop = async (req, res) => {
       category: { $in: activeCategoryIds }
     };
     
-    // If categoryId is specified, ensure it's active before applying the filter
+   
     if (categoryId) {
       const requestedCategory = await Category.findById(categoryId);
       if (requestedCategory && requestedCategory.status) {
@@ -92,7 +91,7 @@ const loadShop = async (req, res) => {
     const totalProducts = await Product.countDocuments(filter);
     const totalPages = Math.ceil(totalProducts / limit);
     
-    // Only fetch active categories for the sidebar/filter menu
+    
     const categories = await Category.find({ status: true });
     
     const products = await Product.find(filter)
@@ -179,7 +178,7 @@ const loadShopSingle = async (req, res) => {
     
     res.render("single-product", { 
       product: {
-        ...product.toObject(), // Convert Mongoose document to plain object
+        ...product.toObject(), 
         originalPrice,
         discountedPrice,
         maxDiscount,
@@ -473,7 +472,7 @@ const addingTocart = async (req, res) => {
 const removeItemWishlist=async (req,res) => {
   try {
     const { productId } = req.params;
-    const userId = req.session.userId // Assuming you have user authentication middleware
+    const userId = req.session.userId 
 
    
     // Find user and update wishlist by removing the product

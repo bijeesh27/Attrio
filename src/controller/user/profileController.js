@@ -119,12 +119,14 @@ const changeNewPassword = async (req, res) => {
 const loadProfile = async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.session.userId });
+    const wishlistCount=user.wishlist.length
 
     if (user && user.profileimage && user.profileimage.length > 0) {
       user.profileImage = "/" + user.profileimage[0].replace(/\\/g, "/");
     }
+    const totalOrders=await Orders.countDocuments({userId:user._id})
 
-    return res.render("profile", { user });
+    return res.render("profile", { user ,totalOrders,wishlistCount});
   } catch (error) {
     console.log("error rendering profile page", error);
   }
@@ -146,12 +148,13 @@ const loadEditprofile = async (req, res) => {
 
 const loadOrder = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = 5;
-    const skip = (page - 1) * limit;
-    const totalOrder = await Orders.countDocuments();
-    const totalPages = Math.ceil(totalOrder / limit);
     const userId = req.session.userId;
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const skip = (page - 1) * limit;
+    const totalOrder = await Orders.countDocuments({userId});
+    const totalPages = Math.ceil(totalOrder / limit);
+    
     const user = await User.findOne({ _id: userId });
     const orders = await Orders.find({ userId })
       .sort({ createdAt: -1 })

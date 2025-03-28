@@ -3,21 +3,26 @@
 <body>
   <link rel="stylesheet" href="/user/assets/css/profilestyle.css" />
   <style>
-    /* Wallet Page Specific Styles */
     .wallet-container {
+      display: flex;
+      gap: 30px;
       padding: 20px;
       margin-top: 20px;
     }
-    
-    .wallet-title {
-      font-size: 24px;
-      font-weight: 600;
-      margin-bottom: 20px;
+
+    .wallet-left-column {
+      flex: 0 0 40%;
+      max-width: 400px;
     }
-    
-    /* Credit Card Flip Animation */
+
+    .wallet-right-column {
+      flex: 1;
+    }
+
+    /* Credit Card Styles */
     .credit-card-container {
-      width: 340px;
+      width: 100%;
+      max-width: 340px;
       height: 220px;
       perspective: 1000px;
       margin: 20px 0;
@@ -126,77 +131,181 @@
       margin-top: 10px;
     }
     
+    /* Wallet Actions */
+    .wallet-actions {
+      display: flex;
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .wallet-btn {
+      flex: 1;
+      padding: 12px 20px;
+      background-color: #000;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .wallet-btn:hover {
+      background-color: #333;
+    }
+
+    .wallet-btn.withdraw {
+      background-color: #f0f0f0;
+      color: #000;
+      border: 1px solid #ddd;
+    }
+
+    .wallet-btn.withdraw:hover {
+      background-color: #e0e0e0;
+    }
+
     /* Transaction History */
     .transaction-history {
-      margin-top: 40px;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 20px;
     }
-    
-    .transaction-item {
+
+    .transaction-header {
       display: flex;
       justify-content: space-between;
-      padding: 15px 0;
-      border-bottom: 1px solid #eee;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #f0f0f0;
+      padding-bottom: 15px;
     }
-    
+
+    .transaction-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .view-all-link {
+      color: #007bff;
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.3s ease;
+    }
+
+    .view-all-link:hover {
+      color: #0056b3;
+    }
+
+    .transaction-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .transaction-item {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+      border: 1px solid #f0f0f0;
+    }
+
+    .transaction-item:hover {
+      background-color: #f8f9fa;
+    }
+
+    .transaction-icon {
+      margin-right: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #f0f0f0;
+    }
+
+    .transaction-icon i {
+      font-size: 20px;
+      color: #666;
+    }
+
+    .transaction-content {
+      flex-grow: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
     .transaction-details {
       display: flex;
       flex-direction: column;
     }
-    
-    .transaction-title {
-      font-weight: 600;
+
+    .transaction-type {
+      font-weight: 500;
+      color: #333;
       margin-bottom: 5px;
     }
-    
+
     .transaction-date {
       font-size: 12px;
       color: #666;
     }
-    
+
     .transaction-amount {
       font-weight: 600;
     }
-    
-    .transaction-amount.credit {
+
+    .transaction-positive {
       color: #28a745;
     }
-    
-    .transaction-amount.debit {
+
+    .transaction-negative {
       color: #dc3545;
     }
-    
-    .wallet-actions {
+
+    .no-transactions {
       display: flex;
-      gap: 10px;
-      margin: 30px 0;
-    }
-    
-    .wallet-btn {
-      padding: 10px 20px;
-      background-color: #000;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 8px;
-      font-weight: 500;
-      transition: all 0.3s ease;
+      justify-content: center;
+      padding: 30px;
+      color: #666;
+      text-align: center;
     }
-    
-    .wallet-btn:hover {
-      background-color: #333;
+
+    .no-transactions i {
+      font-size: 48px;
+      margin-bottom: 15px;
+      color: #007bff;
     }
-    
-    .wallet-btn.withdraw {
-      background-color: white;
-      color: #000;
-      border: 1px solid #000;
-    }
-    
-    .wallet-btn.withdraw:hover {
-      background-color: #f5f5f5;
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+      .wallet-container {
+        flex-direction: column;
+      }
+
+      .wallet-left-column {
+        max-width: 100%;
+        margin-bottom: 20px;
+      }
+
+      .credit-card-container {
+        max-width: 100%;
+      }
     }
   </style>
 
@@ -205,21 +314,29 @@
     <div class="account-tabs-menu">
       <ul>
         <li>
-          <a href="/profile" 
-            ><i class="bx bxs-user"></i>Profile</a
-          >
+          <a href="/profile">
+            <i class="bx bxs-user"></i>Profile
+          </a>
         </li>
         <li>
-          <a href="/orders"><i class="bx bxs-shopping-bag"></i> Orders</a>
+          <a href="/orders">
+            <i class="bx bxs-shopping-bag"></i> Orders
+          </a>
         </li>
         <li>
-          <a href="/address"><i class="bx bxs-map"></i> Addresses</a>
+          <a href="/address">
+            <i class="bx bxs-map"></i> Addresses
+          </a>
         </li>
         <li>
-          <a href="/wallet" class="active"><i class="bx bxs-wallet"></i> Wallet</a>
+          <a href="/wallet" class="active">
+            <i class="bx bxs-wallet"></i> Wallet
+          </a>
         </li>
         <li>
-          <a href="/changenewpassword"><i class="bx bx-lock-alt"></i> Change Password</a>
+          <a href="/changenewpassword">
+            <i class="bx bx-lock-alt"></i> Change Password
+          </a>
         </li>
       </ul>
       <br /><br /><br />
@@ -230,78 +347,110 @@
 
     <!-- Dashboard Content -->
     <div class="dashboard-content">
-      <!-- Wallet Header -->
+      <!-- Wallet Container -->
       <div class="wallet-container">
-        <div class="wallet-title">
-          <i class="bx bx-wallet"></i> My Wallet
-        </div>
-        
-        <!-- Flip Credit Card -->
-        <div class="credit-card-container" id="creditCard">
-          <div class="credit-card" id="cardInner">
-            <div class="card-front">
-              <div class="card-logo">
-                <span>WALLET CARD</span>
-                <i class="bx bxs-wallet" style="font-size: 24px;"></i>
+        <!-- Left Column -->
+        <div class="wallet-left-column">
+          <div class="wallet-title">
+            <i class="bx bx-wallet"></i> My Wallet
+          </div>
+          
+          <!-- Flip Credit Card -->
+          <div class="credit-card-container" id="creditCard">
+            <div class="credit-card" id="cardInner">
+              <div class="card-front">
+                <div class="card-logo">
+                  <span>WALLET CARD</span>
+                  <i class="bx bxs-wallet" style="font-size: 24px;"></i>
+                </div>
+                <div class="chip-container">
+                  <div class="card-chip"></div>
+                </div>
+                <div class="card-holder">
+                  <div class="label">CARD HOLDER</div>
+                  <div><%= user.username %></div>
+                </div>
+                <div class="card-number">•••• •••• •••• <%= user.walletCardNumber || '1234' %></div>
               </div>
-              <div class="chip-container">
-                <div class="card-chip"></div>
+              <div class="card-back">
+                <div class="balance-amount">Rs.<%= wallet.balance.toFixed(2) || '0.00' %></div>
+                <div class="balance-label">Available Balance</div>
               </div>
-              <div class="card-holder">
-                <div class="label">CARD HOLDER</div>
-                <div><%= user.username %></div>
-              </div>
-              <div class="card-number">•••• •••• •••• <%= user.walletCardNumber || '1234' %></div>
             </div>
-            <div class="card-back">
-              <div class="balance-amount">Rs.<%= wallet.balance || '0.00' %></div>
-              <div class="balance-label">Available Balance</div>
+          </div>
+          
+          <!-- Wallet Actions -->
+          <div class="wallet-actions">
+            <button class="wallet-btn" onclick="showAddFundsModal()">
+              <i class="bx bx-plus-circle"></i> Add Funds
+            </button>
+            <button class="wallet-btn withdraw" onclick="showWithdrawModal()">
+              <i class="bx bx-minus-circle"></i> Withdraw
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="wallet-right-column">
+          <!-- Transaction History -->
+          <div class="transaction-history">
+            <div class="transaction-header">
+              <h3 class="transaction-title">
+                <i class="bx bx-history"></i>
+                Transaction History
+              </h3>
+              <a href="/transactions" class="view-all-link">View All</a>
+            </div>
+            
+            <div class="transaction-list">
+              <% if (wallet && wallet.transaction && wallet.transaction.length > 0) { %>
+                <% wallet.transaction.slice(0, 5).forEach(transaction => { 
+                  // Determine transaction type and style
+                  let transactionClass = 'transaction-negative';
+                  let transactionIcon = 'bx-arrow-from-right';
+                  
+                  if (transaction.transactionsMethod === 'Refund' || transaction.transactionsMethod === 'Credit') {
+                    transactionClass = 'transaction-positive';
+                    transactionIcon = 'bx-arrow-from-left';
+                  }
+                %>
+                  <div class="transaction-item <%= transactionClass %>">
+                    <div class="transaction-icon">
+                      <i class="bx <%= transactionIcon %>"></i>
+                    </div>
+                    <div class="transaction-content">
+                      <div class="transaction-details">
+                        <span class="transaction-type">
+                          <%= transaction.transactionsMethod === 'Payment' ? 'Product Purchase' : 
+                              transaction.transactionsMethod === 'Refund' ? 'Refund' : 
+                              transaction.transactionsMethod %>
+                        </span>
+                        <span class="transaction-date">
+                          <%= new Date(transaction.date).toLocaleDateString('en-US', { 
+                            month: 'short', 
+                            day: 'numeric', 
+                            year: 'numeric' 
+                          }) %>
+                        </span>
+                      </div>
+                      <div class="transaction-amount <%= transactionClass %>">
+                        <%= transaction.transactionsMethod === 'Refund' || transaction.transactionsMethod === 'Credit' ? '+' : '-' %>₹<%= transaction.amount.toFixed(2) %>
+                      </div>
+                    </div>
+                  </div>
+                <% }); %>
+              <% } else { %>
+                <div class="no-transactions">
+                  <i class="bx bx-info-circle"></i>
+                  <p>No transactions found</p>
+                </div>
+              <% } %>
             </div>
           </div>
         </div>
-        
-        <div class="wallet-actions">
-          <button class="wallet-btn" onclick="showAddFundsModal()">
-            <i class="bx bx-plus-circle"></i> Add Funds
-          </button>
-        </div>
-        
-        <!-- Transaction History -->
-        <div class="transaction-history">
-          <h3>Recent Transactions</h3>
-          
-          <% if (wallet && wallet.transaction && wallet.transaction.length > 0) { %>
-            <% wallet.transaction.slice(0, 5).forEach(transaction => { 
-              // Determine transaction type and style
-              let transactionClass = 'debit';
-              let transactionSign = '-';
-              
-              if (transaction.transactionsMethod === 'Refund' || transaction.transactionsMethod === 'Credit') {
-                transactionClass = 'credit';
-                transactionSign = '+';
-              }
-            %>
-              <div class="transaction-item">
-                <div class="transaction-details">
-                  <div class="transaction-title">
-                    <%= transaction.transactionsMethod === 'Payment' ? 'Product Purchase' : 
-                        transaction.transactionsMethod === 'Refund' ? 'Refund' : 
-                        transaction.transactionsMethod %>
-                  </div>
-                  <div class="transaction-date"><%= new Date(transaction.date).toLocaleDateString() %></div>
-                </div>
-                <div class="transaction-amount <%= transactionClass %>">
-                  <%= transactionSign %>₹<%= transaction.amount.toFixed(2) %>
-                </div>
-              </div>
-            <% }); %>
-          <% } else { %>
-            <p>No transactions yet</p>
-          <% } %>
-        </div>
       </div>
     </div>
-  </div><br><br><br><br><br><br><br><br><br>
+  </div>
 
   <script>
     // Flip card animation
@@ -357,7 +506,45 @@
       });
     }
     
-   
+    // Withdraw funds modal
+    function showWithdrawModal() {
+      Swal.fire({
+        title: 'Withdraw from Wallet',
+        html: `
+          <div style="text-align: left; margin-bottom: 20px;">
+            <label for="withdrawAmount" style="display: block; margin-bottom: 5px;">Amount</label>
+            <input id="withdrawAmount" type="number" class="swal2-input" placeholder="Enter amount" min="1" step="1">
+            <small style="color: #666;">Available Balance: ₹<%= wallet.balance.toFixed(2) %></small>
+          </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Withdraw',
+        confirmButtonColor: '#000000',
+        cancelButtonColor: '#d33',
+        preConfirm: () => {
+          const amount = document.getElementById('withdrawAmount').value;
+          const availableBalance = '<%= wallet.balance.toFixed(2) %>';
+          
+          if (!amount || amount <= 0) {
+            Swal.showValidationMessage('Please enter a valid amount');
+            return false;
+          }
+          
+          if (parseFloat(amount) > availableBalance) {
+            Swal.showValidationMessage('Insufficient balance');
+            return false;
+          }
+          
+          return { amount };
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Submit to backend
+          window.location.href = `/withdraw-funds?amount=${result.value.amount}`;
+        }
+      });
+    }
   </script>
 </body>
+
 <%- include('../partials/user/footer') %>

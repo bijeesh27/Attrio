@@ -213,6 +213,7 @@ const applyCoupon = async (req, res) => {
   
       // Clear the cart
       await Cart.deleteMany({ userId });
+      req.session.cartItem = 0
   
       // Clear applied coupon from session
       delete req.session.appliedCoupon;
@@ -320,6 +321,7 @@ const returnOrder=async (req,res) => {
         order.orderedItem[itemIndex].returnStatus="Requested"
         order.orderedItem[itemIndex].returnReason=returnReason
         await order.save()
+        
         res.redirect(`/orderdetails/${orderId}`)
     } catch (error) {
         console.log(error);
@@ -365,34 +367,50 @@ const loadInvoice = async (req, res) => {
 
 // Create Razorpay order
 const createOrder = async (req, res) => {
-    try {
-      const { amount, addressId } = req.body;
-      const userId = req.session.userId;
-      
-      // Create unique receipt ID
-      const receipt = 'order_rcpt_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
-      
-      const options = {
-        amount: amount, // amount in smallest currency unit (paise)
-        currency: 'INR',
-        receipt: receipt
-      };
-      
-      // Create order in Razorpay
-      const order = await razorpay.orders.create(options);
-      
-      // Return the order details
-      return res.json({
-        id: order.id,
-        amount: order.amount,
-        currency: order.currency,
-        key_id: process.env.TEST_KEY_ID
-      });
-    } catch (error) {
-      console.error('Razorpay order creation error:', error);
-      return res.status(500).json({ error: 'Failed to create payment order' });
+  try {
+    const { amount } = req.body;
+
+    if (!amount || isNaN(amount)) {
+      return res.status(400).json({ error: "Invalid amount" });
     }
-  };
+
+    // Convert amount to an integer (round off decimals)
+    let amountInPaise = Math.round(Number(amount));
+
+    // Debugging logs
+    console.log("Received Amount (Frontend):", amount);
+    console.log("Final Amount in Paise (Integer):", amountInPaise);
+
+    // Check if amount exceeds Razorpay limit
+    if (amountInPaise > 50000000) {
+      return res.status(400).json({ error: "Amount exceeds maximum limit of ₹5,00,000" });
+    }
+
+    const receipt = `order_rcpt_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+
+    const options = {
+      amount: amountInPaise, // Ensure it's an integer
+      currency: "INR",
+      receipt: receipt
+    };
+
+    // Create order in Razorpay
+    const order = await razorpay.orders.create(options);
+
+    return res.json({
+      id: order.id,
+      amount: order.amount,
+      currency: order.currency,
+      key_id: process.env.TEST_KEY_ID
+    });
+
+  } catch (error) {
+    console.error("Razorpay order creation error:", error);
+    return res.status(500).json({ error: "Failed to create payment order" });
+  }
+};
+
+
 
 
 module.exports={

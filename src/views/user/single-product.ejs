@@ -898,105 +898,115 @@
     // Add to cart functionality
     const addToCartBtn = document.getElementById("addToCartBtn");
 
-    if (addToCartBtn) {
-      addToCartBtn.addEventListener("click", function () {
-        const pathParts = window.location.pathname.split("/");
-        const productId = pathParts[pathParts.length - 1];
-        const quantity = parseInt(document.getElementById("quantity").value);
+    // Inside your addToCartBtn event listener
+if (addToCartBtn) {
+  addToCartBtn.addEventListener("click", function () {
+    const pathParts = window.location.pathname.split("/");
+    const productId = pathParts[pathParts.length - 1];
+    const quantity = parseInt(document.getElementById("quantity").value);
 
-        if (!selectedSize) {
+    if (!selectedSize) {
+      Swal.fire({
+        title: "Size Not Selected",
+        text: "Please choose a size before adding the product to your cart.",
+        icon: "info",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      return;
+    }
+
+    const stockForSelectedSize = getStockForSize(selectedSize);
+    if (stockForSelectedSize === 0) {
+      Swal.fire({
+        title: "Out of Stock",
+        text: "Sorry, this product is currently out of stock in size " + selectedSize,
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+
+    if (quantity > stockForSelectedSize) {
+      Swal.fire({
+        title: "Insufficient Stock",
+        text: "Sorry, we only have " + stockForSelectedSize + " items available in size " + selectedSize,
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+
+    if (quantity > 5) {
+      Swal.fire({
+        title: "Maximum Quantity Exceeded",
+        text: "The maximum quantity is 5 items per product",
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+
+    fetch("/addtocart", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        productId: productId,
+        quantity: quantity,
+        size: selectedSize,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
           Swal.fire({
-            title: "Size Not Selected",
-            text: "Please choose a size before adding the product to your cart.",
-            icon: "info",
-            showConfirmButton: false,
+            title: "Success!",
+            text: "Product added to cart successfully",
+            icon: "success",
+            showConfirmButton: true,
             timer: 1500,
+          }).then(() => {
+            location.reload();
           });
-          return;
-        }
-
-        // Check if the selected size is in stock
-        const stockForSelectedSize = getStockForSize(selectedSize);
-        if (stockForSelectedSize === 0) {
-          Swal.fire({
-            title: "Out of Stock",
-            text:
-              "Sorry, this product is currently out of stock in size " +
-              selectedSize,
-            icon: "error",
-            confirmButtonText: "OK",
-          });
-          return;
-        }
-
-        // Check if requested quantity exceeds available stock
-        if (quantity > stockForSelectedSize) {
-          Swal.fire({
-            title: "Insufficient Stock",
-            text:
-              "Sorry, we only have " +
-              stockForSelectedSize +
-              " items available in size " +
-              selectedSize,
-            icon: "warning",
-            confirmButtonText: "OK",
-          });
-          return;
-        }
-
-        // Check if quantity exceeds max limit (5)
-        if (quantity > 5) {
-          Swal.fire({
-            title: "Maximum Quantity Exceeded",
-            text: "The maximum quantity is 5 items per product",
-            icon: "warning",
-            confirmButtonText: "OK",
-          });
-          return;
-        }
-
-        fetch("/addtocart", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            productId: productId,
-            quantity: quantity,
-            size: selectedSize,
-          }),
-        })
-          .then((response) => {
-            if (response.ok) {
-              Swal.fire({
-                title: "Success!",
-                text: "Product added to cart successfully",
-                icon: "success",
-                showConfirmButton: true,
-                timer: 1500,
-              }).then(() => {
-                location.reload();
-              });
-            } else {
-              Swal.fire({
-                title: "Error",
-                text: "There was an error adding to cart",
-                icon: "error",
-                confirmButtonText: "OK",
-              });
-            }
-          })
-          .catch((error) => {
-            console.error("Error:", error);
+        } else {
+          if (data.login_required) {
+            Swal.fire({
+              title: "Login Required",
+              text: "Please login to add items to your cart",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonText: "Login",
+              cancelButtonText: "Cancel"
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // Redirect to login page with return URL
+                window.location.href = "/login?redirect=" + 
+                  encodeURIComponent(window.location.href);
+              }
+            });
+          } else {
             Swal.fire({
               title: "Error",
-              text: "There was an error adding to cart",
+              text: data.message || "There was an error adding to cart",
               icon: "error",
               confirmButtonText: "OK",
             });
-          });
+          }
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        Swal.fire({
+          title: "Error",
+          text: "There was an error adding to cart",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       });
-    }
+  });
+}
   });
 
   // Add this to your script.js file or inline in your home page
