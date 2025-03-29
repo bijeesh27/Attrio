@@ -2,6 +2,7 @@ const Product = require("../../models/productSchema");
 const Category = require("../../models/categorySchema");
 const User=require('../../models/userSchema')
 const Offer=require('../../models/offerSchema')
+const Address=require('../../models/addressSchema')
 
 const applyOffers = async (products) => {
   const currentDate = new Date();
@@ -512,6 +513,80 @@ const clearWishlist=async (req,res) => {
   }
 }
 
+
+const addAddressInCheckout = async (req, res) => {
+  try {
+    console.log('Request body:', req.body); // Log incoming data
+    const userId = req.session.userId // Safely access user ID
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: 'User not authenticated',
+      });
+    }
+
+    // Map form data to schema fields
+    const newAddress = {
+      name: req.body.name,
+      email: req.body.email || '',
+      number: Number(req.body.number),
+      houseName: req.body.street.split(',')[0] || req.body.street,
+      street: req.body.street,
+      city: req.body.city,
+      state: req.body.state,
+      country: req.body.country || 'India',
+      pincode: req.body.pincode,
+      saveAs: req.body.saveAs || 'Home',
+      isDefault: req.body.isDefault || false,
+    };
+
+    // Validate required fields
+    const requiredFields = ['name', 'number', 'street', 'city', 'state', 'pincode'];
+    for (const field of requiredFields) {
+      if (!newAddress[field]) {
+        return res.status(400).json({
+          success: false,
+          message: `Missing required field: ${field}`,
+        });
+      }
+    }
+
+    // Find or create address document
+    let addressDoc = await Address.findOne({ userId });
+    console.log('Existing address doc:', addressDoc); // Log existing doc
+
+    if (addressDoc) {
+      if (newAddress.isDefault) {
+        addressDoc.address.forEach((addr) => (addr.isDefault = false));
+      }
+      addressDoc.address.push(newAddress);
+      await addressDoc.save();
+    } else {
+      addressDoc = new Address({
+        userId,
+        address: [newAddress],
+      });
+      await addressDoc.save();
+    }
+
+    console.log('Address saved:', addressDoc); // Log success
+    res.status(201).json({
+      success: true,
+      message: 'Address added successfully',
+      address: newAddress,
+    });
+  } catch (error) {
+    console.error('Error adding address:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error adding address',
+      error: error.message,
+    });
+  }
+};
+
+
 module.exports = {
   loadShop,
   singleProductModal,
@@ -524,4 +599,5 @@ module.exports = {
   addingTocart,
   removeItemWishlist,
   clearWishlist,
+  addAddressInCheckout
 };

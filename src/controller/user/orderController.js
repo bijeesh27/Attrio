@@ -172,10 +172,10 @@ const applyCoupon = async (req, res) => {
         });
   
         // Decrement coupon's maxRedeem
-        await Coupon.findOneAndUpdate(
-          { couponCode: usedCoupon },
-          { $inc: { maxRedeem: -1 } }
-        );
+        // await Coupon.findOneAndUpdate(
+        //   { couponCode: usedCoupon },
+        //   { $inc: { maxRedeem: -1 } }
+        // );
   
         // Adjust the total amount with coupon discount
         totalAmount = Math.max(0, totalAmount - discount); // Ensure total doesn't go negative

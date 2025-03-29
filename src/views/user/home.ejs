@@ -44,6 +44,48 @@
       transform: translateY(0);
     }
   }
+
+  .product-sizes {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .single-productsBox .products-image:hover .product-sizes {
+    opacity: 1;
+  }
+
+  .size-selection {
+    margin-bottom: 10px;
+  }
+
+  .size-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .size-btn {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid #ddd;
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .size-btn:hover {
+    background-color: #f0f0f0;
+  }
+
+  .size-btn.selected {
+    background-color: #000;
+    color: #fff;
+  }
 </style>
 <body>
   <% if (error_msg && error_msg.length > 0) { %>
@@ -151,8 +193,18 @@
 
         <div class="col-lg-4 col-md-4 col-sm-4">
           <div class="single-categories-box">
-            <img src="user/assets/img/categories/img1.jpg" alt="image" />
-
+            <% if (category.name=="Men") { %>
+              <img src="user/assets/img/categories/img10.jpg" alt="image" />
+            <% }%>
+            <% if (category.name=="Kid") { %>
+              <img src="user/assets/img/categories/img2.jpg" alt="image" />
+            <% }%>
+            <% if (category.name=="Women") { %>
+              <img src="user/assets/img/categories/img3.jpg" alt="image" />
+            <% }%>
+            <% if (category.name=="Baby") { %>
+              <img src="user/assets/img/categories/img4.jpg" alt="image" />
+            <% }%>
             <div class="content text-white">
               <span>Dress for </span>
               <h3><%= category.description %></h3>
@@ -176,21 +228,21 @@
         <h2>Recent Products</h2>
       </div>
 
-      <div class="row justify-content-center">
-        <% product.forEach(product => { %>
-        <div class="col-lg-4 col-md-6 col-sm-6">
+      <div id="products-collections-filter" class="row">
+        <% products.forEach(product => { %>
+        <div class="col-lg-4 col-md-6 col-sm-6 products-col-item">
           <div class="single-productsBox">
             <div class="products-image">
               <a href="/shopsingle/<%= product._id %>">
                 <img
                   src="/<%= product.image[0] %>"
                   class="main-image"
-                  alt="<%= product.name %>"
+                  alt="image"
                 />
                 <img
                   src="/<%= product.image[1] %>"
                   class="hover-image"
-                  alt="<%= product.name %>"
+                  alt="image"
                 />
               </a>
 
@@ -217,13 +269,13 @@
                       </a>
                     </div>
                   </li>
+
                   <li>
                     <div class="quick-view-btn">
                       <a
                         href="#"
                         data-bs-toggle="modal"
                         data-bs-target="#productsQuickView"
-                        data-product-id="<%= product._id %>"
                       >
                         <i class="bx bx-search-alt"></i>
                         <span class="tooltip-label">Quick View</span>
@@ -232,7 +284,6 @@
                   </li>
                 </ul>
               </div>
-
               <% if (product.createdAt) { const createdAtDate = new
               Date(product.createdAt); const fiveDaysAgo = new Date();
               fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5); if (createdAtDate
@@ -242,8 +293,18 @@
             </div>
 
             <div class="products-content">
-               
-              <h3><a href="products-type-3.html"><%= product.name %></a></h3>
+              <div class="size-selection">
+                <div class="size-buttons">
+                  <button class="size-btn">S</button>
+                  <button class="size-btn">M</button>
+                  <button class="size-btn">L</button>
+                  <button class="size-btn">XL</button>
+                </div>
+              </div>
+
+              <h3>
+                <a href="/shopsingle/<%= product._id %>"><%= product.name %></a>
+              </h3>
               <div class="star-rating">
                 <i class="bx bxs-star"></i>
                 <i class="bx bxs-star"></i>
@@ -252,18 +313,31 @@
                 <i class="bx bxs-star"></i>
               </div>
               <div class="price">
-                <span class="old-price">Rs.3500</span>
+                <% if (product.discountedPrice) { %>
+                <span class="old-price">Rs.<%= product.originalPrice %></span>
+                <span class="new-price">Rs.<%= product.discountedPrice %></span>
+                <span class="products-discount"></span>
+                <% } else { %>
                 <span class="new-price">Rs.<%= product.price %></span>
-              </div>
-              <a href="cart.html" class="add-to-cart">Add to Cart</a>
-            </div>
 
+                <% } %>
+              </div>
+
+              <a
+                href="#"
+                class="add-to-cart"
+                data-product-id="<%= product._id %>"
+                data-product-name="<%= product.name %>"
+                >Add to Cart</a
+              >
+            </div>
+            <% if (product.discountedPrice) { %>
             <span class="products-discount">
-              <span> 20% OFF </span>
+              <span><%= product.discountPercentage %>% OFF</span>
             </span>
+            <% } %>
           </div>
         </div>
-
         <% }) %>
       </div>
     </div>
@@ -299,9 +373,9 @@
           <span class="pagination-ellipsis">...</span>
           <% } %>
           <a href="?page=<%= totalPages %>" class="pagination-number"
-            ><%= totalPages %></a>
+            ><%= totalPages %></a
           >
-          <% } %>
+          > <% } %>
         </div>
 
         <a
@@ -318,7 +392,6 @@
     </div>
     <% } %>
   </div>
-  
 
   <!-- Start QuickView Modal Area -->
   <div
@@ -635,6 +708,7 @@
     document.addEventListener("DOMContentLoaded", function () {
       // Initialize wishlist buttons
       initWishlistButtons();
+      initAddToCartButtons();
     });
 
     function initWishlistButtons() {
@@ -739,6 +813,116 @@
           notification.style.opacity = "0";
           setTimeout(() => notification.remove(), 300);
         });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const sizeButtons = document.querySelectorAll(".size-btn");
+
+      sizeButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          // Remove selected class from all buttons in the same group
+          const parentGroup = button.closest(".size-buttons");
+          parentGroup.querySelectorAll(".size-btn").forEach((btn) => {
+            btn.classList.remove("selected");
+          });
+
+          // Add selected class to clicked button
+          button.classList.add("selected");
+        });
+      });
+    });
+    function initAddToCartButtons() {
+      const addToCartButtons = document.querySelectorAll(".add-to-cart");
+
+      addToCartButtons.forEach((button) => {
+        button.addEventListener("click", function (e) {
+          e.preventDefault();
+
+          // Find the parent product box
+          const productBox = this.closest(".single-productsBox");
+
+          // Get product details
+          const productId = productBox
+            .querySelector(".wishlist-btn")
+            .getAttribute("data-product-id");
+
+          // Get selected size
+          const selectedSizeButton =
+            productBox.querySelector(".size-btn.selected");
+
+          if (!selectedSizeButton) {
+            showNotification("error", "Please select a size");
+            return;
+          }
+
+          const selectedSize = selectedSizeButton.textContent;
+
+          // Show loading state
+          this.innerHTML = '<i class="bx bx-loader bx-spin"></i> Adding...';
+          this.disabled = true;
+
+          // Send AJAX request to add to cart
+          fetch("/addTocart", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              productId: productId,
+              size: selectedSize,
+              quantity: 1, // Default quantity is 1, adjust if needed
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              // Restore button text
+              this.innerHTML = "Add to Cart";
+              this.disabled = false;
+
+              if (data.success) {
+                // Show success notification
+                showNotification("success", "Product added to cart");
+
+                // Update cart count in header
+                const cartCount = document.querySelector(".cart-count");
+                if (cartCount) {
+                  cartCount.textContent = data.cartCount;
+                }
+              } else {
+                // Handle different error scenarios
+                if (data.outOfStock) {
+                  showNotification(
+                    "error",
+                    data.message || `Size ${selectedSize} is out of stock`
+                  );
+                } else if (data.login_required) {
+                  // Redirect to login if needed
+                  window.location.href =
+                    "/login?redirect=" +
+                    encodeURIComponent(window.location.href);
+                } else {
+                  // Generic error message
+                  showNotification(
+                    "error",
+                    data.message || "Failed to add to cart"
+                  );
+                }
+              }
+            })
+            .catch((error) => {
+              // Restore button text
+              this.innerHTML = "Add to Cart";
+              this.disabled = false;
+
+              // Show error notification
+              showNotification(
+                "error",
+                "Failed to add to cart. Please try again."
+              );
+              console.error("Fetch error:", error);
+            });
+        });
+      });
     }
   </script>
 

@@ -56,6 +56,7 @@ router.post("/update-profile-image", logged, cropUpload.single('profileImage'), 
 router.get("/logout", userController.logout);
 router.get('/wallet',logged,profileController.loadWallet)
 router.get("/addaddress",logged,profileController.loadAddAddress)
+router.post("/addaddressincheckout",logged,productController.addAddressInCheckout)
 router.post("/add-address",logged,profileController.addAddress)
 router.get('/editaddress/:addressId',logged,profileController.loadEditAddress)
 router.post('/editaddress/:addressId',logged,profileController.editAddress)

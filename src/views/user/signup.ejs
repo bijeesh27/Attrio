@@ -16,152 +16,507 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <link rel="stylesheet" href="/user/assets/css/substyle.css" />
+    <style>
+      body, html {
+        height: 100%;
+        margin: 0;
+        font-family: 'Montserrat', sans-serif;
+        background-color: #f8f9fa;
+      }
+
+      /* Split layout design */
+      .login-container {
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      /* Left side - image side */
+      .image-side {
+        flex: 1;
+        background: url("/api/placeholder/1920/1080") no-repeat center center;
+        background-size: cover;
+        position: relative;
+        display: none;
+      }
+
+      /* Dark overlay on image */
+      .image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(to right, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 40px;
+        color: white;
+      }
+
+      .brand-title {
+        font-size: 40px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .brand-subtitle {
+        font-size: 18px;
+        font-weight: 300;
+        text-align: center;
+        max-width: 80%;
+        line-height: 1.6;
+      }
+
+      /* Right side - form side */
+      .form-side {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 30px;
+        background-color: white;
+        position: relative;
+      }
+
+      .login-form-container {
+        width: 100%;
+        max-width: 400px;
+        padding: 30px;
+      }
+
+      .form-header {
+        margin-bottom: 30px;
+        text-align: center;
+      }
+
+      .form-header h2 {
+        font-size: 28px;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .form-header p {
+        color: #777;
+        font-size: 15px;
+      }
+
+      /* Form elements */
+      .form-group {
+        margin-bottom: 20px;
+        position: relative;
+      }
+
+      .form-control {
+        height: 55px;
+        border-radius: 0;
+        border: none;
+        border-bottom: 2px solid #e0e0e0;
+        background-color: transparent;
+        padding: 10px 0;
+        font-size: 15px;
+        transition: all 0.3s;
+        box-shadow: none !important;
+      }
+
+      .form-control:focus {
+        border-color: #f53f85;
+      }
+
+      .form-label {
+        position: absolute;
+        left: 0;
+        top: 18px;
+        font-size: 15px;
+        color: #999;
+        transition: all 0.3s;
+        pointer-events: none;
+      }
+
+      .form-control:focus ~ .form-label,
+      .form-control:not(:placeholder-shown) ~ .form-label {
+        top: -10px;
+        font-size: 12px;
+        color: #f53f85;
+      }
+
+      .form-control::placeholder {
+        color: transparent;
+      }
+
+      /* Button styles */
+      .submit-btn {
+        width: 100%;
+        height: 50px;
+        background-color: #f53f85;
+        border: none;
+        border-radius: 4px;
+        color: white;
+        font-weight: 500;
+        font-size: 16px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        transition: all 0.3s;
+        box-shadow: 0 4px 8px rgba(245, 63, 133, 0.2);
+      }
+
+      .submit-btn:hover {
+        background-color: #e0306e;
+        box-shadow: 0 6px 12px rgba(245, 63, 133, 0.3);
+      }
+
+      /* Google button */
+      .google-btn {
+        width: 100%;
+        height: 50px;
+        background-color: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        color: #555;
+        font-weight: 500;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 25px;
+        transition: all 0.3s;
+        text-decoration: none;
+      }
+
+      .google-btn:hover {
+        background-color: #f8f8f8;
+        border-color: #ddd;
+      }
+
+      .google-icon {
+        margin-right: 10px;
+        font-size: 18px;
+      }
+
+      .google-icon i {
+        background: conic-gradient(
+            from -45deg,
+            #ea4335 110deg,
+            #4285f4 90deg 180deg,
+            #34a853 180deg 270deg,
+            #fbbc05 270deg
+          )
+          73% 55%/150% 150% no-repeat;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        -webkit-text-fill-color: transparent;
+      }
+
+      /* Divider */
+      .divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 25px 0;
+      }
+
+      .divider::before,
+      .divider::after {
+        content: "";
+        flex: 1;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      .divider span {
+        padding: 0 15px;
+        color: #999;
+        font-size: 14px;
+      }
+
+      /* Links */
+      .auth-links {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      .auth-link {
+        color: #777;
+        text-decoration: none;
+        font-size: 14px;
+        transition: all 0.3s;
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      .auth-link:hover {
+        color: #f53f85;
+      }
+
+      /* Error messages */
+      .error-text {
+        color: #e74c3c;
+        font-size: 12px;
+        margin-top: 5px;
+        display: none;
+      }
+
+      .is-invalid {
+        border-color: #e74c3c !important;
+      }
+
+      /* Flash messages */
+      .flash-message {
+        display: flex;
+        align-items: center;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+        font-weight: 500;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        animation: slideIn 0.4s ease-in-out;
+        
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        max-width: 400px;
+        z-index: 1000;
+      }
+
+      .flash-message svg {
+        width: 20px;
+        height: 20px;
+        margin-right: 12px;
+        flex-shrink: 0;
+      }
+
+      .error-message {
+        background-color: #fff;
+        color: #e74c3c;
+        border-left: 4px solid #e74c3c;
+      }
+
+      .success-message {
+        background-color: #fff;
+        color: #2ecc71;
+        border-left: 4px solid #2ecc71;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translate(-50%, -20px);
+        }
+        to {
+          opacity: 1;
+          transform: translate(-50%, 0);
+        }
+      }
+
+      /* Alert for validation errors */
+      .alert {
+        padding: 12px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+        background-color: #fef5f5;
+        border: 1px solid #fadede;
+        color: #e74c3c;
+      }
+
+      /* Responsive */
+      @media (min-width: 992px) {
+        .image-side {
+          display: block;
+        }
+      }
+
+      /* Footer branding */
+      .login-footer {
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        color: #999;
+        font-size: 12px;
+      }
+
+      /* Mobile logo for small screens */
+      .mobile-logo {
+        text-align: center;
+        margin-bottom: 30px;
+        display: block;
+      }
+
+      .mobile-logo h1 {
+        font-size: 28px;
+        font-weight: 700;
+        color: #f53f85;
+        margin: 0;
+      }
+
+      @media (min-width: 992px) {
+        .mobile-logo {
+          display: none;
+        }
+      }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   </head>
   <body>
-
     <% if (error_msg && error_msg.length > 0) { %>
-        <div class="flash-message error-message" id="flash-message">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="feather feather-alert-circle"
-          >
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
-          <span><%= error_msg %></span>
+    <div class="flash-message error-message" id="flash-message">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <span><%= error_msg %></span>
+    </div>
+    <% } %> <% if (success_msg && success_msg.length > 0) { %>
+    <div class="flash-message success-message" id="flash-message">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+      <span><%= success_msg %></span>
+    </div>
+    <%}%>
+
+    <div class="login-container">
+      <!-- Left side with background image and branding -->
+      <div class="image-side">
+        <div class="image-overlay">
+          <div class="brand-title">ATTIRO FASHIONS</div>
+          <p class="brand-subtitle">Elevate your style with Attiro. Premium fashion for the modern individual.</p>
         </div>
-        <% } %> <% if (success_msg && success_msg.length > 0) { %>
-        <div class="flash-message success-message" id="flash-message">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="feather feather-check-circle"
+      </div>
+      
+      <!-- Right side with signup form -->
+      <div class="form-side">
+        <div class="login-form-container">
+          <!-- Mobile logo (shows on small screens only) -->
+          <div class="mobile-logo">
+            <h1>ATTIRO</h1>
+          </div>
+          
+          <div class="form-header">
+            <h2>Create Your Account</h2>
+            <p>Join us to explore our premium fashion collection</p>
+          </div>
+
+          <% if (locals.errors && errors.length > 0) { %>
+          <div class="alert">
+            <% errors.forEach(error => { %>
+            <div><%= error %></div>
+            <% }) %>
+          </div>
+          <% } %>
+
+          <a href="/auth/google" class="google-btn">
+            <span class="google-icon"><i class="fab fa-google"></i></span>
+            <span>Sign up with Google</span>
+          </a>
+
+          <div class="divider">
+            <span>OR</span>
+          </div>
+
+          <form
+            id="registerForm"
+            class="login-form"
+            action="/register"
+            method="post"
+            novalidate
           >
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-          </svg>
-          <span><%= success_msg %></span>
-        </div>
-        <%}%>
-    <div class="bg-wrapper">
-      <div class="blur-overlay">
-        <div class="login-container">
-          <section class="login-area">
-            <div class="login-content">
-              <h2>Create Your Account</h2>
-
-              <% if (locals.errors && errors.length > 0) { %>
-              <div class="alert alert-danger">
-                <% errors.forEach(error => { %>
-                <div><%= error %></div>
-                <% }) %>
-              </div>
-              <% } %>
-
-              <a href="/auth/google" class="google-btn">
-                <span class="google-icon"><i class="fab fa-google"></i></span>
-                <span>Sign up with Google</span>
-              </a>
-
-              <div class="divider">
-                <span>OR</span>
-              </div>
-
-              <form
-                id="registerForm"
-                class="login-form"
-                action="/register"
-                method="post"
-                novalidate
-              >
-                <div class="form-group">
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="username"
-                    placeholder="Enter your Name"
-                    name="username"
-                    value="<%= locals.input ? input.username : '' %>"
-                  />
-                  <small id="nameError" class="error-text"
-                    >Name is required</small
-                  >
-                </div>
-
-                <div class="form-group">
-                  <input
-                    type="email"
-                    class="form-control"
-                    id="email"
-                    placeholder="Enter your email Address"
-                    name="email"
-                    value="<%= locals.input ? input.email : '' %>"
-                  />
-                  <small id="emailError" class="error-text"
-                    >Please enter a valid email address</small
-                  >
-                </div>
-
-                <div class="form-group">
-                  <input
-                    type="tel"
-                    class="form-control"
-                    id="number"
-                    placeholder="Enter your number"
-                    name="number"
-                    value="<%= locals.input ? input.number : '' %>"
-                  />
-                  <small id="numberError" class="error-text"
-                    >Please enter a valid phone number</small
-                  >
-                </div>
-
-                <div class="form-group">
-                  <input
-                    type="password"
-                    class="form-control"
-                    id="password"
-                    placeholder="Enter your password"
-                    name="password"
-                  />
-                  <small id="passwordError" class="error-text"
-                    >Password must be at least 6 characters</small
-                  >
-                </div>
-
-                <div class="form-group">
-                  <input
-                    type="password"
-                    class="form-control"
-                    id="confirmPassword"
-                    placeholder="Confirm Password"
-                    name="confirmPassword"
-                  />
-                  <small id="confirmPasswordError" class="error-text"
-                    >Passwords do not match</small
-                  >
-                </div>
-
-                <button type="submit" class="default-btn">SignUp</button>
-                <a href="/login" class="forgot-password register-link"
-                  >Do you have an account? Login</a
-                >
-              </form>
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control"
+                id="username"
+                placeholder=" "
+                name="username"
+                value="<%= locals.input ? input.username : '' %>"
+              />
+              <label for="username" class="form-label">Full Name</label>
+              <small id="nameError" class="error-text">Name is required</small>
             </div>
-          </section>
+
+            <div class="form-group">
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                placeholder=" "
+                name="email"
+                value="<%= locals.input ? input.email : '' %>"
+              />
+              <label for="email" class="form-label">Email Address</label>
+              <small id="emailError" class="error-text">Please enter a valid email address</small>
+            </div>
+
+            <div class="form-group">
+              <input
+                type="tel"
+                class="form-control"
+                id="number"
+                placeholder=" "
+                name="number"
+                value="<%= locals.input ? input.number : '' %>"
+              />
+              <label for="number" class="form-label">Phone Number</label>
+              <small id="numberError" class="error-text">Please enter a valid phone number</small>
+            </div>
+
+            <div class="form-group">
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                placeholder=" "
+                name="password"
+              />
+              <label for="password" class="form-label">Password</label>
+              <small id="passwordError" class="error-text">Password must be at least 6 characters</small>
+            </div>
+
+            <div class="form-group">
+              <input
+                type="password"
+                class="form-control"
+                id="confirmPassword"
+                placeholder=" "
+                name="confirmPassword"
+              />
+              <label for="confirmPassword" class="form-label">Confirm Password</label>
+              <small id="confirmPasswordError" class="error-text">Passwords do not match</small>
+            </div>
+
+            <button type="submit" class="submit-btn">Create Account</button>
+
+            <div class="auth-links">
+              <a href="/login" class="auth-link">Already have an account? Sign In</a>
+            </div>
+          </form>
+          
+          <div class="login-footer">
+            © 2025 Attiro Fashions. All rights reserved.
+          </div>
         </div>
       </div>
     </div>
@@ -425,11 +780,15 @@
           }
         });
       });
+
       function removeFlashMessage() {
         const flashMessage = document.getElementById("flash-message");
         if (flashMessage) {
           setTimeout(() => {
-            flashMessage.remove();
+            flashMessage.style.opacity = "0";
+            setTimeout(() => {
+              flashMessage.remove();
+            }, 300);
           }, 3000);
         }
       }

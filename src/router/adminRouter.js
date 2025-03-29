@@ -61,6 +61,8 @@ router.get("/search",isAdmin,userController.loadUser)
 router.get("/productsearch",isAdmin,productController.loadProducts)
 router.get('/categorysearch',isAdmin,categoryController.loadCategories)
 router.get("/ordersearch",isAdmin,orderController.loadOrders)
+router.get('/couponsearch',couponController.loadCoupon)
+router.get('/offersearch',offerController.loadOffer)
 router.get("/new-arrivals")
 router.get("/logout",adminController.logout)
 

@@ -297,7 +297,10 @@
         <% } %>
       </div>
 
-              <a href="cart.html" class="add-to-cart">Add to Cart</a>
+      <a href="#" class="add-to-cart" 
+   data-product-id="<%= product._id %>" 
+   data-product-name="<%= product.name %>"
+>Add to Cart</a>
             </div>
             <% if (product.discountedPrice) { %>
             <span class="products-discount">
@@ -540,190 +543,8 @@
   </div>
   <!-- End Search Overlay -->
  
-  <!-- Start Shopping Cart Modal -->
-  <div
-    class="modal right fade shoppingCartModal"
-    id="shoppingCartModal"
-    tabindex="-1"
-    role="dialog"
-  >
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <button
-          type="button"
-          class="close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        >
-          <span aria-hidden="true"><i class="bx bx-x"></i></span>
-        </button>
 
-        <div class="modal-body">
-          <h3>My Cart (3)</h3>
 
-          <div class="products-cart-content">
-            <div class="products-cart">
-              <div class="products-image">
-                <a href="#"
-                  ><img src="user/assets/img/products/img1.jpg" alt="image"
-                /></a>
-              </div>
-
-              <div class="products-content">
-                <h3><a href="#">Long Sleeve Leopard T-Shirt</a></h3>
-                <span>Blue / XS</span>
-                <div class="products-price">
-                  <span>1</span>
-                  <span>x</span>
-                  <span class="price">$250.00</span>
-                </div>
-                <a href="#" class="remove-btn"><i class="bx bx-trash"></i></a>
-              </div>
-            </div>
-
-            <div class="products-cart">
-              <div class="products-image">
-                <a href="#"
-                  ><img src="user/assets/img/products/img2.jpg" alt="image"
-                /></a>
-              </div>
-
-              <div class="products-content">
-                <h3><a href="#">Causal V-Neck Soft Raglan</a></h3>
-                <span>Blue / XS</span>
-                <div class="products-price">
-                  <span>1</span>
-                  <span>x</span>
-                  <span class="price">$200.00</span>
-                </div>
-                <a href="#" class="remove-btn"><i class="bx bx-trash"></i></a>
-              </div>
-            </div>
-
-            <div class="products-cart">
-              <div class="products-image">
-                <a href="#"
-                  ><img src="user/assets/img/products/img3.jpg" alt="image"
-                /></a>
-              </div>
-
-              <div class="products-content">
-                <h3><a href="#">Hanes Men's Pullover</a></h3>
-                <span>Blue / XS</span>
-                <div class="products-price">
-                  <span>1</span>
-                  <span>x</span>
-                  <span class="price">$200.00</span>
-                </div>
-                <a href="#" class="remove-btn"><i class="bx bx-trash"></i></a>
-              </div>
-            </div>
-          </div>
-
-          <div class="products-cart-subtotal">
-            <span>Subtotal</span>
-
-            <span class="subtotal">$524.00</span>
-          </div>
-
-          <div class="products-cart-btn">
-            <a href="#" class="default-btn">Proceed to Checkout</a>
-            <a href="#" class="optional-btn">View Shopping Cart</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- End Shopping Cart Modal -->
-
-  <!-- Start Wishlist Modal -->
-  <div
-    class="modal right fade shoppingWishlistModal"
-    id="shoppingWishlistModal"
-    tabindex="-1"
-    role="dialog"
-  >
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <button
-          type="button"
-          class="close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        >
-          <span aria-hidden="true"><i class="bx bx-x"></i></span>
-        </button>
-
-        <div class="modal-body">
-          <h3>My Wish List (3)</h3>
-
-          <div class="products-cart-content">
-            <div class="products-cart">
-              <div class="products-image">
-                <a href="#"
-                  ><img src="user/assets/img/products/img1.jpg" alt="image"
-                /></a>
-              </div>
-
-              <div class="products-content">
-                <h3><a href="#">Long Sleeve Leopard T-Shirt</a></h3>
-                <span>Blue / XS</span>
-                <div class="products-price">
-                  <span>1</span>
-                  <span>x</span>
-                  <span class="price">$250.00</span>
-                </div>
-                <a href="#" class="remove-btn"><i class="bx bx-trash"></i></a>
-              </div>
-            </div>
-
-            <div class="products-cart">
-              <div class="products-image">
-                <a href="#"
-                  ><img src="user/assets/img/products/img2.jpg" alt="image"
-                /></a>
-              </div>
-
-              <div class="products-content">
-                <h3><a href="#">Causal V-Neck Soft Raglan</a></h3>
-                <span>Blue / XS</span>
-                <div class="products-price">
-                  <span>1</span>
-                  <span>x</span>
-                  <span class="price">$200.00</span>
-                </div>
-                <a href="#" class="remove-btn"><i class="bx bx-trash"></i></a>
-              </div>
-            </div>
-
-            <div class="products-cart">
-              <div class="products-image">
-                <a href="#"
-                  ><img src="user/assets/img/products/img3.jpg" alt="image"
-                /></a>
-              </div>
-
-              <div class="products-content">
-                <h3><a href="#">Hanes Men's Pullover</a></h3>
-                <span>Blue / XS</span>
-                <div class="products-price">
-                  <span>1</span>
-                  <span>x</span>
-                  <span class="price">$200.00</span>
-                </div>
-                <a href="#" class="remove-btn"><i class="bx bx-trash"></i></a>
-              </div>
-            </div>
-          </div>
-
-          <div class="products-cart-btn">
-            <a href="#" class="optional-btn">View Shopping Cart</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- End Wishlist Modal -->
 
   <!-- Start Products Filter Modal Area -->
   <div
@@ -799,10 +620,10 @@
   window.location.href = currentUrl.toString();
 }
 
-// Add this to your script.js file or inline in your home page
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize wishlist buttons
-    initWishlistButtons();
+    initAddToCartButtons();
+    initWishlistButtons(); // Existing wishlist initialization
 });
 
 function initWishlistButtons() {
@@ -916,6 +737,98 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+function initAddToCartButtons() {
+  const addToCartButtons = document.querySelectorAll(".add-to-cart");
+
+  addToCartButtons.forEach((button) => {
+    button.addEventListener("click", function (e) {
+      e.preventDefault();
+
+      // Find the parent product box
+      const productBox = this.closest(".single-productsBox");
+
+      // Get product details
+      const productId = productBox
+        .querySelector(".wishlist-btn")
+        .getAttribute("data-product-id");
+
+      // Get selected size
+      const selectedSizeButton = productBox.querySelector(".size-btn.selected");
+
+      if (!selectedSizeButton) {
+        showNotification("error", "Please select a size");
+        return;
+      }
+
+      const selectedSize = selectedSizeButton.textContent;
+
+      // Show loading state
+      this.innerHTML = '<i class="bx bx-loader bx-spin"></i> Adding...';
+      this.disabled = true;
+
+      // Send AJAX request to add to cart
+      fetch("/addTocart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          productId: productId,
+          size: selectedSize,
+          quantity: 1, // Default quantity is 1, adjust if needed
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // Restore button text
+          this.innerHTML = "Add to Cart";
+          this.disabled = false;
+
+          if (data.success) {
+            // Show success notification
+            showNotification("success", "Product added to cart");
+
+            // Update cart count in header
+            const cartCount = document.querySelector(".cart-count");
+            if (cartCount) {
+              cartCount.textContent = data.cartCount;
+            }
+          } else {
+            // Handle different error scenarios
+            if (data.outOfStock) {
+              showNotification(
+                "error",
+                data.message || `Size ${selectedSize} is out of stock`
+              );
+            } else if (data.login_required) {
+              // Redirect to login if needed
+              window.location.href =
+                "/login?redirect=" + encodeURIComponent(window.location.href);
+            } else {
+              // Generic error message
+              showNotification(
+                "error",
+                data.message || "Failed to add to cart"
+              );
+            }
+          }
+        })
+        .catch((error) => {
+          // Restore button text
+          this.innerHTML = "Add to Cart";
+          this.disabled = false;
+
+          // Show error notification
+          showNotification(
+            "error",
+            "Failed to add to cart. Please try again."
+          );
+          console.error("Fetch error:", error);
+        });
+    });
+  });
+}
 
 </script>
 </body>

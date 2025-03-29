@@ -279,7 +279,7 @@ const loadHome = async (req, res) => {
     const category = await Category.find({ status: true });
     const activeCategories = await Category.find({ status: true });
     const activeCategoryIds = activeCategories.map((category) => category._id);
-    const product = await Product.find({
+    const products = await Product.find({
       status: true,
       category: { $in: activeCategoryIds },
     })
@@ -289,7 +289,7 @@ const loadHome = async (req, res) => {
       .limit(limit);
 
     res.render("home", {
-      product,
+      products,
       currentPage: page,
       totalPages,
       totalProducts,

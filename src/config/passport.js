@@ -14,17 +14,33 @@ passport.use(
 
     async (accessToken, refreshToken, profile, done) => {
       try {
-        console.log("hiii");
-        let user = await User.findOne({googleId:profile.id})
-        if(user){
-          return done(null,user)
-        }else{
-          user=new User({
-            username:profile.displayName,
-            email:profile.emails[0].value,
+        console.log("Google auth attempt");
+        // First check if user exists with Google ID
+        let user = await User.findOne({ email: profile.email });
+        
+        if (user) {
+          return done(null, user);
+        }
+        
+        // If no user with this Google ID, check if the email exists
+        const email = profile.emails[0].value;
+        user = await User.findOne({ email: email });
+        
+        if (user) {
+          // User exists with this email but not connected to Google
+          // Update the user to link their Google account
+          user.googleId = profile.id;
+          await user.save();
+          return done(null, user);
+        } else {
+          // Create a completely new user
+          user = new User({
+            googleId: profile.id,
+            username: profile.displayName,
+            email: email,
           });
           await user.save();
-          return done(null,user)
+          return done(null, user);
         }
       } catch (error) {
         return done(error, null);

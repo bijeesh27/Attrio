@@ -117,11 +117,11 @@
 
                         <td class="quantity-col">
                           <div class="quantity-selector">
-                            <button type="button" class="quantity-btn minus-btn" onclick="updateQuantity('<%= item.productId._id %>', '<%= item.size %>', -1, '<%= item.stock %>')">
+                            <button type="button" class="quantity-btn minus-btn" onclick="updateQuantity('<%= item.productId._id %>', '<%= item.size %>', -1, '<%= item.stock %>','<%= item.offerPrice %>')">
                               <i class="bx bx-minus"></i>
                             </button>
                             <input type="text" value="<%= item.quantity %>" id="quantity-<%= item.productId._id %>-<%= item.size %>" min="1" max="5" class="quantity-input" readonly>
-                            <button type="button" class="quantity-btn plus-btn" onclick="updateQuantity('<%= item.productId._id %>', '<%= item.size %>', 1, '<%= item.stock %>')">
+                            <button type="button" class="quantity-btn plus-btn" onclick="updateQuantity('<%= item.productId._id %>', '<%= item.size %>', 1, '<%= item.stock %>','<%= item.offerPrice %>')">
                               <i class="bx bx-plus"></i>
                             </button>
                           </div>
@@ -198,7 +198,7 @@
 <script>
 
 
-function updateQuantity(productId, size, change, stock) {
+function updateQuantity(productId, size, change, stock,offerPrice) {
   const quantityInput = document.getElementById(`quantity-${productId}-${size}`);
   let quantity = parseInt(quantityInput.value) + change;
 
@@ -238,6 +238,7 @@ function updateQuantity(productId, size, change, stock) {
       productId: productId,
       size: size,
       quantity: quantity,
+      offerPrice:offerPrice
     }),
   })
     .then(response => response.json())

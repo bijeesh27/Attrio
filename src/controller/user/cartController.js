@@ -171,40 +171,63 @@ const addTOcart = async (req, res) => {
   try {
     const userId = req.session.userId;
     if (!userId) {
-      return res
-        .status(401)
-        .json({ success: false, message: "User not logged in" });
+      return res.status(401).json({
+        success: false,
+        login_required: true,
+        message: "User not logged in",
+      });
     }
 
     const { productId, quantity, size } = req.body;
 
     // Validate inputs
     if (!productId || !quantity || !size) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Missing required fields" });
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields",
+      });
     }
 
+    // Find the product and check if it exists and is active
     const product = await Product.findOne({ _id: productId, status: true });
     if (!product) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Product not found or unavailable" });
+      return res.status(404).json({
+        success: false,
+        message: "Product not found or unavailable",
+      });
+    }
+
+    // Check stock availability for the specific size
+    const stockEntry = product.stock.find((stock) => stock.size === size);
+    if (!stockEntry || stockEntry.quantity < quantity) {
+      return res.status(400).json({
+        success: false,
+        outOfStock: true,
+        message: `Size ${size} is out of stock or insufficient quantity available`,
+      });
     }
 
     const total = quantity * product.price;
     const existingCart = await Cart.findOne({ userId: userId });
 
     if (existingCart) {
-      // Check if this product with same size already exists in cart
+      // Check if this product with the same size already exists in the cart
       const existingItemIndex = existingCart.item.findIndex(
         (item) => item.productId.toString() === productId && item.size === size
       );
 
       if (existingItemIndex !== -1) {
-        // Product with same size exists, update quantity
-        existingCart.item[existingItemIndex].quantity = quantity;
-        existingCart.item[existingItemIndex].total = quantity * product.price;
+        // Product with the same size exists, update quantity
+        const newQuantity = existingCart.item[existingItemIndex].quantity + quantity;
+        if (newQuantity > stockEntry.quantity) {
+          return res.status(400).json({
+            success: false,
+            outOfStock: true,
+            message: `Requested quantity for size ${size} exceeds available stock`,
+          });
+        }
+        existingCart.item[existingItemIndex].quantity = newQuantity;
+        existingCart.item[existingItemIndex].total = newQuantity * product.price;
       } else {
         // Product doesn't exist in cart, add new item
         const item = {
@@ -212,7 +235,7 @@ const addTOcart = async (req, res) => {
           quantity,
           size,
           price: product.price,
-          stock: product.totalstock,
+          stock: stockEntry.quantity, // Store the available stock for this size
           total,
         };
         existingCart.item.push(item);
@@ -231,7 +254,7 @@ const addTOcart = async (req, res) => {
         quantity,
         size,
         price: product.price,
-        stock: product.totalstock,
+        stock: stockEntry.quantity, // Store the available stock for this size
         total,
       };
 
@@ -266,7 +289,7 @@ const addTOcart = async (req, res) => {
 const updateCartQuantity = async (req, res) => {
   try {
     const userId = req.session.userId;
-    const { productId, quantity, size } = req.body;
+    const { productId, quantity, size,offerPrice } = req.body;
 
     // Validate inputs
     if (!productId || !quantity || !size || quantity < 1) {
@@ -325,7 +348,7 @@ const updateCartQuantity = async (req, res) => {
 
     // Update quantity and total for this item
     cart.item[itemIndex].quantity = quantity;
-    cart.item[itemIndex].total = quantity * product.price;
+    cart.item[itemIndex].total = quantity *(offerPrice|| product.price);
 
     // Recalculate cart total
     cart.cartTotal = cart.item.reduce((acc, curr) => acc + curr.total, 0);
