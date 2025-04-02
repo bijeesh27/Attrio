@@ -6,7 +6,7 @@ const loadOrders = async (req, res) => {
   try {
     const searchQuery = req.query.query || "";
     const page = parseInt(req.query.page) || 1;
-    const limit = 5;
+    const limit = 10;
 
     // Update search filter to match fields in your order schema
     const searchFilter = searchQuery
@@ -182,6 +182,7 @@ const updateReturn = async (req, res) => {
 
       
       stock.quantity += returnedItem.quantity;
+      product.totalstock+=returnedItem.quantity
 
       
       let refundAmount = returnedItem.totalProductPrice;

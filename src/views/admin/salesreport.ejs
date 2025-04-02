@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/admin/header') %>
+    <title>Sales Report - Attiro Fashions Admin</title>
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+    <!-- Date Picker CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        .filter-container {
+            margin-bottom: 20px;
+        }
+        .filter-container select, .filter-container button, .filter-container input {
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .date-picker-container {
+            display: none;
+            margin-top: 10px;
+        }
+        .table-responsive {
+            margin-top: 20px;
+        }
+        .download-btn {
+            margin-left: 10px;
+        }
+        .stats-card {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #4e73df;
+        }
+        .stats-card h5 {
+            margin-bottom: 0;
+            font-weight: 600;
+        }
+        .stats-card p {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0;
+            color: #5a5c69;
+        }
+        .stats-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .stats-col {
+            flex: 1;
+            min-width: 200px;
+            margin-right: 15px;
+            margin-bottom: 15px;
+        }
+        .stats-col:last-child {
+            margin-right: 0;
+        }
+        @media (max-width: 768px) {
+            .stats-col {
+                flex: 0 0 100%;
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body data-sidebar="dark">
+    <div id="layout-wrapper">
+        <%- include('../partials/admin/header') %>
+        <div class="main-content">
+            <div class="page-content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box d-flex align-items-center justify-content-between">
+                                <h4 class="mb-0">Sales Report</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="filter-container">
+                                        <select id="reportType" class="form-control d-inline-block w-auto">
+                                            <option value="daily" <%= reportType === 'daily' ? 'selected' : '' %>>Daily</option>
+                                            <option value="weekly" <%= reportType === 'weekly' ? 'selected' : '' %>>Weekly</option>
+                                            <option value="monthly" <%= reportType === 'monthly' ? 'selected' : '' %>>Monthly</option>
+                                            <option value="yearly" <%= reportType === 'yearly' ? 'selected' : '' %>>Yearly</option>
+                                            <option value="custom" <%= reportType === 'custom' ? 'selected' : '' %>>Custom Date Range</option>
+                                        </select>
+                                        
+                                        <div id="datePickers" class="date-picker-container" <%= reportType === 'custom' ? 'style="display: block;"' : '' %>>
+                                            <input type="date" id="startDate" class="form-control d-inline-block w-auto" value="<%= startDate %>" placeholder="Start Date">
+                                            <input type="date" id="endDate" class="form-control d-inline-block w-auto" value="<%= endDate %>" placeholder="End Date">
+                                        </div>
+                                        
+                                        <button onclick="generateReport()" class="btn btn-primary">Generate Report</button>
+                                        <button onclick="downloadPDF()" class="btn btn-success download-btn">Download PDF</button>
+                                        <button onclick="downloadExcel()" class="btn btn-info download-btn">Download Excel</button>
+                                    </div>
+                                    
+                                    <!-- Overall Stats Section -->
+                                    <div class="stats-row">
+                                        <div class="stats-col">
+                                            <div class="stats-card">
+                                                <h5>Total Orders</h5>
+                                                <p><%= overallStats.salesCount %></p>
+                                            </div>
+                                        </div>
+                                        <div class="stats-col">
+                                            <div class="stats-card">
+                                                <h5>Total Order Amount</h5>
+                                                <p>₹<%= overallStats.totalOrderAmount.toFixed(2) %></p>
+                                            </div>
+                                        </div>
+                                        <div class="stats-col">
+                                            <div class="stats-card">
+                                                <h5>Total Discounts</h5>
+                                                <p>₹<%= overallStats.totalDiscounts.toFixed(2) %></p>
+                                            </div>
+                                        </div>
+                                        <div class="stats-col">
+                                            <div class="stats-card">
+                                                <h5>Net Sales</h5>
+                                                <p>₹<%= overallStats.netSales.toFixed(2) %></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="table-responsive">
+                                        <table id="salesTable" class="table table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Order Number</th>
+                                                    <th>Date</th>
+                                                    <th>Customer</th>
+                                                    <th>Total Amount</th>
+                                                    <th>Coupon Code</th>
+                                                    <th>Discount</th>
+                                                    <th>Final Amount</th>
+                                                    <th>Payment Method</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% orders.forEach(order => { %>
+                                                    <tr>
+                                                        <td><%= order.orderNumber %></td>
+                                                        <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
+                                                        <td><%= order.userId ? order.userId.name : 'Guest' %></td>
+                                                        <td>₹<%= order.orderAmount.toFixed(2) %></td>
+                                                        <td><%= order.couponCode || 'N/A' %></td>
+                                                        <td>₹<%= (order.couponDiscount || 0).toFixed(2) %></td>
+                                                        <td>₹<%= (order.orderAmount - (order.couponDiscount || 0)).toFixed(2) %></td>
+                                                        <td><%= order.paymentMethod %></td>
+                                                        <td><%= order.orderStatus %></td>
+                                                    </tr>
+                                                <% }) %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <%- include('../partials/admin/footer') %>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        $(document).ready(function() {
+            $('#salesTable').DataTable({
+                pageLength: 10,
+                responsive: true
+            });
+            
+            // Show/hide date pickers based on report type
+            $('#reportType').change(function() {
+                if ($(this).val() === 'custom') {
+                    $('#datePickers').show();
+                } else {
+                    $('#datePickers').hide();
+                }
+            });
+        });
+
+        function generateReport() {
+            const reportType = $('#reportType').val();
+            let url = `/admin/salesreport?type=${reportType}`;
+            
+            if (reportType === 'custom') {
+                const startDate = $('#startDate').val();
+                const endDate = $('#endDate').val();
+                
+                if (!startDate || !endDate) {
+                    alert('Please select both start and end dates');
+                    return;
+                }
+                
+                url += `&startDate=${startDate}&endDate=${endDate}`;
+            }
+            
+            window.location.href = url;
+        }
+
+        function downloadPDF() {
+            const reportType = $('#reportType').val();
+            let url = `/admin/salesreport/download/pdf?type=${reportType}`;
+            
+            if (reportType === 'custom') {
+                const startDate = $('#startDate').val();
+                const endDate = $('#endDate').val();
+                
+                if (!startDate || !endDate) {
+                    alert('Please select both start and end dates');
+                    return;
+                }
+                
+                url += `&startDate=${startDate}&endDate=${endDate}`;
+            }
+            
+            window.location.href = url;
+        }
+
+        function downloadExcel() {
+            const reportType = $('#reportType').val();
+            let url = `/admin/salesreport/download/excel?type=${reportType}`;
+            
+            if (reportType === 'custom') {
+                const startDate = $('#startDate').val();
+                const endDate = $('#endDate').val();
+                
+                if (!startDate || !endDate) {
+                    alert('Please select both start and end dates');
+                    return;
+                }
+                
+                url += `&startDate=${startDate}&endDate=${endDate}`;
+            }
+            
+            window.location.href = url;
+        }
+    </script>
+</body>
+</html>

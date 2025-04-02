@@ -7,6 +7,7 @@ const userController=require("../controller/admin/userController")
 const orderController=require("../controller/admin/orderController")
 const couponController=require('../controller/admin/couponController')
 const offerController=require('../controller/admin/offerController')
+const salesreportController=require('../controller/admin/salesreportController')
 const multer=require("multer");
 const { isAdmin, isAdminLogged } = require("../middleware/adminMiddleware");
 const { logged } = require("../middleware/userMiddleware");
@@ -48,14 +49,10 @@ router.get('/editoffer/:offerId',isAdmin,offerController.loadEditOffer)
 router.post('/updateoffer/:offerId',isAdmin,offerController.editOffer)
 router.post('/blockoffer/:offerId',isAdmin,offerController.blockOffer)
 
-router.get('/reports/daily',isAdmin,adminController.dailyReport);
-router.get('/reports/weekly',isAdmin,adminController.weeklyReport);
-router.get('/reports/monthly',isAdmin,adminController.monthlyReport);
-router.get('/reports/yearly',isAdmin,adminController.yearlyReport);
-router.get('/reports/daily/download',isAdmin,adminController.dailyReport);
-router.get('/reports/weekly/download',isAdmin,adminController.weeklyReport);
-router.get('/reports/monthly/download',isAdmin,adminController.monthlyReport);
-router.get('/reports/yearly/download',isAdmin,adminController.yearlyReport);
+
+router.get('/salesreport',isAdmin, salesreportController.getSalesReport);
+router.get('/salesreport/download/pdf',isAdmin, salesreportController.downloadPDF);
+router.get('/salesreport/download/excel',isAdmin, salesreportController.downloadExcel);
 
 router.get("/search",isAdmin,userController.loadUser)
 router.get("/productsearch",isAdmin,productController.loadProducts)

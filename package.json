@@ -12,10 +12,12 @@
   "dependencies": {
     "apexcharts": "^4.5.0",
     "bcrypt": "^5.1.1",
+    "chart.js": "^4.4.8",
     "connect-flash": "^0.1.1",
     "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
     "excel4node": "^1.8.2",
+    "exceljs": "^4.4.0",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
     "moment": "^2.30.1",

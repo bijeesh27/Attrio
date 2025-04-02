@@ -373,7 +373,7 @@
                 <div class="card-number">•••• •••• •••• <%= user.walletCardNumber || '1234' %></div>
               </div>
               <div class="card-back">
-                <div class="balance-amount">Rs.<%= wallet.balance.toFixed(2) || '0.00' %></div>
+                <div class="balance-amount">Rs.<%= wallet?.balance.toFixed(2) || '0.00' %></div>
                 <div class="balance-label">Available Balance</div>
               </div>
             </div>
@@ -514,7 +514,7 @@
           <div style="text-align: left; margin-bottom: 20px;">
             <label for="withdrawAmount" style="display: block; margin-bottom: 5px;">Amount</label>
             <input id="withdrawAmount" type="number" class="swal2-input" placeholder="Enter amount" min="1" step="1">
-            <small style="color: #666;">Available Balance: ₹<%= wallet.balance.toFixed(2) %></small>
+            <small style="color: #666;">Available Balance: ₹<%= wallet?.balance.toFixed(2) %></small>
           </div>
         `,
         showCancelButton: true,
@@ -523,7 +523,7 @@
         cancelButtonColor: '#d33',
         preConfirm: () => {
           const amount = document.getElementById('withdrawAmount').value;
-          const availableBalance = '<%= wallet.balance.toFixed(2) %>';
+          const availableBalance = '<%= wallet?.balance.toFixed(2) %>';
           
           if (!amount || amount <= 0) {
             Swal.showValidationMessage('Please enter a valid amount');

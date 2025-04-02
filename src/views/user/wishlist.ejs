@@ -908,7 +908,8 @@ function processAddToCart(productId, size) {
     body: JSON.stringify({
       productId: productId,
       size: size,
-      quantity: 1
+      quantity: 1,
+      fromWishlist:true
     })
   })
   .then(response => response.json())

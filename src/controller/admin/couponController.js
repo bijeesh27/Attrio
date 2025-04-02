@@ -94,7 +94,7 @@ const editCoupon = async (req, res) => {
       expiryDate: dbCoupon.expiry,
       status: dbCoupon.status ? "active" : "inactive",
       description: dbCoupon.description,
-      usedCount: dbCoupon.usedCount || 0, // You might need to add this field to your schema
+      usedCount: dbCoupon.usedCount || 0, 
     };
     res.render("editcoupon", { coupon });
   } catch (error) {
@@ -150,7 +150,7 @@ const blockCoupon = async (req, res) => {
       const status = !coupon.status;
       await Coupon.updateOne({_id: couponId}, {$set: {status: status}});
       
-      // Only send JSON response, no redirect
+      
       return res.json({ 
         success: true,
         message: `Coupon ${status ? 'activated' : 'blocked'} successfully`,

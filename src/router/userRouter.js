@@ -86,6 +86,7 @@ router.get('/addingtocart/:productId',logged,productController.addingTocart)
 router.post('/addTocart',logged,cartController.addTOcart)
 router.delete('/removefromwhishlist/:productId',logged,productController.removeItemWishlist)
 router.get('/clearwishlist',logged,productController.clearWishlist)
+router.get('/wallet/balance',logged,orderController.walletBalance)
 
 
 router.get("/auth/google",passport.authenticate("google", { scope: ["profile", "email"] })

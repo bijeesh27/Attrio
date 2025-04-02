@@ -161,7 +161,7 @@ const blockOffer = async (req, res) => {
     const status = !offer.status;
     await Offer.updateOne({ _id: offerId }, { $set: { status: status } });
 
-    // Only send JSON response, no redirect
+    
     return res.json({
       success: true,
       message: `Coupon ${status ? "activated" : "blocked"} successfully`,

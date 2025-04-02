@@ -1,14 +1,13 @@
 const Cart = require("../../models/cartSchema");
 const Product = require("../../models/productSchema");
-
-const Offer = require('../../models/offerSchema'); // Adjust path
+const Offer = require('../../models/offerSchema'); 
 const loadCart = async (req, res) => {
   try {
     console.log("entering the cart controller rendering the cart page");
 
     const cart = await Cart.findOne({ userId: req.session.userId }).populate({
       path: "item.productId",
-      select: "name image stock price category", // Ensure category is populated
+      select: "name image stock price category",
     });
 
     if (!cart || !cart.item.length) {
@@ -178,7 +177,7 @@ const addTOcart = async (req, res) => {
       });
     }
 
-    const { productId, quantity, size } = req.body;
+    const { productId, quantity, size, fromWishlist } = req.body;
 
     // Validate inputs
     if (!productId || !quantity || !size) {
@@ -229,19 +228,19 @@ const addTOcart = async (req, res) => {
         existingCart.item[existingItemIndex].quantity = newQuantity;
         existingCart.item[existingItemIndex].total = newQuantity * product.price;
       } else {
-        // Product doesn't exist in cart, add new item
+       
         const item = {
           productId,
           quantity,
           size,
           price: product.price,
-          stock: stockEntry.quantity, // Store the available stock for this size
+          stock: stockEntry.quantity,
           total,
         };
         existingCart.item.push(item);
       }
 
-      // Recalculate cart total
+      
       existingCart.cartTotal = existingCart.item.reduce(
         (acc, curr) => acc + curr.total,
         0
@@ -254,7 +253,7 @@ const addTOcart = async (req, res) => {
         quantity,
         size,
         price: product.price,
-        stock: stockEntry.quantity, // Store the available stock for this size
+        stock: stockEntry.quantity, 
         total,
       };
 
@@ -266,17 +265,26 @@ const addTOcart = async (req, res) => {
       await newCart.save();
     }
 
+    // Remove from wishlist if the product was added from there
+    if (fromWishlist) {
+      await User.updateOne(
+        { _id: userId },
+        { $pull: { wishlist: { productId: productId } } }
+      );
+    }
+
     const cart = await Cart.findOne({ userId: req.session.userId });
     if (cart) {
       req.session.cartItem = cart.item.length;
     }
-
-    // Send JSON response
+    
     return res.status(200).json({
       success: true,
       message: "Item added to cart successfully",
       cartCount: cart?.item.length || 0,
+      wishlistUpdated: fromWishlist ? true : false,
     });
+    
   } catch (error) {
     console.error("Add to cart error:", error);
     return res.status(500).json({
@@ -349,11 +357,7 @@ const updateCartQuantity = async (req, res) => {
     // Update quantity and total for this item
     cart.item[itemIndex].quantity = quantity;
     cart.item[itemIndex].total = quantity *(offerPrice|| product.price);
-
-    // Recalculate cart total
     cart.cartTotal = cart.item.reduce((acc, curr) => acc + curr.total, 0);
-
-    // Save the updated cart
     await cart.save();
 
     // Return updated values for the UI

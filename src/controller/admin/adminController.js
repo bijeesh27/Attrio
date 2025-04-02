@@ -2,186 +2,362 @@ const User = require("../../models/userSchema");
 const Product = require("../../models/productSchema");
 const Category = require("../../models/categorySchema");
 const Orders = require("../../models/orderSchema");
-const Offer=require('../../models/offerSchema')
-const PDFDocument = require('pdfkit');
-const excel4node = require('excel4node');
-const moment = require('moment');
+const Offer = require("../../models/offerSchema");
+
 const bcrypt = require("bcrypt");
+
+
 
 const loadDashboard = async (req, res) => {
   try {
-    // Get overall order statistics
-    const totalOrders = await Orders.countDocuments();
+    const currentDate = new Date();
+    const filter = req.query.filter || "weekly"; // Default to monthly
 
-    // Get revenue statistics
-    const revenueStats = await Orders.aggregate([
-      {
-        $match: {
-          paymentStatus: "Completed",
-          orderStatus: { $ne: "Cancelled" },
-        },
-      },
-      {
-        $group: {
-          _id: null,
-          totalRevenue: { $sum: "$orderAmount" },
-          averageOrderValue: { $avg: "$orderAmount" },
-        },
-      },
-    ]);
+    // Calculate date range based on filter
+    let startDate;
+    switch (filter) {
+      case "daily":
+        startDate = new Date(currentDate);
+        startDate.setHours(0, 0, 0, 0);
+        break;
+      case "weekly":
+        startDate = new Date(currentDate);
+        startDate.setDate(currentDate.getDate() - 7);
+        break;
+      case "monthly":
+        startDate = new Date(currentDate);
+        startDate.setMonth(currentDate.getMonth() - 1);
+        break;
+      case "yearly":
+        startDate = new Date(currentDate);
+        startDate.setFullYear(currentDate.getFullYear() - 1);
+        break;
+      default:
+        startDate = new Date(currentDate);
+        startDate.setMonth(currentDate.getMonth() - 1);
+    }
 
-    // Get monthly order statistics for the chart
-    const currentYear = new Date().getFullYear();
-    const monthlyOrders = await Orders.aggregate([
-      {
-        $match: {
-          createdAt: {
-            $gte: new Date(`${currentYear}-01-01`),
-            $lte: new Date(`${currentYear}-12-31`),
+    // Run all aggregations in parallel for better performance
+    const [
+      totalRevenueResult,
+      totalOrdersCount,
+      deliveredOrdersCount,
+      pendingOrdersCount,
+      cancelledOrdersCount,
+      totalProductsCount,
+      monthlyEarningResult,
+      totalCustomersResult,
+      salesData,
+      bestSellingProducts,
+      bestSellingCategories,
+      orderStatusStats,
+      latestOrders,
+    ] = await Promise.all([
+      // Total Revenue
+      Orders.aggregate([
+        {
+          $match: { createdAt: { $gte: startDate }, orderStatus: "Delivered" },
+        },
+        { $group: { _id: null, total: { $sum: "$orderAmount" } } },
+      ]),
+
+      // Total Orders
+      Orders.countDocuments({
+        createdAt: { $gte: startDate },
+      }),
+
+      // Delivered Orders
+      Orders.countDocuments({
+        createdAt: { $gte: startDate },
+        orderStatus: "Delivered",
+      }),
+
+      // Pending Orders
+      Orders.countDocuments({
+        createdAt: { $gte: startDate },
+        orderStatus: { $in: ["Pending", "Processing", "Shipped"] },
+      }),
+
+      // Cancelled Orders
+      Orders.countDocuments({
+        createdAt: { $gte: startDate },
+        orderStatus: "Cancelled",
+      }),
+
+      // Total Products
+      Product.countDocuments({ status: true }),
+
+      // Monthly Earning
+      Orders.aggregate([
+        {
+          $match: {
+            createdAt: {
+              $gte: new Date(
+                currentDate.getFullYear(),
+                currentDate.getMonth(),
+                1
+              ),
+            },
+            orderStatus: "Delivered",
           },
         },
-      },
-      {
-        $group: {
-          _id: { $month: "$createdAt" },
-          count: { $sum: 1 },
-          revenue: { $sum: "$orderAmount" },
+        { $group: { _id: null, total: { $sum: "$orderAmount" } } },
+      ]),
+
+      // Total Customers
+      Orders.aggregate([
+        { $match: { createdAt: { $gte: startDate } } },
+        { $group: { _id: "$userId" } },
+        { $count: "total" },
+      ]),
+
+      // Sales Chart Data
+      Orders.aggregate([
+        {
+          $match: { createdAt: { $gte: startDate }, orderStatus: "Delivered" },
         },
-      },
-      { $sort: { _id: 1 } },
+        {
+          $group: {
+            _id: {
+              $dateToString: {
+                format:
+                  filter === "daily"
+                    ? "%Y-%m-%d"
+                    : filter === "weekly"
+                    ? "%Y-%U"
+                    : filter === "monthly"
+                    ? "%Y-%m"
+                    : "%Y",
+                date: "$createdAt",
+              },
+            },
+            total: { $sum: "$orderAmount" },
+            count: { $sum: 1 },
+          },
+        },
+        { $sort: { _id: 1 } },
+      ]),
+
+      // Best Selling Products
+      Orders.aggregate([
+        {
+          $match: { createdAt: { $gte: startDate }, orderStatus: "Delivered" },
+        },
+        { $unwind: "$orderedItem" },
+        {
+          $group: {
+            _id: "$orderedItem.productId",
+            totalSold: { $sum: "$orderedItem.quantity" },
+            totalRevenue: { $sum: "$orderedItem.totalProductPrice" },
+          },
+        },
+        {
+          $lookup: {
+            from: "products",
+            localField: "_id",
+            foreignField: "_id",
+            as: "product",
+          },
+        },
+        { $unwind: "$product" },
+        { $sort: { totalSold: -1 } },
+        { $limit: 10 },
+      ]),
+
+      // Best Selling Categories
+      Orders.aggregate([
+        {
+          $match: { createdAt: { $gte: startDate }, orderStatus: "Delivered" },
+        },
+        { $unwind: "$orderedItem" },
+        {
+          $lookup: {
+            from: "products",
+            localField: "orderedItem.productId",
+            foreignField: "_id",
+            as: "product",
+          },
+        },
+        { $unwind: "$product" },
+        {
+          $group: {
+            _id: "$product.category",
+            totalSold: { $sum: "$orderedItem.quantity" },
+            totalRevenue: { $sum: "$orderedItem.totalProductPrice" },
+          },
+        },
+        {
+          $lookup: {
+            from: "categories",
+            localField: "_id",
+            foreignField: "_id",
+            as: "category",
+          },
+        },
+        { $unwind: "$category" },
+        { $sort: { totalSold: -1 } },
+        { $limit: 10 },
+      ]),
+
+      // Order Status Stats
+      Orders.aggregate([
+        { $match: { createdAt: { $gte: startDate } } },
+        {
+          $group: {
+            _id: "$orderStatus",
+            count: { $sum: 1 },
+          },
+        },
+      ]),
+
+      // Latest Orders
+      Orders.find()
+        .sort({ createdAt: -1 })
+        .limit(10)
+        .populate("userId", "username name")
+        .populate("deliveryAddress"),
     ]);
 
-    // Get recent orders
-    const recentOrders = await Orders.find()
-      .populate("userId", "name email")
-      .populate("orderedItem.productId", "name images")
-      .sort({ createdAt: -1 })
-      .limit(10);
+    // Extract values from results
+    const totalRevenue = totalRevenueResult[0]?.total || 0;
+    const monthlyEarning = monthlyEarningResult[0]?.total || 0;
+    const totalCustomers = totalCustomersResult[0]?.total || 0;
 
-    // Get orders by status
-    const ordersByStatus = await Orders.aggregate([
-      {
-        $group: {
-          _id: "$orderStatus",
-          count: { $sum: 1 },
-        },
-      },
-    ]);
+    // Calculate average order value
+    const averageOrderValue =
+      deliveredOrdersCount > 0 ? totalRevenue / deliveredOrdersCount : 0;
 
-    // Calculate percentages for the donut chart
-    const totalOrderCount = ordersByStatus.reduce(
-      (sum, status) => sum + status.count,
-      0
-    );
-    const statusPercentages = ordersByStatus.map((status) => ({
+    // Prepare order status percentages
+    const statusPercentages = orderStatusStats.map((status) => ({
       status: status._id,
-      percentage: Math.round((status.count / totalOrderCount) * 100),
+      count: status.count,
+      percentage: Math.round((status.count / totalOrdersCount) * 100),
     }));
 
-    // Format data for monthly chart
-    const monthlyData = Array(12)
-      .fill(0)
-      .map((_, i) => {
-        const monthData = monthlyOrders.find((m) => m._id === i + 1);
-        return {
-          month: new Date(0, i).toLocaleString("default", { month: "short" }),
-          orders: monthData ? monthData.count : 0,
-          revenue: monthData ? monthData.revenue : 0,
-        };
-      });
+    // Create monthly data for year-to-date chart
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const monthlyDataPromises = monthNames.map(async (month, index) => {
+      const monthStart = new Date(currentDate.getFullYear(), index, 1);
+      const monthEnd = new Date(currentDate.getFullYear(), index + 1, 0);
 
-    // Get top selling products
-    const topProducts = await Orders.aggregate([
-      { $unwind: "$orderedItem" },
-      {
-        $group: {
-          _id: "$orderedItem.productId",
-          totalQuantity: { $sum: "$orderedItem.quantity" },
-          totalRevenue: { $sum: "$orderedItem.totalProductPrice" },
+      const monthlyRevenue = await Orders.aggregate([
+        {
+          $match: {
+            createdAt: { $gte: monthStart, $lte: monthEnd },
+            orderStatus: "Delivered",
+          },
         },
-      },
-      { $sort: { totalQuantity: -1 } },
-      { $limit: 3 },
-      {
-        $lookup: {
-          from: "products", // Name of your products collection
-          localField: "_id",
-          foreignField: "_id",
-          as: "productDetails",
-        },
-      },
-      {
-        $project: {
-          name: { $arrayElemAt: ["$productDetails.name", 0] },
-          description: { $arrayElemAt: ["$productDetails.description", 0] },
-          totalQuantity: 1,
-          totalRevenue: 1,
-          salesPercentage: {
-            $multiply: [{ $divide: ["$totalQuantity", 100] }, 100],
-          }, // This will be adjusted later
-        },
-      },
-    ]);
+        { $group: { _id: null, total: { $sum: "$orderAmount" } } },
+      ]);
 
-    // Calculate total quantity for percentage
-    const totalQuantity = topProducts.reduce(
-      (sum, product) => sum + product.totalQuantity,
-      0
-    );
-    topProducts.forEach((product) => {
-      product.salesPercentage = Math.round(
-        (product.totalQuantity / totalQuantity) * 100
-      );
+      return {
+        month: month,
+        revenue: monthlyRevenue[0]?.total || 0,
+      };
     });
 
-    // Get tasks (placeholder for demo)
+    // Resolve all monthly data promises
+    const monthlyData = await Promise.all(monthlyDataPromises);
+
+    // Sample tasks for the dashboard
     const tasks = [
       {
-        id: 1,
-        title: "Update product catalog",
-        assignedTo: "Mark",
-        completed: false,
+        title: "Update product inventory",
+        assignedTo: "Admin",
+        dueDate: new Date(currentDate.setDate(currentDate.getDate() + 2)),
       },
       {
-        id: 2,
-        title: "Process pending orders",
-        assignedTo: "Team A",
-        completed: false,
+        title: "Follow up with suppliers",
+        assignedTo: "Manager",
+        dueDate: new Date(currentDate.setDate(currentDate.getDate() + 3)),
       },
       {
-        id: 3,
-        title: "Resolve customer complaints",
-        assignedTo: "Janis",
-        completed: false,
+        title: "Process pending returns",
+        assignedTo: "Support",
+        dueDate: new Date(currentDate.setDate(currentDate.getDate() + 1)),
       },
       {
-        id: 4,
-        title: "Update website banners",
-        assignedTo: "Dianna",
-        completed: false,
-      },
-      {
-        id: 5,
-        title: "Prepare monthly report",
-        assignedTo: "Team B",
-        completed: false,
+        title: "Prepare monthly sales report",
+        assignedTo: "Admin",
+        dueDate: new Date(currentDate.setDate(currentDate.getDate() + 5)),
       },
     ];
 
-    // Render the dashboard with all the data
+    // Calculate growth rates and statistics
+    const previousPeriodStart = new Date(startDate);
+    switch (filter) {
+      case "daily":
+        previousPeriodStart.setDate(previousPeriodStart.getDate() - 1);
+        break;
+      case "weekly":
+        previousPeriodStart.setDate(previousPeriodStart.getDate() - 7);
+        break;
+      case "monthly":
+        previousPeriodStart.setMonth(previousPeriodStart.getMonth() - 1);
+        break;
+      case "yearly":
+        previousPeriodStart.setFullYear(previousPeriodStart.getFullYear() - 1);
+        break;
+    }
+
+    // Get previous period revenue for growth calculation
+    const previousPeriodRevenue = await Orders.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: previousPeriodStart, $lt: startDate },
+          orderStatus: "Delivered",
+        },
+      },
+      { $group: { _id: null, total: { $sum: "$orderAmount" } } },
+    ]);
+
+    const previousRevenue = previousPeriodRevenue[0]?.total || 0;
+    const revenueGrowth =
+      previousRevenue > 0
+        ? ((totalRevenue - previousRevenue) / previousRevenue) * 100
+        : 100;
+
+    // Render the dashboard with all data
     res.render("dashboard", {
-      totalOrders,
-      revenue: revenueStats[0]?.totalRevenue || 0,
-      averageOrderValue: revenueStats[0]?.averageOrderValue || 0,
-      monthlyData,
-      statusPercentages,
-      topProducts,
-      recentOrders,
-      tasks,
+      title: "Admin Dashboard",
+      filter: filter,
+      revenue: totalRevenue,
+      totalOrders: totalOrdersCount,
+      deliveredOrders: deliveredOrdersCount,
+      pendingOrders: pendingOrdersCount,
+      cancelledOrders: cancelledOrdersCount,
+      products: totalProductsCount,
+      totalCustomers: totalCustomers,
+      averageOrderValue: averageOrderValue,
+      salesData: salesData,
+      revenueGrowth: revenueGrowth.toFixed(2),
+      bestSellingProducts: bestSellingProducts,
+      bestSellingCategories: bestSellingCategories,
+      statusPercentages: statusPercentages,
+      monthlyData: monthlyData,
+      latestOrders: latestOrders,
+      tasks: tasks,
     });
   } catch (error) {
-    console.error("Dashboard error:", error);
-    res.status(500).send("Error loading dashboard");
+    console.error("Error loading dashboard:", error);
+    res.status(500).render("admin/error", {
+      title: "Error",
+      error: "Failed to load dashboard data",
+      details: process.env.NODE_ENV === "development" ? error.message : null,
+    });
   }
 };
 
@@ -218,245 +394,12 @@ const logout = async (req, res) => {
     console.log("error ocuured while admin logouting", error);
   }
 };
-const generateReport = async (req, res, period) => {
-  try {
-    const { range, startDate, endDate, format } = req.query;
-
-    // Determine date range
-    let start, end;
-    const now = moment();
-    if (range === "custom" && startDate && endDate) {
-      start = moment(startDate).startOf("day");
-      end = moment(endDate).endOf("day");
-    } else {
-      switch (range || period) {
-        case "day":
-          start = now.clone().startOf("day");
-          end = now.clone().endOf("day");
-          break;
-        case "week":
-          start = now.clone().startOf("week");
-          end = now.clone().endOf("week");
-          break;
-        case "month":
-          start = now.clone().startOf("month");
-          end = now.clone().endOf("month");
-          break;
-        case "year":
-          start = now.clone().startOf("year");
-          end = now.clone().endOf("year");
-          break;
-        default:
-          start = now.clone().startOf(period);
-          end = now.clone().endOf(period);
-      }
-    }
-
-    // Fetch orders within date range
-    const orders = await Orders.find({
-      createdAt: { $gte: start.toDate(), $lte: end.toDate() },
-    }).populate("orderedItem.productId");
-
-    
-    const offerIds = [
-      ...new Set(
-        orders.flatMap((o) =>
-          o.orderedItem.map((i) => i.offer_id).filter((id) => id)
-        )
-      ),
-    ];
-    const offers = await Offer.find({ _id: { $in: offerIds } });
 
 
-    const processedOrders = orders.map((order) => {
-      let subtotal = 0;
-      let offerDiscount = 0;
-
-      order.orderedItem.forEach((item) => {
-        const originalPrice = item.productPrice;
-        const offer = offers.find(
-          (o) => o._id.toString() === item.offer_id?.toString()
-        );
-        const offerPrice = offer
-          ? originalPrice - (originalPrice * offer.discount) / 100
-          : originalPrice;
-        const itemSubtotal = originalPrice * item.quantity;
-        const itemDiscountedTotal = offerPrice * item.quantity;
-
-        subtotal += itemSubtotal;
-        offerDiscount += itemSubtotal - itemDiscountedTotal;
-      });
-
-      const couponDiscount = order.couponDiscount || 0;
-      return {
-        ...order.toObject(),
-        subtotal,
-        offerDiscount,
-        couponDiscount,
-      };
-    });
-
-    // Calculate summary
-    const summary = {
-      totalOrders: processedOrders.length,
-      overallSubtotal: processedOrders.reduce((sum, o) => sum + o.subtotal, 0),
-      overallOfferDiscount: processedOrders.reduce(
-        (sum, o) => sum + o.offerDiscount,
-        0
-      ),
-      overallCouponDiscount: processedOrders.reduce(
-        (sum, o) => sum + o.couponDiscount,
-        0
-      ),
-      overallOrderAmount: processedOrders.reduce(
-        (sum, o) => sum + o.orderAmount,
-        0
-      ),
-    };
-
-    const filter = { range: range || period, startDate, endDate };
-
-    if (format === "pdf") {
-      // Generate PDF
-      const doc = new PDFDocument();
-      res.setHeader(
-        "Content-Disposition",
-        `attachment; filename="${period}-sales-report.pdf"`
-      );
-      res.setHeader("Content-Type", "application/pdf");
-      doc.pipe(res);
-
-      doc
-        .fontSize(20)
-        .text(
-          `${period.charAt(0).toUpperCase() + period.slice(1)} Sales Report`,
-          { align: "center" }
-        );
-      doc.moveDown();
-      doc
-        .fontSize(12)
-        .text(
-          `Date Range: ${start.format("YYYY-MM-DD")} to ${end.format(
-            "YYYY-MM-DD"
-          )}`
-        );
-      doc.moveDown();
-
-      // Table Header
-      doc.text(
-        "Order #    Date    Subtotal    Offer Discount    Coupon Discount    Total Amount",
-        { continued: true }
-      );
-      doc.moveDown(0.5);
-
-      // Table Rows
-      processedOrders.forEach((order) => {
-        doc.text(
-          `${order.orderNumber}    ${moment(order.createdAt).format(
-            "YYYY-MM-DD"
-          )}    $${order.subtotal.toFixed(2)}    $${order.offerDiscount.toFixed(
-            2
-          )}    $${order.couponDiscount.toFixed(
-            2
-          )}    $${order.orderAmount.toFixed(2)}`
-        );
-        doc.moveDown(0.3);
-      });
-
-      // Summary
-      doc.moveDown();
-      doc.text("Summary", { underline: true });
-      doc.text(`Total Orders: ${summary.totalOrders}`);
-      doc.text(`Overall Subtotal: $${summary.overallSubtotal.toFixed(2)}`);
-      doc.text(
-        `Overall Offer Discount: $${summary.overallOfferDiscount.toFixed(2)}`
-      );
-      doc.text(
-        `Overall Coupon Discount: $${summary.overallCouponDiscount.toFixed(2)}`
-      );
-      doc.text(
-        `Overall Sales Amount: $${summary.overallOrderAmount.toFixed(2)}`
-      );
-
-      doc.end();
-    } else if (format === "excel") {
-      // Generate Excel
-      const wb = new excel4node.Workbook();
-      const ws = wb.addWorksheet(`${period} Sales Report`);
-
-      // Headers
-      const headers = [
-        "Order #",
-        "Date",
-        "Subtotal",
-        "Offer Discount",
-        "Coupon Discount",
-        "Total Amount",
-      ];
-      headers.forEach((header, i) => ws.cell(1, i + 1).string(header));
-
-      // Data
-      processedOrders.forEach((order, row) => {
-        ws.cell(row + 2, 1).string(order.orderNumber);
-        ws.cell(row + 2, 2).string(
-          moment(order.createdAt).format("YYYY-MM-DD")
-        );
-        ws.cell(row + 2, 3).number(order.subtotal);
-        ws.cell(row + 2, 4).number(order.offerDiscount);
-        ws.cell(row + 2, 5).number(order.couponDiscount);
-        ws.cell(row + 2, 6).number(order.orderAmount);
-      });
-
-      // Summary
-      const summaryStartRow = processedOrders.length + 3;
-      ws.cell(summaryStartRow, 1).string("Summary");
-      ws.cell(summaryStartRow + 1, 1).string("Total Orders");
-      ws.cell(summaryStartRow + 1, 2).number(summary.totalOrders);
-      ws.cell(summaryStartRow + 2, 1).string("Overall Subtotal");
-      ws.cell(summaryStartRow + 2, 2).number(summary.overallSubtotal);
-      ws.cell(summaryStartRow + 3, 1).string("Overall Offer Discount");
-      ws.cell(summaryStartRow + 3, 2).number(summary.overallOfferDiscount);
-      ws.cell(summaryStartRow + 4, 1).string("Overall Coupon Discount");
-      ws.cell(summaryStartRow + 4, 2).number(summary.overallCouponDiscount);
-      ws.cell(summaryStartRow + 5, 1).string("Overall Sales Amount");
-      ws.cell(summaryStartRow + 5, 2).number(summary.overallOrderAmount);
-
-      res.setHeader(
-        "Content-Disposition",
-        `attachment; filename="${period}-sales-report.xlsx"`
-      );
-      res.setHeader(
-        "Content-Type",
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-      );
-      wb.writeToBuffer().then((buffer) => res.send(buffer));
-    } else {
-      // Render EJS
-      res.render(`${period}Report`, {
-        orders: processedOrders,
-        summary,
-        filter,
-      });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Server Error");
-  }
-};
-
-// Controllers
-const dailyReport = (req, res) => generateReport(req, res, "daily");
-const weeklyReport = (req, res) => generateReport(req, res, "weekly");
-const monthlyReport = (req, res) => generateReport(req, res, "monthly");
-const yearlyReport = (req, res) => generateReport(req, res, "yearly");
 
 module.exports = {
   loadDashboard,
   loadLogin,
   login,
   logout,
-  dailyReport,
-  weeklyReport,
-  monthlyReport,
-  yearlyReport,
 };

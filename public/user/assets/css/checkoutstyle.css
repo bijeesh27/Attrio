@@ -1586,3 +1586,12 @@ a:hover {
 .btn-view-coupons:hover {
   text-decoration: underline;
 }
+
+.payment-method-label.dimmed {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.payment-method-option.disabled {
+  pointer-events: none;
+}

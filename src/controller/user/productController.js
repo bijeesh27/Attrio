@@ -516,8 +516,8 @@ const clearWishlist=async (req,res) => {
 
 const addAddressInCheckout = async (req, res) => {
   try {
-    console.log('Request body:', req.body); // Log incoming data
-    const userId = req.session.userId // Safely access user ID
+   
+    const userId = req.session.userId 
 
     if (!userId) {
       return res.status(401).json({
@@ -554,7 +554,7 @@ const addAddressInCheckout = async (req, res) => {
 
     // Find or create address document
     let addressDoc = await Address.findOne({ userId });
-    console.log('Existing address doc:', addressDoc); // Log existing doc
+    console.log('Existing address doc:', addressDoc); 
 
     if (addressDoc) {
       if (newAddress.isDefault) {
@@ -570,7 +570,7 @@ const addAddressInCheckout = async (req, res) => {
       await addressDoc.save();
     }
 
-    console.log('Address saved:', addressDoc); // Log success
+    console.log('Address saved:', addressDoc); 
     res.status(201).json({
       success: true,
       message: 'Address added successfully',

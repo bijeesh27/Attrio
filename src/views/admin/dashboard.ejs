@@ -1,547 +1,402 @@
+<!-- admin/dashboard.ejs -->
 <%- include('../partials/admin/header') %>
 
 
 <div class="main-content">
-
-    <div class="page-content">
-        <div class="container-fluid">
-
-            <!-- start page title -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                        <h4 class="mb-sm-0 font-size-18">ATTIRO FASHIONS</h4>
-
-                        <div class="page-title-right">
-                            <ol class="breadcrumb m-0">
-                                <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboards</a></li>
-                                <li class="breadcrumb-item active">Admin</li>
-                            </ol>
-                        </div>
-                        <div class="mt-4">
-                            <a href="/admin/reports/daily" class="btn btn-primary btn-sm">Sales Report</a>
-                          
-                        </div>
-                    </div>
-                </div>
+    <!-- Dashboard Header -->
+    <div class="content-header d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="content-title">Admin Dashboard</h2>
+            <p>Business Analytics - <%= filter.charAt(0).toUpperCase() + filter.slice(1) %> View</p>
+        </div>
+        <div class="filter-buttons">
+            <div class="btn-group" role="group" aria-label="Dashboard Controls">
+                <a href="?filter=daily" class="btn <%= filter === 'daily' ? 'btn-primary' : 'btn-outline-primary' %>">Daily</a>
+                <a href="?filter=weekly" class="btn <%= filter === 'weekly' ? 'btn-primary' : 'btn-outline-primary' %>">Weekly</a>
+                <a href="?filter=monthly" class="btn <%= filter === 'monthly' ? 'btn-primary' : 'btn-outline-primary' %>">Monthly</a>
+                <a href="?filter=yearly" class="btn <%= filter === 'yearly' ? 'btn-primary' : 'btn-outline-primary' %>">Yearly</a>
+                <a href="/admin/salesreport" class="btn btn-info">Sales Report</a>
             </div>
-            <!-- end page title -->
-
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="d-flex">
-                                        <div class="flex-shrink-0 me-3">
-                                            <img src="/admin/assets/images/users/avatar-1.jpg" alt="" class="avatar-md rounded-circle img-thumbnail">
-                                        </div>
-                                        <div class="flex-grow-1 align-self-center">
-                                            <div class="text-muted">
-                                                <h5 class="mb-1">Attiro Admin</h5>
-                                                <p class="mb-0">Clothing Store</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-lg-4 align-self-center">
-                                    <div class="text-lg-center mt-4 mt-lg-0">
-                                        <div class="row">
-                                            <div class="col-4">
-                                                <div>
-                                                    <p class="text-muted text-truncate mb-2">Total Orders</p>
-                                                    <h5 class="mb-0"><%= totalOrders %></h5>
-                                                </div>
-                                            </div>
-                                            <div class="col-4">
-                                                <div>
-                                                    <p class="text-muted text-truncate mb-2">Active Orders</p>
-                                                    <h5 class="mb-0"><%= recentOrders.filter(order => order.orderStatus !== 'Delivered' && order.orderStatus !== 'Cancelled').length %></h5>
-                                                </div>
-                                            </div>
-                                            <div class="col-4">
-                                                <div>
-                                                    <p class="text-muted text-truncate mb-2">Customers</p>
-                                                    <h5 class="mb-0"><%= recentOrders.reduce((unique, order) => {
-                                                        if (order.userId && !unique.includes(order.userId._id.toString())) {
-                                                            unique.push(order.userId._id.toString());
-                                                        }
-                                                        return unique;
-                                                    }, []).length %></h5>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-    
-                                <div class="col-lg-4 d-none d-lg-block">
-                                    <div class="clearfix mt-4 mt-lg-0">
-                                        <div class="dropdown float-end">
-                                            <button class="btn btn-primary" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="bx bxs-cog align-middle me-1"></i> Setting
-                                            </button>
-                                            <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item" href="/admin/settings">Admin Settings</a>
-                                                <a class="dropdown-item" href="/admin/profile">Profile</a>
-                                                <a class="dropdown-item" href="/admin/logout">Logout</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end row -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- end row -->
-
-            <div class="row">
-                <div class="col-xl-4">
-                    <div class="card bg-primary-subtle">
-                        <div>
-                            <div class="row">
-                                <div class="col-7">
-                                    <div class="text-primary p-3">
-                                        <h5 class="text-primary">Welcome Back!</h5>
-                                        <p>Attiro Fashions Dashboard</p>
-
-                                        <ul class="ps-3 mb-0">
-                                            <li class="py-1">Order Management</li>
-                                            <li class="py-1">Customer Analytics</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="col-5 align-self-end">
-                                    <img src="/admin/assets/images/profile-img.png" alt="" class="img-fluid">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-8">
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <div class="avatar-xs me-3">
-                                            <span class="avatar-title rounded-circle bg-primary-subtle text-primary font-size-18">
-                                                <i class="bx bx-copy-alt"></i>
-                                            </span>
-                                        </div>
-                                        <h5 class="font-size-14 mb-0">Orders</h5>
-                                    </div>
-                                    <div class="text-muted mt-4">
-                                        <h4><%= totalOrders %> <i class="mdi mdi-chevron-up ms-1 text-success"></i></h4>
-                                        <div class="d-flex">
-                                            <span class="badge badge-soft-success font-size-12"> + 0.2% </span> <span class="ms-2 text-truncate">From previous period</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <div class="avatar-xs me-3">
-                                            <span class="avatar-title rounded-circle bg-primary-subtle text-primary font-size-18">
-                                                <i class="bx bx-archive-in"></i>
-                                            </span>
-                                        </div>
-                                        <h5 class="font-size-14 mb-0">Revenue</h5>
-                                    </div>
-                                    <div class="text-muted mt-4">
-                                        <h4>$ <%= revenue.toFixed(2) %> <i class="mdi mdi-chevron-up ms-1 text-success"></i></h4>
-                                        <div class="d-flex">
-                                            <span class="badge badge-soft-success font-size-12"> + 0.2% </span> <span class="ms-2 text-truncate">From previous period</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <div class="avatar-xs me-3">
-                                            <span class="avatar-title rounded-circle bg-primary-subtle text-primary font-size-18">
-                                                <i class="bx bx-purchase-tag-alt"></i>
-                                            </span>
-                                        </div>
-                                        <h5 class="font-size-14 mb-0">Average Order Value</h5>
-                                    </div>
-                                    <div class="text-muted mt-4">
-                                        <h4>$ <%= averageOrderValue.toFixed(2) %> <i class="mdi mdi-chevron-up ms-1 text-success"></i></h4>
-                                        
-                                        <div class="d-flex">
-                                            <span class="badge badge-soft-warning font-size-12"> 0% </span> <span class="ms-2 text-truncate">From previous period</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- end row -->
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-xl-8">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="clearfix">
-                                <div class="float-end">
-                                    <div class="input-group input-group-sm">
-                                        <select class="form-select form-select-sm" id="monthSelector">
-                                            <option value="0">Jan</option>
-                                            <option value="1">Feb</option>
-                                            <option value="2">Mar</option>
-                                            <option value="3">Apr</option>
-                                            <option value="4">May</option>
-                                            <option value="5">Jun</option>
-                                            <option value="6">Jul</option>
-                                            <option value="7">Aug</option>
-                                            <option value="8">Sep</option>
-                                            <option value="9">Oct</option>
-                                            <option value="10">Nov</option>
-                                            <option value="11">Dec</option>
-                                        </select>
-                                        <label class="input-group-text">Month</label>
-                                    </div>
-                                </div>
-                                <h4 class="card-title mb-4">Monthly Revenue</h4>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="text-muted">
-                                        <div class="mb-4">
-                                            <p>This month</p>
-                                            <h4>$<%= monthlyData[new Date().getMonth()].revenue.toFixed(2) %></h4>
-                                            <div><span class="badge badge-soft-success font-size-12 me-1"> + 0.2% </span> From previous period</div>
-                                        </div>
-
-                                        <div>
-                                            <a href="/admin/reports" class="btn btn-primary waves-effect waves-light btn-sm">View Details <i class="mdi mdi-chevron-right ms-1"></i></a>
-                                        </div>
-                                        
-                                        <div class="mt-4">
-                                            <p class="mb-2">Last month</p>
-                                            <h5>$<%= monthlyData[new Date().getMonth() > 0 ? new Date().getMonth() - 1 : 11].revenue.toFixed(2) %></h5>
-                                        </div>
-                                        
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-8">
-                                    <div id="line-chart" class="apex-charts" data-colors='["--bs-primary"]' dir="ltr"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title mb-4">Order Status</h4>
-
-                            <div>
-                                <div id="donut-chart" data-colors='["--bs-primary", "--bs-success", "--bs-danger", "--bs-warning"]' class="apex-charts"></div>
-                            </div>
-
-                            <div class="text-center text-muted">
-                                <div class="row">
-                                    <% statusPercentages.forEach((status, index) => { 
-                                        const colors = ['text-primary', 'text-success', 'text-danger', 'text-warning'];
-                                        const color = colors[index % colors.length];
-                                    %>
-                                    <div class="col-4">
-                                        <div class="mt-4">
-                                            <p class="mb-2 text-truncate"><i class="mdi mdi-circle <%= color %> me-1"></i> <%= status.status %></p>
-                                            <h5><%= status.percentage %>%</h5>
-                                        </div>
-                                    </div>
-                                    <% }) %>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- end row -->
-
-            <div class="row">
-                <div class="col-xl-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="clearfix">
-                                <div class="float-end">
-                                    <div class="input-group input-group-sm">
-                                        <select class="form-select form-select-sm">
-                                            <option value="0" selected>All Time</option>
-                                            <option value="1">Last Month</option>
-                                            <option value="2">Last Week</option>
-                                        </select>
-                                        <label class="input-group-text">Period</label>
-                                    </div>
-                                </div>
-                                <h4 class="card-title mb-4">Top Selling Products</h4>
-                            </div>
-
-                            <div class="text-muted text-center">
-                                <p class="mb-2"><%= topProducts[0]?.name || 'No products' %></p>
-                                <h4>$ <%= topProducts[0]?.totalRevenue?.toFixed(2) || 0 %></h4>
-                                <p class="mt-4 mb-0"><span class="badge badge-soft-success font-size-11 me-2"> 0.6% <i class="mdi mdi-arrow-up"></i> </span> From previous period</p>
-                            </div>
-
-                            <div class="table-responsive mt-4">
-                                <table class="table align-middle mb-0">
-                                    <tbody>
-                                        <% topProducts.forEach((product, index) => { 
-                                            const colors = ['--bs-primary', '--bs-success', '--bs-danger'];
-                                        %>
-                                        <tr>
-                                            <td>
-                                                <h5 class="font-size-14 mb-1"><%= product.name %></h5>
-                                                <p class="text-muted mb-0"><%= product.description?.substring(0, 20) + '...' || 'No description' %></p>
-                                            </td>
-
-                                            <td>
-                                                <div id="radialchart-<%= index + 1 %>" data-colors='["<%= colors[index % colors.length] %>"]' class="apex-charts"></div>
-                                            </td>
-                                            <td>
-                                                <p class="text-muted mb-1">Sales</p>
-                                                <h5 class="mb-0"><%= product.salesPercentage || 0 %> %</h5>
-                                            </td>
-                                        </tr>
-                                        <% }) %>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title mb-4">Tasks</h4>
-
-                            <ul class="nav nav-pills bg-light rounded">
-                                <li class="nav-item">
-                                    <a class="nav-link active" href="#in-process" data-bs-toggle="tab">In Process</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#upcoming" data-bs-toggle="tab">Upcoming</a>
-                                </li>
-                            </ul>
-
-                            <div class="mt-4">
-                                <div data-simplebar style="max-height: 250px;">
-                                    <div class="tab-content">
-                                        <div class="tab-pane active" id="in-process">
-                                            <div class="table-responsive">
-                                                <table class="table table-nowrap align-middle table-hover mb-0">
-                                                    <tbody>
-                                                        <% tasks.forEach((task, index) => { %>
-                                                        <tr>
-                                                            <td style="width: 50px;">
-                                                                <div class="form-check">
-                                                                    <input class="form-check-input" type="checkbox" id="tasklistCheck<%= index %>">
-                                                                    <label class="form-check-label" for="tasklistCheck<%= index %>"></label>
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <h5 class="text-truncate font-size-14 mb-1"><a href="javascript: void(0);" class="text-dark"><%= task.title %></a></h5>
-                                                                <p class="text-muted mb-0">Assigned to <%= task.assignedTo %></p>
-                                                            </td>
-                                                            <td style="width: 90px;">
-                                                                <div>
-                                                                    <ul class="list-inline mb-0 font-size-16">
-                                                                        <li class="list-inline-item">
-                                                                            <a href="javascript: void(0);" class="text-success p-1"><i class="bx bxs-edit-alt"></i></a>
-                                                                        </li>
-                                                                        <li class="list-inline-item">
-                                                                            <a href="javascript: void(0);" class="text-danger p-1"><i class="bx bxs-trash"></i></a>
-                                                                        </li>
-                                                                    </ul>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                        <% }) %>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        <div class="tab-pane" id="upcoming">
-                                            <p class="text-muted text-center mt-3">No upcoming tasks</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card-footer bg-transparent border-top">
-                            <div class="text-center">
-                                <a href="javascript: void(0);" class="btn btn-primary waves-effect waves-light"> Add new Task</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title mb-4">Recent Orders</h4>
-                            
-                            <div class="table-responsive">
-                                <table class="table table-hover table-nowrap mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Order #</th>
-                                            <th scope="col">Customer</th>
-                                            <th scope="col">Date</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col">Amount</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <% recentOrders.slice(0, 5).forEach(order => { %>
-                                        <tr>
-                                            <td><a href="/admin/orders/<%= order._id %>" class="text-dark fw-medium">#<%= order.orderNumber %></a></td>
-                                            <td><%= order.userId?.name || 'Guest' %></td>
-                                            <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
-                                            <td>
-                                                <% 
-                                                let badgeClass = 'badge-soft-warning';
-                                                if (order.orderStatus === 'Delivered') {
-                                                    badgeClass = 'badge-soft-success';
-                                                } else if (order.orderStatus === 'Cancelled') {
-                                                    badgeClass = 'badge-soft-danger';
-                                                } else if (order.orderStatus === 'Shipped') {
-                                                    badgeClass = 'badge-soft-info';
-                                                }
-                                                %>
-                                                <span class="badge <%= badgeClass %> font-size-12"><%= order.orderStatus %></span>
-                                            </td>
-                                            <td>$<%= order.orderAmount.toFixed(2) %></td>
-                                        </tr>
-                                        <% }) %>
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            <div class="mt-3">
-                                <a href="/admin/orders" class="btn btn-primary btn-sm w-100">View All Orders</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- end row -->
-
-        </div> <!-- container-fluid -->
+        </div>
     </div>
-    <!-- End Page-content -->
 
-    <footer class="footer">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-sm-6">
-                    <script>document.write(new Date().getFullYear())</script> © Attiro Fashions.
-                </div>
-                <div class="col-sm-6">
-                    <div class="text-sm-end d-none d-sm-block">
-                        Design & Develop by Attiro Team
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 me-3">
+                            <div >
+                                <i class="fa-solid fa-indian-rupee-sign font-size-24 text-primary"></i>
+
+
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="font-size-14 mb-0">Total Revenue</h5>
+                            <h2 class="mt-2 mb-0"><%= revenue.toFixed(2) %></h2>
+                            <p class="text-muted mb-0 mt-2"><i class="fas fa-arrow-up text-success me-1"></i> Based on <%= filter %> data</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </footer>
-</div>
-<!-- end main content-->
-
-</div>
-<!-- END layout-wrapper -->
-
-<!-- Right Sidebar -->
-<div class="right-bar">
-    <div data-simplebar class="h-100">
-        <div class="rightbar-title d-flex align-items-center px-3 py-4">
-            <h5 class="m-0 me-2">Settings</h5>
-            <a href="javascript:void(0);" class="right-bar-toggle ms-auto">
-                <i class="mdi mdi-close noti-icon"></i>
-            </a>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 me-3">
+                            <div >
+                                <i class="fas fa-shopping-bag font-size-24 text-success"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="font-size-14 mb-0">Total Orders</h5>
+                            <h2 class="mt-2 mb-0"><%= totalOrders %></h2>
+                            <p class="text-muted mb-0 mt-2"><i class="fas fa-box-check text-success me-1"></i> <%= deliveredOrders %> Delivered</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <!-- Settings -->
-        <hr class="mt-0" />
-        <h6 class="text-center mb-0">Choose Layouts</h6>
-
-        <div class="p-4">
-            <div class="mb-2">
-                <img src="/admin/assets/images/layouts/layout-1.jpg" class="img-thumbnail" alt="layout images">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 me-3">
+                            <div >
+                                <i class="fas fa-tag font-size-24 text-warning"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="font-size-14 mb-0">Products</h5>
+                            <h2 class="mt-2 mb-0"><%= products %></h2>
+                            <p class="text-muted mb-0 mt-2"><i class="fas fa-check-circle text-success me-1"></i> Active products</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div class="form-check form-switch mb-3">
-                <input class="form-check-input theme-choice" type="checkbox" id="light-mode-switch" checked>
-                <label class="form-check-label" for="light-mode-switch">Light Mode</label>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 me-3">
+                            <div >
+                                <i class="fas fa-user-friends font-size-24 text-info"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="font-size-14 mb-0">Customers</h5>
+                            <h2 class="mt-2 mb-0"><%= totalCustomers %></h2>
+                            <p class="text-muted mb-0 mt-2"><i class="fas fa-chart-line text-success me-1"></i> Avg. Order: ₹<%= averageOrderValue.toFixed(2) %></p>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
+    </div>
 
-            <div class="mb-2">
-                <img src="/admin/assets/images/layouts/layout-2.jpg" class="img-thumbnail" alt="layout images">
+    <div class="row">
+        <!-- Sales Chart -->
+        <div class="col-xl-8 col-lg-7 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="card-title mb-0">Revenue Overview</h5>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="chartFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <%= filter.charAt(0).toUpperCase() + filter.slice(1) %>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="chartFilterDropdown">
+                                <li><a class="dropdown-item" href="?filter=daily">Daily</a></li>
+                                <li><a class="dropdown-item" href="?filter=weekly">Weekly</a></li>
+                                <li><a class="dropdown-item" href="?filter=monthly">Monthly</a></li>
+                                <li><a class="dropdown-item" href="?filter=yearly">Yearly</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div style="height: 300px;">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
             </div>
-            <div class="form-check form-switch mb-3">
-                <input class="form-check-input theme-choice" type="checkbox" id="dark-mode-switch">
-                <label class="form-check-label" for="dark-mode-switch">Dark Mode</label>
+        </div>
+        
+        <!-- Order Status -->
+        <div class="col-xl-4 col-lg-5 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Order Status</h5>
+                    <div style="height: 200px;">
+                        <canvas id="orderStatusChart"></canvas>
+                    </div>
+                    <div class="row text-center mt-4">
+                        <% statusPercentages.forEach((status, index) => { 
+                            const colors = ['text-success', 'text-warning', 'text-danger', 'text-info'];
+                            const bgColors = ['bg-success', 'bg-warning', 'bg-danger', 'bg-info'];
+                            const color = colors[index % colors.length];
+                            const bgColor = bgColors[index % bgColors.length];
+                        %>
+                        <div class="col-4">
+                            <div class="d-flex flex-column align-items-center">
+                                <div class="mb-2">
+                                    <span class="badge <%= bgColor %> p-2 rounded-circle">
+                                        <i class="fas fa-check text-white"></i>
+                                    </span>
+                                </div>
+                                <h5 class="mb-0 font-size-15"><%= status.percentage %>%</h5>
+                                <p class="text-muted mb-0"><%= status.status %></p>
+                            </div>
+                        </div>
+                        <% }) %>
+                    </div>
+                </div>
             </div>
+        </div>
+    </div>
 
-            <div class="mb-2">
-    <img src="/admin/assets/images/layouts/layout-3.jpg" class="img-thumbnail" alt="layout images">
+    <div class="row">
+        <!-- Best Selling Products -->
+        <div class="col-xl-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="card-title mb-0">Best Selling Products</h5>
+                        <a href="/admin/products" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover table-centered table-nowrap mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Units Sold</th>
+                                    <th scope="col">Revenue</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               <% bestSellingProducts.forEach(product => { %>
+    <tr>
+        <td>
+            <div class="d-flex align-items-center">
+                
+                <div class="flex-grow-1 ms-3">
+                    <h6 class="font-size-14 mb-0"><%= product.product.name %></h6>
+                </div>
+            </div>
+        </td>
+        <td><%= product.totalSold %></td>
+        <td>₹<%= product.totalRevenue.toFixed(2) %></td>
+    </tr>
+<% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Latest Orders -->
+        <div class="col-xl-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="card-title mb-0">Recent Orders</h5>
+                        <a href="/admin/orders" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover table-centered table-nowrap mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Order ID</th>
+                                    <th scope="col">Customer</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% latestOrders.forEach(order => { 
+                                    let badgeClass = 'bg-warning';
+                                    if (order.orderStatus === 'Delivered') {
+                                        badgeClass = 'bg-success';
+                                    } else if (order.orderStatus === 'Cancelled') {
+                                        badgeClass = 'bg-danger';
+                                    } else if (order.orderStatus === 'Shipped') {
+                                        badgeClass = 'bg-info';
+                                    }
+                                    
+                                    // Format the date
+                                    const orderDate = new Date(order.createdAt);
+                                    const formattedDate = orderDate.toLocaleDateString('en-US', {
+                                        day: '2-digit',
+                                        month: 'short',
+                                        year: 'numeric'
+                                    });
+                                %>
+                                <tr>
+                                    <td><a href="/admin/orders/<%= order._id %>" class="text-body fw-bold">#<%= order.orderNumber || 'ORD-' + order._id.toString().substr(-6) %></a></td>
+                                    <td><%= order.userId ? (order.userId.userName || order.userId.name) : 'Guest' %></td>
+                                    <td><%= formattedDate %></td>
+                                    <td><span class="badge <%= badgeClass %>"><%= order.orderStatus %></span></td>
+                                    <td>₹<%= order.finalAmount ? order.finalAmount.toFixed(2) : '0.00' %></td>
+                                </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Categories Performance -->
+        <div class="col-xl-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Best Selling Categories</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover table-centered table-nowrap mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Units Sold</th>
+                                    <th scope="col">Revenue</th>
+                                    <th scope="col">Performance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% bestSellingCategories.forEach(category => { 
+                                    // Calculate a percentage of total category sales
+                                    const totalCategorySales = bestSellingCategories.reduce((sum, cat) => sum + cat.totalSold, 0);
+                                    const percentage = Math.round((category.totalSold / totalCategorySales) * 100);
+                                %>
+                                <tr>
+                                    <td><%= category.category.name %></td>
+                                    <td><%= category.totalSold %></td>
+                                    <td>₹<%= category.totalRevenue.toFixed(2) %></td>
+                                    <td>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: <%= percentage %>%;" aria-valuenow="<%= percentage %>" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="form-check form-"></div>
 
-<div class="form-check form-switch mb-3">
-    <input class="form-check-input theme-choice" type="checkbox" id="rtl-mode-switch">
-    <label class="form-check-label" for="rtl-mode-switch">RTL Mode</label>
-</div>
-
-<div class="mb-2">
-    <img src="/admin/assets/images/layouts/layout-4.jpg" class="img-thumbnail" alt="layout images">
-</div>
-<div class="form-check form-switch mb-5">
-    <input class="form-check-input theme-choice" type="checkbox" id="dark-rtl-mode-switch">
-    <label class="form-check-label" for="dark-rtl-mode-switch">Dark RTL Mode</label>
-</div>
-
-</div> <!-- end slimscroll-menu-->
-</div>
-<!-- /Right-bar -->
-
-<!-- Right bar overlay-->
-<div class="rightbar-overlay"></div>
-
-<!-- JAVASCRIPT -->
-<script src="/admin/assets/libs/jquery/jquery.min.js"></script>
-<script src="/admin/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="/admin/assets/libs/metismenu/metisMenu.min.js"></script>
-<script src="/admin/assets/libs/simplebar/simplebar.min.js"></script>
-<script src="/admin/assets/libs/node-waves/waves.min.js"></script>
-
-<!-- apexcharts -->
-<script src="/admin/assets/libs/apexcharts/apexcharts.min.js"></script>
-
-<!-- dashboard init -->
-<script src="/admin/assets/js/pages/dashboard.init.js"></script>
-
-<!-- App js -->
-<script src="/admin/assets/js/app.js"></script>
+<!-- Chart.js Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Parse the sales data from the server
+    const salesData = <%- JSON.stringify(salesData) %>;
+    const labels = salesData.map(item => item._id);
+    const values = salesData.map(item => item.total);
+    
+    // Revenue Chart
+    const salesChart = new Chart(
+        document.getElementById('salesChart'),
+        {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Revenue',
+                    data: values,
+                    borderColor: '#4e73df',
+                    backgroundColor: 'rgba(78, 115, 223, 0.1)',
+                    tension: 0.3,
+                    borderWidth: 2,
+                    fill: true,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#4e73df',
+                    pointBorderColor: '#fff',
+                    pointHoverRadius: 5,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            drawBorder: false
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value.toLocaleString();
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return '$' + context.parsed.y.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    );
+    
+    // Order Status Chart
+    const statusData = <%- JSON.stringify(statusPercentages) %>;
+    const orderStatusChart = new Chart(
+        document.getElementById('orderStatusChart'),
+        {
+            type: 'doughnut',
+            data: {
+                labels: statusData.map(item => item.status),
+                datasets: [{
+                    data: statusData.map(item => item.percentage),
+                    backgroundColor: ['#1cc88a', '#f6c23e', '#e74a3b', '#36b9cc'],
+                    borderWidth: 0,
+                    hoverOffset: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            boxWidth: 12,
+                            padding: 15
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    );
+</script>
 
 <%- include('../partials/admin/footer') %>

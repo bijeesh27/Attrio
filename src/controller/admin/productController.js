@@ -83,7 +83,7 @@ const addProduct = async (req, res) => {
     console.log("req.file:", req.files);
     const image = req.files.map((file) => file.path);
     console.log("image:", image);
-    // In your route handler
+   
     const productData = new Product({
       name: req.body.name,
       category: req.body.category,

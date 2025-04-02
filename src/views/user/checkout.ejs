@@ -220,49 +220,53 @@
                       <i class='bx bx-credit-card'></i>
                     </div>
                     <div class="payment-method-info">
-                      <h4>Credit/Debit Card</h4>
-                      <p>Pay securely with your card</p>
+                      <h4>Online Payment</h4>
+                      <p>Pay securely using your card, UPI, or other digital payment methods.</p>
                     </div>
                   </label>
                 </div>
                 
-                <div class="payment-method-option">
-                  <input type="radio" name="paymentMethod" id="netBanking" value="netBanking">
-                  <label for="netBanking" class="payment-method-label">
-                    <div class="payment-method-icon">
-                      <i class='bx bx-bank'></i>
-                    </div>
-                    <div class="payment-method-info">
-                      <h4>Net Banking</h4>
-                      <p>Pay using your internet banking</p>
-                    </div>
-                  </label>
-                </div>
                 
-                <div class="payment-method-option">
-                  <input type="radio" name="paymentMethod" id="upi" value="upi">
-                  <label for="upi" class="payment-method-label">
-                    <div class="payment-method-icon">
-                      <i class='bx bx-mobile-alt'></i>
-                    </div>
-                    <div class="payment-method-info">
-                      <h4>UPI Payment</h4>
-                      <p>Google Pay, PhonePe, PayTM & more</p>
-                    </div>
-                  </label>
-                </div>
-                
-                <div class="payment-method-option">
-                  <input type="radio" name="paymentMethod" id="cashOnDelivery" value="cashOnDelivery">
-                  <label for="cashOnDelivery" class="payment-method-label">
-                    <div class="payment-method-icon">
-                      <i class='bx bx-money'></i>
-                    </div>
-                    <div class="payment-method-info">
-                      <h4>Cash on Delivery</h4>
-                      <p>Pay when your order is delivered</p>
-                    </div>
-                  </label>
+                <% if (cart.cartTotal + 100 < 1000) { %>
+                  <div class="payment-method-option">
+                    <input type="radio" name="paymentMethod" id="cashOnDelivery" value="cashOnDelivery">
+                    <label for="cashOnDelivery" class="payment-method-label">
+                      <div class="payment-method-icon">
+                        <i class='bx bx-money'></i>
+                      </div>
+                      
+                      <div class="payment-method-info">
+                        <h4>Cash on Delivery</h4>
+                        <p>Pay when your order is delivered</p>
+                      </div>
+                    </label>
+                  </div>
+                <% } else { %>
+                  <div class="payment-method-option disabled">
+                    <input type="radio" name="paymentMethod" id="cashOnDelivery" value="cashOnDelivery" disabled>
+                    <label for="cashOnDelivery" class="payment-method-label dimmed">
+                      <div class="payment-method-icon">
+                        <i class='bx bx-money'></i>
+                      </div>
+                      
+                      <div class="payment-method-info">
+                        <h4>Cash on Delivery</h4>
+                        <p>Not available for orders over ₹1000</p>
+                      </div>
+                    </label>
+                  </div>
+                <% } %>
+                <div class="payment-method-option"> 
+                  <input type="radio" name="paymentMethod" id="wallet" value="wallet" checked> 
+                  <label for="wallet" class="payment-method-label"> 
+                    <div class="payment-method-icon"> 
+                      <i class='bx bx-wallet'></i> 
+                    </div> 
+                    <div class="payment-method-info"> 
+                      <h4>Wallet Payment</h4> 
+                      <p>Current Balance: <span id="walletBalance"><%= walletBalance %></span></p>
+                    </div> 
+                  </label> 
                 </div>
               </div>
             </div>
@@ -719,8 +723,8 @@ document.getElementById('addressForm').addEventListener('submit', async function
       }, 1000);
     }
     
-    // Place Order Button
-    document.getElementById('placeOrderBtn').addEventListener('click', function() {
+   // Place Order Button
+document.getElementById('placeOrderBtn').addEventListener('click', function() {
   // Check if address is selected
   const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
   if (!selectedAddress && document.querySelectorAll('.address-card').length > 0) {
@@ -762,6 +766,59 @@ document.getElementById('addressForm').addEventListener('submit', async function
         }
       });
       break;
+      
+      case 'wallet':
+  console.log("Entering wallet payment");
+
+  // Get wallet balance via AJAX
+  fetch('/wallet/balance')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch wallet balance');
+      }
+      return response.json();
+    })
+    .then(data => {
+      const walletBalance = parseFloat(data.balance) || 0;
+
+      // Get cart total from orderTotal element
+      const orderTotalText = document.getElementById('orderTotal').textContent.trim();
+      const cartTotal = parseFloat(orderTotalText.replace('Rs.', '').replace(/,/g, ''));
+
+      console.log("Wallet Balance:", walletBalance);
+      console.log("Cart Total:", cartTotal);
+
+      // Check if wallet balance is sufficient
+      if (isNaN(cartTotal) || cartTotal <= 0) {
+        Swal.fire('Error', 'Invalid cart total. Please refresh the page and try again.', 'error');
+        return;
+      }
+
+      if (walletBalance < cartTotal) {
+        Swal.fire('Insufficient Balance', 'Your wallet balance is insufficient for this purchase.', 'error');
+        return;
+      }
+
+      // Proceed with confirmation dialog
+      Swal.fire({
+        title: 'Confirm Wallet Payment',
+        text: `Do you want to pay ₹${cartTotal.toFixed(2)} using your wallet balance?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#000000',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, Pay Now'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          processOrder(addressId, 'Wallet');
+        }
+      });
+    })
+    .catch(error => {
+      console.error("Error fetching wallet balance:", error);
+      Swal.fire('Error', 'Could not verify wallet balance. Please try again.', 'error');
+    });
+  break;
       
     default:
       Swal.fire('Coming Soon', 'This payment method will be available soon', 'info');
@@ -900,6 +957,14 @@ function processOrder(addressId, paymentMethod, paymentId = null, orderId = null
     }
   });
   
+  // Make sure payment method casing matches backend expectations
+  // Convert 'wallet' to 'Wallet' to match backend check
+  if (paymentMethod === 'wallet') {
+    paymentMethod = 'Wallet';
+  } else if (paymentMethod === 'cashOnDelivery') {
+    paymentMethod = 'Cash On Delivery';
+  }
+  
   // Payment data to send to server
   const paymentData = {
     addressId: addressId,
@@ -915,6 +980,8 @@ function processOrder(addressId, paymentMethod, paymentId = null, orderId = null
     paymentData.razorpayOrderId = orderId;
   }
   
+  console.log("Sending payment data:", paymentData);
+  
   // Send order data to the server
   fetch('/orderplaced', {
     method: 'POST',
@@ -923,7 +990,14 @@ function processOrder(addressId, paymentMethod, paymentId = null, orderId = null
     },
     body: JSON.stringify(paymentData),
     credentials: 'same-origin'
-  }).then(response => response.json()) 
+  }).then(response => {
+    if (!response.ok) {
+      return response.json().then(err => {
+        throw new Error(err.error || 'Order processing failed');
+      });
+    }
+    return response.json();
+  })
   .then(data => {
     Swal.fire({
       title: 'Order Placed Successfully!',
@@ -939,13 +1013,12 @@ function processOrder(addressId, paymentMethod, paymentId = null, orderId = null
     console.error('Error:', error);
     Swal.fire({
       title: 'Error',
-      text: 'There was a problem processing your order. Please try again.',
+      text: error.message || 'There was a problem processing your order. Please try again.',
       icon: 'error',
       confirmButtonColor: '#000000'
     });
   });
 }
-
 // You can remove or comment out the existing code that sends address to '/orderplaced'
 // In the current event listener for address radio buttons
 document.addEventListener('DOMContentLoaded', function() {
@@ -1052,7 +1125,32 @@ function removeCoupon() {
   });
 }
 
-
+// Add this to your checkout page JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+  // Get the wallet balance from the server (passed during render)
+  const walletBalance = parseFloat("<%- walletBalance %>") || 0;
+  
+  // Display the wallet balance
+  document.getElementById('walletBalance').textContent = `₹${walletBalance.toFixed(2)}`;
+  
+  // Get cart total (add shipping cost if needed)
+  const cartTotal = parseFloat("<%- cart.cartTotal %>") || 0;
+  const totalWithShipping = cartTotal + 100; // Assuming 100 is shipping cost
+  
+  // Get wallet payment option
+  const walletOption = document.getElementById('wallet');
+  
+  // Check if wallet has sufficient balance
+  if (walletBalance < totalWithShipping) {
+    // Disable wallet option if balance is insufficient
+    walletOption.disabled = true;
+    document.querySelector('label[for="wallet"] p').innerHTML = 
+      `Current Balance: ₹${walletBalance.toFixed(2)} <span class="text-danger">(Insufficient funds)</span>`;
+  } else {
+    document.querySelector('label[for="wallet"] p').innerHTML = 
+      `Current Balance: ₹${walletBalance.toFixed(2)} <span class="text-success">(Sufficient funds)</span>`;
+  }
+});
 
 function addAddress(){
   window.location.href="/addaddress"
