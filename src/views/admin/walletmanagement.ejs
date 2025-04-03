@@ -1,0 +1,466 @@
+<%- include('../partials/admin/header') %>
+
+<style>
+  .table-container {
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  #walletList-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+  }
+
+  #walletList-table th,
+  #walletList-table td {
+    padding: 8px;
+    white-space: nowrap;
+  }
+
+  .badge-success {
+    background-color: #34c38f;
+    color: white;
+  }
+
+  .badge-danger {
+    background-color: #f46a6a;
+    color: white;
+  }
+
+  .badge-info {
+    background-color: #50a5f1;
+    color: white;
+  }
+
+  .badge-warning {
+    background-color: #f1b44c;
+    color: white;
+  }
+
+  .badge-primary {
+    background-color: #556ee6;
+    color: white;
+  }
+
+  .transaction-badge {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 12px;
+  }
+
+  /* Compact Search component styles */
+  .search-container {
+    position: relative;
+    margin-bottom: 20px;
+    max-width: 400px;
+  }
+  
+  .search-form {
+    display: flex;
+    align-items: center;
+  }
+  
+  .search-input-wrapper {
+    position: relative;
+    flex-grow: 1;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 8px 35px 8px 35px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: all 0.3s;
+    outline: none;
+    height: 38px;
+  }
+  
+  .search-input:focus {
+    border-color: #556ee6;
+    box-shadow: 0 0 0 2px rgba(85, 110, 230, 0.1);
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-size: 16px;
+    pointer-events: none;
+  }
+  
+  .cancel-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-size: 16px;
+    cursor: pointer;
+    display: none;
+  }
+  
+  .search-input:not(:placeholder-shown) ~ .cancel-icon {
+    display: block;
+  }
+  
+  .search-button {
+    margin-left: 8px;
+    padding: 8px 15px;
+    background-color: #556ee6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    height: 38px;
+  }
+  
+  .search-button:hover {
+    background-color: #4458b8;
+  }
+
+  /* Transaction details modal */
+  .transaction-details {
+    padding: 15px;
+  }
+
+  .transaction-details .detail-row {
+    margin-bottom: 10px;
+    display: flex;
+  }
+
+  .transaction-details .detail-label {
+    font-weight: 500;
+    width: 180px;
+  }
+
+  .transaction-details .detail-value {
+    flex: 1;
+  }
+  
+  .view-details-btn {
+    background-color: #556ee6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    padding: 4px 8px;
+    cursor: pointer;
+  }
+  
+  .view-details-btn:hover {
+    background-color: #4458b8;
+  }
+  
+  .view-order-btn {
+    background-color: #34c38f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    padding: 4px 8px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .view-order-btn:hover {
+    background-color: #2ba67c;
+  }
+  
+  @media screen and (max-width: 992px) {
+    .transaction-details .detail-row {
+      flex-direction: column;
+    }
+    
+    .transaction-details .detail-label {
+      width: 100%;
+      margin-bottom: 5px;
+    }
+  }
+</style>
+
+<body data-sidebar="dark">
+  <div class="main-content">
+    <div class="page-content">
+      <div class="container-fluid">
+        <!-- Start page title -->
+        <div class="row">
+          <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+              <h4 class="mb-sm-0 font-size-18">Wallet Management</h4>
+              <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                  <li class="breadcrumb-item">
+                    <a href="javascript: void(0);">Admin/</a>
+                  </li>
+                  <li class="">Wallet Management</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End page title -->
+        
+        <!-- Search Component -->
+        <div class="row mb-3">
+          <div class="col-sm-12 col-md-6">
+            <div class="search-container">
+              <form action="/admin/wallet" method="GET" class="search-form" id="searchForm">
+                <div class="search-input-wrapper">
+                  <i class="bx bx-search search-icon"></i>
+                  <input
+                    type="text"
+                    class="search-input form-control"
+                    id="searchUserInput"
+                    placeholder="Search by username..."
+                    name="query"
+                    value="<%= searchQuery %>"
+                  />
+                  <i class="bx bx-x cancel-icon" onclick="clearSearch()"></i>
+                </div>
+                <button type="submit" class="search-button">
+                  Search
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <!-- Wallet Transactions Table -->
+                <div class="table-container">
+                  <table class="table align-middle" id="walletList-table">
+                    <thead class="table-light">
+                      <tr>
+                        <th>SL.No</th>
+                        <th>Transaction ID</th>
+                        <th>User</th>
+                        <th>Date</th>
+                        <th>Transaction Type</th>
+                        <th>Amount</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% if (transactions && transactions.length > 0) { %>
+                      <% transactions.forEach((transaction, index) => { %>
+                      <tr>
+                        <td><%= startIndex + index + 1 %></td>
+                        <td><%= transaction._id.toString().slice(-8).toUpperCase() %></td>
+                        <td><%= transaction.userName %></td>
+                        <td><%= new Date(transaction.date).toLocaleDateString('en-US', {day: '2-digit', month: 'short', year: 'numeric'}) %></td>
+                        <td>
+                          <% let badgeClass = ''; 
+                             switch(transaction.transactionsMethod) {
+                               case 'Credit': badgeClass = 'badge-success'; break;
+                               case 'Razorpay': badgeClass = 'badge-info'; break;
+                               case 'Referral': badgeClass = 'badge-primary'; break;
+                               case 'Refund': badgeClass = 'badge-warning'; break;
+                               case 'Payment': badgeClass = 'badge-danger'; break;
+                               default: badgeClass = 'badge-secondary';
+                             }
+                          %>
+                          <span class="transaction-badge <%= badgeClass %>">
+                            <%= transaction.transactionsMethod %>
+                          </span>
+                        </td>
+                        <td>
+                          <% if(['Credit', 'Razorpay', 'Referral', 'Refund'].includes(transaction.transactionsMethod)) { %>
+                            <span class="text-success">+ ₹<%= transaction.amount.toFixed(2) %></span>
+                          <% } else { %>
+                            <span class="text-danger">- ₹<%= transaction.amount.toFixed(2) %></span>
+                          <% } %>
+                        </td>
+                        <td>
+                          <button 
+                            class="btn view-details-btn" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#transactionModal<%= index %>"
+                          >
+                            View Details
+                          </button>
+                        </td>
+                      </tr>
+                      <% }) %>
+                      <% } else { %>
+                        <tr>
+                          <td colspan="7" class="text-center">No transactions found</td>
+                        </tr>
+                      <% } %>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- End Table -->
+
+                <!-- Pagination -->
+                <div class="row mt-4">
+                  <div class="col-12">
+                    <nav aria-label="Wallet transactions pagination">
+                      <ul class="pagination pagination-rounded justify-content-center">
+                        <!-- Previous page button -->
+                        <li class="page-item <%= pagination.currentPage === 1 ? 'disabled' : '' %>">
+                          <a class="page-link" href="/admin/wallet?page=<%= pagination.currentPage - 1 %>&query=<%= searchQuery %>" tabindex="-1">
+                            <i class="mdi mdi-chevron-left"></i>
+                          </a>
+                        </li>
+                        
+                        <!-- Page numbers -->
+                        <% pages.forEach(pageNum => { %>
+                          <li class="page-item <%= pagination.currentPage === pageNum ? 'active' : '' %>">
+                            <a class="page-link" href="/admin/wallet?page=<%= pageNum %>&query=<%= searchQuery %>"><%= pageNum %></a>
+                          </li>
+                        <% }) %>
+                        
+                        <!-- Next page button -->
+                        <li class="page-item <%= pagination.currentPage === pagination.totalPages ? 'disabled' : '' %>">
+                          <a class="page-link" href="/admin/wallet?page=<%= pagination.currentPage + 1 %>&query=<%= searchQuery %>">
+                            <i class="mdi mdi-chevron-right"></i>
+                          </a>
+                        </li>
+                      </ul>
+                    </nav>
+                  </div>
+                </div>
+              </div>
+              <!-- End Card Body -->
+            </div>
+            <!-- End Card -->
+          </div>
+          <!-- End Col -->
+        </div>
+        <!-- End Row -->
+      </div>
+      <!-- End Container Fluid -->
+    </div>
+    <!-- End Page Content -->
+  </div>
+  <!-- End Main Content -->
+  
+  <!-- Transaction Details Modals -->
+  <% if (transactions && transactions.length > 0) { %>
+    <% transactions.forEach((transaction, index) => { %>
+      <div class="modal fade" id="transactionModal<%= index %>" tabindex="-1" aria-labelledby="transactionModalLabel<%= index %>" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="transactionModalLabel<%= index %>">Transaction Details</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="transaction-details">
+                <div class="detail-row">
+                  <div class="detail-label">Transaction ID:</div>
+                  <div class="detail-value"><%= transaction._id.toString() %></div>
+                </div>
+                <div class="detail-row">
+                  <div class="detail-label">User:</div>
+                  <div class="detail-value"><%= transaction.userName %> (<%= transaction.userEmail %>)</div>
+                </div>
+                <div class="detail-row">
+                  <div class="detail-label">Date:</div>
+                  <div class="detail-value"><%= new Date(transaction.date).toLocaleString('en-US', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                  }) %></div>
+                </div>
+                <div class="detail-row">
+                  <div class="detail-label">Transaction Type:</div>
+                  <div class="detail-value">
+                    <% let badgeClass = ''; 
+                       switch(transaction.transactionsMethod) {
+                         case 'Credit': badgeClass = 'badge-success'; break;
+                         case 'Razorpay': badgeClass = 'badge-info'; break;
+                         case 'Referral': badgeClass = 'badge-primary'; break;
+                         case 'Refund': badgeClass = 'badge-warning'; break;
+                         case 'Payment': badgeClass = 'badge-danger'; break;
+                         default: badgeClass = 'badge-secondary';
+                       }
+                    %>
+                    <span class="transaction-badge <%= badgeClass %>">
+                      <%= transaction.transactionsMethod %>
+                    </span>
+                  </div>
+                </div>
+                <div class="detail-row">
+                  <div class="detail-label">Amount:</div>
+                  <div class="detail-value">
+                    <% if(['Credit', 'Razorpay', 'Referral', 'Refund'].includes(transaction.transactionsMethod)) { %>
+                      <span class="text-success">+ ₹<%= transaction.amount %></span>
+                    <% } else { %>
+                      <span class="text-danger">- ₹<%= transaction.amount %></span>
+                    <% } %>
+                  </div>
+                </div>
+                <div class="detail-row">
+                  <div class="detail-label">User Wallet Balance:</div>
+                  <div class="detail-value">₹<%= transaction.walletBalance %></div>
+                </div>
+                <% if (transaction.orderId) { %>
+                <div class="detail-row">
+                  <div class="detail-label">Order ID:</div>
+                  <div class="detail-value"><%= transaction.orderId %></div>
+                </div>
+                <div class="detail-row">
+                  <div class="detail-value">
+                    <a href="/admin/adminorderdetails/<%= transaction.orderId %>">
+                      <button class="view-order-btn">View Order Details</button>
+                    </a>
+                  </div>
+                </div>
+                <% } %>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  <% } %>
+</body>
+
+<script>
+  function clearSearch() {
+    document.getElementById('searchUserInput').value = '';
+    // Redirect to main wallet page to show all transactions
+    window.location.href = '/admin/wallet';
+  }
+
+  // Show cancel icon when input has text
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchUserInput');
+    const cancelIcon = document.querySelector('.cancel-icon');
+    
+    // Check if there's initial value
+    if (searchInput && searchInput.value.length > 0) {
+      cancelIcon.style.display = 'block';
+    }
+    
+    // Add event listener to handle input changes
+    if (searchInput) {
+      searchInput.addEventListener('input', function() {
+        if (this.value.length > 0) {
+          cancelIcon.style.display = 'block';
+        } else {
+          cancelIcon.style.display = 'none';
+        }
+      });
+    }
+  });
+</script>
+
+<%- include('../partials/admin/footer') %>

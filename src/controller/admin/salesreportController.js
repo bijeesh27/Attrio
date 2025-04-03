@@ -39,9 +39,8 @@ const getSalesReport = async (req, res) => {
 
         const orders = await Order.find({
             createdAt: { $gte: startDate, $lte: endDate },
-            orderStatus: { $ne: 'Cancelled' }
+            orderStatus: { $nin: ['Cancelled', 'Returned'] } 
         }).populate('userId');
-
         // Calculate overall statistics
         const overallStats = {
             salesCount: orders.length,
@@ -131,22 +130,115 @@ const downloadPDF = async (req, res) => {
         doc.text(`Net Sales: ₹${overallStats.netSales.toFixed(2)}`);
         doc.moveDown(2);
 
-        // Orders list
+        // Orders table
         doc.fontSize(14).text('Orders:', { underline: true });
         doc.moveDown();
 
+        // Define table layout
+        const tableTop = doc.y;
+        const tableLeft = 50;
+        const colWidths = [80, 70, 80, 60, 70, 60, 70];
+        const rowHeight = 20;
+        
+        // Draw table headers
+        const headers = ['Order No.', 'Date', 'Customer', 'Amount (₹)', 'Discount (₹)', 'Final (₹)', 'Status'];
+        doc.fontSize(10);
+        
+        // Draw header background
+        doc.fillColor('#f0f0f0').rect(tableLeft, tableTop, colWidths.reduce((a, b) => a + b, 0), rowHeight).fill();
+        doc.fillColor('#000000');
+        
+        // Draw header text
+        headers.forEach((header, i) => {
+            let xPos = tableLeft;
+            for (let j = 0; j < i; j++) {
+                xPos += colWidths[j];
+            }
+            doc.text(header, xPos + 5, tableTop + 5, { width: colWidths[i] - 10, align: 'left' });
+        });
+        
+        // Draw table rows
+        let currentY = tableTop + rowHeight;
+        
         orders.forEach((order, index) => {
             const finalAmount = order.orderAmount - (order.couponDiscount || 0);
-            doc.fontSize(12).text(`Order ${index + 1}:`);
-            doc.text(`Order Number: ${order.orderNumber}`);
-            doc.text(`Date: ${moment(order.createdAt).format('DD-MM-YYYY')}`);
-            doc.text(`Customer: ${order.userId ? order.userId.name : 'Guest'}`);
-            doc.text(`Total Amount: ₹${order.orderAmount.toFixed(2)}`);
-            doc.text(`Coupon: ${order.couponCode || 'N/A'}`);
-            doc.text(`Coupon Discount: ₹${(order.couponDiscount || 0).toFixed(2)}`);
-            doc.text(`Final Amount: ₹${finalAmount.toFixed(2)}`);
-            doc.text(`Status: ${order.orderStatus}`);
-            doc.moveDown();
+            const rowData = [
+                order.orderNumber,
+                moment(order.createdAt).format('DD-MM-YYYY'),
+                order.userId ? order.userId.name : 'Guest',
+                order.orderAmount.toFixed(2),
+                (order.couponDiscount || 0).toFixed(2),
+                finalAmount.toFixed(2),
+                order.orderStatus
+            ];
+            
+            // Check if we need a new page
+            if (currentY + rowHeight > doc.page.height - 50) {
+                doc.addPage();
+                currentY = 50;
+                
+                // Redraw headers on new page
+                doc.fillColor('#f0f0f0').rect(tableLeft, currentY, colWidths.reduce((a, b) => a + b, 0), rowHeight).fill();
+                doc.fillColor('#000000');
+                
+                headers.forEach((header, i) => {
+                    let xPos = tableLeft;
+                    for (let j = 0; j < i; j++) {
+                        xPos += colWidths[j];
+                    }
+                    doc.text(header, xPos + 5, currentY + 5, { width: colWidths[i] - 10, align: 'left' });
+                });
+                
+                currentY += rowHeight;
+            }
+            
+            // Draw row background (alternating colors)
+            doc.fillColor(index % 2 === 0 ? '#ffffff' : '#f9f9f9')
+               .rect(tableLeft, currentY, colWidths.reduce((a, b) => a + b, 0), rowHeight)
+               .fill();
+            doc.fillColor('#000000');
+            
+            // Draw cell borders
+            doc.lineWidth(0.5);
+            
+            // Horizontal lines
+            doc.moveTo(tableLeft, currentY)
+               .lineTo(tableLeft + colWidths.reduce((a, b) => a + b, 0), currentY)
+               .stroke();
+            
+            // Draw row data
+            rowData.forEach((cell, i) => {
+                let xPos = tableLeft;
+                for (let j = 0; j < i; j++) {
+                    xPos += colWidths[j];
+                }
+                
+                // Draw vertical lines
+                doc.moveTo(xPos, currentY)
+                   .lineTo(xPos, currentY + rowHeight)
+                   .stroke();
+                
+                // Draw text
+                doc.text(cell, xPos + 5, currentY + 5, { width: colWidths[i] - 10, align: 'left' });
+            });
+            
+            // Draw last vertical line
+            let lastX = tableLeft;
+            for (let i = 0; i < colWidths.length; i++) {
+                lastX += colWidths[i];
+            }
+            doc.moveTo(lastX, currentY)
+               .lineTo(lastX, currentY + rowHeight)
+               .stroke();
+            
+            currentY += rowHeight;
+            
+            // Bottom line for the last row
+            if (index === orders.length - 1) {
+                doc.moveTo(tableLeft, currentY)
+                   .lineTo(tableLeft + colWidths.reduce((a, b) => a + b, 0), currentY)
+                   .stroke();
+            }
         });
 
         doc.end();

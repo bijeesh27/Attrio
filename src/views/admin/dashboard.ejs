@@ -333,7 +333,7 @@
                         },
                         ticks: {
                             callback: function(value) {
-                                return '$' + value.toLocaleString();
+                                return '₹' + value.toLocaleString();
                             }
                         }
                     },
@@ -350,7 +350,7 @@
                     tooltip: {
                         callbacks: {
                             label: function(context) {
-                                return '$' + context.parsed.y.toLocaleString();
+                                return '₹' + context.parsed.y.toLocaleString();
                             }
                         }
                     }

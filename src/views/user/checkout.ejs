@@ -227,7 +227,7 @@
                 </div>
                 
                 
-                <% if (cart.cartTotal + 100 < 1000) { %>
+                <% if (cart?.cartTotal + 100 < 1000) { %>
                   <div class="payment-method-option">
                     <input type="radio" name="paymentMethod" id="cashOnDelivery" value="cashOnDelivery">
                     <label for="cashOnDelivery" class="payment-method-label">
@@ -1134,7 +1134,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('walletBalance').textContent = `₹${walletBalance.toFixed(2)}`;
   
   // Get cart total (add shipping cost if needed)
-  const cartTotal = parseFloat("<%- cart.cartTotal %>") || 0;
+  const cartTotal = parseFloat("<%- cart?.cartTotal %>") || 0;
   const totalWithShipping = cartTotal + 100; // Assuming 100 is shipping cost
   
   // Get wallet payment option

@@ -8,6 +8,7 @@ const orderController=require("../controller/admin/orderController")
 const couponController=require('../controller/admin/couponController')
 const offerController=require('../controller/admin/offerController')
 const salesreportController=require('../controller/admin/salesreportController')
+const walletController=require('../controller/admin/walletController')
 const multer=require("multer");
 const { isAdmin, isAdminLogged } = require("../middleware/adminMiddleware");
 const { logged } = require("../middleware/userMiddleware");
@@ -48,6 +49,7 @@ router.post('/addoffer',isAdmin,offerController.addOffer)
 router.get('/editoffer/:offerId',isAdmin,offerController.loadEditOffer)
 router.post('/updateoffer/:offerId',isAdmin,offerController.editOffer)
 router.post('/blockoffer/:offerId',isAdmin,offerController.blockOffer)
+router.get('/wallet', isAdmin, walletController.getWalletTransactions);
 
 
 router.get('/salesreport',isAdmin, salesreportController.getSalesReport);
