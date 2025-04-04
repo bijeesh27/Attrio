@@ -409,7 +409,7 @@
                   let transactionClass = 'transaction-negative';
                   let transactionIcon = 'bx-arrow-from-right';
                   
-                  if (transaction.transactionsMethod === 'Refund' || transaction.transactionsMethod === 'Credit') {
+                  if (transaction.transactionsMethod === 'Refund' || transaction.transactionsMethod === 'Credit'||transaction.transactionsMethod === 'Referral') {
                     transactionClass = 'transaction-positive';
                     transactionIcon = 'bx-arrow-from-left';
                   }
@@ -434,7 +434,7 @@
                         </span>
                       </div>
                       <div class="transaction-amount <%= transactionClass %>">
-                        <%= transaction.transactionsMethod === 'Refund' || transaction.transactionsMethod === 'Credit' ? '+' : '-' %>₹<%= transaction.amount.toFixed(2) %>
+                        <%= transaction.transactionsMethod === 'Refund' || transaction.transactionsMethod === 'Credit'||transaction.transactionsMethod === 'Referral' ? '+' : '-' %>₹<%= transaction.amount.toFixed(2) %>
                       </div>
                     </div>
                   </div>

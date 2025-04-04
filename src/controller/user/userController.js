@@ -9,6 +9,8 @@ const Category = require("../../models/categorySchema");
 const nodemailer = require("nodemailer");
 const passport = require("passport");
 
+                      
+
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -47,6 +49,17 @@ const login = async (req, res) => {
 function generateOtp() {
   return Math.floor(1000 + Math.random() * 9000).toString();
 }
+function generateReferralCode(length = 6) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let referralCode = '';
+  
+  for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      referralCode += characters[randomIndex];
+  }
+  
+  return referralCode;
+}
 
 let sendVerificationEmail = async (email, otp) => {
   try {
@@ -79,8 +92,11 @@ let sendVerificationEmail = async (email, otp) => {
 
 const register = async (req, res) => {
   try {
-    const { username, email, number, password, confirmPassword } = req.body;
+    const { username, email, number, password, confirmPassword ,referralCode } = req.body;
+    console.log("referralCode",referralCode);
     const user = await User.findOne({ email });
+    const referedUser=await User.findOne({referralCode})
+    console.log("referedUser",referedUser);
     if (user) {
       req.flash("error_msg", "User Already Exist");
       return res.redirect("/register");
@@ -93,6 +109,10 @@ const register = async (req, res) => {
     if (number < 10) {
       return res.redirect("/register");
     }
+    if(referralCode&&!referedUser){
+      req.flash("error_msg", "Invalid Referal Code");
+      return res.redirect("/register");
+    }
     const otp = generateOtp();
     const emailSent = await sendVerificationEmail(email, otp);
     console.log("emailsent", emailSent);
@@ -101,6 +121,7 @@ const register = async (req, res) => {
     }
     req.session.userOtp = otp;
     req.session.userData = { username, email, number, password };
+    req.session.referedUser=referedUser
     console.log("otp:", otp);
     req.flash("success_msg", "OTP sent");
     return res.redirect("/otp");
@@ -128,14 +149,20 @@ const verifyOtp = async (req, res) => {
       console.log("user:", user);
       const passwordHash = await securePassword(user.password);
       console.log("passwordHash:", passwordHash);
+
+      const referralCode=generateReferralCode()
+      console.log("refferal code",referralCode);
+
       const newUser = new User({
         username: user.username,
         email: user.email,
         number: user.number,
         password: passwordHash,
+        referralCode,
       });
       console.log("newUser", newUser);
       await newUser.save();
+
 
       req.session.isAuth = true;
       req.session.userId = newUser._id;
@@ -148,6 +175,23 @@ const verifyOtp = async (req, res) => {
         transaction: [],
       });
       await newWallet.save();
+
+      if (req.session.referedUser && req.session.referedUser._id) {
+        await Wallet.findOneAndUpdate(
+          { userId: req.session.referedUser._id },
+          {
+            $inc: { balance: 100 },
+            $push: {
+              transaction: {
+                amount: 100,
+                transactionsMethod: "Referral"
+              }
+            }
+          },
+          { new: true }
+        );
+      }
+      
 
       req.flash("success_msg", "Registerd Successfully");
       res.redirect("/");

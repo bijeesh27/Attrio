@@ -1,6 +1,4 @@
-<!-- admin/dashboard.ejs -->
 <%- include('../partials/admin/header') %>
-
 
 <div class="main-content">
     <!-- Dashboard Header -->
@@ -27,10 +25,8 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0 me-3">
-                            <div >
+                            <div>
                                 <i class="fa-solid fa-indian-rupee-sign font-size-24 text-primary"></i>
-
-
                             </div>
                         </div>
                         <div class="flex-grow-1">
@@ -47,7 +43,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0 me-3">
-                            <div >
+                            <div>
                                 <i class="fas fa-shopping-bag font-size-24 text-success"></i>
                             </div>
                         </div>
@@ -65,7 +61,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0 me-3">
-                            <div >
+                            <div>
                                 <i class="fas fa-tag font-size-24 text-warning"></i>
                             </div>
                         </div>
@@ -83,7 +79,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0 me-3">
-                            <div >
+                            <div>
                                 <i class="fas fa-user-friends font-size-24 text-info"></i>
                             </div>
                         </div>
@@ -123,7 +119,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Order Status -->
         <div class="col-xl-4 col-lg-5 mb-4">
             <div class="card shadow-sm h-100">
@@ -133,9 +129,11 @@
                         <canvas id="orderStatusChart"></canvas>
                     </div>
                     <div class="row text-center mt-4">
-                        <% statusPercentages.forEach((status, index) => { 
-                            const colors = ['text-success', 'text-warning', 'text-danger', 'text-info'];
-                            const bgColors = ['bg-success', 'bg-warning', 'bg-danger', 'bg-info'];
+                        <% 
+                        const colors = ['text-success', 'text-warning', 'text-danger', 'text-info'];
+                        const bgColors = ['bg-success', 'bg-warning', 'bg-danger', 'bg-info'];
+                        
+                        statusPercentages.forEach((status, index) => { 
                             const color = colors[index % colors.length];
                             const bgColor = bgColors[index % bgColors.length];
                         %>
@@ -176,20 +174,19 @@
                                 </tr>
                             </thead>
                             <tbody>
-                               <% bestSellingProducts.forEach(product => { %>
-    <tr>
-        <td>
-            <div class="d-flex align-items-center">
-                
-                <div class="flex-grow-1 ms-3">
-                    <h6 class="font-size-14 mb-0"><%= product.product.name %></h6>
-                </div>
-            </div>
-        </td>
-        <td><%= product.totalSold %></td>
-        <td>₹<%= product.totalRevenue.toFixed(2) %></td>
-    </tr>
-<% }) %>
+                                <% bestSellingProducts.forEach(product => { %>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="font-size-14 mb-0"><%= product.product?.name || 'Unknown Product' %></h6>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><%= product.totalSold %></td>
+                                    <td>₹<%= product.totalRevenue.toFixed(2) %></td>
+                                </tr>
+                                <% }) %>
                             </tbody>
                         </table>
                     </div>
@@ -237,7 +234,7 @@
                                 %>
                                 <tr>
                                     <td><a href="/admin/orders/<%= order._id %>" class="text-body fw-bold">#<%= order.orderNumber || 'ORD-' + order._id.toString().substr(-6) %></a></td>
-                                    <td><%= order.userId ? (order.userId.userName || order.userId.name) : 'Guest' %></td>
+                                    <td><%= order.userId ? (order.userId.userName || order.userId.name || 'Unknown') : 'Guest' %></td>
                                     <td><%= formattedDate %></td>
                                     <td><span class="badge <%= badgeClass %>"><%= order.orderStatus %></span></td>
                                     <td>₹<%= order.finalAmount ? order.finalAmount.toFixed(2) : '0.00' %></td>
@@ -268,18 +265,20 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <% bestSellingCategories.forEach(category => { 
-                                    // Calculate a percentage of total category sales
-                                    const totalCategorySales = bestSellingCategories.reduce((sum, cat) => sum + cat.totalSold, 0);
+                                <% 
+                                // Calculate a percentage of total category sales
+                                const totalCategorySales = bestSellingCategories.reduce((sum, cat) => sum + cat.totalSold, 0);
+                                
+                                bestSellingCategories.forEach(category => { 
                                     const percentage = Math.round((category.totalSold / totalCategorySales) * 100);
                                 %>
                                 <tr>
-                                    <td><%= category.category.name %></td>
+                                    <td><%= category.category?.name || 'Unknown Category' %></td>
                                     <td><%= category.totalSold %></td>
                                     <td>₹<%= category.totalRevenue.toFixed(2) %></td>
                                     <td>
                                         <div class="progress" style="height: 6px;">
-                                            <div class="progress-bar bg-success" role="progressbar" style="width: <%= percentage %>%;" aria-valuenow="<%= percentage %>" aria-valuemin="0" aria-valuemax="100"></div>
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: '<%= percentage %>%';" aria-valuenow="<%= percentage %>" aria-valuemin="0" aria-valuemax="100"></div>
                                         </div>
                                     </td>
                                 </tr>
@@ -297,7 +296,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     // Parse the sales data from the server
-    const salesData = <%- JSON.stringify(salesData) %>;
+    const salesData = JSON.parse('<%- JSON.stringify(salesData) %>');
     const labels = salesData.map(item => item._id);
     const values = salesData.map(item => item.total);
     
@@ -360,7 +359,7 @@
     );
     
     // Order Status Chart
-    const statusData = <%- JSON.stringify(statusPercentages) %>;
+    const statusData = JSON.parse('<%- JSON.stringify(statusPercentages) %>');
     const orderStatusChart = new Chart(
         document.getElementById('orderStatusChart'),
         {

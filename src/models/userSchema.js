@@ -58,6 +58,10 @@ const userSchema = new Schema(
         }
       }
     ],
+    referralCode:{
+      type:String,
+      required:false
+    },
   },
   { timestamps: true }
 );
