@@ -9,9 +9,7 @@
       <!-- Page Title -->
       <div class="row">
         <div class="col-12">
-          <div
-            class="page-title-box d-sm-flex align-items-center justify-content-between"
-          >
+          <div class="page-title-box d-sm-flex align-items-center justify-content-between">
             <h4 class="mb-sm-0 font-size-18">Edit Product</h4>
             <div class="page-title-right">
               <ol class="breadcrumb m-0">
@@ -32,9 +30,7 @@
           <div class="card">
             <div class="card-body">
               <h4 class="card-title">Product Details</h4>
-              <p class="card-title-desc">
-                Update the product information below
-              </p>
+              <p class="card-title-desc">Update the product information below</p>
 
               <form
                 action="/admin/edit-product/<%= product.id %>"
@@ -54,7 +50,6 @@
                         name="name"
                         placeholder="Enter product name"
                         value="<%= product.name %>"
-                       
                       />
                     </div>
                     <div class="mb-3">
@@ -63,7 +58,6 @@
                         class="form-select"
                         id="category"
                         name="category"
-                        
                       >
                         <option value="">Select category</option>
                         <% categories.forEach(category => { %>
@@ -81,7 +75,6 @@
                         id="price"
                         name="price"
                         placeholder="Enter price"
-                        
                         value="<%= product.price %>"
                       />
                     </div>
@@ -89,16 +82,13 @@
 
                   <div class="col-md-6">
                     <div class="mb-3">
-                      <label for="description" class="form-label"
-                        >Description</label
-                      >
+                      <label for="description" class="form-label">Description</label>
                       <textarea
                         class="form-control"
                         id="description"
                         name="description"
                         rows="3"
                         placeholder="Enter product description"
-                        
                       ><%= product.description %></textarea>
                     </div>
                   </div>
@@ -112,16 +102,11 @@
                       <div id="stock-container">
                         <div class="row g-2 mb-2">
                           <% 
-                          // Find stock quantities by size 
                           const sizes = ['S', 'M', 'L', 'XL'];
                           const stockMap = {}; 
-                          
-                          // Initialize with 0
                           sizes.forEach(size => {
                             stockMap[size] = 0;
                           }); 
-                          
-                          // Fill with actual values 
                           if (product.stock && product.stock.length > 0) {
                             product.stock.forEach(item => {
                               stockMap[item.size] = item.quantity;
@@ -188,9 +173,18 @@
                   <div class="col-12">
                     <label class="form-label">Current Images</label>
                     <div id="existing-images" class="d-flex gap-2 flex-wrap">
-                      <p><%= product.image %></p>
-                      <% if (product.image && product.image.length > 0) { %>
-                        <% product.image.forEach((image, index) => { %>
+                      <% 
+                      let images = [];
+                      if (product.image) {
+                        if (Array.isArray(product.image)) {
+                          images = product.image;
+                        } else if (typeof product.image === 'string') {
+                          images = [product.image];
+                        }
+                      }
+                      %>
+                      <% if (images.length > 0) { %>
+                        <% images.forEach((image, index) => { %>
                           <div class="position-relative image-container mb-2">
                             <img src="/<%= image %>" alt="Product Image" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;" data-index="<%= index %>">
                             <button type="button" class="btn btn-danger btn-sm delete-image" data-index="<%= index %>" style="position: absolute; top: 0; right: 0; padding: 0.2rem 0.4rem;">
@@ -220,7 +214,7 @@
                         accept="image/*"
                       />
                       <small class="form-text text-muted">
-                        You can upload up to <%= 3 - (product.images ? product.images.length : 0) %> more images.
+                        You can upload up to <%= 3 - (images.length || 0) %> more images.
                       </small>
 
                       <!-- Image Preview Container -->
@@ -254,12 +248,8 @@
 
                 <!-- Form Actions -->
                 <div class="d-flex gap-2">
-                  <button type="submit" class="btn btn-primary">
-                    Update Product
-                  </button>
-                  <a href="/admin/products" class="btn btn-secondary">
-                    Cancel
-                  </a>
+                  <button type="submit" class="btn btn-primary">Update Product</button>
+                  <a href="/admin/products" class="btn btn-secondary">Cancel</a>
                 </div>
                 
                 <!-- Hidden input for removed images -->
@@ -278,9 +268,8 @@
   <%- include('../partials/admin/footer') %>
 </div>
 
-
-
-<script>document.addEventListener('DOMContentLoaded', function() {
+<script>
+document.addEventListener('DOMContentLoaded', function() {
   // Form validation
   const form = document.querySelector('form[action^="/admin/edit-product/"]');
   
@@ -301,15 +290,12 @@
   
   // Create error elements
   function createErrorElement(inputId) {
-      const errorElement = document.createElement('div');
-      errorElement.className = 'invalid-feedback';
-      errorElement.id = inputId + 'Error';
-      
-      // Insert error element after the input
-      const input = document.getElementById(inputId);
-      input.parentNode.insertBefore(errorElement, input.nextSibling);
-      
-      return errorElement;
+    const errorElement = document.createElement('div');
+    errorElement.className = 'invalid-feedback';
+    errorElement.id = inputId + 'Error';
+    const input = document.getElementById(inputId);
+    input.parentNode.insertBefore(errorElement, input.nextSibling);
+    return errorElement;
   }
   
   // Create error elements for all fields
@@ -333,91 +319,91 @@
   
   // Function to show error
   function showError(input, errorElement, message) {
-      input.classList.add('is-invalid');
-      input.classList.remove('is-valid');
-      errorElement.style.display = 'block';
-      errorElement.textContent = message;
+    input.classList.add('is-invalid');
+    input.classList.remove('is-valid');
+    errorElement.style.display = 'block';
+    errorElement.textContent = message;
   }
   
   // Function to hide error
   function hideError(input, errorElement) {
-      input.classList.remove('is-invalid');
-      input.classList.add('is-valid');
-      errorElement.style.display = 'none';
+    input.classList.remove('is-invalid');
+    input.classList.add('is-valid');
+    errorElement.style.display = 'none';
   }
   
   // Name validation
   name.addEventListener('blur', function() {
-      if (name.value.trim() === '') {
-          showError(name, nameError, 'Product name is required');
-      } else if (name.value.trim().length < 3) {
-          showError(name, nameError, 'Product name must be at least 3 characters');
-      } else {
-          hideError(name, nameError);
-      }
+    if (name.value.trim() === '') {
+      showError(name, nameError, 'Product name is required');
+    } else if (name.value.trim().length < 3) {
+      showError(name, nameError, 'Product name must be at least 3 characters');
+    } else {
+      hideError(name, nameError);
+    }
   });
   
   // Category validation
   category.addEventListener('blur', function() {
-      if (category.value === '') {
-          showError(category, categoryError, 'Please select a category');
-      } else {
-          hideError(category, categoryError);
-      }
+    if (category.value === '') {
+      showError(category, categoryError, 'Please select a category');
+    } else {
+      hideError(category, categoryError);
+    }
   });
   
   // Price validation
   price.addEventListener('blur', function() {
-      if (price.value.trim() === '') {
-          showError(price, priceError, 'Price is required');
-      } else if (isNaN(price.value) || Number(price.value) <= 0) {
-          showError(price, priceError, 'Please enter a valid price greater than 0');
-      } else {
-          hideError(price, priceError);
-      }
+    if (price.value.trim() === '') {
+      showError(price, priceError, 'Price is required');
+    } else if (isNaN(price.value) || Number(price.value) <= 0) {
+      showError(price, priceError, 'Please enter a valid price greater than 0');
+    } else {
+      hideError(price, priceError);
+    }
   });
   
   // Description validation
   description.addEventListener('blur', function() {
-      if (description.value.trim() === '') {
-          showError(description, descriptionError, 'Description is required');
-      } else if (description.value.trim().length < 20) {
-          showError(description, descriptionError, 'Description must be at least 20 characters long');
-      } else {
-          hideError(description, descriptionError);
-      }
+    if (description.value.trim() === '') {
+      showError(description, descriptionError, 'Description is required');
+    } else if (description.value.trim().length < 20) {
+      showError(description, descriptionError, 'Description must be at least 20 characters long');
+    } else {
+      hideError(description, descriptionError);
+    }
   });
   
   // Image validation
   imageUpload.addEventListener('change', function() {
-      const files = imageUpload.files;
-      const existingImagesCount = document.querySelectorAll('#existing-images .image-container').length - removedImages.length;
-      const totalImages = existingImagesCount + files.length;
-      
-      if (totalImages > 3) {
-          showError(imageUpload, imageError, `You can only have up to 3 images total. You can upload ${3 - existingImagesCount} more.`);
-          imageUpload.value = ''; // Clear the input
-      } else {
-          hideError(imageUpload, imageError);
-          displayImagePreviews(files);
-      }
+    const files = imageUpload.files;
+    const existingImagesCount = document.querySelectorAll('#existing-images .image-container:not([style*="display: none"])').length;
+    const totalImages = existingImagesCount + files.length;
+    
+    if (totalImages > 3) {
+      showError(imageUpload, imageError, `You can only have up to 3 images total. You can upload ${3 - existingImagesCount} more.`);
+      imageUpload.value = '';
+    } else {
+      hideError(imageUpload, imageError);
+      displayImagePreviews(files);
+    }
   });
   
   // Validate at least one size has stock
   function validateSizes() {
-      if (
-          (stockS.value === '' || stockS.value === '0') &&
-          (stockM.value === '' || stockM.value === '0') &&
-          (stockL.value === '' || stockL.value === '0') &&
-          (stockXL.value === '' || stockXL.value === '0')
-      ) {
-          sizeError.style.display = 'block';
-          sizeError.textContent = 'At least one size must have stock quantity';
-          return false;
-      } else {
-          sizeError.style.display = 'none';
-          return true;
-      }
+    if (
+      (stockS.value === '' || stockS.value === '0') &&
+      (stockM.value === '' || stockM.value === '0') &&
+      (stockL.value === '' || stockL.value === '0') &&
+      (stockXL.value === '' || stockXL.value === '0')
+    ) {
+      sizeError.style.display = 'block';
+      sizeError.textContent = 'At least one size must have stock quantity';
+      return false;
+    } else {
+      sizeError.style.display = 'none';
+      return true;
+    }
   }
   
   // Size input event listeners
@@ -428,74 +414,68 @@
   
   // Clear errors when inputs change
   name.addEventListener('input', function() {
-      if (name.value.trim().length >= 3) {
-          hideError(name, nameError);
-      }
+    if (name.value.trim().length >= 3) {
+      hideError(name, nameError);
+    }
   });
   
   category.addEventListener('input', function() {
-      if (category.value !== '') {
-          hideError(category, categoryError);
-      }
+    if (category.value !== '') {
+      hideError(category, categoryError);
+    }
   });
   
   price.addEventListener('input', function() {
-      if (!isNaN(price.value) && Number(price.value) > 0) {
-          hideError(price, priceError);
-      }
+    if (!isNaN(price.value) && Number(price.value) > 0) {
+      hideError(price, priceError);
+    }
   });
   
   description.addEventListener('input', function() {
-      if (description.value.trim().length >= 20) {
-          hideError(description, descriptionError);
-      }
+    if (description.value.trim().length >= 20) {
+      hideError(description, descriptionError);
+    }
   });
   
   // Image Preview Function
   function displayImagePreviews(files) {
-      const previewContainer = document.getElementById('image-preview');
+    const previewContainer = document.getElementById('image-preview');
+    
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const reader = new FileReader();
       
-      // Display preview for each file
-      for (let i = 0; i < files.length; i++) {
-          const file = files[i];
-          const reader = new FileReader();
-          
-          reader.onload = function(e) {
-              // Create image container div
-              const imgContainer = document.createElement('div');
-              imgContainer.className = 'position-relative image-container mb-2';
-              
-              // Create image element
-              const img = document.createElement('img');
-              img.src = e.target.result;
-              img.className = 'img-thumbnail';
-              img.style.width = '100px';
-              img.style.height = '100px';
-              img.style.objectFit = 'cover';
-              
-              // Create crop button
-              const cropBtn = document.createElement('button');
-              cropBtn.type = 'button';
-              cropBtn.className = 'btn btn-primary btn-sm crop-image';
-              cropBtn.style.position = 'absolute';
-              cropBtn.style.top = '0';
-              cropBtn.style.left = '0';
-              cropBtn.style.padding = '0.2rem 0.4rem';
-              cropBtn.innerHTML = '<i class="bx bx-crop"></i>';
-              
-              // Add event for crop
-              cropBtn.addEventListener('click', function() {
-                  setupCropper(img, file);
-              });
-              
-              // Add elements to container
-              imgContainer.appendChild(img);
-              imgContainer.appendChild(cropBtn);
-              previewContainer.appendChild(imgContainer);
-          };
-          
-          reader.readAsDataURL(file);
-      }
+      reader.onload = function(e) {
+        const imgContainer = document.createElement('div');
+        imgContainer.className = 'position-relative image-container mb-2';
+        
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.className = 'img-thumbnail';
+        img.style.width = '100px';
+        img.style.height = '100px';
+        img.style.objectFit = 'cover';
+        
+        const cropBtn = document.createElement('button');
+        cropBtn.type = 'button';
+        cropBtn.className = 'btn btn-primary btn-sm crop-image';
+        cropBtn.style.position = 'absolute';
+        cropBtn.style.top = '0';
+        cropBtn.style.left = '0';
+        cropBtn.style.padding = '0.2rem 0.4rem';
+        cropBtn.innerHTML = '<i class="bx bx-crop"></i>';
+        
+        cropBtn.addEventListener('click', function() {
+          setupCropper(img, file);
+        });
+        
+        imgContainer.appendChild(img);
+        imgContainer.appendChild(cropBtn);
+        previewContainer.appendChild(imgContainer);
+      };
+      
+      reader.readAsDataURL(file);
+    }
   }
   
   // Setup for image cropping
@@ -504,167 +484,150 @@
   let currentFile;
   
   function setupCropper(imgElement, file) {
-      currentImageElement = imgElement;
-      currentFile = file;
-      
-      // Set up the cropper modal
-      const cropImage = document.getElementById('crop-image');
-      cropImage.src = imgElement.src;
-      
-      // Initialize cropper
-      if (cropper) {
-          cropper.destroy();
-      }
-      
-      cropper = new Cropper(cropImage, {
-          aspectRatio: 1,
-          viewMode: 1,
-          autoCropArea: 1
-      });
-      
-      // Show the modal
-      const cropModal = new bootstrap.Modal(document.getElementById('cropModal'));
-      cropModal.show();
+    currentImageElement = imgElement;
+    currentFile = file;
+    
+    const cropImage = document.getElementById('crop-image');
+    cropImage.src = imgElement.src;
+    
+    if (cropper) {
+      cropper.destroy();
+    }
+    
+    cropper = new Cropper(cropImage, {
+      aspectRatio: 1,
+      viewMode: 1,
+      autoCropArea: 1
+    });
+    
+    const cropModal = new bootstrap.Modal(document.getElementById('cropModal'));
+    cropModal.show();
   }
   
   // Handle crop button click
   document.getElementById('crop-btn').addEventListener('click', function() {
-      if (!cropper) return;
-      
-      // Get the cropped canvas
-      const canvas = cropper.getCroppedCanvas({
-          width: 300,
-          height: 300
+    if (!cropper) return;
+    
+    const canvas = cropper.getCroppedCanvas({
+      width: 300,
+      height: 300
+    });
+    
+    canvas.toBlob(function(blob) {
+      const newFile = new File([blob], currentFile.name, {
+        type: currentFile.type,
+        lastModified: new Date().getTime()
       });
       
-      // Convert to blob and create a new file
-      canvas.toBlob(function(blob) {
-          const newFile = new File([blob], currentFile.name, {
-              type: currentFile.type,
-              lastModified: new Date().getTime()
-          });
-          
-          // Update the image preview
-          currentImageElement.src = canvas.toDataURL();
-          
-          // Close the modal
-          const cropModal = bootstrap.Modal.getInstance(document.getElementById('cropModal'));
-          cropModal.hide();
-          
-          // Destroy the cropper
-          cropper.destroy();
-          cropper = null;
-      });
+      currentImageElement.src = canvas.toDataURL();
+      
+      const cropModal = bootstrap.Modal.getInstance(document.getElementById('cropModal'));
+      cropModal.hide();
+      
+      cropper.destroy();
+      cropper = null;
+    });
   });
   
   // Handle delete of existing images
   const deleteButtons = document.querySelectorAll('.delete-image');
   deleteButtons.forEach(button => {
-      button.addEventListener('click', function() {
-          const index = this.getAttribute('data-index');
-          const imgContainer = this.closest('.image-container');
-          
-          // Add to removed images array
-          removedImages.push(index);
-          removedImagesInput.value = JSON.stringify(removedImages);
-          
-          // Hide the image container but keep in DOM for form submission
-          imgContainer.style.display = 'none';
-          
-          // Update the available image count for new uploads
-          const existingImagesCount = document.querySelectorAll('#existing-images .image-container:not([style*="display: none"])').length;
-          document.querySelector('.form-text.text-muted').textContent = `You can upload up to ${3 - existingImagesCount} more images.`;
-      });
+    button.addEventListener('click', function() {
+      const index = this.getAttribute('data-index');
+      const imgContainer = this.closest('.image-container');
+      
+      removedImages.push(index);
+      removedImagesInput.value = JSON.stringify(removedImages);
+      
+      imgContainer.style.display = 'none';
+      
+      const existingImagesCount = document.querySelectorAll('#existing-images .image-container:not([style*="display: none"])').length;
+      document.querySelector('.form-text.text-muted').textContent = 
+        `You can upload up to ${3 - existingImagesCount} more images.`;
+    });
   });
   
   // Form submission validation
   form.addEventListener('submit', function(e) {
-      let isValid = true;
-      
-      // Validate name
-      if (name.value.trim() === '') {
-          showError(name, nameError, 'Product name is required');
-          isValid = false;
-      } else if (name.value.trim().length < 3) {
-          showError(name, nameError, 'Product name must be at least 3 characters');
-          isValid = false;
-      } else {
-          hideError(name, nameError);
-      }
-      
-      // Validate category
-      if (category.value === '') {
-          showError(category, categoryError, 'Please select a category');
-          isValid = false;
-      } else {
-          hideError(category, categoryError);
-      }
-      
-      // Validate price
-      if (price.value.trim() === '') {
-          showError(price, priceError, 'Price is required');
-          isValid = false;
-      } else if (isNaN(price.value) || Number(price.value) <= 0) {
-          showError(price, priceError, 'Please enter a valid price greater than 0');
-          isValid = false;
-      } else {
-          hideError(price, priceError);
-      }
-      
-      // Validate description
-      if (description.value.trim() === '') {
-          showError(description, descriptionError, 'Description is required');
-          isValid = false;
-      } else if (description.value.trim().length < 20) {
-          showError(description, descriptionError, 'Description must be at least 20 characters long');
-          isValid = false;
-      } else {
-          hideError(description, descriptionError);
-      }
-      
-      // Validate images
-      const files = imageUpload.files;
-      const existingImagesCount = document.querySelectorAll('#existing-images .image-container:not([style*="display: none"])').length;
-      const totalImages = existingImagesCount + files.length;
-      
-      if (totalImages > 3) {
-          showError(imageUpload, imageError, 'You can only have up to 3 images total');
-          isValid = false;
-      }
-      
-      // Require at least one image
-      if (totalImages === 0) {
-          showError(imageUpload, imageError, 'At least one product image is required');
-          isValid = false;
-      }
-      
-      // Validate sizes
-      if (!validateSizes()) {
-          isValid = false;
-      }
-      
-      // Prevent form submission if validation fails
-      if (!isValid) {
-          e.preventDefault();
-      }
+    let isValid = true;
+    
+    if (name.value.trim() === '') {
+      showError(name, nameError, 'Product name is required');
+      isValid = false;
+    } else if (name.value.trim().length < 3) {
+      showError(name, nameError, 'Product name must be at least 3 characters');
+      isValid = false;
+    } else {
+      hideError(name, nameError);
+    }
+    
+    if (category.value === '') {
+      showError(category, categoryError, 'Please select a category');
+      isValid = false;
+    } else {
+      hideError(category, categoryError);
+    }
+    
+    if (price.value.trim() === '') {
+      showError(price, priceError, 'Price is required');
+      isValid = false;
+    } else if (isNaN(price.value) || Number(price.value) <= 0) {
+      showError(price, priceError, 'Please enter a valid price greater than 0');
+      isValid = false;
+    } else {
+      hideError(price, priceError);
+    }
+    
+    if (description.value.trim() === '') {
+      showError(description, descriptionError, 'Description is required');
+      isValid = false;
+    } else if (description.value.trim().length < 20) {
+      showError(description, descriptionError, 'Description must be at least 20 characters long');
+      isValid = false;
+    } else {
+      hideError(description, descriptionError);
+    }
+    
+    const files = imageUpload.files;
+    const existingImagesCount = document.querySelectorAll('#existing-images .image-container:not([style*="display: none"])').length;
+    const totalImages = existingImagesCount + files.length;
+    
+    if (totalImages > 3) {
+      showError(imageUpload, imageError, 'You can only have up to 3 images total');
+      isValid = false;
+    }
+    
+    if (totalImages === 0) {
+      showError(imageUpload, imageError, 'At least one product image is required');
+      isValid = false;
+    }
+    
+    if (!validateSizes()) {
+      isValid = false;
+    }
+    
+    if (!isValid) {
+      e.preventDefault();
+    }
   });
   
   // Pre-select the category
   try {
-      const categoryId = form.dataset.categoryId;
-      if (categoryId) {
-          const options = category.querySelectorAll('option');
-          for (let i = 0; i < options.length; i++) {
-              if (options[i].value === categoryId) {
-                  options[i].selected = true;
-                  break;
-              }
-          }
+    const categoryId = form.dataset.categoryId;
+    if (categoryId) {
+      const options = category.querySelectorAll('option');
+      for (let i = 0; i < options.length; i++) {
+        if (options[i].value === categoryId) {
+          options[i].selected = true;
+          break;
+        }
       }
+    }
   } catch (e) {
-      console.error("Could not pre-select category:", e);
+    console.error("Could not pre-select category:", e);
   }
   
   // Run initial validation for sizes
   validateSizes();
-});</script>
+});
+</script>

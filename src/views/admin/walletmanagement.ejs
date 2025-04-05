@@ -359,7 +359,7 @@
               <div class="transaction-details">
                 <div class="detail-row">
                   <div class="detail-label">Transaction ID:</div>
-                  <div class="detail-value"><%= transaction._id.toString() %></div>
+                  <div class="detail-value"><%= transaction._id.toString().slice(-8).toUpperCase() %></div>
                 </div>
                 <div class="detail-row">
                   <div class="detail-label">User:</div>
@@ -411,7 +411,7 @@
                 <% if (transaction.orderId) { %>
                 <div class="detail-row">
                   <div class="detail-label">Order ID:</div>
-                  <div class="detail-value"><%= transaction.orderId %></div>
+                  <div class="detail-value"><%= transaction.orderNumber %></div>
                 </div>
                 <div class="detail-row">
                   <div class="detail-value">

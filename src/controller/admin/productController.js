@@ -118,18 +118,44 @@ const editProduct = async (req, res) => {
   try {
     const productId = req.params.productId;
     const product = await Product.findOne({ _id: productId });
+    
+    if (!product) {
+      return res.status(404).send('Product not found');
+    }
+
     console.log("req.body:", req.body);
+    console.log("req.files:", req.files);
 
-    const image = req.files.map((file) => file.path);
+    // Get existing images
+    let images = product.image || [];
+    
+    // Handle removed images
+    if (req.body.removedImages) {
+      try {
+        const removedIndices = JSON.parse(req.body.removedImages);
+        images = images.filter((_, index) => !removedIndices.includes(index.toString()));
+      } catch (err) {
+        console.log('Error parsing removedImages:', err);
+      }
+    }
 
-    // Fix the totalstock calculation to use the correct structure
+    // Add new images if uploaded
+    if (req.files && req.files.length > 0) {
+      const newImages = req.files.map((file) => file.path);
+      images = [...images, ...newImages];
+    }
+
+    console.log("Final images array:", images);
+
+    // Calculate total stock
     const totalstock =
-      parseInt(req.body.stock.S || 0) +
-      parseInt(req.body.stock.M || 0) +
-      parseInt(req.body.stock.L || 0) +
-      parseInt(req.body.stock.XL || 0);
+      parseInt(req.body.stock?.S || 0) +
+      parseInt(req.body.stock?.M || 0) +
+      parseInt(req.body.stock?.L || 0) +
+      parseInt(req.body.stock?.XL || 0);
 
-    await Product.updateOne(
+    // Update product
+    const updatedProduct = await Product.updateOne(
       { _id: productId },
       {
         $set: {
@@ -138,20 +164,30 @@ const editProduct = async (req, res) => {
           price: parseInt(req.body.price),
           description: req.body.description,
           stock: [
-            { size: "S", quantity: parseInt(req.body.stock.S || 0) },
-            { size: "M", quantity: parseInt(req.body.stock.M || 0) },
-            { size: "L", quantity: parseInt(req.body.stock.L || 0) },
-            { size: "XL", quantity: parseInt(req.body.stock.XL || 0) },
+            { size: "S", quantity: parseInt(req.body.stock?.S || 0) },
+            { size: "M", quantity: parseInt(req.body.stock?.M || 0) },
+            { size: "L", quantity: parseInt(req.body.stock?.L || 0) },
+            { size: "XL", quantity: parseInt(req.body.stock?.XL || 0) },
           ],
           totalstock,
-          image,
+          image: images,
         },
       }
     );
 
+    if (updatedProduct.modifiedCount === 0) {
+      console.log('No changes made to product');
+    }
+
     res.redirect("/admin/products");
   } catch (error) {
-    console.log("error occurred while adding product", error);
+    console.log("Error occurred while updating product:", error);
+    // Optionally render the edit page again with error
+    res.render('admin/edit-product', {
+      product,
+      categories: await Category.find(), // Assuming you have a Category model
+      error: 'Failed to update product'
+    });
   }
 };
 const blockProduct = async (req, res) => {

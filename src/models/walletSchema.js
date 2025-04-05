@@ -27,7 +27,7 @@ const walletSchema = new Schema({
         },
         orderId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Orders',
+            ref: 'orders',
             required: false
         }
     }]
