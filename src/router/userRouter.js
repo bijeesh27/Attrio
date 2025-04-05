@@ -87,7 +87,10 @@ router.post('/addTocart',logged,cartController.addTOcart)
 router.delete('/removefromwhishlist/:productId',logged,productController.removeItemWishlist)
 router.get('/clearwishlist',logged,productController.clearWishlist)
 router.get('/wallet/balance',logged,orderController.walletBalance)
+router.post('/update-payment-status',logged,orderController.updatePayment)
+router.post('/retry-payment',logged,orderController.retryPayment)
 
+router.get("/order-failure", logged, orderController.loadOrderFailure);
 
 router.get("/auth/google",passport.authenticate("google", { scope: ["profile", "email"] })
 );

@@ -865,8 +865,9 @@ document.getElementById('placeOrderBtn').addEventListener('click', function() {
       processOrder();
     });
 
-    function payNow() {
-  // Get the selected address ID
+ // Modified payNow function with enhanced error handling
+// In your checkout.ejs script section, update the payNow function
+function payNow() {
   const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
   const addressId = selectedAddress ? selectedAddress.value : null;
   
@@ -875,7 +876,6 @@ document.getElementById('placeOrderBtn').addEventListener('click', function() {
     return;
   }
 
-  // Show loading indicator
   Swal.fire({
     title: 'Processing',
     text: 'Preparing your payment...',
@@ -885,15 +885,13 @@ document.getElementById('placeOrderBtn').addEventListener('click', function() {
     }
   });
   
-  // Get order total amount
   const orderTotal = document.getElementById('orderTotal').textContent.replace('Rs.', '').replace(/,/g, '');
 
-  // Fetch order from backend
   fetch('/create-order', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ 
-      amount: parseFloat(orderTotal) * 100, // Convert to paise
+      amount: parseFloat(orderTotal) * 100,
       addressId: addressId
     })
   })
@@ -901,15 +899,23 @@ document.getElementById('placeOrderBtn').addEventListener('click', function() {
   .then(order => {
     Swal.close();
     const options = {
-      key: order.key_id || 'YOUR_TEST_KEY_ID', // Use key from backend or fallback
-      amount: order.amount,     // Amount in paise
+      key: order.key_id,
+      amount: order.amount,
       currency: order.currency,
       name: 'Attiro Fashions',
       description: 'Fashion Purchase',
-      order_id: order.id,       // Order ID from backend
+      order_id: order.id,
       handler: function (response) {
-        // Handle successful payment
         processOrder(addressId, 'razorpay', response.razorpay_payment_id, response.razorpay_order_id);
+      },
+      modal: {
+        ondismiss: function() {
+          Swal.fire({
+            title: 'Payment Cancelled',
+            text: 'You closed the payment window.',
+            icon: 'warning'
+          });
+        }
       },
       prefill: {
         name: document.getElementById('name')?.value || '',
@@ -922,32 +928,40 @@ document.getElementById('placeOrderBtn').addEventListener('click', function() {
     };
 
     const rzp = new Razorpay(options);
-    rzp.open();
     
-    // Handle payment failures
     rzp.on('payment.failed', function (response) {
-      Swal.fire({
-        title: 'Payment Failed',
-        text: response.error.description,
-        icon: 'error',
-        confirmButtonColor: '#000000'
+      // Process the order with failed status
+      fetch('/orderplaced', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          addressId: addressId,
+          paymentMethod: 'razorpay',
+          paymentId: response.error.metadata.payment_id,
+          razorpayOrderId: null
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Redirect to failure page
+        window.location.href = `/order-failure?id=${data.orderId}`;
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        Swal.fire('Error', 'Failed to process failed payment', 'error');
       });
     });
+    
+    rzp.open();
   })
   .catch(error => {
     console.error('Error:', error);
-    Swal.fire({
-      title: 'Error',
-      text: 'There was a problem preparing your payment. Please try again.',
-      icon: 'error',
-      confirmButtonColor: '#000000'
-    });
+    Swal.fire('Error', 'Payment initiation failed', 'error');
   });
 }
 
-    
+// Update processOrder to redirect to success page
 function processOrder(addressId, paymentMethod, paymentId = null, orderId = null) {
-  // Show loading indicator
   Swal.fire({
     title: 'Processing',
     text: 'Please wait while we process your order...',
@@ -957,69 +971,44 @@ function processOrder(addressId, paymentMethod, paymentId = null, orderId = null
     }
   });
   
-  // Make sure payment method casing matches backend expectations
-  // Convert 'wallet' to 'Wallet' to match backend check
   if (paymentMethod === 'wallet') {
     paymentMethod = 'Wallet';
   } else if (paymentMethod === 'cashOnDelivery') {
     paymentMethod = 'Cash On Delivery';
   }
-  
-  // Payment data to send to server
+
   const paymentData = {
     addressId: addressId,
     paymentMethod: paymentMethod
   };
   
-  // Add payment details if available
-  if (paymentId) {
-    paymentData.paymentId = paymentId;
-  }
-  
-  if (orderId) {
-    paymentData.razorpayOrderId = orderId;
-  }
-  
-  console.log("Sending payment data:", paymentData);
-  
-  // Send order data to the server
+  if (paymentId) paymentData.paymentId = paymentId;
+  if (orderId) paymentData.razorpayOrderId = orderId;
+
   fetch('/orderplaced', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(paymentData),
-    credentials: 'same-origin'
-  }).then(response => {
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(paymentData)
+  })
+  .then(response => {
     if (!response.ok) {
-      return response.json().then(err => {
-        throw new Error(err.error || 'Order processing failed');
-      });
+      throw new Error('Order processing failed');
     }
     return response.json();
   })
   .then(data => {
-    Swal.fire({
-      title: 'Order Placed Successfully!',
-      text: 'Thank you for your purchase. Your order has been confirmed.',
-      icon: 'success',
-      confirmButtonColor: '#000000'
-    }).then(() => {
-      // Redirect to order confirmation page
+    if (data.success) {
+      Swal.close();
       window.location.href = '/placeorder?id=' + data.orderId;
-    });
+    } else {
+      throw new Error(data.error || 'Order processing failed');
+    }
   })
   .catch(error => {
     console.error('Error:', error);
-    Swal.fire({
-      title: 'Error',
-      text: error.message || 'There was a problem processing your order. Please try again.',
-      icon: 'error',
-      confirmButtonColor: '#000000'
-    });
+    Swal.fire('Error', error.message, 'error');
   });
-}
-// You can remove or comment out the existing code that sends address to '/orderplaced'
+}// You can remove or comment out the existing code that sends address to '/orderplaced'
 // In the current event listener for address radio buttons
 document.addEventListener('DOMContentLoaded', function() {
   // Get all address radio buttons

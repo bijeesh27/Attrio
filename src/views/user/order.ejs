@@ -117,10 +117,28 @@
       color: #b91c1c;
     }
 
+    .status-failed {
+      background-color: #fee2e2;
+      color: #dc3545;
+    }
+
     .order-action {
       color: var(--accent-color);
       text-decoration: none;
       font-weight: 500;
+    }
+
+    .retry-payment-btn {
+      color: #dc3545;
+      text-decoration: none;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .retry-payment-btn:hover {
+      color: #c82333;
     }
 
     /* No Orders State */
@@ -311,14 +329,6 @@
       letter-spacing: 1px;
     }
 
-    .pagination-info {
-      text-align: center;
-      margin-top: 15px;
-      font-size: 13px;
-      color: #999;
-      font-weight: 400;
-    }
-
     @media (max-width: 767px) {
       .pagination-number {
         width: 36px;
@@ -361,25 +371,19 @@
     <div class="account-tabs-menu">
       <ul>
         <li>
-          <a href="/profile" 
-            ><i class="bx bxs-user"></i>Profile</a
-          >
+          <a href="/profile"><i class="bx bxs-user"></i>Profile</a>
         </li>
         <li>
-          <a href="/orders" class="active"
-            ><i class="bx bxs-shopping-bag"></i> Orders</a
-          >
+          <a href="/orders" class="active"><i class="bx bxs-shopping-bag"></i> Orders</a>
         </li>
         <li>
           <a href="/address"><i class="bx bxs-map"></i> Addresses</a>
         </li>
         <li>
-          <a href="/wallet"><i class="bx bxs-wallet"></i>wallet</a>
+          <a href="/wallet"><i class="bx bxs-wallet"></i>Wallet</a>
         </li>
         <li>
-          <a href="/changenewpassword"
-            ><i class="bx bx-lock-alt"></i>Change Password</a
-          >
+          <a href="/changenewpassword"><i class="bx bx-lock-alt"></i>Change Password</a>
         </li>
       </ul>
       <br /><br /><br />
@@ -419,17 +423,18 @@
             </td>
             <td>
               <% let displayStatus = order.paymentStatus || 'pending'; %>
-              <span
-                class="order-status status-<%= displayStatus.toLowerCase() %>"
-              >
-                <%= displayStatus.charAt(0).toUpperCase() +
-                displayStatus.slice(1) %>
+              <span class="order-status status-<%= displayStatus.toLowerCase() %>">
+                <%= displayStatus.charAt(0).toUpperCase() + displayStatus.slice(1) %>
               </span>
             </td>
             <td>
-              <a href="/orderdetails/<%= order._id %>" class="order-action"
-                >View</a
-              >
+              <% if (order.paymentStatus === 'Failed') { %>
+                <a href="#" onclick="retryPayment('<%= order._id %>', '<%= order.orderAmount %>')" class="retry-payment-btn">
+                  <i class="bx bx-refresh"></i> Retry Payment
+                </a>
+              <% } else { %>
+                <a href="/orderdetails/<%= order._id %>" class="order-action">View</a>
+              <% } %>
             </td>
           </tr>
           <% }); %>
@@ -448,45 +453,32 @@
       <% } %>
     </div>
   </div>
+
   <div class="pagination-area text-center">
     <% if (totalPages > 1) { %>
     <div class="pagination-container">
       <div class="pagination-area">
-        <a
-          href="?page=<%= currentPage > 1 ? currentPage - 1 : 1 %>"
-          class="pagination-arrow prev <%= currentPage === 1 ? 'disabled' : '' %>"
-        >
+        <a href="?page=<%= currentPage > 1 ? currentPage - 1 : 1 %>" class="pagination-arrow prev <%= currentPage === 1 ? 'disabled' : '' %>">
           <i class="bx bx-chevron-left"></i>
         </a>
 
         <div class="pagination-numbers">
-          <% const maxPagesToShow = 5; let startPage = Math.max(1, currentPage -
-          Math.floor(maxPagesToShow / 2)); let endPage = Math.min(totalPages,
-          startPage + maxPagesToShow - 1); if (endPage - startPage + 1 <
-          maxPagesToShow) { startPage = Math.max(1, endPage - maxPagesToShow +
-          1); } if (startPage > 1) { %>
+          <% const maxPagesToShow = 5; let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2)); let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1); if (endPage - startPage + 1 < maxPagesToShow) { startPage = Math.max(1, endPage - maxPagesToShow + 1); } if (startPage > 1) { %>
           <a href="?page=1" class="pagination-number">1</a>
           <% if (startPage > 2) { %>
           <span class="pagination-ellipsis">...</span>
-          <% } %> <% } %> <% for(let i = startPage; i <= endPage; i++) { %> <%
-          if(i === currentPage) { %>
+          <% } %> <% } %> <% for(let i = startPage; i <= endPage; i++) { %> <% if(i === currentPage) { %>
           <span class="pagination-number active"><%= i %></span>
           <% } else { %>
           <a href="?page=<%= i %>" class="pagination-number"><%= i %></a>
-          <% } %> <% } %> <% if (endPage < totalPages) { %> <% if (endPage <
-          totalPages - 1) { %>
+          <% } %> <% } %> <% if (endPage < totalPages) { %> <% if (endPage < totalPages - 1) { %>
           <span class="pagination-ellipsis">...</span>
           <% } %>
-          <a href="?page=<%= totalPages %>" class="pagination-number"
-            ><%= totalPages %></a
-          >
+          <a href="?page=<%= totalPages %>" class="pagination-number"><%= totalPages %></a>
           <% } %>
         </div>
 
-        <a
-          href="?page=<%= currentPage < totalPages ? currentPage + 1 : totalPages %>"
-          class="pagination-arrow next <%= currentPage === totalPages ? 'disabled' : '' %>"
-        >
+        <a href="?page=<%= currentPage < totalPages ? currentPage + 1 : totalPages %>" class="pagination-arrow next <%= currentPage === totalPages ? 'disabled' : '' %>">
           <i class="bx bx-chevron-right"></i>
         </a>
       </div>
@@ -497,7 +489,113 @@
     </div>
     <% } %>
   </div>
- 
+
+  <!-- Add Razorpay SDK -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <script>
+    function logout() {
+      window.location.href = '/logout';
+    }
+
+    function retryPayment(orderId, amount) {
+      Swal.fire({
+        title: 'Processing',
+        text: 'Preparing payment retry...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+
+      fetch('/retry-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderId: orderId,
+          amount: parseFloat(amount) * 100 
+        })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to create payment order');
+        }
+        return response.json();
+      })
+      .then(order => {
+        Swal.close();
+        const options = {
+          key: order.key_id,
+          amount: order.amount,
+          currency: order.currency,
+          name: 'Attiro Fashions',
+          description: 'Order Payment Retry',
+          order_id: order.id,
+          handler: function (response) {
+            updateOrderPayment(orderId, response.razorpay_payment_id, response.razorpay_order_id);
+          },
+          modal: {
+            ondismiss: function() {
+              Swal.fire('Payment Cancelled', 'You closed the payment window.', 'warning');
+            }
+          },
+          theme: {
+            color: '#000000'
+          }
+        };
+
+        const rzp = new Razorpay(options);
+
+        rzp.on('payment.failed', function (response) {
+          Swal.fire({
+            title: 'Payment Failed',
+            text: 'Payment attempt failed. Please try again.',
+            icon: 'error',
+            confirmButtonColor: '#000000'
+          }).then(() => {
+            window.location.href = `/order-failure?id=${orderId}`;
+          });
+        });
+
+        rzp.open();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        Swal.fire('Error', 'Failed to initiate payment retry', 'error');
+      });
+    }
+
+    function updateOrderPayment(orderId, paymentId, razorpayOrderId) {
+      fetch('/update-payment-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderId: orderId,
+          paymentId: paymentId,
+          razorpayOrderId: razorpayOrderId
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          Swal.fire({
+            title: 'Payment Successful',
+            text: 'Your payment has been processed successfully!',
+            icon: 'success',
+            confirmButtonColor: '#000000'
+          }).then(() => {
+            window.location.href = `/placeorder?id=${orderId}`;
+          });
+        } else {
+          Swal.fire('Error', 'Payment update failed', 'error');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        Swal.fire('Error', 'Failed to update payment status', 'error');
+      });
+    }
+  </script>
 
   <%- include('../partials/user/footer') %>
 </body>
