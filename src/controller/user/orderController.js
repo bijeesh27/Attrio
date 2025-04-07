@@ -318,91 +318,104 @@ const loadOrderDetails=async (req,res) => {
 
 const cancelOrder = async (req, res) => {
   try {
-      const orderId = req.params.orderId;
-      const order = await Orders.findOne({ _id: orderId });
+    const orderId = req.params.orderId;
+    const order = await Orders.findOne({ _id: orderId });
+    
+    if (!order) {
+      return res.status(404).json({ success: false, message: 'Order not found' });
+    }
+    
+    const userId = order.userId;
+    let totalRefundAmount = 0;
+    
+    // Calculate refund amount and update product stock
+    for (const item of order.orderedItem) {
+      const product = await Product.findOne({ _id: item.productId });
       
-      if (!order) {
-          return res.status(404).json({ success: false, message: 'Order not found' });
+      if (product) {
+        // Find and update the stock for the specific size
+        const sizeIndex = product.stock.findIndex(
+          stockItem => stockItem.size === item.size
+        );
+        
+        if (sizeIndex !== -1) {
+          product.stock[sizeIndex].quantity += item.quantity;
+          product.totalstock += item.quantity;
+          await product.save();
+        }
       }
       
-      const userId = order.userId;
-      let totalRefundAmount = 0;
+      // Add item price to refund amount
+      totalRefundAmount += item.totalProductPrice;
+    }
+    
+    // Adjust for coupon if applicable
+    if (order.couponDiscount && order.couponDiscount > 0) {
+      totalRefundAmount -= order.couponDiscount;
+      // Ensure refund isn't negative
+      totalRefundAmount = Math.max(0, totalRefundAmount);
+    }
+    
+    // Only process refund for paid orders
+    if (order.paymentStatus === 'Paid') {
+      // Update user wallet
+      let userWallet = await Wallet.findOne({ userId });
       
-      // Calculate refund amount and update product stock
-      for (const item of order.orderedItem) {
-          const product = await Product.findOne({ _id: item.productId });
-          
-          if (product) {
-              // Find and update the stock for the specific size
-              const sizeIndex = product.stock.findIndex(
-                  stockItem => stockItem.size === item.size
-              );
-              
-              if (sizeIndex !== -1) {
-                  
-                  product.stock[sizeIndex].quantity += item.quantity;
-                  product.totalstock += item.quantity;
-                  await product.save();
-              }
-          }
-          
-          // Add item price to refund amount
-          totalRefundAmount += item.totalProductPrice;
+      if (userWallet) {
+        userWallet.balance += totalRefundAmount;
+        userWallet.transaction.push({
+          amount: totalRefundAmount,
+          transactionsMethod: 'Refund',
+          date: new Date(),
+          orderId: order._id
+        });
+        await userWallet.save();
+      } else {
+        const newWallet = new Wallet({
+          userId,
+          balance: totalRefundAmount,
+          transaction: [{
+            amount: totalRefundAmount,
+            transactionsMethod: 'Refund',
+            date: new Date(),
+            orderId: order._id
+          }]
+        });
+        await newWallet.save();
       }
       
-      // Adjust for coupon if applicable
-      if (order.couponDiscount && order.couponDiscount > 0) {
-          totalRefundAmount -= order.couponDiscount;
-          // Ensure refund isn't negative
-          totalRefundAmount = Math.max(0, totalRefundAmount);
-      }
-      
-      // Only process refund for paid orders
-      if (order.paymentMethod !== 'COD' || order.paymentStatus === 'Paid') {
-          // Update user wallet
-          let userWallet = await Wallet.findOne({ userId });
-          
-          if (userWallet) {
-              userWallet.balance += totalRefundAmount;
-              userWallet.transaction.push({
-                  amount: totalRefundAmount,
-                  transactionsMethod: 'Refund',
-                  date: new Date(),
-                  orderId: order._id
-              });
-              await userWallet.save();
-          } else {
-              const newWallet = new Wallet({
-                  userId,
-                  balance: totalRefundAmount,
-                  transaction: [{
-                      amount: totalRefundAmount,
-                      transactionsMethod: 'Refund',
-                      date: new Date(),
-                      orderId: order._id
-                  }]
-              });
-              await newWallet.save();
-          }
-      }
       await Orders.updateOne(
-          { _id: orderId },
-          { 
-              $set: { 
-                  orderStatus: "Cancelled",
-                  paymentStatus: "Failed",
-                  "orderedItem.$[].productStatus": "Cancelled",
-                  cancelledDate: new Date()
-              }
+        { _id: orderId },
+        { 
+          $set: { 
+            orderStatus: "Cancelled",
+            paymentStatus: "Refunded",
+            "orderedItem.$[].productStatus": "Cancelled",
+            cancelledDate: new Date()
           }
+        }
       );
-      
-      res.redirect('/orders');
+    } else if (order.paymentMethod === 'Cash On Delivery') {
+      await Orders.updateOne(
+        { _id: orderId },
+        { 
+          $set: { 
+            orderStatus: "Cancelled",
+            paymentStatus: "Cancelled",
+            "orderedItem.$[].productStatus": "Cancelled",
+            cancelledDate: new Date()
+          }
+        }
+      );
+    }
+    
+    res.redirect('/orders');
   } catch (error) {
-      console.error("Error cancelling order:", error);
-      res.status(500).json({ success: false, message: 'Server error' });
+    console.error("Error cancelling order:", error);
+    res.status(500).json({ success: false, message: 'Server error' });
   }
 };
+
 
 const returnOrder=async (req,res) => {
     try {

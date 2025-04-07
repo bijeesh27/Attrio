@@ -46,7 +46,7 @@ const getWalletTransactions = async (req, res) => {
           userEmail:
             wallet.userId && wallet.userId.email ? wallet.userId.email : "N/A",
           walletBalance: wallet.balance,
-          orderNumber:wallet.transaction.orderId?.orderNumber
+          orderNumber:t.orderId?.orderNumber
         }));
         allTransactions = [...allTransactions, ...userTransactions];
       }
