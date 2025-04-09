@@ -6,12 +6,10 @@ const Offer = require("../../models/offerSchema");
 
 const bcrypt = require("bcrypt");
 
-
-
 const loadDashboard = async (req, res) => {
   try {
     const currentDate = new Date();
-    const filter = req.query.filter || "weekly"; // Default to monthly
+    const filter = req.query.filter || "monthly";
 
     // Calculate date range based on filter
     let startDate;
@@ -37,7 +35,6 @@ const loadDashboard = async (req, res) => {
         startDate.setMonth(currentDate.getMonth() - 1);
     }
 
-    // Run all aggregations in parallel for better performance
     const [
       totalRevenueResult,
       totalOrdersCount,
@@ -53,38 +50,27 @@ const loadDashboard = async (req, res) => {
       orderStatusStats,
       latestOrders,
     ] = await Promise.all([
-      // Total Revenue
       Orders.aggregate([
         {
           $match: { createdAt: { $gte: startDate }, orderStatus: "Delivered" },
         },
         { $group: { _id: null, total: { $sum: "$orderAmount" } } },
       ]),
-
-      // Total Orders
       Orders.countDocuments({
         createdAt: { $gte: startDate },
       }),
-
-      // Delivered Orders
       Orders.countDocuments({
         createdAt: { $gte: startDate },
         orderStatus: "Delivered",
       }),
-
-      // Pending Orders
       Orders.countDocuments({
         createdAt: { $gte: startDate },
         orderStatus: { $in: ["Pending", "Processing", "Shipped"] },
       }),
-
-      // Cancelled Orders
       Orders.countDocuments({
         createdAt: { $gte: startDate },
         orderStatus: "Cancelled",
       }),
-
-      // Total Products
       Product.countDocuments({ status: true }),
 
       // Monthly Earning
@@ -218,23 +204,19 @@ const loadDashboard = async (req, res) => {
         .populate("deliveryAddress"),
     ]);
 
-    // Extract values from results
     const totalRevenue = totalRevenueResult[0]?.total || 0;
     const monthlyEarning = monthlyEarningResult[0]?.total || 0;
     const totalCustomers = totalCustomersResult[0]?.total || 0;
 
-    // Calculate average order value
     const averageOrderValue =
       deliveredOrdersCount > 0 ? totalRevenue / deliveredOrdersCount : 0;
 
-    // Prepare order status percentages
     const statusPercentages = orderStatusStats.map((status) => ({
       status: status._id,
       count: status.count,
       percentage: Math.round((status.count / totalOrdersCount) * 100),
     }));
 
-    // Create monthly data for year-to-date chart
     const monthNames = [
       "Jan",
       "Feb",
@@ -269,10 +251,8 @@ const loadDashboard = async (req, res) => {
       };
     });
 
-    // Resolve all monthly data promises
     const monthlyData = await Promise.all(monthlyDataPromises);
 
-    // Sample tasks for the dashboard
     const tasks = [
       {
         title: "Update product inventory",
@@ -296,7 +276,6 @@ const loadDashboard = async (req, res) => {
       },
     ];
 
-    // Calculate growth rates and statistics
     const previousPeriodStart = new Date(startDate);
     switch (filter) {
       case "daily":
@@ -313,7 +292,6 @@ const loadDashboard = async (req, res) => {
         break;
     }
 
-    // Get previous period revenue for growth calculation
     const previousPeriodRevenue = await Orders.aggregate([
       {
         $match: {
@@ -330,7 +308,6 @@ const loadDashboard = async (req, res) => {
         ? ((totalRevenue - previousRevenue) / previousRevenue) * 100
         : 100;
 
-    // Render the dashboard with all data
     res.render("dashboard", {
       title: "Admin Dashboard",
       filter: filter,
@@ -374,10 +351,12 @@ const login = async (req, res) => {
     const { email, password } = req.body;
     const admin = await User.findOne({ email: email });
     if (!admin.isAdmin) {
+      req.flash("error_msg", "Invalid Admin Email");
       return res.redirect("/admin/login");
     }
     let isMatch = await bcrypt.compare(password, admin.password);
     if (!isMatch) {
+      req.flash("error_msg", "Invalid Password");
       return res.redirect("/admin/login");
     }
     req.session.isAdmin = true;
@@ -394,8 +373,6 @@ const logout = async (req, res) => {
     console.log("error ocuured while admin logouting", error);
   }
 };
-
-
 
 module.exports = {
   loadDashboard,

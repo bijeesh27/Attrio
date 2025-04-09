@@ -4,12 +4,11 @@ const User = require("../../models/userSchema");
 const getWalletTransactions = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = 10; // Number of transactions per page
+    const limit = 10;
 
     const searchQuery = req.query.query || "";
     let query = {};
 
-    // If there's a search query, find users matching the query first
     if (searchQuery) {
       const users = await User.find({
         $or: [
@@ -22,13 +21,10 @@ const getWalletTransactions = async (req, res) => {
       query = { userId: { $in: userIds } };
     }
 
-    // Aggregate to get all transactions from all matching wallets
-    const wallets = await Wallet.find(query).populate(
-      "userId",
-      "username email"
-    ).populate("transaction.orderId","orderNumber");
+    const wallets = await Wallet.find(query)
+      .populate("userId", "username email")
+      .populate("transaction.orderId", "orderNumber");
 
-    // Flatten the transactions from all wallets
     let allTransactions = [];
     for (const wallet of wallets) {
       if (wallet.transaction && wallet.transaction.length > 0) {
@@ -38,7 +34,7 @@ const getWalletTransactions = async (req, res) => {
           transactionsMethod: t.transactionsMethod,
           date: t.date,
           orderId: t.orderId,
-          // Safely access username with a fallback
+
           userName:
             wallet.userId && wallet.userId.username
               ? wallet.userId.username
@@ -46,31 +42,26 @@ const getWalletTransactions = async (req, res) => {
           userEmail:
             wallet.userId && wallet.userId.email ? wallet.userId.email : "N/A",
           walletBalance: wallet.balance,
-          orderNumber:t.orderId?.orderNumber
+          orderNumber: t.orderId?.orderNumber,
         }));
         allTransactions = [...allTransactions, ...userTransactions];
       }
     }
 
-    // Sort transactions by date (newest first)
     allTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    // Calculate total pages based on transactions count
     const totalTransactions = allTransactions.length;
     const totalPages = Math.ceil(totalTransactions / limit);
 
-    // Apply pagination to the flattened and sorted transactions
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
     const paginatedTransactions = allTransactions.slice(startIndex, endIndex);
 
-    // Generate pagination links
     let pages = [];
     for (let i = 1; i <= totalPages; i++) {
       pages.push(i);
     }
 
-    // If there are many pages, limit the displayed page numbers
     if (pages.length > 5) {
       if (page <= 3) {
         pages = [...pages.slice(0, 5), "...", totalPages];

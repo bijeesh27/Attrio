@@ -1,6 +1,6 @@
 const Cart = require("../../models/cartSchema");
 const Product = require("../../models/productSchema");
-const Offer = require('../../models/offerSchema'); 
+const Offer = require("../../models/offerSchema");
 const loadCart = async (req, res) => {
   try {
     console.log("entering the cart controller rendering the cart page");
@@ -21,39 +21,34 @@ const loadCart = async (req, res) => {
       endDate: { $gte: currentDate },
     });
 
-    // Update each item's total and offer price
     for (let item of cart.item) {
       const product = item.productId;
       let applicableOffer = null;
 
-      // Find applicable offer with more robust checking
-      applicableOffer = offers.find(offer => {
-        // Check for product-specific offer
-        const isProductOffer = 
-          offer.offerType === 'product' && 
+      applicableOffer = offers.find((offer) => {
+        const isProductOffer =
+          offer.offerType === "product" &&
           offer.productId &&
           offer.productId.length > 0 &&
           product &&
           product._id &&
-          offer.productId.some(id => 
-            id && id.toString() === product._id.toString()
+          offer.productId.some(
+            (id) => id && id.toString() === product._id.toString()
           );
 
-        // Check for category offer
-        const isCategoryOffer = 
-          offer.offerType === 'category' && 
+        const isCategoryOffer =
+          offer.offerType === "category" &&
           offer.categoryId &&
           offer.categoryId.length > 0 &&
           product &&
           product.category &&
-          offer.categoryId.some(id => 
-            id && id.toString() === product.category.toString()
+          offer.categoryId.some(
+            (id) => id && id.toString() === product.category.toString()
           );
 
         return isProductOffer || isCategoryOffer;
       });
 
-      // Calculate pricing
       if (applicableOffer) {
         item.offer_id = applicableOffer._id;
         const discountAmount = (item.price * applicableOffer.discount) / 100;
@@ -65,10 +60,8 @@ const loadCart = async (req, res) => {
       }
     }
 
-    // Recalculate cart total
     cart.cartTotal = cart.item.reduce((sum, item) => sum + item.total, 0);
 
-    // Save the updated cart
     await cart.save();
 
     console.log("Cart:", cart);
@@ -82,24 +75,23 @@ const addToCart = async (req, res) => {
   try {
     console.log("entering the aDDtocart");
     const userId = req.session.userId;
-    console.log("userIDDDDD:",userId);
+    console.log("userIDDDDD:", userId);
 
-    // Check if user is logged in
     if (!userId) {
       return res.status(401).json({
         success: false,
         login_required: true,
-        message: "Please login to add items to your cart"
+        message: "Please login to add items to your cart",
       });
     }
 
     const { productId, quantity, size } = req.body;
     const product = await Product.findOne({ _id: productId, status: true });
-    
+
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: "Product not found"
+        message: "Product not found",
       });
     }
 
@@ -113,7 +105,7 @@ const addToCart = async (req, res) => {
 
       if (existingItemIndex !== -1) {
         existingCart.item[existingItemIndex].quantity += quantity;
-        existingCart.item[existingItemIndex].total = 
+        existingCart.item[existingItemIndex].total =
           existingCart.item[existingItemIndex].quantity * product.price;
       } else {
         const item = {
@@ -154,9 +146,8 @@ const addToCart = async (req, res) => {
     req.session.cartItem = cart?.item.length;
     res.json({
       success: true,
-      message: "Product added to cart successfully"
+      message: "Product added to cart successfully",
     });
-
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -179,7 +170,6 @@ const addTOcart = async (req, res) => {
 
     const { productId, quantity, size, fromWishlist } = req.body;
 
-    // Validate inputs
     if (!productId || !quantity || !size) {
       return res.status(400).json({
         success: false,
@@ -187,7 +177,6 @@ const addTOcart = async (req, res) => {
       });
     }
 
-    // Find the product and check if it exists and is active
     const product = await Product.findOne({ _id: productId, status: true });
     if (!product) {
       return res.status(404).json({
@@ -196,7 +185,6 @@ const addTOcart = async (req, res) => {
       });
     }
 
-    // Check stock availability for the specific size
     const stockEntry = product.stock.find((stock) => stock.size === size);
     if (!stockEntry || stockEntry.quantity < quantity) {
       return res.status(400).json({
@@ -210,14 +198,13 @@ const addTOcart = async (req, res) => {
     const existingCart = await Cart.findOne({ userId: userId });
 
     if (existingCart) {
-      // Check if this product with the same size already exists in the cart
       const existingItemIndex = existingCart.item.findIndex(
         (item) => item.productId.toString() === productId && item.size === size
       );
 
       if (existingItemIndex !== -1) {
-        // Product with the same size exists, update quantity
-        const newQuantity = existingCart.item[existingItemIndex].quantity + quantity;
+        const newQuantity =
+          existingCart.item[existingItemIndex].quantity + quantity;
         if (newQuantity > stockEntry.quantity) {
           return res.status(400).json({
             success: false,
@@ -226,9 +213,9 @@ const addTOcart = async (req, res) => {
           });
         }
         existingCart.item[existingItemIndex].quantity = newQuantity;
-        existingCart.item[existingItemIndex].total = newQuantity * product.price;
+        existingCart.item[existingItemIndex].total =
+          newQuantity * product.price;
       } else {
-       
         const item = {
           productId,
           quantity,
@@ -240,20 +227,18 @@ const addTOcart = async (req, res) => {
         existingCart.item.push(item);
       }
 
-      
       existingCart.cartTotal = existingCart.item.reduce(
         (acc, curr) => acc + curr.total,
         0
       );
       await existingCart.save();
     } else {
-      // Create new cart if no cart exists
       const item = {
         productId,
         quantity,
         size,
         price: product.price,
-        stock: stockEntry.quantity, 
+        stock: stockEntry.quantity,
         total,
       };
 
@@ -265,7 +250,6 @@ const addTOcart = async (req, res) => {
       await newCart.save();
     }
 
-    // Remove from wishlist if the product was added from there
     if (fromWishlist) {
       await User.updateOne(
         { _id: userId },
@@ -277,14 +261,13 @@ const addTOcart = async (req, res) => {
     if (cart) {
       req.session.cartItem = cart.item.length;
     }
-    
+
     return res.status(200).json({
       success: true,
       message: "Item added to cart successfully",
       cartCount: cart?.item.length || 0,
       wishlistUpdated: fromWishlist ? true : false,
     });
-    
   } catch (error) {
     console.error("Add to cart error:", error);
     return res.status(500).json({
@@ -297,9 +280,8 @@ const addTOcart = async (req, res) => {
 const updateCartQuantity = async (req, res) => {
   try {
     const userId = req.session.userId;
-    const { productId, quantity, size,offerPrice } = req.body;
+    const { productId, quantity, size, offerPrice } = req.body;
 
-    // Validate inputs
     if (!productId || !quantity || !size || quantity < 1) {
       return res.status(400).json({
         success: false,
@@ -307,7 +289,6 @@ const updateCartQuantity = async (req, res) => {
       });
     }
 
-    // Find the product to get current price and check stock
     const product = await Product.findOne({ _id: productId, status: true });
     if (!product) {
       return res.status(404).json({
@@ -316,7 +297,6 @@ const updateCartQuantity = async (req, res) => {
       });
     }
 
-    // Check if quantity is valid
     if (quantity > product.totalstock) {
       return res.status(400).json({
         success: false,
@@ -324,7 +304,6 @@ const updateCartQuantity = async (req, res) => {
       });
     }
 
-    // Find and update the cart
     const cart = await Cart.findOne({ userId });
     if (!cart) {
       return res.status(404).json({
@@ -333,7 +312,6 @@ const updateCartQuantity = async (req, res) => {
       });
     }
 
-    // Find the specific item in the cart
     const itemIndex = cart.item.findIndex(
       (item) => item.productId.toString() === productId && item.size === size
     );
@@ -345,22 +323,19 @@ const updateCartQuantity = async (req, res) => {
       });
     }
 
-    const stockEntry = product.stock.find((stock) => stock.size === size); 
+    const stockEntry = product.stock.find((stock) => stock.size === size);
     if (!stockEntry || quantity > stockEntry.quantity) {
       return res.status(422).json({
         success: false,
         message: "Requested quantity exceeds available stock",
-        value:stockEntry
+        value: stockEntry,
       });
     }
-
-    // Update quantity and total for this item
     cart.item[itemIndex].quantity = quantity;
-    cart.item[itemIndex].total = quantity *(offerPrice|| product.price);
+    cart.item[itemIndex].total = quantity * (offerPrice || product.price);
     cart.cartTotal = cart.item.reduce((acc, curr) => acc + curr.total, 0);
     await cart.save();
 
-    // Return updated values for the UI
     res.json({
       success: true,
       itemTotal: cart.item[itemIndex].total,

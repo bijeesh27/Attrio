@@ -23,24 +23,12 @@ const loadUser = async (req, res) => {
       : { isAdmin: false };
 
     const totalUsers = await User.countDocuments(searchFilter);
-
-    // Calculate total pages
     const totalPages = Math.ceil(totalUsers / limit);
-
-    // Fetch users with pagination and sorting
     const users = await User.find(searchFilter)
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });
 
-    // Debugging logs
-    console.log("Search Query:", searchQuery);
-    console.log("Current Page:", page);
-    console.log("Total Users:", totalUsers);
-    console.log("Total Pages:", totalPages);
-    console.log("Fetched Users Count:", users.length);
-
-    // Render the user management page
     return res.render("user", {
       users,
       searchQuery,
@@ -49,7 +37,7 @@ const loadUser = async (req, res) => {
         totalPages: totalPages,
         totalItems: totalUsers,
       },
-      // Create an array of page numbers for pagination
+
       pages: Array.from({ length: totalPages }, (_, i) => i + 1),
     });
   } catch (error) {

@@ -24,21 +24,19 @@ const loadEditProduct = async (req, res) => {
 
 const loadProducts = async (req, res) => {
   try {
-
-    const searchQuery = req.query.query || '';
+    const searchQuery = req.query.query || "";
     console.log(searchQuery);
     const page = parseInt(req.query.page) || 1;
     const limit = 5;
 
-
-    const searchFilter = searchQuery 
-    ? { 
-        $or: [
-          { name: { $regex: searchQuery, $options: 'i' } },
-          { description: { $regex: searchQuery, $options: 'i' } }
-        ]
-      } 
-    : {};
+    const searchFilter = searchQuery
+      ? {
+          $or: [
+            { name: { $regex: searchQuery, $options: "i" } },
+            { description: { $regex: searchQuery, $options: "i" } },
+          ],
+        }
+      : {};
 
     const skip = (page - 1) * limit;
 
@@ -63,7 +61,6 @@ const loadProducts = async (req, res) => {
     });
   } catch (error) {
     console.log("Error loading products:", error);
-  
   }
 };
 
@@ -83,7 +80,7 @@ const addProduct = async (req, res) => {
     console.log("req.file:", req.files);
     const image = req.files.map((file) => file.path);
     console.log("image:", image);
-   
+
     const productData = new Product({
       name: req.body.name,
       category: req.body.category,
@@ -118,43 +115,36 @@ const editProduct = async (req, res) => {
   try {
     const productId = req.params.productId;
     const product = await Product.findOne({ _id: productId });
-    
+
     if (!product) {
-      return res.status(404).send('Product not found');
+      return res.status(404).send("Product not found");
     }
 
     console.log("req.body:", req.body);
     console.log("req.files:", req.files);
-
-    // Get existing images
     let images = product.image || [];
-    
-    // Handle removed images
     if (req.body.removedImages) {
       try {
         const removedIndices = JSON.parse(req.body.removedImages);
-        images = images.filter((_, index) => !removedIndices.includes(index.toString()));
+        images = images.filter(
+          (_, index) => !removedIndices.includes(index.toString())
+        );
       } catch (err) {
-        console.log('Error parsing removedImages:', err);
+        console.log("Error parsing removedImages:", err);
       }
     }
-
-    // Add new images if uploaded
     if (req.files && req.files.length > 0) {
       const newImages = req.files.map((file) => file.path);
       images = [...images, ...newImages];
     }
 
     console.log("Final images array:", images);
-
-    // Calculate total stock
     const totalstock =
       parseInt(req.body.stock?.S || 0) +
       parseInt(req.body.stock?.M || 0) +
       parseInt(req.body.stock?.L || 0) +
       parseInt(req.body.stock?.XL || 0);
 
-    // Update product
     const updatedProduct = await Product.updateOne(
       { _id: productId },
       {
@@ -176,17 +166,16 @@ const editProduct = async (req, res) => {
     );
 
     if (updatedProduct.modifiedCount === 0) {
-      console.log('No changes made to product');
+      console.log("No changes made to product");
     }
 
     res.redirect("/admin/products");
   } catch (error) {
     console.log("Error occurred while updating product:", error);
-    // Optionally render the edit page again with error
-    res.render('admin/edit-product', {
+    res.render("admin/edit-product", {
       product,
-      categories: await Category.find(), // Assuming you have a Category model
-      error: 'Failed to update product'
+      categories: await Category.find(),
+      error: "Failed to update product",
     });
   }
 };

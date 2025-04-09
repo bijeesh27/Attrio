@@ -1,14 +1,12 @@
 const Orders = require("../../models/orderSchema");
 const Product = require("../../models/productSchema");
-const Wallet=require('../../models/walletSchema')
+const Wallet = require("../../models/walletSchema");
 
 const loadOrders = async (req, res) => {
   try {
     const searchQuery = req.query.query || "";
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
-
-    // Update search filter to match fields in your order schema
     const searchFilter = searchQuery
       ? {
           $or: [
@@ -23,7 +21,6 @@ const loadOrders = async (req, res) => {
     const totalOrders = await Orders.countDocuments(searchFilter);
     const totalPages = Math.ceil(totalOrders / limit);
 
-    
     const orders = await Orders.find(searchFilter)
       .populate("userId", "username email")
       .populate("orderedItem.productId")
@@ -32,9 +29,7 @@ const loadOrders = async (req, res) => {
       .limit(limit)
       .sort({ createdAt: -1 });
 
-
-      console.log("orders",orders);
-
+    console.log("orders", orders);
 
     res.render("admin-orders", {
       searchQuery,
@@ -122,7 +117,6 @@ const updateProductStatus = async (req, res) => {
       });
     }
 
-    // Find the specific item in the order
     const orderItem = order.orderedItem.id(itemId);
     if (!orderItem) {
       return res.status(404).json({
@@ -130,8 +124,6 @@ const updateProductStatus = async (req, res) => {
         message: "Order item not found",
       });
     }
-
-    // Update the product status
     orderItem.productStatus =
       newStatus.charAt(0).toUpperCase() + newStatus.slice(1).toLowerCase();
 
@@ -154,88 +146,91 @@ const updateReturn = async (req, res) => {
   try {
     const { orderId, itemId, status } = req.body;
     console.log("Entering update return controller");
-
-    // Fetch the order
     const order = await Orders.findOne({ _id: orderId });
     if (!order) {
-      return res.status(404).json({ success: false, message: 'Order not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
     }
 
     const userId = order.userId;
-    const returnedItem = order.orderedItem.find(item => item._id.toString() === itemId);
+    const returnedItem = order.orderedItem.find(
+      (item) => item._id.toString() === itemId
+    );
     if (!returnedItem) {
-      return res.status(400).json({ success: false, message: 'Item not found in order' });
+      return res
+        .status(400)
+        .json({ success: false, message: "Item not found in order" });
     }
 
     const productId = returnedItem.productId;
     const product = await Product.findOne({ _id: productId });
-    const stock = product.stock.find(item => item.size === returnedItem.size);
+    const stock = product.stock.find((item) => item.size === returnedItem.size);
     console.log("Stock:", stock);
-
-    // Update return status
     returnedItem.productStatus = status;
 
-    if (status === 'Return Approved') {
-      returnedItem.returnStatus = 'Approved';
+    if (status === "Return Approved") {
+      returnedItem.returnStatus = "Approved";
       returnedItem.returnApproved = true;
       returnedItem.returnApprovedDate = new Date();
 
-      
       stock.quantity += returnedItem.quantity;
-      product.totalstock+=returnedItem.quantity
+      product.totalstock += returnedItem.quantity;
 
-      
       let refundAmount = returnedItem.totalProductPrice;
 
-      
       if (order.couponDiscount && order.couponDiscount > 0) {
         const totalOrderBeforeCoupon = order.orderedItem.reduce(
           (sum, item) => sum + item.totalProductPrice,
           0
         );
-        const couponShare = (returnedItem.totalProductPrice / totalOrderBeforeCoupon) * order.couponDiscount;
-        refundAmount = Math.max(0, refundAmount - couponShare); // Ensure refund isn't negative
+        const couponShare =
+          (returnedItem.totalProductPrice / totalOrderBeforeCoupon) *
+          order.couponDiscount;
+        refundAmount = Math.max(0, refundAmount - couponShare);
       }
 
-      // Update wallet
       let userWallet = await Wallet.findOne({ userId });
       if (userWallet) {
         userWallet.balance += refundAmount;
         userWallet.transaction.push({
           amount: refundAmount,
-          transactionsMethod: 'Refund',
+          transactionsMethod: "Refund",
           date: new Date(),
-          orderId: order._id 
+          orderId: order._id,
         });
         await userWallet.save();
       } else {
-       
         const newWallet = new Wallet({
           userId,
           balance: refundAmount,
-          transaction: [{
-            amount: refundAmount,
-            transactionsMethod: 'Refund',
-            date: new Date(),
-            orderId: order._id
-          }]
+          transaction: [
+            {
+              amount: refundAmount,
+              transactionsMethod: "Refund",
+              date: new Date(),
+              orderId: order._id,
+            },
+          ],
         });
         await newWallet.save();
       }
 
-      // Update order status if all items are returned
-      const allReturned = order.orderedItem.every(item => item.productStatus === 'Returned');
+      const allReturned = order.orderedItem.every(
+        (item) => item.productStatus === "Returned"
+      );
       if (allReturned) {
-        order.orderStatus = 'Returned';
+        order.orderStatus = "Returned";
       }
-    } else if (status === 'Return Rejected') {
-      returnedItem.returnStatus = 'Rejected';
+    } else if (status === "Return Rejected") {
+      returnedItem.returnStatus = "Rejected";
       returnedItem.returnApproved = false;
     } else {
-      return res.status(400).json({ success: false, message: 'Invalid status provided' });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid status provided" });
     }
 
-    // Save changes
     await order.save();
     await product.save();
 
@@ -245,7 +240,7 @@ const updateReturn = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ success: false, message: 'Server error' });
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 };
 

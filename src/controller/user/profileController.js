@@ -237,7 +237,7 @@ const loadWallet = async (req, res) => {
     const user = await User.findOne({ _id: req.session.userId });
     const wallet = await Wallet.findOne({ userId: req.session.userId });
     
-    // Sort transactions by date in descending order (most recent first)
+    
     if (wallet && wallet.transaction) {
       wallet.transaction.sort((a, b) => b.date - a.date);
     }
