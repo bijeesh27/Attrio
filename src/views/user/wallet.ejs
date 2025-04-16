@@ -384,9 +384,6 @@
             <button class="wallet-btn" onclick="showAddFundsModal()">
               <i class="bx bx-plus-circle"></i> Add Funds
             </button>
-            <button class="wallet-btn withdraw" onclick="showWithdrawModal()">
-              <i class="bx bx-minus-circle"></i> Withdraw
-            </button>
           </div>
         </div>
 
@@ -399,7 +396,7 @@
                 <i class="bx bx-history"></i>
                 Transaction History
               </h3>
-              <a href="/transactions" class="view-all-link">View All</a>
+              
             </div>
             
             <div class="transaction-list">
@@ -409,7 +406,7 @@
                   let transactionClass = 'transaction-negative';
                   let transactionIcon = 'bx-arrow-from-right';
                   
-                  if (transaction.transactionsMethod === 'Refund' || transaction.transactionsMethod === 'Credit'||transaction.transactionsMethod === 'Referral') {
+                  if (transaction.transactionsMethod === 'Refund' || transaction.transactionsMethod === 'Credit'||transaction.transactionsMethod === 'Referral'||transaction.transactionsMethod === 'Razorpay') {
                     transactionClass = 'transaction-positive';
                     transactionIcon = 'bx-arrow-from-left';
                   }
@@ -434,7 +431,7 @@
                         </span>
                       </div>
                       <div class="transaction-amount <%= transactionClass %>">
-                        <%= transaction.transactionsMethod === 'Refund' || transaction.transactionsMethod === 'Credit'||transaction.transactionsMethod === 'Referral' ? '+' : '-' %>₹<%= transaction.amount.toFixed(2) %>
+                        <%= transaction.transactionsMethod === 'Refund' || transaction.transactionsMethod === 'Credit'||transaction.transactionsMethod === 'Referral' ||transaction.transactionsMethod === 'Razorpay'? '+' : '-' %>₹<%= transaction.amount.toFixed(2) %>
                       </div>
                     </div>
                   </div>
@@ -451,7 +448,7 @@
       </div>
     </div>
   </div>
-
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script>
     // Flip card animation
     document.getElementById('creditCard').addEventListener('click', function() {
@@ -476,74 +473,153 @@
       });
     }
     
-    // Add funds modal
     function showAddFundsModal() {
-      Swal.fire({
-        title: 'Add Funds to Wallet',
-        html: `
-          <div style="text-align: left; margin-bottom: 20px;">
-            <label for="amount" style="display: block; margin-bottom: 5px;">Amount</label>
-            <input id="amount" type="number" class="swal2-input" placeholder="Enter amount" min="1" step="1">
-          </div>
-        `,
-        showCancelButton: true,
-        confirmButtonText: 'Add Funds',
-        confirmButtonColor: '#000000',
-        cancelButtonColor: '#d33',
-        preConfirm: () => {
-          const amount = document.getElementById('amount').value;
-          if (!amount || amount <= 0) {
-            Swal.showValidationMessage('Please enter a valid amount');
-            return false;
-          }
-          return { amount };
-        }
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // Submit to backend
-          window.location.href = `/add-funds?amount=${result.value.amount}`;
-        }
-      });
+  Swal.fire({
+    title: 'Add Funds to Wallet',
+    html: `
+      <div style="text-align: left; margin-bottom: 20px;">
+        <label for="amount" style="display: block; margin-bottom: 5px;">Amount</label>
+        <input id="amount" type="number" class="swal2-input" placeholder="Enter amount" min="1" step="1">
+      </div>
+    `,
+    showCancelButton: true,
+    confirmButtonText: 'Add Funds',
+    confirmButtonColor: '#000000',
+    cancelButtonColor: '#d33',
+    preConfirm: () => {
+      const amount = document.getElementById('amount').value;
+      if (!amount || amount <= 0) {
+        Swal.showValidationMessage('Please enter a valid amount');
+        return false;
+      }
+      return { amount };
     }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const amount = result.value.amount;
+      initiateRazorpayPayment(amount);
+    }
+  });
+}
+
+// Function to initiate Razorpay payment
+async function initiateRazorpayPayment(amount) {
+  try {
+    // Show loading
+    Swal.fire({
+      title: 'Processing',
+      text: 'Please wait...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    // Create order on your server
+    const response = await fetch('/wallet/create-order', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ amount: parseInt(amount) * 100 }) 
+    });
+    console.log("Amount", amount);
+
+    const data = await response.json();
     
-    // Withdraw funds modal
-    function showWithdrawModal() {
-      Swal.fire({
-        title: 'Withdraw from Wallet',
-        html: `
-          <div style="text-align: left; margin-bottom: 20px;">
-            <label for="withdrawAmount" style="display: block; margin-bottom: 5px;">Amount</label>
-            <input id="withdrawAmount" type="number" class="swal2-input" placeholder="Enter amount" min="1" step="1">
-            <small style="color: #666;">Available Balance: ₹<%= wallet?.balance.toFixed(2) %></small>
-          </div>
-        `,
-        showCancelButton: true,
-        confirmButtonText: 'Withdraw',
-        confirmButtonColor: '#000000',
-        cancelButtonColor: '#d33',
-        preConfirm: () => {
-          const amount = document.getElementById('withdrawAmount').value;
-          const availableBalance = '<%= wallet?.balance.toFixed(2) %>';
-          
-          if (!amount || amount <= 0) {
-            Swal.showValidationMessage('Please enter a valid amount');
-            return false;
-          }
-          
-          if (parseFloat(amount) > availableBalance) {
-            Swal.showValidationMessage('Insufficient balance');
-            return false;
-          }
-          
-          return { amount };
-        }
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // Submit to backend
-          window.location.href = `/withdraw-funds?amount=${result.value.amount}`;
-        }
-      });
+    if (!data.success) {
+      throw new Error(data.error || 'Failed to create order');
     }
+
+    // Close loading
+    Swal.close();
+    
+    
+    const options = {
+      key: '<%= process.env.TEST_KEY_ID %>',
+      amount: data.order.amount,
+      currency: data.order.currency,
+      name: 'Attiro',
+      description: 'Add funds to wallet',
+      order_id: data.order.id,
+      handler: async function(response) {
+        await verifyPayment(response, amount);
+      },
+      prefill: {
+        name: 'Attiro', 
+        email: 'attiro@example.com',
+        contact: '9999999999'
+      },
+      theme: {
+        color: '#000000'
+      }
+    };
+
+    // Initialize Razorpay
+    const razorpay = new Razorpay(options);
+    razorpay.open();
+    
+  } catch (error) {
+    console.error('Payment creation error:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Payment Failed',
+      text: 'Could not initiate payment. Please try again.'
+    });
+  }
+}
+
+// Function to verify payment with your server
+async function verifyPayment(paymentResponse, amount) {
+  try {
+    // Show loading
+    Swal.fire({
+      title: 'Verifying Payment',
+      text: 'Please wait...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    const response = await fetch('/wallet/verify-payment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        razorpay_order_id: paymentResponse.razorpay_order_id,
+        razorpay_payment_id: paymentResponse.razorpay_payment_id,
+        razorpay_signature: paymentResponse.razorpay_signature,
+        amount: amount
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: `₹${amount} added to your wallet successfully!`,
+        confirmButtonColor: '#000000'
+      }).then(() => {
+        
+        window.location.reload();
+      });
+    } else {
+      throw new Error(data.error || 'Payment verification failed');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Payment Failed',
+      text: error.message || 'There was an issue verifying your payment.'
+    });
+  }
+}
+    
   </script>
 </body>
 

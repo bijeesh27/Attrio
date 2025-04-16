@@ -6,6 +6,7 @@ const categoryController = require("../controller/user/categoryController");
 const profileController=require('../controller/user/profileController')
 const cartController=require('../controller/user/cartController')
 const orderController=require('../controller/user/orderController')
+const walletController=require('../controller/user/walletController')
 const passport = require("../config/passport");
 const { ifLogged, logged } = require("../middleware/userMiddleware");
 const {upload,cropUpload}=require("../config/profilemulter")
@@ -89,6 +90,8 @@ router.get('/clearwishlist',logged,productController.clearWishlist)
 router.get('/wallet/balance',logged,orderController.walletBalance)
 router.post('/update-payment-status',logged,orderController.updatePayment)
 router.post('/retry-payment',logged,orderController.retryPayment)
+router.post('/wallet/verify-payment',logged,walletController.verifyPayment)
+router.post('/wallet/create-order',logged,walletController.createOrder)
 
 router.get("/order-failure", logged, orderController.loadOrderFailure);
 

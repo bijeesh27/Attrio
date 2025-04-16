@@ -61,13 +61,14 @@ const addCategory = async (req, res) => {
   try {
     console.log("req.body:", req.body);
     const { name, description } = req.body;
-    const existingCategory = await Category.findOne({ name: name });
+    const Cname=name.toUpperCase()
+    const existingCategory = await Category.findOne({ name: Cname });
     if (existingCategory) {
       req.flash("error_msg", "The Category Already Exist");
       return res.redirect("/admin/add-category");
     }
     const newCategory = new Category({
-      name,
+      name:Cname,
       description,
     });
     await newCategory.save();

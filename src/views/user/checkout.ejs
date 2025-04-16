@@ -639,14 +639,14 @@ document.getElementById('addressForm').addEventListener('submit', async function
     
     const addressData = {
         name: document.getElementById('name').value,
-        email: document.getElementById('email')?.value || '', // Add if email field exists
+        email: document.getElementById('email')?.value || '', 
         number: document.getElementById('phone').value,
         street: document.getElementById('street').value,
         city: document.getElementById('city').value,
         state: document.getElementById('state').value,
-        country: document.getElementById('country')?.value || 'India', // Add if country field exists
+        country: document.getElementById('country')?.value || 'India', 
         pincode: document.getElementById('pincode').value,
-        saveAs: document.getElementById('saveAs')?.value || 'Home', // Add if saveAs field exists
+        saveAs: document.getElementById('saveAs')?.value || 'Home', 
         isDefault: document.getElementById('defaultAddress').checked
     };
 
