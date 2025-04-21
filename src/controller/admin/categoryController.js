@@ -106,6 +106,7 @@ const editCategory = async (req, res) => {
     console.log("req.body:", req.body);
     const categoryId = req.params.categoryId;
     const { name, description } = req.body;
+    const Cname=name.toUpperCase()
 
     const existingCategory = await Category.findOne({ _id: categoryId });
     console.log("existingCategory", existingCategory);

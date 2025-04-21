@@ -1,5 +1,84 @@
 <%- include('../partials/user/header') %>
 <style>
+  /* Center search styles */
+  .search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    width: 100%;
+  }
+  
+  .search-form {
+    position: relative;
+    width: 60%;
+    max-width: 600px;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 12px 50px 12px 20px;
+    border: 2px solid #e6e6e6;
+    border-radius: 30px;
+    font-size: 16px;
+    transition: all 0.3s;
+  }
+  
+  .search-input:focus {
+    border-color: #333;
+    outline: none;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  }
+  
+  .search-button {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+  }
+  
+  .search-button:hover {
+    background-color: #555;
+  }
+  
+  .clear-filter {
+    margin-left: 10px;
+    padding: 5px 15px;
+    background-color: #f1f1f1;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+  }
+  
+  .clear-filter:hover {
+    background-color: #e1e1e1;
+  }
+  
+  .clear-filter i {
+    margin-right: 5px;
+  }
+  
+  .active-filters {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 10px 0;
+    justify-content: center;
+  }
+
   .notification {
     position: fixed;
     top: 20px;
@@ -13,104 +92,330 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     animation: fadeIn 0.3s ease;
     transition: opacity 0.3s ease;
-}
+  }
 
-.notification.success {
+  .notification.success {
     background-color: #4CAF50;
     color: white;
-}
+  }
 
-.notification.error {
+  .notification.error {
     background-color: #F44336;
     color: white;
-}
+  }
 
-.notification .close-btn {
+  .notification .close-btn {
     background: none;
     border: none;
     color: white;
     font-size: 20px;
     cursor: pointer;
     margin-left: 10px;
-}
+  }
 
-@keyframes fadeIn {
+  @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
+  }
+
+  .product-sizes {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .single-productsBox .products-image:hover .product-sizes {
+    opacity: 1;
+  }
+
+  .size-selection {
+    margin-bottom: 10px;
+  }
+
+  .size-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .size-btn {
+    background-color: rgba(255,255,255,0.8);
+    border: 1px solid #ddd;
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .size-btn:hover {
+    background-color: #f0f0f0;
+  }
+
+  .size-btn.selected {
+    background-color: #000;
+    color: #fff;
+  }
+  /* General Responsive Styles */
+@media (max-width: 768px) {
+  /* Container adjustments */
+  .container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  
+  /* Search container responsive adjustments */
+  .search-container {
+    margin: 15px 0;
+  }
+  
+  .search-form {
+    width: 90%;
+    max-width: 100%;
+  }
+  
+  .search-input {
+    padding: 10px 45px 10px 15px;
+    font-size: 14px;
+  }
+  
+  .search-button {
+    width: 35px;
+    height: 35px;
+  }
+  
+  /* Active filters adjustments */
+  .active-filters {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .clear-filter {
+    margin: 5px;
+    font-size: 12px;
+  }
+  
+  /* Products filter options */
+  .products-filter-options .row {
+    flex-direction: column;
+  }
+  
+  .products-filter-options .col-lg-4 {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  .view-list-row {
+    justify-content: center;
+    margin-top: 10px;
+  }
+  
+  .products-ordering-list {
+    margin: 10px auto;
+    width: 100%;
+    max-width: 250px;
+  }
+  
+  .products-ordering-list select {
+    width: 100%;
+  }
+  
+  /* Product grid adjustments */
+  .col-lg-4.col-md-6.col-sm-6.products-col-item {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  
+  .single-productsBox {
+    margin-bottom: 20px;
+  }
+  
+  .products-image img {
+    width: 100%;
+    height: auto;
+  }
+  
+  /* Size selection buttons */
+  .size-buttons {
+    gap: 5px;
+  }
+  
+  .size-btn {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+  
+  /* Pagination adjustments */
+  .pagination-area {
+    margin-top: 20px;
+  }
+  
+  .pagination-numbers {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+  }
+  
+  .pagination-number {
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .pagination-arrow {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .pagination-info {
+    margin-top: 10px;
+    font-size: 12px;
+  }
+  
+  /* Notification adjustments */
+  .notification {
+    width: 90%;
+    right: 5%;
+    left: 5%;
+    font-size: 14px;
+    padding: 12px 15px;
+  }
 }
 
-.product-sizes {
-  position: absolute;
-  bottom: 10px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+/* Extra Small Devices (phones) */
+@media (max-width: 576px) {
+  /* Product grid for very small screens */
+  .col-lg-4.col-md-6.col-sm-6.products-col-item {
+    width: 100%;
+  }
+  
+  /* Improved touch targets */
+  .add-to-cart {
+    padding: 10px;
+    margin: 10px 0;
+    display: block;
+    text-align: center;
+    font-size: 14px;
+  }
+  
+  .products-button ul li a {
+    width: 35px;
+    height: 35px;
+  }
+  
+  /* Filter modal adjustments */
+  .productsFilterModal .modal-dialog {
+    max-width: 85%;
+  }
+  
+  /* Pagination for very small screens */
+  .pagination-numbers .pagination-number:not(.active):not(:first-child):not(:last-child) {
+    display: none;
+  }
+  
+  /* Product content spacing */
+  .products-content h3 {
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+  
+  .star-rating {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  
+  .price {
+    margin-bottom: 10px;
+  }
+  
+  .old-price, .new-price {
+    font-size: 14px;
+  }
 }
 
-.single-productsBox .products-image:hover .product-sizes {
-  opacity: 1;
+/* Fix for filter modal on mobile */
+.modal.left .modal-dialog {
+  position: fixed;
+  margin: auto;
+  width: 300px;
+  height: 100%;
+  transform: translate3d(0%, 0, 0);
 }
 
-.size-selection {
-  margin-bottom: 10px;
+.modal.left .modal-content {
+  height: 100%;
+  overflow-y: auto;
 }
 
-.size-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
+/* Improve the wishlist and quick view button size for touch */
+@media (max-width: 768px) {
+  .products-button ul li {
+    margin: 3px;
+  }
+  
+  .wishlist-btn a, .quick-view-btn a {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .products-discount span {
+    padding: 3px 10px;
+    font-size: 11px;
+  }
+  
+  /* Improve "New!" tag visibility */
+  .new-tag {
+    padding: 2px 8px;
+    font-size: 10px;
+  }
 }
 
-.size-btn {
-  background-color: rgba(255,255,255,0.8);
-  border: 1px solid #ddd;
-  padding: 5px 10px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+/* Better hover states for touch devices */
+@media (hover: none) {
+  .single-productsBox .products-image .product-sizes {
+    opacity: 1;
+  }
+  
+  .add-to-cart:hover {
+    opacity: 0.9;
+  }
 }
 
-.size-btn:hover {
-  background-color: #f0f0f0;
+/* Grid view adjustment for different screen sizes */
+@media (min-width: 577px) and (max-width: 767px) {
+  .col-lg-4.col-md-6.col-sm-6.products-col-item {
+    width: 50%;
+  }
 }
 
-.size-btn.selected {
-  background-color: #000;
-  color: #fff;
+/* Font size adjustments for smaller screens */
+@media (max-width: 480px) {
+  .page-title-content h2 {
+    font-size: 24px;
+  }
+  
+  .page-title-content ul li {
+    font-size: 14px;
+  }
+  
+  .products-content h3 a {
+    font-size: 15px;
+  }
 }
 </style>
 <body>
   
-  <!-- Start Search Overlay -->
-  <div class="search-overlay">
-    <div class="d-table">
-      <div class="d-table-cell">
-        <div class="search-overlay-layer"></div>
-        <div class="search-overlay-layer"></div>
-        <div class="search-overlay-layer"></div>
-
-        <div class="search-overlay-close">
-          <span class="search-overlay-close-line"></span>
-          <span class="search-overlay-close-line"></span>
-        </div>
-
-        <div class="search-overlay-form">
-          <form>
-            <input
-              type="text"
-              class="input-search"
-              placeholder="Search here..."
-            />
-            <button type="submit"><i class="bx bx-search-alt"></i></button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- End Search Overlay -->
-
   <!-- Start Page Title -->
   <div class="page-title-area">
     <div class="container">
@@ -124,6 +429,79 @@
     </div>
   </div>
   <!-- End Page Title -->
+  
+  <!-- Start Professional Search Area -->
+  <div class="search-container">
+    <form class="search-form" action="/shop" method="GET">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search products..."
+        name="query"
+        value="<%= query || '' %>"
+      />
+      <!-- Preserve other filters -->
+      <% if (categoryId) { %>
+        <input type="hidden" name="categoryId" value="<%= categoryId %>">
+      <% } %>
+      <% if (sort) { %>
+        <input type="hidden" name="sort" value="<%= sort %>">
+      <% } %>
+      <!-- Reset to page 1 when searching -->
+      <input type="hidden" name="page" value="1">
+      
+      <button type="submit" class="search-button"><i class="bx bx-search"></i></button>
+    </form>
+  </div>
+  
+  <!-- Active Filters Area -->
+  <div class="active-filters container">
+    <% if (query || categoryId || sort) { %>
+      <div>
+        <% if (query) { %>
+          <span class="clear-filter">
+            Search: <%= query %>
+            <a href="/shop?<%= categoryId ? 'categoryId=' + categoryId : '' %><%= sort ? (categoryId ? '&sort=' : 'sort=') + sort : '' %>&page=1" title="Remove search filter"><i class="bx bx-x"></i></a>
+          </span>
+        <% } %>
+        
+        <% if (categoryId) { %>
+          <% 
+            let categoryName = "";
+            categories.forEach(cat => {
+              if (cat._id.toString() === categoryId.toString()) {
+                categoryName = cat.name;
+              }
+            });
+          %>
+          <span class="clear-filter">
+            Category: <%= categoryName %>
+            <a href="/shop?<%= query ? 'query=' + query : '' %><%= sort ? (query ? '&sort=' : 'sort=') + sort : '' %>&page=1" title="Remove category filter"><i class="bx bx-x"></i></a>
+          </span>
+        <% } %>
+        
+        <% if (sort) { %>
+          <% 
+            let sortLabel = "";
+            if(sort === 'a-z') sortLabel = "Name: A-Z";
+            else if(sort === 'z-a') sortLabel = "Name: Z-A";
+            else if(sort === 'l-h') sortLabel = "Price: Low to High";
+            else if(sort === 'h-l') sortLabel = "Price: High to Low";
+            else sortLabel = sort;
+          %>
+          <span class="clear-filter">
+            Sort: <%= sortLabel %>
+            <a href="/shop?<%= query ? 'query=' + query : '' %><%= categoryId ? (query ? '&categoryId=' : 'categoryId=') + categoryId : '' %>&page=1" title="Remove sorting"><i class="bx bx-x"></i></a>
+          </span>
+        <% } %>
+        
+        <a href="/shop" class="clear-filter">
+          <i class="bx bx-refresh"></i> Clear All Filters
+        </a>
+      </div>
+    <% } %>
+  </div>
+  <!-- End Active Filters Area -->
 
   <!-- Start Products Area -->
   <section class="products-area pt-100 pb-70">
@@ -250,19 +628,17 @@
                 </ul>
               </div>
               <% if (product.createdAt) { 
-     const createdAtDate = new Date(product.createdAt);
-     const fiveDaysAgo = new Date();
-     fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
+                const createdAtDate = new Date(product.createdAt);
+                const fiveDaysAgo = new Date();
+                fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
 
-     if (createdAtDate >= fiveDaysAgo) { 
-%>
-    <div class="new-tag">New!</div>
-<% 
-    } 
-} 
-%>
-              
-              
+                if (createdAtDate >= fiveDaysAgo) { 
+              %>
+                <div class="new-tag">New!</div>
+              <% 
+                } 
+              } 
+              %>
             </div>
 
             <div class="products-content">
@@ -275,7 +651,6 @@
                 </div>
               </div>
 
-              
               <h3>
                 <a href="/shopsingle/<%= product._id %>"><%= product.name %></a>
               </h3>
@@ -287,20 +662,19 @@
                 <i class="bx bxs-star"></i>
               </div>
               <div class="price">
-        <% if (product.discountedPrice) { %>
-          <span class="old-price">Rs.<%= product.originalPrice %></span>
-          <span class="new-price">Rs.<%= product.discountedPrice %></span>
-          <span class="products-discount"></span>
-        <% } else { %>
-          <span class="new-price">Rs.<%= product.price %></span>
-          
-        <% } %>
-      </div>
+                <% if (product.discountedPrice) { %>
+                  <span class="old-price">Rs.<%= product.originalPrice %></span>
+                  <span class="new-price">Rs.<%= product.discountedPrice %></span>
+                  <span class="products-discount"></span>
+                <% } else { %>
+                  <span class="new-price">Rs.<%= product.price %></span>
+                <% } %>
+              </div>
 
-      <a href="#" class="add-to-cart" 
-   data-product-id="<%= product._id %>" 
-   data-product-name="<%= product.name %>"
->Add to Cart</a>
+              <a href="#" class="add-to-cart" 
+                data-product-id="<%= product._id %>" 
+                data-product-name="<%= product.name %>"
+              >Add to Cart</a>
             </div>
             <% if (product.discountedPrice) { %>
             <span class="products-discount">
@@ -308,8 +682,6 @@
             </span>
             <% } %>
           </div>
-
-
         </div>
         <% }) %>
       </div>
@@ -318,10 +690,19 @@
         <% if (totalPages > 1) { %>
         <div class="pagination-container">
           <div class="pagination-area">
-            <a href="?page=<%= currentPage > 1 ? currentPage - 1 : 1 %>&query=<%= query %>&sort=<%= sort %>&categoryId=<%= categoryId %>" class="pagination-arrow prev <%= currentPage === 1 ? 'disabled' : '' %>">
+            <% 
+              // Build the base query string that preserves all filters
+              let queryString = '';
+              if (query) queryString += `&query=${encodeURIComponent(query)}`;
+              if (sort) queryString += `&sort=${encodeURIComponent(sort)}`;
+              if (categoryId) queryString += `&categoryId=${encodeURIComponent(categoryId)}`;
+            %>
+            
+            <a href="?page=<%= currentPage > 1 ? currentPage - 1 : 1 %><%= queryString %>" 
+              class="pagination-arrow prev <%= currentPage === 1 ? 'disabled' : '' %>">
               <i class="bx bx-chevron-left"></i>
             </a>
-      
+
             <div class="pagination-numbers">
               <% 
                 // Show limited page numbers with ellipsis 
@@ -337,7 +718,7 @@
                 // Show first page if not included in range 
                 if (startPage > 1) { 
               %>
-                <a href="?page=1" class="pagination-number">1</a>
+                <a href="?page=1<%= queryString %>" class="pagination-number">1</a>
                 <% if (startPage > 2) { %>
                   <span class="pagination-ellipsis">...</span>
                 <% } %>
@@ -347,7 +728,7 @@
                 <% if(i === currentPage) { %>
                   <span class="pagination-number active"><%= i %></span>
                 <% } else { %>
-                  <a href="?page=<%= i %>" class="pagination-number"><%= i %></a>
+                  <a href="?page=<%= i %><%= queryString %>" class="pagination-number"><%= i %></a>
                 <% } %>
               <% } %>
               
@@ -355,196 +736,25 @@
                 <% if (endPage < totalPages - 1) { %>
                   <span class="pagination-ellipsis">...</span>
                 <% } %>
-                <a href="?page=<%= totalPages %>" class="pagination-number"><%= totalPages %></a>
+                <a href="?page=<%= totalPages %><%= queryString %>" class="pagination-number"><%= totalPages %></a>
               <% } %>
             </div>
-      
-            <a
-              href="?page=<%= currentPage < totalPages ? currentPage + 1 : totalPages %>"
-              class="pagination-arrow next <%= currentPage === totalPages ? 'disabled' : '' %>"
-            >
+
+            <a href="?page=<%= currentPage < totalPages ? currentPage + 1 : totalPages %><%= queryString %>"
+              class="pagination-arrow next <%= currentPage === totalPages ? 'disabled' : '' %>">
               <i class="bx bx-chevron-right"></i>
             </a>
           </div>
-      
+
           <div class="pagination-info">
             Showing page <%= currentPage %> of <%= totalPages %>
           </div>
         </div>
         <% } %>
-
-        <style>
-          .pagination-container {
-            padding: 40px 0;
-            font-family: "Poppins", sans-serif;
-          }
-
-          .pagination-area {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-          }
-
-          .pagination-numbers {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-          }
-
-          .pagination-number {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            font-size: 14px;
-            font-weight: 500;
-            color: #333;
-            text-decoration: none;
-            transition: all 0.25s ease;
-            position: relative;
-            border: 1px solid #f0f0f0;
-            background-color: #fff;
-          }
-
-          .pagination-number:hover {
-            border-color: #f53f85;
-            color: #f53f85;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(245, 63, 133, 0.15);
-          }
-
-          .pagination-number.active {
-            background: linear-gradient(135deg, #f53f85 0%, #ff7eb3 100%);
-            color: white;
-            border: none;
-            box-shadow: 0 4px 15px rgba(245, 63, 133, 0.3);
-          }
-
-          .pagination-arrow {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            color: #333;
-            text-decoration: none;
-            transition: all 0.25s ease;
-            background-color: #fff;
-            border: 1px solid #f0f0f0;
-            margin: 0 12px;
-          }
-
-          .pagination-arrow:hover {
-            background-color: #f53f85;
-            color: white;
-            box-shadow: 0 4px 12px rgba(245, 63, 133, 0.2);
-            transform: translateY(-2px);
-          }
-
-          .pagination-arrow i {
-            font-size: 18px;
-          }
-
-          .pagination-arrow.disabled {
-            opacity: 0.4;
-            pointer-events: none;
-            background-color: #f9f9f9;
-          }
-
-          .pagination-ellipsis {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            color: #888;
-            font-size: 14px;
-            letter-spacing: 1px;
-          }
-
-          .pagination-info {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 13px;
-            color: #999;
-            font-weight: 400;
-          }
-
-          @media (max-width: 767px) {
-            .pagination-number {
-              width: 36px;
-              height: 36px;
-              font-size: 13px;
-            }
-
-            .pagination-arrow {
-              width: 36px;
-              height: 36px;
-              margin: 0 8px;
-            }
-
-            .pagination-info {
-              font-size: 12px;
-            }
-          }
-
-          @media (max-width: 480px) {
-            .pagination-number {
-              width: 32px;
-              height: 32px;
-              font-size: 12px;
-            }
-
-            .pagination-arrow {
-              width: 32px;
-              height: 32px;
-              margin: 0 6px;
-            }
-
-            .pagination-ellipsis {
-              width: 24px;
-            }
-          }
-        </style>
       </div>
     </div>
   </section>
   <!-- End Products Area -->
-  <!-- Start Search Overlay -->
-  <div class="search-overlay">
-    <div class="d-table">
-      <div class="d-table-cell">
-        <div class="search-overlay-layer"></div>
-        <div class="search-overlay-layer"></div>
-        <div class="search-overlay-layer"></div>
-
-        <div class="search-overlay-close">
-          <span class="search-overlay-close-line"></span>
-          <span class="search-overlay-close-line"></span>
-        </div>
-
-        <div class="search-overlay-form">
-          <form action="/search" method="GET">
-            <input
-              type="text"
-              class="input-search"
-              placeholder="Search here..."
-              name="query"
-            />
-            <button type="submit"><i class="bx bx-search-alt"></i></button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- End Search Overlay -->
- 
-
-
 
   <!-- Start Products Filter Modal Area -->
   <div
@@ -570,12 +780,12 @@
               <h3 class="woocommerce-widget-title">Categories</h3>
 
               <ul class="collections-list-row">
-  <% categories.forEach(category => { %>
-    <li>
-      <a href="/shop?categoryId=<%= category._id %>&query=<%= query %>&sort=<%= sort %>"><%= category.name %></a>
-    </li>
-  <% }) %>
-</ul>
+                <% categories.forEach(category => { %>
+                  <li>
+                    <a href="/shop?categoryId=<%= category._id %>&query=<%= query %>&sort=<%= sort %>"><%= category.name %></a>
+                  </li>
+                <% }) %>
+              </ul>
             </div>
 
             <div class="woocommerce-widget price-list-widget">
@@ -592,8 +802,11 @@
                 />
               </div>
             </div>
-
             
+            <!-- Clear Filters Button -->
+            <div class="woocommerce-widget mt-4">
+              <a href="/shop" class="btn btn-dark w-100">Clear All Filters</a>
+            </div>
           </div>
         </div>
       </div>
@@ -601,235 +814,231 @@
   </div>
   <!-- End Products Filter Modal Area -->
 
-
- 
-
   <script>
     function sortProducts() {
-  const sortSelect = document.getElementById('sortSelect');
-  const sortOption = sortSelect.value;
-  const currentUrl = new URL(window.location.href);
-  
-  if (sortOption) {
-    currentUrl.searchParams.set('sort', sortOption);
-    currentUrl.searchParams.set('page', '1'); // Reset to page 1 when sorting changes
-  } else {
-    currentUrl.searchParams.delete('sort');
-  }
-  
-  window.location.href = currentUrl.toString();
-}
+      const sortSelect = document.getElementById('sortSelect');
+      const sortOption = sortSelect.value;
+      const currentUrl = new URL(window.location.href);
+      
+      if (sortOption) {
+        currentUrl.searchParams.set('sort', sortOption);
+      } else {
+        currentUrl.searchParams.delete('sort');
+      }
+      
+      // Always reset to page 1 when sorting changes
+      currentUrl.searchParams.set('page', '1');
+      
+      window.location.href = currentUrl.toString();
+    }
 
-
-document.addEventListener('DOMContentLoaded', function() {
-    initAddToCartButtons();
-    initWishlistButtons(); // Existing wishlist initialization
-});
-
-function initWishlistButtons() {
-    // Select all wishlist buttons
-    const wishlistBtns = document.querySelectorAll('.wishlist-btn');
-    
-    wishlistBtns.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            const productId = this.getAttribute('data-product-id');
-            const size = this.getAttribute('data-size');
-            const icon = this.querySelector('i');
-            
-            // Show loading state
-            icon.className = 'bx bx-loader bx-spin';
-            
-            // Send AJAX request using Fetch API
-            fetch('/addtowishlist', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    productId: productId,
-                    size: size
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Remove loading state
-                icon.classList.remove('bx-loader', 'bx-spin');
-                
-                if (data.success) {
-                    // Update icon based on whether item is in wishlist
-                    if (data.in_wishlist) {
-                        icon.className = 'bx bxs-heart'; // Filled heart
-                        showNotification('success', 'Product added to wishlist');
-                    } else {
-                        icon.className = 'bx bx-heart'; // Empty heart
-                        showNotification('success', 'Product removed from wishlist');
-                    }
-                    
-                    // Update wishlist counter in header if exists
-                    const wishlistCount = document.querySelector('.wishlist-count');
-                    if (wishlistCount) {
-                        wishlistCount.textContent = data.wishlist_count;
-                    }
-                } else {
-                    // If error, revert to original icon
-                    icon.className = 'bx bx-heart';
-                    
-                    // If login required, redirect to login page
-                    if (data.login_required) {
-                        window.location.href = '/login?redirect=' + encodeURIComponent(window.location.href);
-                        return;
-                    }
-                    
-                    // Show error message
-                    showNotification('error', data.message || 'Error updating wishlist');
-                }
-            })
-            .catch(error => {
-                // Remove loading state and restore original icon
-                icon.className = 'bx bx-heart';
-                
-                // Show error notification
-                showNotification('error', 'Failed to update wishlist. Please try again.');
-                console.error('Fetch error:', error);
-            });
-        });
+    document.addEventListener('DOMContentLoaded', function() {
+      initAddToCartButtons();
+      initWishlistButtons(); // Existing wishlist initialization
     });
-}
 
+    function initWishlistButtons() {
+      // Select all wishlist buttons
+      const wishlistBtns = document.querySelectorAll('.wishlist-btn');
+      
+      wishlistBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          const productId = this.getAttribute('data-product-id');
+          const size = this.getAttribute('data-size');
+          const icon = this.querySelector('i');
+          
+          // Show loading state
+          icon.className = 'bx bx-loader bx-spin';
+          
+          // Send AJAX request using Fetch API
+          fetch('/addtowishlist', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              productId: productId,
+              size: size
+            })
+          })
+          .then(response => response.json())
+          .then(data => {
+            // Remove loading state
+            icon.classList.remove('bx-loader', 'bx-spin');
+            
+            if (data.success) {
+              // Update icon based on whether item is in wishlist
+              if (data.in_wishlist) {
+                icon.className = 'bx bxs-heart'; // Filled heart
+                showNotification('success', 'Product added to wishlist');
+              } else {
+                icon.className = 'bx bx-heart'; // Empty heart
+                showNotification('success', 'Product removed from wishlist');
+              }
+              
+              // Update wishlist counter in header if exists
+              const wishlistCount = document.querySelector('.wishlist-count');
+              if (wishlistCount) {
+                wishlistCount.textContent = data.wishlist_count;
+              }
+            } else {
+              // If error, revert to original icon
+              icon.className = 'bx bx-heart';
+              
+              // If login required, redirect to login page
+              if (data.login_required) {
+                window.location.href = '/login?redirect=' + encodeURIComponent(window.location.href);
+                return;
+              }
+              
+              // Show error message
+              showNotification('error', data.message || 'Error updating wishlist');
+            }
+          })
+          .catch(error => {
+            // Remove loading state and restore original icon
+            icon.className = 'bx bx-heart';
+            
+            // Show error notification
+            showNotification('error', 'Failed to update wishlist. Please try again.');
+            console.error('Fetch error:', error);
+          });
+        });
+      });
+    }
 
-// Helper function to show notifications
-function showNotification(type, message) {
-    const notification = document.createElement('div');
-    notification.className = 'notification ' + type;
-    notification.innerHTML = `
+    // Helper function to show notifications
+    function showNotification(type, message) {
+      const notification = document.createElement('div');
+      notification.className = 'notification ' + type;
+      notification.innerHTML = `
         <span>${message}</span>
         <button class="close-btn">&times;</button>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(function() {
-        notification.style.opacity = '0';
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
-    
-    notification.querySelector('.close-btn').addEventListener('click', function() {
-        notification.style.opacity = '0';
-        setTimeout(() => notification.remove(), 300);
-    });
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  const sizeButtons = document.querySelectorAll('.size-btn');
-  
-  sizeButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      // Remove selected class from all buttons in the same group
-      const parentGroup = button.closest('.size-buttons');
-      parentGroup.querySelectorAll('.size-btn').forEach(btn => {
-        btn.classList.remove('selected');
-      });
+      `;
       
-      // Add selected class to clicked button
-      button.classList.add('selected');
-    });
-  });
-});
+      document.body.appendChild(notification);
+      
+      setTimeout(function() {
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+      
+      notification.querySelector('.close-btn').addEventListener('click', function() {
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 300);
+      });
+    }
 
-function initAddToCartButtons() {
-  const addToCartButtons = document.querySelectorAll(".add-to-cart");
-
-  addToCartButtons.forEach((button) => {
-    button.addEventListener("click", function (e) {
-      e.preventDefault();
-
-      // Find the parent product box
-      const productBox = this.closest(".single-productsBox");
-
-      // Get product details
-      const productId = productBox
-        .querySelector(".wishlist-btn")
-        .getAttribute("data-product-id");
-
-      // Get selected size
-      const selectedSizeButton = productBox.querySelector(".size-btn.selected");
-
-      if (!selectedSizeButton) {
-        showNotification("error", "Please select a size");
-        return;
-      }
-
-      const selectedSize = selectedSizeButton.textContent;
-
-      // Show loading state
-      this.innerHTML = '<i class="bx bx-loader bx-spin"></i> Adding...';
-      this.disabled = true;
-
-      // Send AJAX request to add to cart
-      fetch("/addTocart", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          productId: productId,
-          size: selectedSize,
-          quantity: 1, // Default quantity is 1, adjust if needed
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          // Restore button text
-          this.innerHTML = "Add to Cart";
-          this.disabled = false;
-
-          if (data.success) {
-            // Show success notification
-            showNotification("success", "Product added to cart");
-
-            // Update cart count in header
-            const cartCount = document.querySelector(".cart-count");
-            if (cartCount) {
-              cartCount.textContent = data.cartCount;
-            }
-          } else {
-            // Handle different error scenarios
-            if (data.outOfStock) {
-              showNotification(
-                "error",
-                data.message || `Size ${selectedSize} is out of stock`
-              );
-            } else if (data.login_required) {
-              // Redirect to login if needed
-              window.location.href =
-                "/login?redirect=" + encodeURIComponent(window.location.href);
-            } else {
-              // Generic error message
-              showNotification(
-                "error",
-                data.message || "Failed to add to cart"
-              );
-            }
-          }
-        })
-        .catch((error) => {
-          // Restore button text
-          this.innerHTML = "Add to Cart";
-          this.disabled = false;
-
-          // Show error notification
-          showNotification(
-            "error",
-            "Failed to add to cart. Please try again."
-          );
-          console.error("Fetch error:", error);
+    document.addEventListener('DOMContentLoaded', () => {
+      const sizeButtons = document.querySelectorAll('.size-btn');
+      
+      sizeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          // Remove selected class from all buttons in the same group
+          const parentGroup = button.closest('.size-buttons');
+          parentGroup.querySelectorAll('.size-btn').forEach(btn => {
+            btn.classList.remove('selected');
+          });
+          
+          // Add selected class to clicked button
+          button.classList.add('selected');
         });
+      });
     });
-  });
-}
 
-</script>
+    function initAddToCartButtons() {
+      const addToCartButtons = document.querySelectorAll(".add-to-cart");
+
+      addToCartButtons.forEach((button) => {
+        button.addEventListener("click", function (e) {
+          e.preventDefault();
+
+          // Find the parent product box
+          const productBox = this.closest(".single-productsBox");
+
+          // Get product details
+          const productId = productBox
+            .querySelector(".wishlist-btn")
+            .getAttribute("data-product-id");
+
+          // Get selected size
+          const selectedSizeButton = productBox.querySelector(".size-btn.selected");
+
+          if (!selectedSizeButton) {
+            showNotification("error", "Please select a size");
+            return;
+          }
+
+          const selectedSize = selectedSizeButton.textContent;
+
+          // Show loading state
+          this.innerHTML = '<i class="bx bx-loader bx-spin"></i> Adding...';
+          this.disabled = true;
+
+          // Send AJAX request to add to cart
+          fetch("/addTocart", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              productId: productId,
+              size: selectedSize,
+              quantity: 1, // Default quantity is 1, adjust if needed
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              // Restore button text
+              this.innerHTML = "Add to Cart";
+              this.disabled = false;
+
+              if (data.success) {
+                // Show success notification
+                showNotification("success", "Product added to cart");
+
+                // Update cart count in header
+                const cartCount = document.querySelector(".cart-count");
+                if (cartCount) {
+                  cartCount.textContent = data.cartCount;
+                }
+              } else {
+                // Handle different error scenarios
+                if (data.outOfStock) {
+                  showNotification(
+                    "error",
+                    data.message || `Size ${selectedSize} is out of stock`
+                  );
+                } else if (data.login_required) {
+                  // Redirect to login if needed
+                  window.location.href =
+                    "/login?redirect=" + encodeURIComponent(window.location.href);
+                } else {
+                  // Generic error message
+                  showNotification(
+                    "error",
+                    data.message || "Failed to add to cart"
+                  );
+                }
+              }
+            })
+            .catch((error) => {
+              // Restore button text
+              this.innerHTML = "Add to Cart";
+              this.disabled = false;
+
+              // Show error notification
+              showNotification(
+                "error",
+                "Failed to add to cart. Please try again."
+              );
+              console.error("Fetch error:", error);
+            });
+        });
+      });
+    }
+  </script>
 </body>
 <%- include('../partials/user/footer') %>

@@ -45,12 +45,14 @@ const loadShop = async (req, res) => {
     const user = await User.findOne({ _id: req.session.userId });
     const wishlistProduct = user?.wishlist.map((val) => val.productId);
 
-    let sortOption = { createdAt: -1 };
+    // Parse query parameters
     const { sort, query, categoryId } = req.query;
     const page = parseInt(req.query.page) || 1;
     const limit = 9;
     const skip = (page - 1) * limit;
 
+    // Set sort options
+    let sortOption = { createdAt: -1 }; // Default sorting
     if (sort === "a-z") {
       sortOption = { name: 1 };
     } else if (sort === "z-a") {
@@ -61,23 +63,27 @@ const loadShop = async (req, res) => {
       sortOption = { price: -1 };
     }
 
+    // Get active categories
     const activeCategories = await Category.find({ status: true });
     const activeCategoryIds = activeCategories.map((category) => category._id);
 
+    // Build filter object
     let filter = {
       status: true,
       category: { $in: activeCategoryIds },
     };
 
+    // Apply category filter if provided
     if (categoryId) {
       const requestedCategory = await Category.findById(categoryId);
       if (requestedCategory && requestedCategory.status) {
         filter.category = categoryId;
       } else {
-        filter.category = null;
+        filter.category = null; // Category not found or inactive
       }
     }
 
+    // Apply search query if provided
     if (query) {
       filter.$or = [
         { name: { $regex: query, $options: "i" } },
@@ -85,17 +91,19 @@ const loadShop = async (req, res) => {
       ];
     }
 
+    // Count total products for pagination
     const totalProducts = await Product.countDocuments(filter);
     const totalPages = Math.ceil(totalProducts / limit);
 
-    const categories = await Category.find({ status: true });
-
+    // Get products with all filters applied
     const products = await Product.find(filter)
+      .populate("category", "name")
       .sort(sortOption)
       .skip(skip)
       .limit(limit);
 
     const productsWithOffers = await applyOffers(products);
+    const categories = await Category.find({ status: true });
 
     res.render("product-page", {
       products: productsWithOffers,
@@ -103,16 +111,18 @@ const loadShop = async (req, res) => {
       currentPage: page,
       totalPages,
       totalProducts,
-      sort,
-      query,
-      categoryId,
+      sort: sort || '',
+      query: query || '',
+      categoryId: categoryId || '',
       wishlistProduct,
     });
   } catch (error) {
-    console.log("error occurred while rendering shop page", error);
+    console.log("Error occurred while rendering shop page", error);
     res.status(500).send("Internal Server Error");
   }
 };
+
+// You can safely delete the searchProduct function as it's now consolidated into loadShop
 
 const loadShopSingle = async (req, res) => {
   try {
@@ -225,43 +235,112 @@ const productModal = async (req, res) => {
 
 const findByCategory = async (req, res) => {
   try {
-    console.log("rendering the categorywise filtering page");
+    console.log("Rendering the categorywise filtering page");
     const categoryId = req.params.categoryId;
     console.log("categoryId:", categoryId);
+    
+    // Get sort parameter from query
+    const sort = req.query.sort || '';
+    
+    // Check if the category exists and is active
+    const category = await Category.findOne({ _id: categoryId, status: true });
+    if (!category) {
+      return res.status(404).render('error', { message: 'Category not found or inactive' });
+    }
+    
+    // Parse query parameters
     const page = parseInt(req.query.page) || 1;
     const limit = 6;
     const skip = (page - 1) * limit;
-
-    const totalProducts = await Product.countDocuments({ status: true });
-    const totalPages = Math.ceil(totalProducts / limit);
-    const category = await Category.findOne({ _id: categoryId });
-    const categories = await Category.find();
-    console.log("!!!!!!!", category);
-    const products = await Product.find({
+    
+    // Set sort options
+    let sortOption = { createdAt: -1 }; // Default sorting
+    if (sort === "a-z") {
+      sortOption = { name: 1 };
+    } else if (sort === "z-a") {
+      sortOption = { name: -1 };
+    } else if (sort === "l-h") {
+      sortOption = { price: 1 };
+    } else if (sort === "h-l") {
+      sortOption = { price: -1 };
+    }
+    
+    // Set up filter
+    const filter = {
       category: categoryId,
-      status: true,
-    })
-      .sort({ createdAt: -1 })
+      status: true
+    };
+    
+    // Count total products for pagination
+    const totalProducts = await Product.countDocuments(filter);
+    const totalPages = Math.ceil(totalProducts / limit);
+    
+    // Get active categories for the sidebar
+    const categories = await Category.find({ status: true });
+    
+    // Get products with pagination and sorting
+    const products = await Product.find(filter)
+      .populate("category", "name")
+      .sort(sortOption)
       .skip(skip)
       .limit(limit);
+    
     console.log("products:", products);
-    res.render("products", {
-      products,
+    
+    // If user is logged in, get wishlist information
+    let wishlistProduct = [];
+    if (req.session.userId) {
+      const user = await User.findOne({ _id: req.session.userId });
+      if (user && user.wishlist) {
+        wishlistProduct = user.wishlist.map((val) => val.productId);
+      }
+    }
+    
+    // Apply offers to products if the function exists
+    const productsWithOffers = typeof applyOffers === 'function' ? 
+      await applyOffers(products) : products;
+    
+    res.render("product-page", {
+      products: productsWithOffers,
       category,
+      categories,
       currentPage: page,
       totalPages,
       totalProducts,
-      categories,
+      wishlistProduct,
+      categoryId,
+      sort, // Pass the sort variable to the template
+      query: req.query.query || '' // Add query parameter for search functionality
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log("Error in findByCategory controller:", error);
+    res.status(500).render('error', { message: 'Internal Server Error' });
+  }
 };
 
 const searchProduct = async (req, res) => {
   try {
-    console.log("req.query:", req.query);
-    const { query } = req.query;
-    console.log(query);
+    const user = await User.findOne({ _id: req.session.userId });
+    const wishlistProduct = user?.wishlist.map((val) => val.productId);
+    
+    // Set default sort option
+    let sortOption = { createdAt: -1 };
+    const { sort, query, categoryId } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const limit = 9; // Changed from 6 to 9 to match your snippet
+    const skip = (page - 1) * limit;
 
+    // Apply sorting logic
+    if (sort === "a-z") {
+      sortOption = { name: 1 };
+    } else if (sort === "z-a") {
+      sortOption = { name: -1 };
+    } else if (sort === "l-h") {
+      sortOption = { price: 1 };
+    } else if (sort === "h-l") {
+      sortOption = { price: -1 };
+    }
+    
     const searchFilter = {
       status: true,
       $or: [
@@ -270,35 +349,38 @@ const searchProduct = async (req, res) => {
       ],
     };
 
-    const product = await Product.find(searchFilter);
+    // If categoryId is provided, add it to the filter
+    if (categoryId) {
+      searchFilter.category = categoryId;
+    }
+
     const category = await Category.find();
-
-    const page = parseInt(req.query.page) || 1;
-    const limit = 6;
-    const skip = (page - 1) * limit;
-
     const totalProducts = await Product.countDocuments(searchFilter);
     const totalPages = Math.ceil(totalProducts / limit);
-
     const categories = await Category.find();
+    
+    // Apply the sortOption to the query
     const products = await Product.find(searchFilter)
       .populate("category", "name")
-      .sort({ createdAt: -1 })
+      .sort(sortOption) // Use the sortOption here
       .skip(skip)
       .limit(limit);
 
-    res.render("products", {
+    res.render("product-page", {
       products,
-      searchQuery: query,
+      query: query || '',
       currentPage: page,
       totalPages,
       totalProducts,
       category,
       categories,
+      sort: sort || '', 
+      categoryId: categoryId || '',
+      wishlistProduct,
     });
-    console.log(product);
   } catch (error) {
     console.log(error);
+    res.status(500).send("Internal Server Error");
   }
 };
 

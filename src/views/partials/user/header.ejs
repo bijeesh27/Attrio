@@ -167,15 +167,7 @@
 
                         <ul class="header-top-others-option">
                             <!-- New Search Input -->
-                            <div class="option-item header-search">
-                                <div class="search-container">
-                                    <form action="/shop" method="GET" id="searchForm">
-                                        <input type="text" class="header-search-input" placeholder="Search here..." name="query" id="userSearchInput" value="<%= locals.searchQuery || '' %>">
-                                        <button type="submit"><i class='bx bx-search-alt'></i></button>
-                                        <i class='bx bx-x search-clear-icon' id="searchClearBtn" onclick="clearUserSearch()"></i>
-                                    </form>
-                                </div>
-                            </div>
+                            
 
                             <div class="option-item">
                                 <div class="cart-btn">
@@ -222,15 +214,7 @@
 
                             <div class="others-option">
                                 <!-- New Search Input for navbar -->
-                                <div class="option-item header-search">
-                                    <div class="search-container">
-                                        <form action="/search" method="GET">
-                                            <input type="text" class="header-search-input" placeholder="Search here..." name="query" value="<%= locals.searchQuery || '' %>">
-                                            <button type="submit"><i class='bx bx-search-alt'></i></button>
-                                            <i class='bx bx-x search-clear-icon' onclick="this.previousElementSibling.previousElementSibling.value=''; this.style.opacity='0'; window.location.href='/shop';"></i>
-                                        </form>
-                                    </div>
-                                </div>
+                               
                                 
                                 <% if (locals.session.isAuth) { %>
                                     <div class="option-item">
@@ -266,15 +250,7 @@
 
                             <div class="others-option">
                                 <!-- New Search Input for sticky navbar -->
-                                <div class="option-item header-search">
-                                    <div class="search-container">
-                                        <form action="/search" method="GET">
-                                            <input type="text" class="header-search-input" placeholder="Search here..." name="query" value="<%= locals.searchQuery || '' %>">
-                                            <button type="submit"><i class='bx bx-search-alt'></i></button>
-                                            <i class='bx bx-x search-clear-icon' onclick="this.previousElementSibling.previousElementSibling.value=''; this.style.opacity='0'; window.location.href='/shop';"></i>
-                                        </form>
-                                    </div>
-                                </div>
+                               
 
                                 <% if (locals.session.isAuth) { %>
                                     <div class="option-item">
