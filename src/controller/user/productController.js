@@ -127,15 +127,18 @@ const loadShop = async (req, res) => {
 const loadShopSingle = async (req, res) => {
   try {
     const productId = req.params.productId;
-
     const user = await User.findOne({ _id: req.session.userId });
-    const wishlistProduct = user?.wishlist.map((val) => val.productId);
+    const wishlistProduct = user?.wishlist?.map((val) => val.productId) || [];
 
-    const product = await Product.findOne({ _id: productId, status: true });
+    const product = await Product.findOne({ _id: productId, status: true })
+      .populate("reviews.userId", "username");
 
     if (!product) {
       return res.redirect("/shop");
     }
+
+    // Initialize reviews if undefined
+    product.reviews = product.reviews || [];
 
     const categoryId = product.category;
     const category = await Category.findById(categoryId);
@@ -188,12 +191,80 @@ const loadShopSingle = async (req, res) => {
         maxDiscount,
         applicableOffers,
       },
-      allProducts,
-      wishlistProduct,
+      allProducts: allProducts || [],
+      wishlistProduct: wishlistProduct || [],
     });
   } catch (error) {
     console.log("Error loading shop single page:", error);
     res.redirect("/shop");
+  }
+};
+
+const addReview = async (req, res) => {
+  try {
+    const { productId, rating, comment } = req.body;
+    const userId = req.session.userId;
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Please login to submit a review",
+        login_required: true,
+      });
+    }
+
+    if (!productId || !rating || !comment) {
+      return res.status(400).json({
+        success: false,
+        message: "Product ID, rating, and comment are required",
+      });
+    }
+
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    // Check if user already reviewed this product
+    const existingReview = product.reviews.find(
+      (review) => review.userId.toString() === userId.toString()
+    );
+    if (existingReview) {
+      return res.status(400).json({
+        success: false,
+        message: "You have already reviewed this product",
+      });
+    }
+
+    // Add new review
+    product.reviews.push({
+      userId,
+      rating: parseInt(rating),
+      comment,
+      date: new Date(),
+    });
+
+    // Update average rating and rating count
+    const totalRatings = product.reviews.reduce((sum, review) => sum + review.rating, 0);
+    product.averageRating = totalRatings / product.reviews.length;
+    product.ratingCount = product.reviews.length;
+
+    await product.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Review submitted successfully",
+    });
+  } catch (error) {
+    console.error("Error adding review:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to submit review",
+      error: error.message,
+    });
   }
 };
 
@@ -633,4 +704,5 @@ module.exports = {
   removeItemWishlist,
   clearWishlist,
   addAddressInCheckout,
+  addReview,
 };

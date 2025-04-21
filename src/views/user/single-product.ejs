@@ -15,7 +15,7 @@
   }
 
   .zoom-container:hover .zoom-image {
-    transform: scale(1.5); /* Adjust the scale factor as needed */
+    transform: scale(1.5);
   }
 
   .notification {
@@ -62,6 +62,7 @@
       transform: translateY(0);
     }
   }
+
   .wishlist-btn button {
     background: transparent;
     border: none;
@@ -102,31 +103,121 @@
   }
 
   .discount-badge {
-  background-color: #ff6b6b;
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  margin-left: 10px;
-  font-size: 0.8em;
-}
+    background-color: #ff6b6b;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-left: 10px;
+    font-size: 0.8em;
+  }
 
-.offer-details {
-  margin-top: 15px;
-  background-color: #f7f7f7;
-  padding: 10px;
-  border-radius: 5px;
-}
+  .offer-details {
+    margin-top: 15px;
+    background-color: #f7f7f7;
+    padding: 10px;
+    border-radius: 5px;
+  }
 
-.offer-details h4 {
-  margin-bottom: 10px;
-  color: #333;
-}
+  .offer-details h4 {
+    margin-bottom: 10px;
+    color: #333;
+  }
 
-.offer-details ul {
-  list-style-type: disc;
-  padding-left: 20px;
-}
+  .offer-details ul {
+    list-style-type: disc;
+    padding-left: 20px;
+  }
+
+  .rating-stars {
+    color: #f5c518;
+    margin-right: 10px;
+  }
+
+  .review-section {
+    margin-top: 20px;
+  }
+
+  .review-item {
+    border-bottom: 1px solid #eee;
+    padding: 15px 0;
+  }
+
+  .review-item:last-child {
+    border-bottom: none;
+  }
+
+  .review-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .review-header .username {
+    font-weight: bold;
+    margin-right: 10px;
+  }
+
+  .review-date {
+    color: #666;
+    font-size: 0.9em;
+  }
+
+  .review-comment {
+    margin-top: 10px;
+    color: #333;
+  }
+
+  .add-review-btn {
+    background-color: #f53f85;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+
+  .add-review-btn:hover {
+    background-color: #e03275;
+  }
+
+  .modal-body .star-rating {
+    font-size: 24px;
+    cursor: pointer;
+    margin-bottom: 15px;
+  }
+
+  .modal-body .star-rating i {
+    color: #ccc;
+  }
+
+  .modal-body .star-rating i.active {
+    color: #f5c518;
+  }
+
+  .modal-body textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 15px;
+  }
+
+  .modal-body .submit-review-btn {
+    background-color: #f53f85;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .modal-body .submit-review-btn:hover {
+    background-color: #e03275;
+  }
 </style>
+
 <!-- Start Search Overlay -->
 <div class="search-overlay">
   <div class="d-table">
@@ -134,18 +225,17 @@
       <div class="search-overlay-layer"></div>
       <div class="search-overlay-layer"></div>
       <div class="search-overlay-layer"></div>
-
       <div class="search-overlay-close">
         <span class="search-overlay-close-line"></span>
         <span class="search-overlay-close-line"></span>
       </div>
-
       <div class="search-overlay-form">
-        <form>
+        <form action="/search" method="GET">
           <input
             type="text"
             class="input-search"
             placeholder="Search here..."
+            name="query"
           />
           <button type="submit"><i class="bx bx-search-alt"></i></button>
         </form>
@@ -187,7 +277,6 @@
                 </div>
               </div>
             </div>
-
             <div class="col-lg-6 col-md-6">
               <div class="single-products-details-image">
                 <div class="zoom-container">
@@ -199,7 +288,6 @@
                 </div>
               </div>
             </div>
-
             <div class="col-lg-6 col-md-6">
               <div class="single-products-details-image">
                 <div class="zoom-container">
@@ -211,7 +299,6 @@
                 </div>
               </div>
             </div>
-
             <div class="col-lg-6 col-md-6">
               <div class="single-products-details-image">
                 <div class="zoom-container">
@@ -230,7 +317,6 @@
       <div class="col-lg-7 col-md-12">
         <div class="products-details-desc">
           <h3><%= product.name %></h3>
-
           <div class="price">
             <% if (product.maxDiscount > 0) { %>
               <span class="old-price">Rs.<%= product.originalPrice.toFixed(2) %></span>
@@ -240,7 +326,6 @@
               <span class="new-price">Rs.<%= product.price %></span>
             <% } %>
           </div>
-        
           <% if (product.applicableOffers && product.applicableOffers.length > 0) { %>
             <div class="offer-details">
               <h4>Active Offers:</h4>
@@ -251,35 +336,32 @@
                     <%= offer.discount %>% off 
                     (Valid till <%= offer.endDate.toLocaleDateString() %>)
                   </li>
-                <% }); %>
+                <% }) %>
               </ul>
             </div>
           <% } %>
-
           <div class="products-review">
             <div class="rating">
-              <i class="bx bx-star"></i>
-              <i class="bx bx-star"></i>
-              <i class="bx bx-star"></i>
-              <i class="bx bx-star"></i>
-              <i class="bx bx-star"></i>
+              <% for(let i = 1; i <= 5; i++) { %>
+                <i class="bx <%= i <= Math.round(product.averageRating) ? 'bxs-star' : 'bx-star' %> rating-stars"></i>
+              <% } %>
             </div>
-            <a href="#" class="rating-count">3 reviews</a>
+            <a href="#" class="rating-count"><%= product.ratingCount %> reviews</a>
           </div>
-
           <ul class="products-info">
             <li>
               <span>Availability:</span>
               <a href="#">
-                <% if (product.totalstock == 0) { %> Out Of Stock <% } else { %>
-                item <%= product.totalstock %> Available <% } %>
+                <% if (product.totalstock == 0) { %>
+                  Out Of Stock
+                <% } else { %>
+                  item <%= product.totalstock %> Available
+                <% } %>
               </a>
             </li>
           </ul>
-
           <div class="products-size-wrapper">
             <span>Size:</span>
-
             <ul>
               <li><a href="#" data-size="S">S</a></li>
               <li><a href="#" data-size="M">M</a></li>
@@ -287,42 +369,40 @@
               <li><a href="#" data-size="XL">XL</a></li>
             </ul>
           </div>
-
           <div class="products-info-btn">
-            <a href="#" data-bs-toggle="modal" data-bs-target="#sizeGuideModal"
-              ><i class="bx bx-crop"></i> Size guide</a
-            >
-            <a
-              href="#"
-              data-bs-toggle="modal"
-              data-bs-target="#productsShippingModal"
-              ><i class="bx bxs-truck"></i> Shipping</a
-            >
+            <a href="#" data-bs-toggle="modal" data-bs-target="#sizeGuideModal">
+              <i class="bx bx-crop"></i> Size guide
+            </a>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#productsShippingModal">
+              <i class="bx bxs-truck"></i> Shipping
+            </a>
           </div>
-
           <div class="products-add-to-cart">
             <div class="input-counter">
               <span class="minus-btn"><i class="bx bx-minus"></i></span>
               <input type="text" id="quantity" value="1" min="1" />
               <span class="plus-btn"><i class="bx bx-plus"></i></span>
             </div>
-
             <button type="submit" class="default-btn" id="addToCartBtn">
               <i class="fas fa-cart-plus"></i> Add to Cart
             </button>
           </div>
-
           <div class="wishlist-btn" data-product-id="<%= product._id %>">
             <button>
-              <% if (wishlistProduct && wishlistProduct.length > 0) { %> <% let
-              isInWishlist = false; wishlistProduct.forEach((item) => { if
-              (item.toString() === product._id.toString()) { isInWishlist =
-              true; } }); if (isInWishlist) { %>
-              <i class="bx bxs-heart" style="color: #f53f85"></i>
+              <% if (wishlistProduct && wishlistProduct.length > 0) { %>
+                <% let isInWishlist = false; %>
+                <% wishlistProduct.forEach((item) => { %>
+                  <% if (item.toString() === product._id.toString()) { %>
+                    <% isInWishlist = true; %>
+                  <% } %>
+                <% }) %>
+                <% if (isInWishlist) { %>
+                  <i class="bx bxs-heart" style="color: #f53f85"></i>
+                <% } else { %>
+                  <i class="bx bx-heart" style="color: #f53f85"></i>
+                <% } %>
               <% } else { %>
-              <i class="bx bx-heart" style="color: #f53f85"></i>
-              <% } %> <% } else { %>
-              <i class="bx bx-heart" style="color: #f53f85"></i>
+                <i class="bx bx-heart" style="color: #f53f85"></i>
               <% } %>
               <span class="tooltip-label">Add to Wishlist</span>
             </button>
@@ -339,12 +419,10 @@
                 <span>I agree with the terms and conditions</span>
               </label>
             </div>
-
-             <div class="item">
+            <div class="item">
               <a href="#" class="default-btn">Buy it now!</a>
-            </div> 
+            </div>
           </div>
-
           <div class="products-details-accordion">
             <ul class="accordion">
               <li class="accordion-item">
@@ -352,9 +430,45 @@
                   <i class="bx bx-chevron-down"></i>
                   Description
                 </a>
-
                 <div class="accordion-content show">
                   <%= product.description %>
+                </div>
+              </li>
+              <li class="accordion-item">
+                <a class="accordion-title" href="javascript:void(0)">
+                  <i class="bx bx-chevron-down"></i>
+                  Reviews
+                </a>
+                <div class="accordion-content">
+                  <div class="review-section">
+                    <% if (product.reviews && Array.isArray(product.reviews)) { %>
+                      <% product.reviews.forEach(review => { %>
+                        <div class="review-item">
+                          <div class="review-header">
+                            <span class="username">
+                              <%= review.userId && review.userId.username ? review.userId.username : 'Anonymous' %>
+                            </span>
+                            <div class="rating">
+                              <% for(let i = 1; i <= 5; i++) { %>
+                                <i class="bx <%= i <= review.rating ? 'bxs-star' : 'bx-star' %> rating-stars"></i>
+                              <% } %>
+                            </div>
+                            <span class="review-date">
+                              <%= review.date.toLocaleDateString() %>
+                            </span>
+                          </div>
+                          <div class="review-comment">
+                            <%= review.comment %>
+                          </div>
+                        </div>
+                      <% }) %>
+                    <% } else { %>
+                      <p>No reviews yet. Be the first to review this product!</p>
+                    <% } %>
+                    <button class="add-review-btn" data-bs-toggle="modal" data-bs-target="#reviewModal">
+                      Write a Review
+                    </button>
+                  </div>
                 </div>
               </li>
             </ul>
@@ -370,81 +484,77 @@
         <span class="sub-title">Our Shop</span>
         <h2>Related Products</h2>
       </div>
-
       <div class="products-slides owl-carousel owl-theme">
         <% allProducts.forEach(product => { %>
-
-        <div class="single-products-box">
-          <div class="products-image">
-            <a href="/shopsingle/<%= product._id %>">
-              <img
-                src="/<%= product.image[0] %>"
-                class="main-image"
-                alt="image"
-              />
-              <img
-                src="/<%= product.image[1] %>"
-                class="hover-image"
-                alt="image"
-              />
-            </a>
-
-            <div class="products-button">
-              <ul>
-                <li>
-                  <div class="wishlist-btn">
-                    <a
-                      href="#"
-                      data-bs-toggle="modal"
-                      data-bs-target="#shoppingWishlistModal"
-                    >
-                      <i class="bx bx-heart"></i>
-                      <span class="tooltip-label">Add to Wishlist</span>
-                    </a>
-                  </div>
-                </li>
-                <li>
-                  <div class="compare-btn">
-                    <a href="compare.html">
-                      <i class="bx bx-refresh"></i>
-                      <span class="tooltip-label">Compare</span>
-                    </a>
-                  </div>
-                </li>
-                <li>
-                  <div class="quick-view-btn">
-                    <a
-                      href="#"
-                      data-bs-toggle="modal"
-                      data-bs-target="#productsQuickView"
-                    >
-                      <i class="bx bx-search-alt"></i>
-                      <span class="tooltip-label">Quick View</span>
-                    </a>
-                  </div>
-                </li>
-              </ul>
+          <div class="single-products-box">
+            <div class="products-image">
+              <a href="/shopsingle/<%= product._id %>">
+                <img
+                  src="/<%= product.image[0] %>"
+                  class="main-image"
+                  alt="image"
+                />
+                <img
+                  src="/<%= product.image[1] %>"
+                  class="hover-image"
+                  alt="image"
+                />
+              </a>
+              <div class="products-button">
+                <ul>
+                  <li>
+                    <div class="wishlist-btn">
+                      <a
+                        href="#"
+                        data-bs-toggle="modal"
+                        data-bs-target="#shoppingWishlistModal"
+                      >
+                        <i class="bx bx-heart"></i>
+                        <span class="tooltip-label">Add to Wishlist</span>
+                      </a>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="compare-btn">
+                      <a href="compare.html">
+                        <i class="bx bx-refresh"></i>
+                        <span class="tooltip-label">Compare</span>
+                      </a>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="quick-view-btn">
+                      <a
+                        href="#"
+                        data-bs-toggle="modal"
+                        data-bs-target="#productsQuickView"
+                      >
+                        <i class="bx bx-search-alt"></i>
+                        <span class="tooltip-label">Quick View</span>
+                      </a>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="products-content">
+              <h3>
+                <a href="/shopsingle/<%= product._id %>"><%= product.name %></a>
+              </h3>
+              <div class="price">
+                <span class="old-price">Rs.3000</span>
+                <span class="new-price">Rs.<%= product.price %></span>
+              </div>
+              <div class="star-rating">
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+                <i class="bx bxs-star"></i>
+              </div>
+              <a href="cart.html" class="add-to-cart">Add to Cart</a>
             </div>
           </div>
-
-          <div class="products-content">
-            <h3>
-              <a href="/shopsingle/<%= product._id %>"><%= product.name %></a>
-            </h3>
-            <div class="price">
-              <span class="old-price">Rs.3000</span>
-              <span class="new-price">Rs.<%= product.price %></span>
-            </div>
-            <div class="star-rating">
-              <i class="bx bxs-star"></i>
-              <i class="bx bxs-star"></i>
-              <i class="bx bxs-star"></i>
-              <i class="bx bxs-star"></i>
-              <i class="bx bxs-star"></i>
-            </div>
-            <a href="cart.html" class="add-to-cart">Add to Cart</a>
-          </div>
-        </div>
         <% }) %>
       </div>
     </div>
@@ -452,34 +562,40 @@
 </section>
 <!-- End Product Details Area -->
 
-<!-- Start Search Overlay -->
-<div class="search-overlay">
-  <div class="d-table">
-    <div class="d-table-cell">
-      <div class="search-overlay-layer"></div>
-      <div class="search-overlay-layer"></div>
-      <div class="search-overlay-layer"></div>
-
-      <div class="search-overlay-close">
-        <span class="search-overlay-close-line"></span>
-        <span class="search-overlay-close-line"></span>
-      </div>
-
-      <div class="search-overlay-form">
-        <form action="/search" method="GET">
-          <input
-            type="text"
-            class="input-search"
-            placeholder="Search here..."
-            name="query"
-          />
-          <button type="submit"><i class="bx bx-search-alt"></i></button>
-        </form>
+<!-- Start Review Modal Area -->
+<div
+  class="modal fade"
+  id="reviewModal"
+  tabindex="-1"
+  role="dialog"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <button
+        type="button"
+        class="close"
+        data-bs-dismiss="modal"
+        aria-label="Close"
+      >
+        <span aria-hidden="true"><i class="bx bx-x"></i></span>
+      </button>
+      <div class="modal-body">
+        <h3>Write a Review</h3>
+        <div class="star-rating" id="starRating">
+          <i class="bx bx-star" data-value="1"></i>
+          <i class="bx bx-star" data-value="2"></i>
+          <i class="bx bx-star" data-value="3"></i>
+          <i class="bx bx-star" data-value="4"></i>
+          <i class="bx bx-star" data-value="5"></i>
+        </div>
+        <textarea id="reviewComment" placeholder="Write your review here..." required></textarea>
+        <button class="submit-review-btn" id="submitReviewBtn">Submit Review</button>
       </div>
     </div>
   </div>
 </div>
-<!-- End Search Overlay -->
+<!-- End Review Modal Area -->
 
 <!-- Start Size Guide Modal Area -->
 <div
@@ -499,13 +615,11 @@
       >
         <span aria-hidden="true"><i class="bx bx-x"></i></span>
       </button>
-
       <div class="modal-sizeguide">
         <h3>Size Guide</h3>
         <p>
           This is an approximate conversion table to help you find your size.
         </p>
-
         <div class="table-responsive">
           <table class="table table-striped">
             <thead>
@@ -521,7 +635,6 @@
                 <th>Korean</th>
               </tr>
             </thead>
-
             <tbody>
               <tr>
                 <td>34</td>
@@ -563,7 +676,7 @@
                 <td>10</td>
                 <td>4</td>
                 <td>9</td>
-                <td>165/88A</td>
+                <lt>165/88A</td>
                 <td>42</td>
                 <td>55</td>
               </tr>
@@ -660,7 +773,6 @@
       >
         <span aria-hidden="true"><i class="bx bx-x"></i></span>
       </button>
-
       <div class="shipping-content">
         <h3>Shipping</h3>
         <ul>
@@ -676,7 +788,6 @@
             delivery times
           </li>
         </ul>
-
         <h3>Returns and Exchanges</h3>
         <ul>
           <li>Easy and complimentary, within 14 days</li>
@@ -686,7 +797,6 @@
     </div>
   </div>
 </div>
-<div id="productData" data-product="<%= JSON.stringify(product) %>"></div>
 <!-- End Shipping Modal Area -->
 
 <!-- Start Products Filter Modal Area -->
@@ -706,14 +816,11 @@
       >
         <span aria-hidden="true"><i class="bx bx-x"></i> Close</span>
       </button>
-
       <div class="modal-body">
         <div class="woocommerce-widget-area">
           <div class="woocommerce-widget filter-list-widget"></div>
-
           <div class="woocommerce-widget collections-list-widget">
             <h3 class="woocommerce-widget-title">Categories</h3>
-
             <ul class="collections-list-row">
               <li><a href="#">Men's</a></li>
               <li class="active"><a href="#" class="active">Women’s</a></li>
@@ -721,10 +828,8 @@
               <li><a href="#">kid's</a></li>
             </ul>
           </div>
-
           <div class="woocommerce-widget price-list-widget">
             <h3 class="woocommerce-widget-title">Price</h3>
-
             <div class="collection-filter-by-price">
               <input
                 class="js-range-of-price"
@@ -736,10 +841,8 @@
               />
             </div>
           </div>
-
           <div class="woocommerce-widget size-list-widget">
             <h3 class="woocommerce-widget-title">Size</h3>
-
             <ul class="size-list-row">
               <li><a href="#">20</a></li>
               <li><a href="#">24</a></li>
@@ -759,14 +862,16 @@
   </div>
 </div>
 <!-- End Products Filter Modal Area -->
+
+<div id="productData" data-product="<%= JSON.stringify(product) %>"></div>
+
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    // First, remove any existing event listeners (if possible)
+    // Quantity controls
     const minusBtn = document.querySelector(".minus-btn");
     const plusBtn = document.querySelector(".plus-btn");
     const quantityInput = document.getElementById("quantity");
 
-    // Clone and replace the elements to remove any existing event listeners
     if (minusBtn && plusBtn && quantityInput) {
       const minusBtnClone = minusBtn.cloneNode(true);
       const plusBtnClone = plusBtn.cloneNode(true);
@@ -776,27 +881,24 @@
       plusBtn.parentNode.replaceChild(plusBtnClone, plusBtn);
       quantityInput.parentNode.replaceChild(quantityInputClone, quantityInput);
 
-      // Get the new references
       const newMinusBtn = document.querySelector(".minus-btn");
       const newPlusBtn = document.querySelector(".plus-btn");
       const newQuantityInput = document.getElementById("quantity");
 
-      // Direct manipulation approach instead of event listeners
       newMinusBtn.onclick = function () {
         let value = parseInt(newQuantityInput.value);
         if (value > 1) {
           newQuantityInput.value = value - 1;
         }
-        return false; // Prevent default and bubbling
+        return false;
       };
 
       newPlusBtn.onclick = function () {
         let value = parseInt(newQuantityInput.value);
         newQuantityInput.value = value + 1;
-        return false; // Prevent default and bubbling
+        return false;
       };
 
-      // Ensure input only accepts valid numbers
       newQuantityInput.onchange = function () {
         let value = parseInt(this.value);
         if (isNaN(value) || value < 1) {
@@ -809,314 +911,342 @@
     const zoomContainers = document.querySelectorAll(".zoom-container");
     zoomContainers.forEach((container) => {
       const img = container.querySelector(".zoom-image");
-
       container.addEventListener("mousemove", (e) => {
         const { left, top, width, height } = container.getBoundingClientRect();
         const x = ((e.pageX - left) / width) * 100;
         const y = ((e.pageY - top) / height) * 100;
-
         img.style.transformOrigin = `${x}% ${y}%`;
         img.style.transform = "scale(2)";
       });
-
       container.addEventListener("mouseleave", () => {
         img.style.transformOrigin = "center center";
         img.style.transform = "scale(1)";
       });
     });
 
-    // Get the product stock data from a data attribute or the global window object
-    // This assumes you've set the product stock data in your EJS template
-
+    // Product stock data
     let productStock = [];
-
     try {
-      // Option 1: Try to get from a data attribute if you set it in your EJS template
       const productDataEl = document.getElementById("productData");
       if (productDataEl && productDataEl.dataset.product) {
         const productData = JSON.parse(productDataEl.dataset.product);
         productStock = productData.stock || [];
-      }
-      // Option 2: If you set it as a global variable in your EJS template
-      else if (
-        typeof window.productData !== "undefined" &&
-        window.productData.stock
-      ) {
-        productStock = window.productData.stock;
       }
     } catch (error) {
       console.error("Error parsing product data:", error);
       productStock = [];
     }
 
-    // Function to get stock quantity for a specific size
     function getStockForSize(size) {
       const stockItem = productStock.find((item) => item.size === size);
       return stockItem ? stockItem.quantity : 0;
     }
 
-    // Size selection functionality
+    // Size selection
     let selectedSize = null;
-    const sizeButtons = document.querySelectorAll(
-      ".products-size-wrapper ul li a"
-    );
+    const sizeButtons = document.querySelectorAll(".products-size-wrapper ul li a");
     const availabilityElement = document.querySelector(".products-info li a");
 
     sizeButtons.forEach((button) => {
       button.addEventListener("click", function (e) {
         e.preventDefault();
-
-        sizeButtons.forEach((btn) => {
-          btn.parentElement.classList.remove("active");
-        });
-
+        sizeButtons.forEach((btn) => btn.parentElement.classList.remove("active"));
         this.parentElement.classList.add("active");
         selectedSize = this.getAttribute("data-size");
-
-        // Update availability display based on selected size
         updateAvailabilityDisplay(selectedSize);
       });
     });
 
-    // Function to update availability display
     function updateAvailabilityDisplay(size) {
       if (!size) {
-        availabilityElement.textContent =
-          "Please select a size to see availability";
+        availabilityElement.textContent = "Please select a size to see availability";
         return;
       }
-
       const stockForSize = getStockForSize(size);
-      if (stockForSize === 0) {
-        availabilityElement.textContent = "Out Of Stock for " + size;
-      } else {
-        availabilityElement.textContent =
-          stockForSize + " items available for " + size;
-      }
+      availabilityElement.textContent = stockForSize === 0
+        ? `Out Of Stock for ${size}`
+        : `${stockForSize} items available for ${size}`;
     }
 
-    // Add to cart functionality
+    // Add to cart
     const addToCartBtn = document.getElementById("addToCartBtn");
+    if (addToCartBtn) {
+      addToCartBtn.addEventListener("click", function () {
+        const pathParts = window.location.pathname.split("/");
+        const productId = pathParts[pathParts.length - 1];
+        const quantity = parseInt(document.getElementById("quantity").value);
 
-    // Inside your addToCartBtn event listener
-if (addToCartBtn) {
-  addToCartBtn.addEventListener("click", function () {
-    const pathParts = window.location.pathname.split("/");
-    const productId = pathParts[pathParts.length - 1];
-    const quantity = parseInt(document.getElementById("quantity").value);
-
-    if (!selectedSize) {
-      Swal.fire({
-        title: "Size Not Selected",
-        text: "Please choose a size before adding the product to your cart.",
-        icon: "info",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-      return;
-    }
-
-    const stockForSelectedSize = getStockForSize(selectedSize);
-    if (stockForSelectedSize === 0) {
-      Swal.fire({
-        title: "Out of Stock",
-        text: "Sorry, this product is currently out of stock in size " + selectedSize,
-        icon: "error",
-        confirmButtonText: "OK",
-      });
-      return;
-    }
-
-    if (quantity > stockForSelectedSize) {
-      Swal.fire({
-        title: "Insufficient Stock",
-        text: "Sorry, we only have " + stockForSelectedSize + " items available in size " + selectedSize,
-        icon: "warning",
-        confirmButtonText: "OK",
-      });
-      return;
-    }
-
-    if (quantity > 5) {
-      Swal.fire({
-        title: "Maximum Quantity Exceeded",
-        text: "The maximum quantity is 5 items per product",
-        icon: "warning",
-        confirmButtonText: "OK",
-      });
-      return;
-    }
-
-    fetch("/addtocart", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        productId: productId,
-        quantity: quantity,
-        size: selectedSize,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
+        if (!selectedSize) {
           Swal.fire({
-            title: "Success!",
-            text: "Product added to cart successfully",
-            icon: "success",
-            showConfirmButton: true,
+            title: "Size Not Selected",
+            text: "Please choose a size before adding the product to your cart.",
+            icon: "info",
+            showConfirmButton: false,
             timer: 1500,
-          }).then(() => {
-            location.reload();
           });
-        } else {
-          if (data.login_required) {
-            Swal.fire({
-              title: "Login Required",
-              text: "Please login to add items to your cart",
-              icon: "warning",
-              showCancelButton: true,
-              confirmButtonText: "Login",
-              cancelButtonText: "Cancel"
-            }).then((result) => {
-              if (result.isConfirmed) {
-                // Redirect to login page with return URL
-                window.location.href = "/login?redirect=" + 
-                  encodeURIComponent(window.location.href);
-              }
-            });
-          } else {
-            Swal.fire({
-              title: "Error",
-              text: data.message || "There was an error adding to cart",
-              icon: "error",
-              confirmButtonText: "OK",
-            });
-          }
+          return;
         }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        Swal.fire({
-          title: "Error",
-          text: "There was an error adding to cart",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      });
-  });
-}
-  });
 
-  // Add this to your script.js file or inline in your home page
-  document.addEventListener("DOMContentLoaded", function () {
-    // Initialize wishlist buttons
-    initWishlistButtons();
-  });
+        const stockForSelectedSize = getStockForSize(selectedSize);
+        if (stockForSelectedSize === 0) {
+          Swal.fire({
+            title: "Out of Stock",
+            text: `Sorry, this product is currently out of stock in size ${selectedSize}`,
+            icon: "error",
+            confirmButtonText: "OK",
+          });
+          return;
+        }
 
-  function initWishlistButtons() {
-    // Select all wishlist buttons
-    const wishlistBtns = document.querySelectorAll(".wishlist-btn");
+        if (quantity > stockForSelectedSize) {
+          Swal.fire({
+            title: "Insufficient Stock",
+            text: `Sorry, we only have ${stockForSelectedSize} items available in size ${selectedSize}`,
+            icon: "warning",
+            confirmButtonText: "OK",
+          });
+          return;
+        }
 
-    wishlistBtns.forEach((btn) => {
-      btn.addEventListener("click", function (e) {
-        e.preventDefault();
+        if (quantity > 5) {
+          Swal.fire({
+            title: "Maximum Quantity Exceeded",
+            text: "The maximum quantity is 5 items per product",
+            icon: "warning",
+            confirmButtonText: "OK",
+          });
+          return;
+        }
 
-        const productId = this.getAttribute("data-product-id");
-        const size = this.getAttribute("data-size");
-        const icon = this.querySelector("i");
-
-        // Show loading state
-        icon.className = "bx bx-loader bx-spin";
-
-        // Send AJAX request using Fetch API
-        fetch("/addtowishlist", {
+        fetch("/addtocart", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            productId: productId,
-            size: size,
-          }),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ productId, quantity, size: selectedSize }),
         })
           .then((response) => response.json())
           .then((data) => {
-            // Remove loading state
-            icon.classList.remove("bx-loader", "bx-spin");
-
             if (data.success) {
-              // Update icon based on whether item is in wishlist
-              if (data.in_wishlist) {
-                icon.className = "bx bxs-heart"; // Filled heart
-                showNotification("success", "Product added to wishlist");
-              } else {
-                icon.className = "bx bx-heart"; // Empty heart
-                showNotification("success", "Product removed from wishlist");
-              }
-
-              // Update wishlist counter in header if exists
-              const wishlistCount = document.querySelector(".wishlist-count");
-              if (wishlistCount) {
-                wishlistCount.textContent = data.wishlist_count;
-              }
+              Swal.fire({
+                title: "Success!",
+                text: "Product added to cart successfully",
+                icon: "success",
+                showConfirmButton: true,
+                timer: 1500,
+              }).then(() => location.reload());
             } else {
-              // If error, revert to original icon
-              icon.className = "bx bx-heart";
-
-              // If login required, redirect to login page
               if (data.login_required) {
-                window.location.href =
-                  "/login?redirect=" + encodeURIComponent(window.location.href);
-                return;
+                Swal.fire({
+                  title: "Login Required",
+                  text: "Please login to add items to your cart",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonText: "Login",
+                  cancelButtonText: "Cancel",
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    window.location.href = `/login?redirect=${encodeURIComponent(window.location.href)}`;
+                  }
+                });
+              } else {
+                Swal.fire({
+                  title: "Error",
+                  text: data.message || "There was an error adding to cart",
+                  icon: "error",
+                  confirmButtonText: "OK",
+                });
               }
-
-              // Show error message
-              showNotification(
-                "error",
-                data.message || "Error updating wishlist"
-              );
             }
           })
           .catch((error) => {
-            // Remove loading state and restore original icon
-            icon.className = "bx bx-heart";
-
-            // Show error notification
-            showNotification(
-              "error",
-              "Failed to update wishlist. Please try again."
-            );
-            console.error("Fetch error:", error);
+            console.error("Error:", error);
+            Swal.fire({
+              title: "Error",
+              text: "There was an error adding to cart",
+              icon: "error",
+              confirmButtonText: "OK",
+            });
           });
       });
-    });
-  }
+    }
 
-  // Helper function to show notifications
-  function showNotification(type, message) {
-    const notification = document.createElement("div");
-    notification.className = "notification " + type;
-    notification.innerHTML = `
+    // Wishlist functionality
+    initWishlistButtons();
+    function initWishlistButtons() {
+      const wishlistBtns = document.querySelectorAll(".wishlist-btn");
+      wishlistBtns.forEach((btn) => {
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          const productId = this.getAttribute("data-product-id");
+          const size = this.getAttribute("data-size");
+          const icon = this.querySelector("i");
+
+          icon.className = "bx bx-loader bx-spin";
+
+          fetch("/addtowishlist", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ productId, size }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              icon.classList.remove("bx-loader", "bx-spin");
+              if (data.success) {
+                icon.className = data.in_wishlist ? "bx bxs-heart" : "bx bx-heart";
+                showNotification("success", data.in_wishlist
+                  ? "Product added to wishlist"
+                  : "Product removed from wishlist");
+                const wishlistCount = document.querySelector(".wishlist-count");
+                if (wishlistCount) wishlistCount.textContent = data.wishlist_count;
+              } else {
+                icon.className = "bx bx-heart";
+                if (data.login_required) {
+                  window.location.href = `/login?redirect=${encodeURIComponent(window.location.href)}`;
+                  return;
+                }
+                showNotification("error", data.message || "Error updating wishlist");
+              }
+            })
+            .catch((error) => {
+              icon.className = "bx bx-heart";
+              showNotification("error", "Failed to update wishlist. Please try again.");
+              console.error("Fetch error:", error);
+            });
+        });
+      });
+    }
+
+    // Review functionality
+    const starRating = document.getElementById("starRating");
+    let selectedRating = 0;
+
+    if (starRating) {
+      starRating.addEventListener("click", (e) => {
+        if (e.target.tagName === "I") {
+          selectedRating = parseInt(e.target.getAttribute("data-value"));
+          const stars = starRating.querySelectorAll("i");
+          stars.forEach((star, index) => {
+            star.className = index < selectedRating ? "bx bxs-star active" : "bx bx-star";
+          });
+        }
+      });
+
+      starRating.addEventListener("mouseover", (e) => {
+        if (e.target.tagName === "I") {
+          const hoverValue = parseInt(e.target.getAttribute("data-value"));
+          const stars = starRating.querySelectorAll("i");
+          stars.forEach((star, index) => {
+            star.className = index < hoverValue ? "bx bxs-star active" : "bx bx-star";
+          });
+        }
+      });
+
+      starRating.addEventListener("mouseout", () => {
+        const stars = starRating.querySelectorAll("i");
+        stars.forEach((star, index) => {
+          star.className = index < selectedRating ? "bx bxs-star active" : "bx bx-star";
+        });
+      });
+    }
+
+    const submitReviewBtn = document.getElementById("submitReviewBtn");
+    if (submitReviewBtn) {
+      submitReviewBtn.addEventListener("click", () => {
+        const comment = document.getElementById("reviewComment").value.trim();
+        const pathParts = window.location.pathname.split("/");
+        const productId = pathParts[pathParts.length - 1];
+
+        if (!selectedRating) {
+          Swal.fire({
+            title: "Rating Required",
+            text: "Please select a star rating",
+            icon: "warning",
+            confirmButtonText: "OK",
+          });
+          return;
+        }
+
+        if (!comment) {
+          Swal.fire({
+            title: "Comment Required",
+            text: "Please write a review comment",
+            icon: "warning",
+            confirmButtonText: "OK",
+          });
+          return;
+        }
+
+        fetch("/addreview", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ productId, rating: selectedRating, comment }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              Swal.fire({
+                title: "Success!",
+                text: "Review submitted successfully",
+                icon: "success",
+                showConfirmButton: true,
+                timer: 1500,
+              }).then(() => {
+                location.reload();
+              });
+            } else {
+              if (data.login_required) {
+                Swal.fire({
+                  title: "Login Required",
+                  text: "Please login to submit a review",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonText: "Login",
+                  cancelButtonText: "Cancel",
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    window.location.href = `/login?redirect=${encodeURIComponent(window.location.href)}`;
+                  }
+                });
+              } else {
+                Swal.fire({
+                  title: "Error",
+                  text: data.message || "There was an error submitting your review",
+                  icon: "error",
+                  confirmButtonText: "OK",
+                });
+              }
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            Swal.fire({
+              title: "Error",
+              text: "There was an error submitting your review",
+              icon: "error",
+              confirmButtonText: "OK",
+            });
+          });
+      });
+    }
+
+    // Notification helper
+    function showNotification(type, message) {
+      const notification = document.createElement("div");
+      notification.className = `notification ${type}`;
+      notification.innerHTML = `
         <span>${message}</span>
-        <button class="close-btn">&times;</button>
-    `;
-
-    document.body.appendChild(notification);
-
-    setTimeout(function () {
-      notification.style.opacity = "0";
-      setTimeout(() => notification.remove(), 300);
-    }, 3000);
-
-    notification
-      .querySelector(".close-btn")
-      .addEventListener("click", function () {
+        <button class="close-btn">×</button>
+      `;
+      document.body.appendChild(notification);
+      setTimeout(() => {
+        notification.style.opacity = "0";
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+      notification.querySelector(".close-btn").addEventListener("click", () => {
         notification.style.opacity = "0";
         setTimeout(() => notification.remove(), 300);
       });
-  }
+    }
+  });
 </script>
 
 <%- include('../partials/user/footer') %>

@@ -194,16 +194,13 @@
         <div class="col-lg-4 col-md-4 col-sm-4">
           <div class="single-categories-box">
             <% if (category.name=="MEN") { %>
-              <img src="user/assets/img/categories/img10.jpg" alt="image" />
-            <% }%>
-            <% if (category.name=="KID") { %>
-              <img src="user/assets/img/categories/img2.jpg" alt="image" />
-            <% }%>
-            <% if (category.name=="WOMAN") { %>
-              <img src="user/assets/img/categories/img3.jpg" alt="image" />
-            <% }%>
-            <% if (category.name=="BABY") { %>
-              <img src="user/assets/img/categories/img4.jpg" alt="image" />
+            <img src="user/assets/img/categories/img10.jpg" alt="image" />
+            <% }%> <% if (category.name=="KID") { %>
+            <img src="user/assets/img/categories/img2.jpg" alt="image" />
+            <% }%> <% if (category.name=="WOMAN") { %>
+            <img src="user/assets/img/categories/img3.jpg" alt="image" />
+            <% }%> <% if (category.name=="BABY") { %>
+            <img src="user/assets/img/categories/img4.jpg" alt="image" />
             <% }%>
             <div class="content text-white">
               <span>Dress for </span>
@@ -306,11 +303,11 @@
                 <a href="/shopsingle/<%= product._id %>"><%= product.name %></a>
               </h3>
               <div class="star-rating">
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
+                <% for(let i = 1; i <= 5; i++) { %>
+                <i
+                  class="bx <%= i <= Math.round(product.averageRating || 0) ? 'bxs-star' : 'bx-star' %>"
+                ></i>
+                <% } %>
               </div>
               <div class="price">
                 <% if (product.discountedPrice) { %>

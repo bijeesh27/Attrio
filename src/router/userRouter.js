@@ -92,6 +92,7 @@ router.post('/update-payment-status',logged,orderController.updatePayment)
 router.post('/retry-payment',logged,orderController.retryPayment)
 router.post('/wallet/verify-payment',logged,walletController.verifyPayment)
 router.post('/wallet/create-order',logged,walletController.createOrder)
+router.post('/addreview',logged, productController.addReview);
 
 router.get("/order-failure", logged, orderController.loadOrderFailure);
 
