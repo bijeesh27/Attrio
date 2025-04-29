@@ -569,10 +569,10 @@
                         
                         <td class="action-col">
                           <div class="action-buttons">
-                            <button type="button" class="add-to-cart-btn" onclick="addToCart('<%= item.productId._id %>') " <%= item.productId.totalstock <= 0 ? 'disabled' : '' %>>
+                            <button type="button" class="add-to-cart-btn" onclick="addToCart('<%= item?.productId?._id %>') " <%= item.productId?.totalstock <= 0 ? 'disabled' : '' %>>
                               <i class="bx bx-cart-add"></i>
                             </button>
-                            <button type="button" class="remove-btn" onclick="removeFromWishlist('<%= item.productId._id %>')">
+                            <button type="button" class="remove-btn" onclick="removeFromWishlist('<%= item.productId?._id %>')">
                               <i class="bx bx-trash"></i>
                             </button>
                           </div>

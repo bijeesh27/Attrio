@@ -148,7 +148,7 @@
                                                     <tr>
                                                         <td><%= order.orderNumber %></td>
                                                         <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
-                                                        <td><%= order.userId ? order.userId.name : 'Guest' %></td>
+                                                        <td><%= order.userId ? order.userId.username : 'Guest' %></td>
                                                         <td>₹<%= order.orderAmount.toFixed(2) %></td>
                                                         <td><%= order.couponCode || 'N/A' %></td>
                                                         <td>₹<%= (order.couponDiscount || 0).toFixed(2) %></td>

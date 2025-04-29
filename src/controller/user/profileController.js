@@ -232,22 +232,28 @@ const loadChangeNewPassword = async (req, res) => {
     console.log(error);
   }
 };
+
 const loadWallet = async (req, res) => {
   try {
+    if (!req.session.userId) {
+      return res.status(401).redirect('/login');
+    }
+
     const user = await User.findOne({ _id: req.session.userId });
-    const wallet = await Wallet.findOne({ userId: req.session.userId });
-    
-    
+    const wallet = await Wallet.findOne({ userId: req.session.userId })
+      .populate('transaction.orderId'); 
+
     if (wallet && wallet.transaction) {
       wallet.transaction.sort((a, b) => b.date - a.date);
     }
-    
+
     return res.render("wallet", { 
       user, 
-      wallet 
+      wallet,
+      TEST_KEY_ID: process.env.TEST_KEY_ID 
     });
   } catch (error) {
-    console.error(error);
+    console.error('Error loading wallet:', error);
     res.status(500).send("An error occurred while loading wallet");
   }
 };

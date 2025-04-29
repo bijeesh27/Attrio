@@ -3,7 +3,17 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const mongoose = require("mongoose");
 const User = require("../models/userSchema");
 const env=require('dotenv').config()
-
+function generateReferralCode(length = 6) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let referralCode = '';
+  
+  for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      referralCode += characters[randomIndex];
+  }
+  
+  return referralCode;
+}
 passport.use(
   new GoogleStrategy(
     {
@@ -33,11 +43,13 @@ passport.use(
           await user.save();
           return done(null, user);
         } else {
+          const referralCode=generateReferralCode()
           // Create a completely new user
           user = new User({
             googleId: profile.id,
             username: profile.displayName,
             email: email,
+            referralCode
           });
           await user.save();
           return done(null, user);

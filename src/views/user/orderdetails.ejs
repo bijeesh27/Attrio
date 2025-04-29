@@ -421,7 +421,31 @@
       opacity: 0.6;
     }
 
-    /* Return Reason Modal */
+    /* Cancel Button Styles */
+    .cancel-button {
+      padding: 6px 12px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 14px;
+      display: inline-block;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .cancel-button-active {
+      background-color: #dc3545;
+      color: white;
+      cursor: pointer;
+    }
+
+    .cancel-button-disabled {
+      background-color: #e9ecef;
+      color: #6c757d;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    /* Return Modal */
     .return-modal {
       display: none;
       position: fixed;
@@ -568,17 +592,15 @@
         margin: 20% auto;
       }
     }
+    
   </style>
 
-
-<div class="dashboard-container">
+  <div class="dashboard-container">
     <!-- Account Menu -->
     <div class="account-tabs-menu">
       <ul>
         <li>
-          <a href="/profile" 
-            ><i class="bx bxs-user"></i>Profile</a
-          >
+          <a href="/profile"><i class="bx bxs-user"></i>Profile</a>
         </li>
         <li>
           <a href="/orders" class="active"><i class="bx bxs-shopping-bag"></i> Orders</a>
@@ -587,7 +609,7 @@
           <a href="/address"><i class="bx bxs-map"></i> Addresses</a>
         </li>
         <li>
-          <a href="/wallet"><i class="bx bxs-wallet"></i>wallet</a>
+          <a href="/wallet"><i class="bx bxs-wallet"></i>Wallet</a>
         </li>
         <li>
           <a href="/changenewpassword"><i class="bx bx-lock-alt"></i>Change Password</a>
@@ -683,7 +705,7 @@
               </div>
             </div>
             
-            <!-- Order Processing - Check if any item is being processed -->
+            <!-- Order Processing -->
             <% 
               const isProcessing = order.orderedItem.some(item => 
                 item.productStatus === 'processing' || 
@@ -700,7 +722,7 @@
               </div>
             </div>
             
-            <!-- Order Shipped - Check if any item has been shipped -->
+            <!-- Order Shipped -->
             <% 
               const isShipped = order.shippingDate || order.orderedItem.some(item => 
                 item.productStatus === 'shipped' || 
@@ -716,7 +738,7 @@
               </div>
             </div>
             
-            <!-- Order Delivered - Check if all items are delivered -->
+            <!-- Order Delivered -->
             <% 
               const isDelivered = order.orderedItem.every(item => item.productStatus === 'delivered');
             %>
@@ -741,6 +763,7 @@
                   <th>Quantity</th>
                   <th>Status</th>
                   <th>Return</th>
+                  <th>Cancel</th>
                   <th>Total</th>
                 </tr>
               </thead>
@@ -750,7 +773,7 @@
                     <td data-label="Product">
                       <div class="product-info">
                         <% if(item.productId && item.productId.image) { %>
-                            <img src="/<%= item.productId.image[0] %>" alt="Product Image" class="product-image">
+                          <img src="/<%= item.productId.image[0] %>" alt="Product Image" class="product-image">
                         <% } else { %>
                           <div class="product-image" style="background-color: #f8f9fa; display: flex; align-items: center; justify-content: center;">
                             <i class="bx bx-package" style="font-size: 24px; color: #999;"></i>
@@ -802,6 +825,15 @@
                         <span class="return-button return-button-disabled">Return Order</span>
                       <% } %>
                     </td>
+                    <td data-label="Cancel">
+                      <% if(item.productStatus.toLowerCase() !== 'delivered' && item.productStatus.toLowerCase() !== 'cancelled') { %>
+                        <button class="cancel-button cancel-button-active" onclick="confirmCancelItem('<%= order._id %>', '<%= item.productId._id %>', '<%= index %>')">
+                          Cancel Item
+                        </button>
+                      <% } else { %>
+                        <span class="cancel-button cancel-button-disabled">Cancel Item</span>
+                      <% } %>
+                    </td>
                     <td data-label="Total">Rs.<%= item.totalProductPrice.toFixed(2) %></td>
                   </tr>
                 <% }); %>
@@ -812,7 +844,6 @@
           <!-- Order Totals -->
           <div class="order-totals">
             <table class="totals-table">
-              <!-- Calculate subtotal -->
               <% 
                 const subtotal = order.orderedItem.reduce((total, item) => {
                   return total + item.totalProductPrice;
@@ -837,16 +868,16 @@
 
           <!-- Order Actions -->
           <div class="order-actions">
-            <a href="/orders" class="btn btn-secondary">
-                <i class="bx bx-arrow-back"></i> Back to Orders
+            <a href="/orders" class="back-button">
+              <i class="bx bx-arrow-back"></i> Back to Orders
             </a>
-            <% if (order.orderStatus==='Pending') { %>
+            <% if (order.orderStatus === 'Pending') { %>
               <a class="btn btn-danger" href="/cancelorder/<%= order._id %>">
                 Cancel Order
-            </a>
+              </a>
             <% } %>
-            <a href="/invoice/<%= order._id %>" class="btn btn-primary">
-                View Invoice
+            <a href="/invoice/<%= order._id %>" class="tracking-button">
+              View Invoice
             </a>
           </div>
         </div>
@@ -859,7 +890,7 @@
     <div class="return-modal-content">
       <div class="return-modal-header">
         <h3>Return Request</h3>
-        <span class="close-modal" onclick="closeReturnModal()">&times;</span>
+        <span class="close-modal" onclick="closeReturnModal()">×</span>
       </div>
       <form id="returnForm" class="return-form" method="POST">
         <input type="hidden" id="orderIdInput" name="orderId">
@@ -931,5 +962,24 @@
       // Submit form
       this.submit();
     });
+
+    
+function confirmCancelItem(orderId, productId, itemIndex) {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "Do you really want to cancel this item?",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',  // Blue
+    cancelButtonColor: '#d33',      // Red
+    confirmButtonText: 'Yes, cancel it!',
+    cancelButtonText: 'No, keep it'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      window.location.href = `/cancelItem/${orderId}/${productId}`;
+    }
+  });
+}
+
   </script>
 </body>

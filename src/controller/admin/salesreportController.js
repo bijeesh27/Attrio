@@ -39,7 +39,9 @@ const getSalesReport = async (req, res) => {
     const orders = await Order.find({
       createdAt: { $gte: startDate, $lte: endDate },
       orderStatus: { $nin: ["Cancelled", "Returned"] },
-    }).populate("userId");
+    })
+    .populate("userId", "username")
+    .sort({ createdAt: -1 });
 
     const overallStats = {
       salesCount: orders.length,
@@ -209,7 +211,7 @@ const downloadPDF = async (req, res) => {
       const rowData = [
         order.orderNumber,
         moment(order.createdAt).format("DD-MM-YYYY"),
-        order.userId ? order.userId.name : "Guest",
+        order.userId ? order.userId.username : "Guest",
         order.orderAmount.toFixed(2),
         (order.couponDiscount || 0).toFixed(2),
         finalAmount.toFixed(2),
@@ -416,7 +418,7 @@ const downloadExcel = async (req, res) => {
       worksheet.addRow({
         orderNumber: order.orderNumber,
         date: moment(order.createdAt).format("DD-MM-YYYY"),
-        customer: order.userId ? order.userId.name : "Guest",
+        customer: order.userId ? order.userId.userCname : "Guest",
         totalAmount: order.orderAmount.toFixed(2),
         couponCode: order.couponCode || "N/A",
         couponDiscount: (order.couponDiscount || 0).toFixed(2),

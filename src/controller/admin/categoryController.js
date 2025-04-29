@@ -108,17 +108,16 @@ const editCategory = async (req, res) => {
     const { name, description } = req.body;
     const Cname=name.toUpperCase()
 
-    const existingCategory = await Category.findOne({ _id: categoryId });
-    console.log("existingCategory", existingCategory);
-    if (!existingCategory) {
-      console.log("this category not existing");
-      res.redirect("/admin/editCategory");
+    const existingCategory = await Category.findOne({ name: Cname });
+    if (existingCategory) {
+      req.flash("error_msg", "The Category Already Exist");
+      return res.redirect("/admin/add-category");
     }
     console.log("category:", categoryId);
 
     await Category.updateOne(
       { _id: categoryId },
-      { $set: { name: name, description: description } }
+      { $set: { name: Cname, description: description } }
     );
     res.redirect("/admin/categories");
   } catch (error) {

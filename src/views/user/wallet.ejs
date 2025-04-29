@@ -396,7 +396,7 @@
                 <i class="bx bx-history"></i>
                 Transaction History
               </h3>
-              
+              <a href="/wallet/transactions" class="view-all-link">View All</a>
             </div>
             
             <div class="transaction-list">
@@ -406,9 +406,29 @@
                   let transactionClass = 'transaction-negative';
                   let transactionIcon = 'bx-arrow-from-right';
                   
-                  if (transaction.transactionsMethod === 'Refund' || transaction.transactionsMethod === 'Credit'||transaction.transactionsMethod === 'Referral'||transaction.transactionsMethod === 'Razorpay') {
+                  if (transaction.transactionsMethod === 'Refund' || transaction.transactionsMethod === 'Credit' || transaction.transactionsMethod === 'Referral' || transaction.transactionsMethod === 'Razorpay') {
                     transactionClass = 'transaction-positive';
                     transactionIcon = 'bx-arrow-from-left';
+                  }
+            
+                  // Map transaction method to a user-friendly description
+                  let transactionDescription = transaction.transactionsMethod;
+                  switch (transaction.transactionsMethod) {
+                    case 'Payment':
+                      transactionDescription = 'Product Purchase';
+                      break;
+                    case 'Refund':
+                      transactionDescription = 'Refund ';
+                      break;
+                    case 'Razorpay':
+                      transactionDescription = 'Added via Razorpay';
+                      break;
+                    case 'Referral':
+                      transactionDescription = 'Referral Bonus';
+                      break;
+                    case 'Credit':
+                      transactionDescription = 'Manual Credit';
+                      break;
                   }
                 %>
                   <div class="transaction-item <%= transactionClass %>">
@@ -418,9 +438,12 @@
                     <div class="transaction-content">
                       <div class="transaction-details">
                         <span class="transaction-type">
-                          <%= transaction.transactionsMethod === 'Payment' ? 'Product Purchase' : 
-                              transaction.transactionsMethod === 'Refund' ? 'Refund' : 
-                              transaction.transactionsMethod %>
+                          <%= transactionDescription %>
+                          <% if (transaction.transactionsMethod === 'Payment' || transaction.transactionsMethod === 'Refund') { %>
+                            <% if (transaction.orderId && transaction.orderId.orderNumber) { %>
+                              (<a href="/orderdetails/<%= transaction.orderId._id %>">OrderID #<%= transaction.orderId.orderNumber %></a>)
+                            <% } %>
+                          <% } %>
                         </span>
                         <span class="transaction-date">
                           <%= new Date(transaction.date).toLocaleDateString('en-US', { 
@@ -431,7 +454,7 @@
                         </span>
                       </div>
                       <div class="transaction-amount <%= transactionClass %>">
-                        <%= transaction.transactionsMethod === 'Refund' || transaction.transactionsMethod === 'Credit'||transaction.transactionsMethod === 'Referral' ||transaction.transactionsMethod === 'Razorpay'? '+' : '-' %>₹<%= transaction.amount.toFixed(2) %>
+                        <%= transaction.transactionsMethod === 'Refund' || transaction.transactionsMethod === 'Credit' || transaction.transactionsMethod === 'Referral' || transaction.transactionsMethod === 'Razorpay' ? '+' : '-' %>₹<%= transaction.amount.toFixed(2) %>
                       </div>
                     </div>
                   </div>

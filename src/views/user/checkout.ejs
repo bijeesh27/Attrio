@@ -327,7 +327,7 @@
   <div class="summary-row">
     <span class="label">Shipping</span>
     <span class="value">
-      <% if (cart && cart.cartTotal && cart.cartTotal > 10000) { %>
+      <% if (cart && cart.cartTotal && cart.cartTotal > 1000) { %>
         <span class="free-shipping">Free</span>
       <% } else { %>
         Rs.100
@@ -350,7 +350,7 @@
       <% 
       let finalTotal = 0;
       if (cart && cart.cartTotal) {
-        finalTotal = cart.cartTotal > 10000 ? cart.cartTotal : cart.cartTotal + 100;
+        finalTotal = cart.cartTotal > 10000 ? cart.cartTotal : cart.cartTotal ;
         
         // Apply discount if coupon is applied
         if (appliedCoupon) {
@@ -1140,6 +1140,8 @@ document.addEventListener('DOMContentLoaded', function() {
       `Current Balance: ₹${walletBalance.toFixed(2)} <span class="text-success">(Sufficient funds)</span>`;
   }
 });
+
+
 
 function addAddress(){
   window.location.href="/addaddress"

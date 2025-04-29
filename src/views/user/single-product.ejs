@@ -407,7 +407,7 @@
               <span class="tooltip-label">Add to Wishlist</span>
             </button>
           </div>
-          <div class="buy-checkbox-btn">
+          <!-- <div class="buy-checkbox-btn">
             <div class="item">
               <input class="inp-cbx" id="cbx" type="checkbox" />
               <label class="cbx" for="cbx">
@@ -422,7 +422,7 @@
             <div class="item">
               <a href="#" class="default-btn">Buy it now!</a>
             </div>
-          </div>
+          </div> -->
           <div class="products-details-accordion">
             <ul class="accordion">
               <li class="accordion-item">
@@ -500,42 +500,7 @@
                   alt="image"
                 />
               </a>
-              <div class="products-button">
-                <ul>
-                  <li>
-                    <div class="wishlist-btn">
-                      <a
-                        href="#"
-                        data-bs-toggle="modal"
-                        data-bs-target="#shoppingWishlistModal"
-                      >
-                        <i class="bx bx-heart"></i>
-                        <span class="tooltip-label">Add to Wishlist</span>
-                      </a>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="compare-btn">
-                      <a href="compare.html">
-                        <i class="bx bx-refresh"></i>
-                        <span class="tooltip-label">Compare</span>
-                      </a>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="quick-view-btn">
-                      <a
-                        href="#"
-                        data-bs-toggle="modal"
-                        data-bs-target="#productsQuickView"
-                      >
-                        <i class="bx bx-search-alt"></i>
-                        <span class="tooltip-label">Quick View</span>
-                      </a>
-                    </div>
-                  </li>
-                </ul>
-              </div>
+              
             </div>
             <div class="products-content">
               <h3>
@@ -545,14 +510,14 @@
                 <span class="old-price">Rs.3000</span>
                 <span class="new-price">Rs.<%= product.price %></span>
               </div>
-              <div class="star-rating">
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
-                <i class="bx bxs-star"></i>
+              <div class="products-review">
+                <div class="rating">
+                  <% for(let i = 1; i <= 5; i++) { %>
+                    <i class="bx <%= i <= Math.round(product.averageRating) ? 'bxs-star' : 'bx-star' %> rating-stars"></i>
+                  <% } %>
+                </div>
               </div>
-              <a href="cart.html" class="add-to-cart">Add to Cart</a>
+              
             </div>
           </div>
         <% }) %>

@@ -1,0 +1,482 @@
+<%- include('../partials/user/header') %>
+
+<body>
+  <link rel="stylesheet" href="/user/assets/css/profilestyle.css" />
+  <style>
+    :root {
+      --primary-color: #f53f85;
+      --secondary-color: #f8f9fa;
+      --accent-color: #4a6fdc;
+      --text-color: #333;
+      --border-color: #ddd;
+      --success-color: #28a745;
+    }
+
+    .transactions-container {
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .transactions-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .transactions-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #333;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .back-link {
+      color: #007bff;
+      text-decoration: none;
+      font-size: 16px;
+      transition: color 0.3s ease;
+    }
+
+    .back-link:hover {
+      color: #0056b3;
+    }
+
+    .transaction-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .transaction-item {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+      border: 1px solid #f0f0f0;
+      background-color: #fff;
+    }
+
+    .transaction-item:hover {
+      background-color: #f8f9fa;
+    }
+
+    .transaction-icon {
+      margin-right: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #f0f0f0;
+    }
+
+    .transaction-icon i {
+      font-size: 20px;
+      color: #666;
+    }
+
+    .transaction-content {
+      flex-grow: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .transaction-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .transaction-type {
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .transaction-date {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .transaction-amount {
+      font-weight: 600;
+    }
+
+    .transaction-positive {
+      color: #28a745;
+    }
+
+    .transaction-negative {
+      color: #dc3545;
+    }
+
+    .no-transactions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 50px;
+      background-color: #fff;
+      border-radius: 12px;
+      color: #666;
+      text-align: center;
+      border: 1px solid #f0f0f0;
+    }
+
+    .no-transactions i {
+      font-size: 48px;
+      margin-bottom: 15px;
+      color: #007bff;
+    }
+
+    /* Pagination Styles */
+    .pagination-container {
+      padding: 40px 0;
+      font-family: "Poppins", sans-serif;
+    }
+
+    .pagination-area {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .pagination-numbers {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .pagination-number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      position: relative;
+      border: 1px solid #f0f0f0;
+      background-color: #fff;
+    }
+
+    .pagination-number:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(245, 63, 133, 0.15);
+    }
+
+    .pagination-number.active {
+      background: linear-gradient(135deg, var(--primary-color) 0%, #ff7eb3 100%);
+      color: white;
+      border: none;
+      box-shadow: 0 4px 15px rgba(245, 63, 133, 0.3);
+    }
+
+    .pagination-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      color: #333;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      background-color: #fff;
+      border: 1px solid #f0f0f0;
+      margin: 0 12px;
+    }
+
+    .pagination-arrow:hover {
+      background-color: var(--primary-color);
+      color: white;
+      box-shadow: 0 4px 12px rgba(245, 63, 133, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .pagination-arrow i {
+      font-size: 18px;
+    }
+
+    .pagination-arrow.disabled {
+      opacity: 0.4;
+      pointer-events: none;
+      background-color: #f9f9f9;
+    }
+
+    .pagination-ellipsis {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      color: #888;
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+
+    .pagination-info {
+      text-align: center;
+      margin-top: 15px;
+      color: #666;
+      font-size: 14px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .transactions-container {
+        padding: 15px;
+      }
+
+      .transactions-title {
+        font-size: 20px;
+      }
+
+      .transaction-item {
+        padding: 10px;
+      }
+
+      .transaction-icon {
+        width: 35px;
+        height: 35px;
+      }
+
+      .transaction-icon i {
+        font-size: 18px;
+      }
+
+      .pagination-number {
+        width: 36px;
+        height: 36px;
+        font-size: 13px;
+      }
+
+      .pagination-arrow {
+        width: 36px;
+        height: 36px;
+        margin: 0 8px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .pagination-number {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+      }
+
+      .pagination-arrow {
+        width: 32px;
+        height: 32px;
+        margin: 0 6px;
+      }
+
+      .pagination-ellipsis {
+        width: 24px;
+      }
+    }
+  </style>
+
+  <div class="dashboard-container">
+    <!-- Account Menu -->
+    <div class="account-tabs-menu">
+      <ul>
+        <li>
+          <a href="/profile">
+            <i class="bx bxs-user"></i>Profile
+          </a>
+        </li>
+        <li>
+          <a href="/orders">
+            <i class="bx bxs-shopping-bag"></i> Orders
+          </a>
+        </li>
+        <li>
+          <a href="/address">
+            <i class="bx bxs-map"></i> Addresses
+          </a>
+        </li>
+        <li>
+          <a href="/wallet" class="active">
+            <i class="bx bxs-wallet"></i> Wallet
+          </a>
+        </li>
+        <li>
+          <a href="/changenewpassword">
+            <i class="bx bx-lock-alt"></i> Change Password
+          </a>
+        </li>
+      </ul>
+      <br /><br /><br />
+      <button onclick="logout()" class="logout-button">
+        <i class="bx bx-log-out"></i> Logout
+      </button>
+    </div>
+
+    <!-- Transactions Content -->
+    <div class="dashboard-content">
+      <div class="transactions-container">
+        <div class="transactions-header">
+          <h3 class="transactions-title">
+            <i class="bx bx-history"></i>
+            All Transactions
+          </h3>
+          <a href="/wallet" class="back-link">
+            <i class="bx bx-arrow-back"></i> Back to Wallet
+          </a>
+        </div>
+
+        <div class="transaction-list">
+          <% if (wallet && wallet.transaction && wallet.transaction.length > 0) { %>
+            <% wallet.transaction.forEach(transaction => { 
+              // Determine transaction type and style
+              let transactionClass = 'transaction-negative';
+              let transactionIcon = 'bx-arrow-from-right';
+              
+              if (transaction.transactionsMethod === 'Refund' || transaction.transactionsMethod === 'Credit' || transaction.transactionsMethod === 'Referral' || transaction.transactionsMethod === 'Razorpay') {
+                transactionClass = 'transaction-positive';
+                transactionIcon = 'bx-arrow-from-left';
+              }
+        
+              // Map transaction method to a user-friendly description
+              let transactionDescription = transaction.transactionsMethod;
+              switch (transaction.transactionsMethod) {
+                case 'Payment':
+                  transactionDescription = 'Product Purchase';
+                  break;
+                case 'Refund':
+                  transactionDescription = 'Refund';
+                  break;
+                case 'Razorpay':
+                  transactionDescription = 'Added via Razorpay';
+                  break;
+                case 'Referral':
+                  transactionDescription = 'Referral Bonus';
+                  break;
+                case 'Credit':
+                  transactionDescription = 'Manual Credit';
+                  break;
+              }
+            %>
+              <div class="transaction-item <%= transactionClass %>">
+                <div class="transaction-icon">
+                  <i class="bx <%= transactionIcon %>"></i>
+                </div>
+                <div class="transaction-content">
+                  <div class="transaction-details">
+                    <span class="transaction-type">
+                      <%= transactionDescription %>
+                      <% if (transaction.transactionsMethod === 'Payment' || transaction.transactionsMethod === 'Refund') { %>
+                        <% if (transaction.orderId && transaction.orderId.orderNumber) { %>
+                          (<a href="/orderdetails/<%= transaction.orderId._id %>">OrderID #<%= transaction.orderId.orderNumber %></a>)
+                        <% } %>
+                      <% } %>
+                    </span>
+                    <span class="transaction-date">
+                      <%= new Date(transaction.date).toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric', 
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      }) %>
+                    </span>
+                  </div>
+                  <div class="transaction-amount <%= transactionClass %>">
+                    <%= transaction.transactionsMethod === 'Refund' || transaction.transactionsMethod === 'Credit' || transaction.transactionsMethod === 'Referral' || transaction.transactionsMethod === 'Razorpay' ? '+' : '-' %>₹<%= transaction.amount.toFixed(2) %>
+                  </div>
+                </div>
+              </div>
+            <% }); %>
+          <% } else { %>
+            <div class="no-transactions">
+              <i class="bx bx-info-circle"></i>
+              <p>No transactions found</p>
+            </div>
+          <% } %>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-area text-center">
+          <% if (totalPages > 1) { %>
+          <div class="pagination-container">
+            <div class="pagination-area">
+              <a href="?page=<%= currentPage > 1 ? currentPage - 1 : 1 %>" class="pagination-arrow prev <%= currentPage === 1 ? 'disabled' : '' %>">
+                <i class="bx bx-chevron-left"></i>
+              </a>
+
+              <div class="pagination-numbers">
+                <% const maxPagesToShow = 5; let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2)); let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1); if (endPage - startPage + 1 < maxPagesToShow) { startPage = Math.max(1, endPage - maxPagesToShow + 1); } if (startPage > 1) { %>
+                <a href="?page=1" class="pagination-number">1</a>
+                <% if (startPage > 2) { %>
+                <span class="pagination-ellipsis">...</span>
+                <% } %> 
+                <% } %> 
+                <% for(let i = startPage; i <= endPage; i++) { %> 
+                  <% if(i === currentPage) { %>
+                  <span class="pagination-number active"><%= i %></span>
+                  <% } else { %>
+                  <a href="?page=<%= i %>" class="pagination-number"><%= i %></a>
+                  <% } %> 
+                <% } %> 
+                <% if (endPage < totalPages) { %> 
+                  <% if (endPage < totalPages - 1) { %>
+                  <span class="pagination-ellipsis">...</span>
+                  <% } %>
+                  <a href="?page=<%= totalPages %>" class="pagination-number"><%= totalPages %></a>
+                <% } %>
+              </div>
+
+              <a href="?page=<%= currentPage < totalPages ? currentPage + 1 : totalPages %>" class="pagination-arrow next <%= currentPage === totalPages ? 'disabled' : '' %>">
+                <i class="bx bx-chevron-right"></i>
+              </a>
+            </div>
+
+            <div class="pagination-info">
+              Showing page <%= currentPage %> of <%= totalPages %>
+            </div>
+          </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Logout confirmation
+    function logout() {
+      Swal.fire({
+        title: `Are you sure?`,
+        text: `Do you want to continue to logout?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#000000",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Logout",
+        cancelButtonText: "Cancel",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "/logout";
+        }
+      });
+    }
+  </script>
+</body>
+
+<%- include('../partials/user/footer') %>
