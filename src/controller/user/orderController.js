@@ -136,22 +136,17 @@ const placeOrder = async (req, res) => {
     if (!cart || !cart.item.length) {
       return res.status(400).json({ success: false, error: "Cart is empty" });
     }
-
-    // Stock validation before order processing
     const stockValidationErrors = [];
     for (const item of cart.item) {
       const product = await Product.findById(item.productId._id);
-      
-      // Check if product exists
+
       if (!product) {
         stockValidationErrors.push(`Product "${item.productId.name}" is no longer available`);
         continue;
       }
-      
-      // Find the specific size in product stock
+
       const sizeStock = product.stock.find(stock => stock.size === item.size);
-      
-      // Check if size exists and has sufficient quantity
+
       if (!sizeStock) {
         stockValidationErrors.push(`Size ${item.size} for "${product.name}" is not available`);
       } else if (sizeStock.quantity < item.quantity) {
@@ -161,8 +156,7 @@ const placeOrder = async (req, res) => {
         );
       }
     }
-    
-    // Return errors if stock validation fails
+
     if (stockValidationErrors.length > 0) {
       return res.status(400).json({ 
         success: false, 
@@ -286,7 +280,7 @@ const placeOrder = async (req, res) => {
 
     delete req.session.appliedCoupon;
 
-    // Update product stock after successful order
+    
     for (let i = 0; i < orderedItem.length; i++) {
       const item = orderedItem[i];
       await Product.updateOne(
