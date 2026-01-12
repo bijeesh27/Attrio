@@ -20,6 +20,20 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const PORT = process.env.PORT;
 
 app.use(nocache());
+app.use((req, res, next) => {
+  res.setHeader(
+    "Content-Security-Policy",
+    [
+      "default-src 'self'",
+      "script-src 'self' https://vercel.live https://*.vercel.live",
+      "script-src-elem 'self' https://vercel.live https://*.vercel.live",
+      "connect-src 'self' https://vercel.live https://*.vercel.live",
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data:"
+    ].join("; ")
+  )
+  next()
+})
 
 app.set("view engine", "ejs");
 
