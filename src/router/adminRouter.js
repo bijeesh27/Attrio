@@ -64,7 +64,7 @@ router.post("/blockcoupon/:couponId", isAdmin, couponController.blockCoupon);
 // Offer Routes
 router.get("/offer", isAdmin, offerController.loadOffer);
 router.get("/offersearch", isAdmin, offerController.loadOffer);
-router.get("/add Offer", isAdmin, offerController.loadAddOffer);
+router.get("/addoffer", isAdmin, offerController.loadAddOffer);
 router.post("/addoffer", isAdmin, offerController.addOffer);
 router.get("/editoffer/:offerId", isAdmin, offerController.loadEditOffer);
 router.post("/updateoffer/:offerId", isAdmin, offerController.editOffer);

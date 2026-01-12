@@ -36,12 +36,17 @@ const getSalesReport = async (req, res) => {
       }
     }
 
-    const orders = await Order.find({
-      createdAt: { $gte: startDate, $lte: endDate },
-      orderStatus: { $nin: ["Cancelled", "Returned"] },
-    })
-    .populate("userId", "username")
-    .sort({ createdAt: -1 });
+  const orders = await Order.find({
+  createdAt: { $gte: startDate, $lte: endDate },
+  orderStatus: { $nin: ["Cancelled", "Returned"] },
+  orderedItem: {
+    $elemMatch: {
+      productStatus: { $nin: ["Cancelled", "Returned"] }
+    }
+  }
+})
+  .populate("userId", "username")
+  .sort({ createdAt: -1 });
 
     const overallStats = {
       salesCount: orders.length,

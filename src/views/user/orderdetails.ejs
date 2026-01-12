@@ -826,7 +826,7 @@
                       <% } %>
                     </td>
                     <td data-label="Cancel">
-                      <% if(item.productStatus.toLowerCase() !== 'delivered' && item.productStatus.toLowerCase() !== 'cancelled') { %>
+                      <% if(item.productStatus.toLowerCase() !== 'delivered' && item.productStatus.toLowerCase() !== 'cancelled' && item.productStatus.toLowerCase() !== 'return approved' && item.productStatus.toLowerCase() !== 'return requested' && item.productStatus.toLowerCase() !== 'return requested' && item.productStatus.toLowerCase() !== 'returned' ) { %>
                         <button class="cancel-button cancel-button-active" onclick="confirmCancelItem('<%= order._id %>', '<%= item.productId._id %>', '<%= index %>')">
                           Cancel Item
                         </button>

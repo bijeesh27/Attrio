@@ -96,6 +96,7 @@ router.post("/update-payment-status", logged, orderController.updatePayment);
 router.post("/retry-payment", logged, orderController.retryPayment);
 router.get("/order-failure", logged, orderController.loadOrderFailure);
 router.post("/addreview", logged, productController.addReview);
+router.post('/check-stock', logged, orderController.checkStock);
 
 // Wallet Routes (Authenticated)
 router.get("/wallet", logged, profileController.loadWallet);
