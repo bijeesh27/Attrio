@@ -20,6 +20,17 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const PORT = process.env.PORT;
 
 app.use(nocache());
+
+
+app.set("view engine", "ejs");
+
+app.set("views", [
+  path.join(__dirname, "src", "views", "user"),
+  path.join(__dirname, "src", "views", "admin"),
+]);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.use((req, res, next) => {
   res.setHeader(
     "Content-Security-Policy",
@@ -34,15 +45,6 @@ app.use((req, res, next) => {
   )
   next()
 })
-
-app.set("view engine", "ejs");
-
-app.set("views", [
-  path.join(__dirname, "src", "views", "user"),
-  path.join(__dirname, "src", "views", "admin"),
-]);
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 app.use(
   session({
