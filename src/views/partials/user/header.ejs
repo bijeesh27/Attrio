@@ -90,28 +90,6 @@
 
     </head>
     <body>
-        <!-- Loading Animation -->
-        <div class="loader-container" id="attiroLoader">
-            <div class="tie-loader">
-                <div class="circular-loader">
-                    <div class="dotted-circle"></div>
-                    <div class="progress-ring"></div>
-                    <div class="circle-group">
-                        <div class="orbital-circle"></div>
-                        <div class="orbital-circle"></div>
-                        <div class="orbital-circle"></div>
-                        <div class="orbital-circle"></div>
-                    </div>
-                </div>
-                <div class="modern-tie">
-                    <div class="tie-top"></div>
-                    <div class="tie-knot"></div>
-                    <div class="tie-body"></div>
-                </div>
-                <div class="brand-text">ATTIRO</div>
-            </div>
-        </div>
-
         <!-- Start Top Header Area -->
         <div class="top-header">
             <div class="container-fluid">
@@ -345,26 +323,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    function showLoader() {
-        const loader = document.getElementById('attiroLoader');
-        if (loader) {
-            loader.classList.remove('fade-out');
-            loader.style.display = 'flex';
-        }
-    }
-
-    function hideLoader() {
-        const loader = document.getElementById('attiroLoader');
-        if (loader) {
-            loader.classList.add('fade-out');
-            setTimeout(() => {
-                if (loader.classList.contains('fade-out')) {
-                    loader.style.display = 'none';
-                }
-            }, 300); // Match CSS transition duration
-        }
-    }
-
     // Clear search function
     function clearUserSearch() {
         const searchInput = document.getElementById('userSearchInput');
@@ -372,13 +330,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('searchClearBtn').style.opacity = '0';
         // Redirect to shop page to show all products
         window.location.href = '/shop';
-    }
-
-    // Hide loader immediately when DOM is parsed to prevent blocking the user
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', hideLoader);
-    } else {
-        hideLoader();
     }
         </script>
     </body>
