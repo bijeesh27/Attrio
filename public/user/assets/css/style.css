@@ -11052,6 +11052,13 @@ body {
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.loader-container.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .tie-loader {

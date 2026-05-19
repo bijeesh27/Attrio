@@ -346,11 +346,23 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function showLoader() {
-        document.getElementById('attiroLoader').style.display = 'flex';
+        const loader = document.getElementById('attiroLoader');
+        if (loader) {
+            loader.classList.remove('fade-out');
+            loader.style.display = 'flex';
+        }
     }
 
     function hideLoader() {
-        document.getElementById('attiroLoader').style.display = 'none';
+        const loader = document.getElementById('attiroLoader');
+        if (loader) {
+            loader.classList.add('fade-out');
+            setTimeout(() => {
+                if (loader.classList.contains('fade-out')) {
+                    loader.style.display = 'none';
+                }
+            }, 300); // Match CSS transition duration
+        }
     }
 
     // Clear search function
@@ -362,11 +374,12 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = '/shop';
     }
 
-    // Example usage: Show loader on page load and hide after 3 seconds
-    window.onload = function() {
-        showLoader();
-        setTimeout(hideLoader, 200); // Hide after 0.5 seconds
-    };
+    // Hide loader immediately when DOM is parsed to prevent blocking the user
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', hideLoader);
+    } else {
+        hideLoader();
+    }
         </script>
     </body>
 </html>

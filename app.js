@@ -36,11 +36,13 @@ app.use((req, res, next) => {
     "Content-Security-Policy",
     [
       "default-src 'self'",
-      "script-src 'self' https://vercel.live https://*.vercel.live",
-      "script-src-elem 'self' https://vercel.live https://*.vercel.live",
-      "connect-src 'self' https://vercel.live https://*.vercel.live",
-      "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data:"
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://*.vercel.live https://cdn.jsdelivr.net https://checkout.razorpay.com https://code.jquery.com",
+      "script-src-elem 'self' 'unsafe-inline' https://vercel.live https://*.vercel.live https://cdn.jsdelivr.net https://checkout.razorpay.com https://code.jquery.com",
+      "connect-src 'self' https://vercel.live https://*.vercel.live https://api.razorpay.com",
+      "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com",
+      "font-src 'self' data: https://cdn.jsdelivr.net https://fonts.gstatic.com",
+      "img-src 'self' data: blob: https://*.googleusercontent.com https://cdn.razorpay.com",
+      "frame-src 'self' https://api.razorpay.com https://checkout.razorpay.com"
     ].join("; ")
   )
   next()
