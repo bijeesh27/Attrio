@@ -6,8 +6,8 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <title>Attiro Fashions</title>
-    <link rel="icon" type="image/png" href="user/assets/img/favicon.png" />
+    <title>Create Account — Attiro Fashions</title>
+    <link rel="icon" type="image/png" href="/user/assets/img/favicon.png" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
@@ -16,270 +16,282 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/user/assets/css/attiro-variables.css">
+
     <style>
+      :root {
+        --bg-primary: #F4F4F4;
+        --bg-warm: #DDD3CB;
+        --accent: #967565;
+        --accent-light: #B89A8C;
+        --btn-primary: #4B4C3C;
+        --btn-hover: #5D5E4B;
+        --text-primary: #351F16;
+        --text-heading: #4A2F24;
+        --border-color: #E8DED6;
+      }
+
       body, html {
         height: 100%;
         margin: 0;
-        font-family: 'Montserrat', sans-serif;
-        background-color: #f8f9fa;
+        font-family: 'Inter', sans-serif;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
       }
 
-      /* Split layout design */
       .login-container {
         display: flex;
         height: 100vh;
         overflow: hidden;
       }
 
-      /* Left side - image side */
       .image-side {
-        flex: 1;
-        background: url("/api/placeholder/1920/1080") no-repeat center center;
+        flex: 1.1;
+        background: linear-gradient(135deg, rgba(53, 31, 22, 0.85) 0%, rgba(75, 76, 60, 0.75) 100%), 
+                    url('/user/assets/img/about/about-img2.jpg') no-repeat center center;
         background-size: cover;
         position: relative;
         display: none;
       }
 
-      /* Dark overlay on image */
       .image-overlay {
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background: linear-gradient(to right, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 100%);
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding: 40px;
-        color: white;
+        padding: 60px;
+        color: #F4F4F4;
+        text-align: center;
       }
 
       .brand-title {
-        font-size: 40px;
+        font-family: 'Playfair Display', serif;
+        font-size: 46px;
         font-weight: 700;
+        letter-spacing: 0.05em;
         margin-bottom: 20px;
-        text-align: center;
+        color: #F4F4F4;
       }
 
       .brand-subtitle {
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 300;
-        text-align: center;
         max-width: 80%;
-        line-height: 1.6;
+        line-height: 1.8;
+        color: #DDD3CB;
       }
 
-      /* Right side - form side */
       .form-side {
         flex: 1;
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 30px;
-        background-color: white;
+        padding: 40px 30px;
+        background-color: #FFFFFF;
         position: relative;
+        overflow-y: auto;
       }
 
       .login-form-container {
         width: 100%;
-        max-width: 400px;
-        padding: 30px;
+        max-width: 440px;
+        padding: 20px 10px;
+      }
+
+      .mobile-logo {
+        text-align: center;
+        margin-bottom: 25px;
+        display: block;
+      }
+
+      .mobile-logo h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--text-heading);
+        margin: 0;
+        letter-spacing: 0.05em;
       }
 
       .form-header {
-        margin-bottom: 30px;
+        margin-bottom: 25px;
         text-align: center;
       }
 
       .form-header h2 {
-        font-size: 28px;
+        font-family: 'Playfair Display', serif;
+        font-size: 30px;
         font-weight: 600;
-        color: #333;
+        color: var(--text-heading);
+        margin-bottom: 8px;
       }
 
       .form-header p {
-        color: #777;
-        font-size: 15px;
+        color: var(--accent);
+        font-size: 14px;
+        margin: 0;
       }
 
-      /* Form elements */
       .form-group {
-        margin-bottom: 20px;
+        margin-bottom: 18px;
         position: relative;
       }
 
       .form-control {
-        height: 55px;
-        border-radius: 0;
-        border: none;
-        border-bottom: 2px solid #e0e0e0;
-        background-color: transparent;
-        padding: 10px 0;
-        font-size: 15px;
-        transition: all 0.3s;
+        height: 48px;
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
+        background-color: var(--bg-primary);
+        padding: 10px 14px;
+        font-size: 14px;
+        color: var(--text-primary);
+        transition: all 0.25s ease;
         box-shadow: none !important;
       }
 
       .form-control:focus {
-        border-color: #f53f85;
+        background-color: #FFFFFF;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(150, 117, 101, 0.15) !important;
       }
 
       .form-label {
-        position: absolute;
-        left: 0;
-        top: 18px;
-        font-size: 15px;
-        color: #999;
-        transition: all 0.3s;
-        pointer-events: none;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--accent);
+        margin-bottom: 5px;
+        display: block;
       }
 
-      .form-control:focus ~ .form-label,
-      .form-control:not(:placeholder-shown) ~ .form-label {
-        top: -10px;
-        font-size: 12px;
-        color: #f53f85;
-      }
-
-      .form-control::placeholder {
-        color: transparent;
-      }
-
-      /* Button styles */
       .submit-btn {
         width: 100%;
-        height: 50px;
-        background-color: #f53f85;
+        height: 48px;
+        background-color: var(--btn-primary);
         border: none;
-        border-radius: 4px;
-        color: white;
+        border-radius: 6px;
+        color: #FFFFFF;
         font-weight: 500;
-        font-size: 16px;
+        font-size: 15px;
+        letter-spacing: 0.03em;
         margin-top: 10px;
-        margin-bottom: 20px;
-        transition: all 0.3s;
-        box-shadow: 0 4px 8px rgba(245, 63, 133, 0.2);
+        margin-bottom: 16px;
+        transition: all 0.25s ease;
       }
 
       .submit-btn:hover {
-        background-color: #e0306e;
-        box-shadow: 0 6px 12px rgba(245, 63, 133, 0.3);
+        background-color: var(--btn-hover);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(75, 76, 60, 0.25);
       }
 
-      /* Google button */
       .google-btn {
         width: 100%;
-        height: 50px;
-        background-color: white;
-        border: 1px solid #e0e0e0;
-        border-radius: 4px;
-        color: #555;
+        height: 48px;
+        background-color: #FFFFFF;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        color: var(--text-primary);
         font-weight: 500;
-        font-size: 16px;
+        font-size: 14px;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 25px;
-        transition: all 0.3s;
+        margin-bottom: 20px;
+        transition: all 0.25s ease;
         text-decoration: none;
       }
 
       .google-btn:hover {
-        background-color: #f8f8f8;
-        border-color: #ddd;
+        background-color: var(--bg-primary);
+        border-color: var(--accent-light);
+        color: var(--text-heading);
       }
 
       .google-icon {
-        margin-right: 10px;
+        margin-right: 12px;
         font-size: 18px;
       }
 
-      .google-icon i {
-        background: conic-gradient(
-            from -45deg,
-            #ea4335 110deg,
-            #4285f4 90deg 180deg,
-            #34a853 180deg 270deg,
-            #fbbc05 270deg
-          )
-          73% 55%/150% 150% no-repeat;
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        -webkit-text-fill-color: transparent;
-      }
-
-      /* Divider */
       .divider {
         display: flex;
         align-items: center;
         text-align: center;
-        margin: 25px 0;
+        margin: 20px 0;
       }
 
       .divider::before,
       .divider::after {
         content: "";
         flex: 1;
-        border-bottom: 1px solid #e0e0e0;
+        border-bottom: 1px solid var(--border-color);
       }
 
       .divider span {
         padding: 0 15px;
-        color: #999;
-        font-size: 14px;
+        color: var(--accent-light);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
       }
 
-      /* Links */
       .auth-links {
         text-align: center;
-        margin-top: 20px;
+        margin-top: 15px;
       }
 
       .auth-link {
-        color: #777;
+        color: var(--accent);
         text-decoration: none;
         font-size: 14px;
-        transition: all 0.3s;
+        transition: color 0.2s ease;
         display: block;
-        margin-bottom: 8px;
       }
 
       .auth-link:hover {
-        color: #f53f85;
+        color: var(--text-heading);
+        text-decoration: underline;
       }
 
-      /* Error messages */
       .error-text {
-        color: #e74c3c;
+        color: #A94442;
         font-size: 12px;
-        margin-top: 5px;
+        margin-top: 4px;
         display: none;
       }
 
       .is-invalid {
-        border-color: #e74c3c !important;
+        border-color: #A94442 !important;
       }
 
-      /* Flash messages */
+      .is-invalid:focus {
+        box-shadow: 0 0 0 3px rgba(169, 68, 66, 0.15) !important;
+      }
+
       .flash-message {
         display: flex;
         align-items: center;
-        padding: 15px 20px;
-        margin-bottom: 20px;
-        border-radius: 4px;
+        padding: 14px 20px;
+        border-radius: 6px;
         font-weight: 500;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        animation: slideIn 0.4s ease-in-out;
-        
+        box-shadow: 0 4px 16px rgba(53, 31, 22, 0.1);
         position: fixed;
-        top: 20px;
+        top: 24px;
         left: 50%;
         transform: translateX(-50%);
-        max-width: 400px;
-        z-index: 1000;
+        max-width: 440px;
+        width: 90%;
+        z-index: 1050;
+        background: #FFFFFF;
       }
 
       .flash-message svg {
@@ -290,77 +302,41 @@
       }
 
       .error-message {
-        background-color: #fff;
-        color: #e74c3c;
-        border-left: 4px solid #e74c3c;
+        color: #A94442;
+        border-left: 4px solid #A94442;
       }
 
       .success-message {
-        background-color: #fff;
-        color: #2ecc71;
-        border-left: 4px solid #2ecc71;
+        color: #5B8C5A;
+        border-left: 4px solid #5B8C5A;
       }
 
-      @keyframes slideIn {
-        from {
-          opacity: 0;
-          transform: translate(-50%, -20px);
-        }
-        to {
-          opacity: 1;
-          transform: translate(-50%, 0);
-        }
-      }
-
-      /* Alert for validation errors */
       .alert {
-        padding: 12px;
+        padding: 12px 16px;
         margin-bottom: 20px;
-        border-radius: 4px;
-        background-color: #fef5f5;
-        border: 1px solid #fadede;
-        color: #e74c3c;
+        border-radius: 6px;
+        background-color: rgba(169, 68, 66, 0.08);
+        border: 1px solid rgba(169, 68, 66, 0.2);
+        color: #A94442;
+        font-size: 13px;
       }
 
-      /* Responsive */
       @media (min-width: 992px) {
         .image-side {
           display: block;
         }
-      }
-
-      /* Footer branding */
-      .login-footer {
-        position: absolute;
-        bottom: 20px;
-        left: 0;
-        right: 0;
-        text-align: center;
-        color: #999;
-        font-size: 12px;
-      }
-
-      /* Mobile logo for small screens */
-      .mobile-logo {
-        text-align: center;
-        margin-bottom: 30px;
-        display: block;
-      }
-
-      .mobile-logo h1 {
-        font-size: 28px;
-        font-weight: 700;
-        color: #f53f85;
-        margin: 0;
-      }
-
-      @media (min-width: 992px) {
         .mobile-logo {
           display: none;
         }
       }
+
+      .login-footer {
+        text-align: center;
+        color: var(--accent-light);
+        font-size: 12px;
+        margin-top: 20px;
+      }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   </head>
   <body>
     <% if (error_msg && error_msg.length > 0) { %>
@@ -380,7 +356,9 @@
       </svg>
       <span><%= error_msg %></span>
     </div>
-    <% } %> <% if (success_msg && success_msg.length > 0) { %>
+    <% } %> 
+    
+    <% if (success_msg && success_msg.length > 0) { %>
     <div class="flash-message success-message" id="flash-message">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -396,21 +374,20 @@
       </svg>
       <span><%= success_msg %></span>
     </div>
-    <%}%>
+    <% } %>
 
     <div class="login-container">
-      <!-- Left side with background image and branding -->
+      <!-- Left side with branding -->
       <div class="image-side">
         <div class="image-overlay">
           <div class="brand-title">ATTIRO FASHIONS</div>
-          <p class="brand-subtitle">Elevate your style with Attiro. Premium fashion for the modern individual.</p>
+          <p class="brand-subtitle">Join our community of modern tastemakers. Enjoy exclusive offers and seamless shopping.</p>
         </div>
       </div>
       
       <!-- Right side with signup form -->
       <div class="form-side">
         <div class="login-form-container">
-          <!-- Mobile logo (shows on small screens only) -->
           <div class="mobile-logo">
             <h1>ATTIRO</h1>
           </div>
@@ -434,95 +411,98 @@
           </a>
 
           <div class="divider">
-            <span>OR</span>
+            <span>OR REGISTER WITH EMAIL</span>
           </div>
 
           <form
             id="registerForm"
-            class="login-form"
             action="/register"
             method="post"
             novalidate
           >
             <div class="form-group">
+              <label for="username" class="form-label">Full Name</label>
               <input
                 type="text"
                 class="form-control"
                 id="username"
-                placeholder=" "
+                placeholder="John Doe"
                 name="username"
                 value="<%= locals.input ? input.username : '' %>"
               />
-              <label for="username" class="form-label">Full Name</label>
               <small id="nameError" class="error-text">Name is required</small>
             </div>
 
             <div class="form-group">
+              <label for="email" class="form-label">Email Address</label>
               <input
                 type="email"
                 class="form-control"
                 id="email"
-                placeholder=" "
+                placeholder="name@example.com"
                 name="email"
                 value="<%= locals.input ? input.email : '' %>"
               />
-              <label for="email" class="form-label">Email Address</label>
               <small id="emailError" class="error-text">Please enter a valid email address</small>
             </div>
 
             <div class="form-group">
+              <label for="number" class="form-label">Phone Number</label>
               <input
                 type="tel"
                 class="form-control"
                 id="number"
-                placeholder=" "
+                placeholder="10-digit number"
                 name="number"
                 value="<%= locals.input ? input.number : '' %>"
               />
-              <label for="number" class="form-label">Phone Number</label>
-              <small id="numberError" class="error-text">Please enter a valid phone number</small>
+              <small id="numberError" class="error-text">Please enter a valid 10-digit phone number</small>
             </div>
 
-            <div class="form-group">
-              <input
-                type="password"
-                class="form-control"
-                id="password"
-                placeholder=" "
-                name="password"
-              />
-              <label for="password" class="form-label">Password</label>
-              <small id="passwordError" class="error-text">Password must be at least 6 characters</small>
-            </div>
-
-            <div class="form-group">
-              <input
-                type="password"
-                class="form-control"
-                id="confirmPassword"
-                placeholder=" "
-                name="confirmPassword"
-              />
-              <label for="confirmPassword" class="form-label">Confirm Password</label>
-              <small id="confirmPasswordError" class="error-text">Passwords do not match</small>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="password" class="form-label">Password</label>
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="password"
+                    placeholder="Min 6 characters"
+                    name="password"
+                  />
+                  <small id="passwordError" class="error-text">Min 6 characters</small>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="confirmPassword" class="form-label">Confirm</label>
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="confirmPassword"
+                    placeholder="Repeat password"
+                    name="confirmPassword"
+                  />
+                  <small id="confirmPasswordError" class="error-text">Does not match</small>
+                </div>
+              </div>
             </div>
             
             <div class="form-group">
+              <label for="referralCode" class="form-label">Referral Code (Optional)</label>
               <input
                 type="text"
                 class="form-control"
                 id="referralCode"
-                placeholder=" "
+                placeholder="Enter referral code if you have one"
                 name="referralCode"
               />
-              <label for="referralCode" class="form-label">Referral Code (Optional)</label>
-              <small id="referralCodeHelp" class="form-text text-muted">Leave blank if you don't have one.</small>
             </div>
 
             <button type="submit" class="submit-btn">Create Account</button>
 
             <div class="auth-links">
-              <a href="/login" class="auth-link">Already have an account? Sign In</a>
+              <a href="/login" class="auth-link">Already have an account? <strong>Sign In</strong></a>
             </div>
           </form>
           
@@ -548,51 +528,39 @@
         const emailError = document.getElementById("emailError");
         const numberError = document.getElementById("numberError");
         const passwordError = document.getElementById("passwordError");
-        const confirmPasswordError = document.getElementById(
-          "confirmPasswordError"
-        );
+        const confirmPasswordError = document.getElementById("confirmPasswordError");
 
-        // Function to validate email
-        function isValidEmail(email) {
+        function isValidEmail(emailVal) {
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          return emailRegex.test(email);
+          return emailRegex.test(emailVal);
         }
 
-        // Function to validate phone number
-        function isValidPhoneNumber(phone) {
+        function isValidPhoneNumber(phoneVal) {
           const phoneRegex = /^\d{10}$/;
-          return phoneRegex.test(phone);
+          return phoneRegex.test(phoneVal);
         }
 
-        // Function to show error
         function showError(input, errorElement, message) {
           input.classList.add("is-invalid");
           errorElement.style.display = "block";
           errorElement.textContent = message;
         }
 
-        // Function to hide error
         function hideError(input, errorElement) {
           input.classList.remove("is-invalid");
           errorElement.style.display = "none";
         }
 
-        // Username validation
         username.addEventListener("blur", function () {
           if (username.value.trim() === "") {
             showError(username, nameError, "Name is required");
           } else if (username.value.trim().length < 3) {
-            showError(
-              username,
-              nameError,
-              "Name must be at least 3 characters"
-            );
+            showError(username, nameError, "Name must be at least 3 characters");
           } else {
             hideError(username, nameError);
           }
         });
 
-        // Email validation
         email.addEventListener("blur", function () {
           if (email.value.trim() === "") {
             showError(email, emailError, "Email is required");
@@ -603,88 +571,57 @@
           }
         });
 
-        // Phone number validation
         number.addEventListener("blur", function () {
           if (number.value.trim() === "") {
             showError(number, numberError, "Phone number is required");
           } else if (!isValidPhoneNumber(number.value)) {
-            showError(
-              number,
-              numberError,
-              "Please enter a valid 10 digit phone number"
-            );
+            showError(number, numberError, "Please enter a valid 10-digit phone number");
           } else {
             hideError(number, numberError);
           }
         });
 
-        // Password validation
         password.addEventListener("blur", function () {
           if (password.value.trim() === "") {
             showError(password, passwordError, "Password is required");
           } else if (password.value.length < 6) {
-            showError(
-              password,
-              passwordError,
-              "Password must be at least 6 characters"
-            );
+            showError(password, passwordError, "Password must be at least 6 characters");
           } else {
             hideError(password, passwordError);
           }
 
-          // Also check confirm password match if it has a value
           if (confirmPassword.value.trim() !== "") {
             if (password.value !== confirmPassword.value) {
-              showError(
-                confirmPassword,
-                confirmPasswordError,
-                "Passwords do not match"
-              );
+              showError(confirmPassword, confirmPasswordError, "Passwords do not match");
             } else {
               hideError(confirmPassword, confirmPasswordError);
             }
           }
         });
 
-        // Confirm password validation
         confirmPassword.addEventListener("blur", function () {
           if (confirmPassword.value.trim() === "") {
-            showError(
-              confirmPassword,
-              confirmPasswordError,
-              "Please confirm your password"
-            );
+            showError(confirmPassword, confirmPasswordError, "Please confirm your password");
           } else if (password.value !== confirmPassword.value) {
-            showError(
-              confirmPassword,
-              confirmPasswordError,
-              "Passwords do not match"
-            );
+            showError(confirmPassword, confirmPasswordError, "Passwords do not match");
           } else {
             hideError(confirmPassword, confirmPasswordError);
           }
         });
 
-        // Form submission
         form.addEventListener("submit", function (e) {
           let isValid = true;
 
-          // Validate username
           if (username.value.trim() === "") {
             showError(username, nameError, "Name is required");
             isValid = false;
           } else if (username.value.trim().length < 3) {
-            showError(
-              username,
-              nameError,
-              "Name must be at least 3 characters"
-            );
+            showError(username, nameError, "Name must be at least 3 characters");
             isValid = false;
           } else {
             hideError(username, nameError);
           }
 
-          // Validate email
           if (email.value.trim() === "") {
             showError(email, emailError, "Email is required");
             isValid = false;
@@ -695,102 +632,46 @@
             hideError(email, emailError);
           }
 
-          // Validate phone number
           if (number.value.trim() === "") {
             showError(number, numberError, "Phone number is required");
             isValid = false;
           } else if (!isValidPhoneNumber(number.value)) {
-            showError(
-              number,
-              numberError,
-              "Please enter a valid 10 digit phone number"
-            );
+            showError(number, numberError, "Please enter a valid 10-digit phone number");
             isValid = false;
           } else {
             hideError(number, numberError);
           }
 
-          // Validate password
           if (password.value.trim() === "") {
             showError(password, passwordError, "Password is required");
             isValid = false;
           } else if (password.value.length < 6) {
-            showError(
-              password,
-              passwordError,
-              "Password must be at least 6 characters"
-            );
+            showError(password, passwordError, "Password must be at least 6 characters");
             isValid = false;
           } else {
             hideError(password, passwordError);
           }
 
-          // Validate confirm password
           if (confirmPassword.value.trim() === "") {
-            showError(
-              confirmPassword,
-              confirmPasswordError,
-              "Please confirm your password"
-            );
+            showError(confirmPassword, confirmPasswordError, "Please confirm your password");
             isValid = false;
           } else if (password.value !== confirmPassword.value) {
-            showError(
-              confirmPassword,
-              confirmPasswordError,
-              "Passwords do not match"
-            );
+            showError(confirmPassword, confirmPasswordError, "Passwords do not match");
             isValid = false;
           } else {
             hideError(confirmPassword, confirmPasswordError);
           }
 
-          // Prevent form submission if validation fails
           if (!isValid) {
             e.preventDefault();
           }
         });
 
-        // Clear errors when inputs change
-        username.addEventListener("input", function () {
-          hideError(username, nameError);
-        });
-
-        email.addEventListener("input", function () {
-          hideError(email, emailError);
-        });
-
-        number.addEventListener("input", function () {
-          hideError(number, numberError);
-        });
-
-        password.addEventListener("input", function () {
-          hideError(password, passwordError);
-
-          // Also check confirm password match if it has a value
-          if (confirmPassword.value.trim() !== "") {
-            if (password.value !== confirmPassword.value) {
-              showError(
-                confirmPassword,
-                confirmPasswordError,
-                "Passwords do not match"
-              );
-            } else {
-              hideError(confirmPassword, confirmPasswordError);
-            }
-          }
-        });
-
-        confirmPassword.addEventListener("input", function () {
-          if (password.value !== confirmPassword.value) {
-            showError(
-              confirmPassword,
-              confirmPasswordError,
-              "Passwords do not match"
-            );
-          } else {
-            hideError(confirmPassword, confirmPasswordError);
-          }
-        });
+        username.addEventListener("input", function () { hideError(username, nameError); });
+        email.addEventListener("input", function () { hideError(email, emailError); });
+        number.addEventListener("input", function () { hideError(number, numberError); });
+        password.addEventListener("input", function () { hideError(password, passwordError); });
+        confirmPassword.addEventListener("input", function () { hideError(confirmPassword, confirmPasswordError); });
       });
 
       function removeFlashMessage() {
@@ -798,9 +679,7 @@
         if (flashMessage) {
           setTimeout(() => {
             flashMessage.style.opacity = "0";
-            setTimeout(() => {
-              flashMessage.remove();
-            }, 300);
+            setTimeout(() => { flashMessage.remove(); }, 300);
           }, 3000);
         }
       }

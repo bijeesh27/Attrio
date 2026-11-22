@@ -1,285 +1,270 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <title>Contact Us - Attiro Fashions</title>
-    <link rel="icon" type="image/png" href="user/assets/img/favicon.png" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="/user/assets/css/substyle.css" />
-  </head>
-  <body>
-    <div class="logo-section">
-      <a href="/" class="logo">Attiro Fashions</a>
-    </div>
-    <!-- Contact Info Section -->
-    <section class="contact-section">
-      <div class="container">
-        <h2 class="section-title">Get In Touch</h2>
-        <div class="row mb-5">
-          <div class="col-md-4 mb-4">
-            <div class="contact-info-card text-center">
-              <div class="contact-icon">
-                <i class="fas fa-map-marker-alt"></i>
-              </div>
-              <h3 class="contact-title">Our Location</h3>
-              <p>123 Fashion Street, City, Country, 12345</p>
-            </div>
-          </div>
-          <div class="col-md-4 mb-4">
-            <div class="contact-info-card text-center">
-              <div class="contact-icon">
-                <i class="fas fa-phone-alt"></i>
-              </div>
-              <h3 class="contact-title">Call Us</h3>
-              <p>+1 234 567 890</p>
-              <p>+1 987 654 321</p>
-            </div>
-          </div>
-          <div class="col-md-4 mb-4">
-            <div class="contact-info-card text-center">
-              <div class="contact-icon">
-                <i class="fas fa-envelope"></i>
-              </div>
-              <h3 class="contact-title">Email Us</h3>
-              <p>info@attiro.com</p>
-              <p>support@attiro.com</p>
-            </div>
-          </div>
-        </div>
+<%- include('../partials/user/header') %>
 
-        <!-- Contact Form -->
-        <div class="row">
-          <div class="col-lg-8 mx-auto">
-            <div class="form-container">
-              <h3 class="mb-4 text-center">Send Us A Message</h3>
-              <form id="contactForm" action="/contact" method="post" novalidate>
-                <div class="row">
-                  <div class="col-md-6 mb-4">
-                    <div class="form-group">
-                      <label for="name" class="form-label">Your Name</label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="name"
-                        name="name"
-                        placeholder="Enter your name"
-                      />
-                      <small id="nameError" class="error-text"
-                        >Name is required</small
-                      >
-                    </div>
-                  </div>
-                  <div class="col-md-6 mb-4">
-                    <div class="form-group">
-                      <label for="email" class="form-label">Your Email</label>
-                      <input
-                        type="email"
-                        class="form-control"
-                        id="email"
-                        name="email"
-                        placeholder="Enter your email"
-                      />
-                      <small id="emailError" class="error-text"
-                        >Please enter a valid email address</small
-                      >
-                    </div>
-                  </div>
-                </div>
-                <div class="mb-4">
-                  <div class="form-group">
-                    <label for="subject" class="form-label">Subject</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="subject"
-                      name="subject"
-                      placeholder="Enter subject"
-                    />
-                    <small id="subjectError" class="error-text"
-                      >Subject is required</small
-                    >
-                  </div>
-                </div>
-                <div class="mb-4">
-                  <div class="form-group">
-                    <label for="message" class="form-label">Message</label>
-                    <textarea
-                      class="form-control"
-                      id="message"
-                      name="message"
-                      placeholder="Enter your message"
-                      rows="5"
-                    ></textarea>
-                    <small id="messageError" class="error-text"
-                      >Message is required</small
-                    >
-                  </div>
-                </div>
-                <div class="text-center">
-                  <button type="submit" class="submit-btn">Send Message</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
+<style>
+  .contact-hero {
+    background: linear-gradient(135deg, var(--bg-warm, #DDD3CB) 0%, var(--bg-primary, #F4F4F4) 100%);
+    padding: 70px 0 50px;
+    border-bottom: 1px solid var(--border-color, #e2ded9);
+    text-align: center;
+  }
 
+  .contact-hero h1 {
+    font-family: var(--font-heading, 'Playfair Display', serif);
+    font-size: 2.8rem;
+    color: var(--text-color, #351F16);
+    margin-bottom: 12px;
+  }
+
+  .contact-hero p {
+    font-size: 1.05rem;
+    color: var(--text-muted, #7c7267);
+    max-width: 550px;
+    margin: 0 auto;
+  }
+
+  .contact-section-wrap {
+    padding: 70px 0;
+  }
+
+  .contact-info-card {
+    background-color: #FFFFFF;
+    border: 1px solid var(--border-color, #DDD3CB);
+    border-radius: 10px;
+    padding: 35px 25px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    height: 100%;
+  }
+
+  .contact-info-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(53, 31, 22, 0.06);
+    border-color: var(--accent, #967565);
+  }
+
+  .contact-icon-box {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: var(--bg-warm, #DDD3CB);
+    color: var(--accent, #967565);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+  }
+
+  .contact-info-card h3 {
+    font-family: var(--font-heading, 'Playfair Display', serif);
+    font-size: 1.3rem;
+    color: var(--text-color, #351F16);
+    margin-bottom: 12px;
+  }
+
+  .contact-info-card p {
+    color: #605249;
+    font-size: 0.92rem;
+    margin-bottom: 4px;
+  }
+
+  .contact-form-card {
+    background-color: #FFFFFF;
+    border: 1px solid var(--border-color, #DDD3CB);
+    border-radius: 12px;
+    padding: 45px 40px;
+    box-shadow: 0 8px 30px rgba(53, 31, 22, 0.04);
+  }
+
+  .contact-form-card h3 {
+    font-family: var(--font-heading, 'Playfair Display', serif);
+    font-size: 1.9rem;
+    color: var(--text-color, #351F16);
+    margin-bottom: 28px;
+    text-align: center;
+  }
+
+  .error-text {
+    color: #A34836;
+    font-size: 0.82rem;
+    display: none;
+    margin-top: 4px;
+  }
+
+  .btn-contact-send {
+    background-color: var(--btn-primary, #4B4C3C);
+    color: #FFFFFF;
+    border: none;
+    padding: 13px 36px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .btn-contact-send:hover {
+    background-color: #37382B;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(75, 76, 60, 0.25);
+  }
+</style>
+
+<div class="contact-hero">
+  <div class="container">
+    <h1>Connect With Attrio</h1>
+    <p>Our bespoke client care team is available to assist with sizing, bespoke styling, and order inquiries.</p>
+  </div>
+</div>
+
+<div class="contact-section-wrap">
+  <div class="container">
+    <div class="row g-4 mb-5">
+      <div class="col-md-4">
+        <div class="contact-info-card text-center">
+          <div class="contact-icon-box">
+            <i class="bx bx-map-pin"></i>
+          </div>
+          <h3>Flagship Studio</h3>
+          <p>123 Fashion Promenade</p>
+          <p>Metropolis, 12345</p>
+        </div>
       </div>
-      <!-- Map -->
-      <!-- <div id="map">
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2987.7593473566985!2d-73.78797548432667!3d41.509489596379204!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89dd490255c9bfa7%3A0xfe099945f43b6e47!2sWonderland%20Dr%2C%20East%20Fishkill%2C%20NY%2012533%2C%20USA!5e0!3m2!1sen!2sbd!4v1622957216342!5m2!1sen!2sbd"
-        ></iframe>
-      </div> -->
-    </section>
+      
+      <div class="col-md-4">
+        <div class="contact-info-card text-center">
+          <div class="contact-icon-box">
+            <i class="bx bx-phone"></i>
+          </div>
+          <h3>Concierge Phone</h3>
+          <p>+91 (080) 4567 8900</p>
+          <p>Mon - Sat, 9:00 AM - 7:00 PM</p>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="contact-info-card text-center">
+          <div class="contact-icon-box">
+            <i class="bx bx-envelope"></i>
+          </div>
+          <h3>Email Enquiries</h3>
+          <p>care@attirofashions.com</p>
+          <p>concierge@attirofashions.com</p>
+        </div>
+      </div>
+    </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <!-- Contact Form -->
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="contact-form-card">
+          <h3>Send Us A Message</h3>
+          
+          <form id="contactForm" action="/contact" method="post" novalidate>
+            <div class="row g-3">
+              <div class="col-md-6 mb-3">
+                <label for="name" class="form-label text-dark fw-medium">Your Name</label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="John Doe" style="border: 1px solid var(--border-color); padding: 11px 14px;" />
+                <small id="nameError" class="error-text">Name is required</small>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label for="email" class="form-label text-dark fw-medium">Email Address</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="john@example.com" style="border: 1px solid var(--border-color); padding: 11px 14px;" />
+                <small id="emailError" class="error-text">Please enter a valid email address</small>
+              </div>
+            </div>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const form = document.getElementById("contactForm");
-        const name = document.getElementById("name");
-        const email = document.getElementById("email");
-        const subject = document.getElementById("subject");
-        const message = document.getElementById("message");
+            <div class="mb-3">
+              <label for="subject" class="form-label text-dark fw-medium">Subject</label>
+              <input type="text" class="form-control" id="subject" name="subject" placeholder="Inquiry regarding garment or order" style="border: 1px solid var(--border-color); padding: 11px 14px;" />
+              <small id="subjectError" class="error-text">Subject is required</small>
+            </div>
 
-        const nameError = document.getElementById("nameError");
-        const emailError = document.getElementById("emailError");
-        const subjectError = document.getElementById("subjectError");
-        const messageError = document.getElementById("messageError");
+            <div class="mb-4">
+              <label for="message" class="form-label text-dark fw-medium">Message</label>
+              <textarea class="form-control" id="message" name="message" rows="5" placeholder="How may our stylists assist you?" style="border: 1px solid var(--border-color); padding: 12px 14px;"></textarea>
+              <small id="messageError" class="error-text">Message is required</small>
+            </div>
 
-        // Function to validate email
-        function isValidEmail(email) {
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          return emailRegex.test(email);
-        }
+            <div class="text-center">
+              <button type="submit" class="btn-contact-send">
+                <i class="bx bx-paper-plane me-2"></i> Submit Inquiry
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-        // Function to show error
-        function showError(input, errorElement, message) {
-          input.classList.add("is-invalid");
-          errorElement.style.display = "block";
-          errorElement.textContent = message;
-        }
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("contactForm");
+    const name = document.getElementById("name");
+    const email = document.getElementById("email");
+    const subject = document.getElementById("subject");
+    const message = document.getElementById("message");
 
-        // Function to hide error
-        function hideError(input, errorElement) {
-          input.classList.remove("is-invalid");
-          errorElement.style.display = "none";
-        }
+    const nameError = document.getElementById("nameError");
+    const emailError = document.getElementById("emailError");
+    const subjectError = document.getElementById("subjectError");
+    const messageError = document.getElementById("messageError");
 
-        // Validate name field
-        name.addEventListener("blur", function () {
-          if (name.value.trim() === "") {
-            showError(name, nameError, "Name is required");
-          } else {
-            hideError(name, nameError);
-          }
-        });
+    function isValidEmail(e) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+    }
 
-        // Email validation
-        email.addEventListener("blur", function () {
-          if (email.value.trim() === "") {
-            showError(email, emailError, "Email is required");
-          } else if (!isValidEmail(email.value)) {
-            showError(email, emailError, "Please enter a valid email address");
-          } else {
-            hideError(email, emailError);
-          }
-        });
+    function showError(input, errorElement, msg) {
+      input.classList.add("is-invalid");
+      input.style.borderColor = "#A34836";
+      errorElement.style.display = "block";
+      errorElement.textContent = msg;
+    }
 
-        // Subject validation
-        subject.addEventListener("blur", function () {
-          if (subject.value.trim() === "") {
-            showError(subject, subjectError, "Subject is required");
-          } else {
-            hideError(subject, subjectError);
-          }
-        });
+    function hideError(input, errorElement) {
+      input.classList.remove("is-invalid");
+      input.style.borderColor = "";
+      errorElement.style.display = "none";
+    }
 
-        // Message validation
-        message.addEventListener("blur", function () {
-          if (message.value.trim() === "") {
-            showError(message, messageError, "Message is required");
-          } else {
-            hideError(message, messageError);
-          }
-        });
+    name?.addEventListener("blur", function () {
+      if (name.value.trim() === "") showError(name, nameError, "Name is required");
+      else hideError(name, nameError);
+    });
 
-        // Clear errors when inputs change
-        name.addEventListener("input", function () {
-          hideError(name, nameError);
-        });
+    email?.addEventListener("blur", function () {
+      if (email.value.trim() === "") showError(email, emailError, "Email is required");
+      else if (!isValidEmail(email.value)) showError(email, emailError, "Please enter a valid email address");
+      else hideError(email, emailError);
+    });
 
-        email.addEventListener("input", function () {
-          hideError(email, emailError);
-        });
+    subject?.addEventListener("blur", function () {
+      if (subject.value.trim() === "") showError(subject, subjectError, "Subject is required");
+      else hideError(subject, subjectError);
+    });
 
-        subject.addEventListener("input", function () {
-          hideError(subject, subjectError);
-        });
+    message?.addEventListener("blur", function () {
+      if (message.value.trim() === "") showError(message, messageError, "Message is required");
+      else hideError(message, messageError);
+    });
 
-        message.addEventListener("input", function () {
-          hideError(message, messageError);
-        });
+    name?.addEventListener("input", () => hideError(name, nameError));
+    email?.addEventListener("input", () => hideError(email, emailError));
+    subject?.addEventListener("input", () => hideError(subject, subjectError));
+    message?.addEventListener("input", () => hideError(message, messageError));
 
-        // Form submission validation
-        form.addEventListener("submit", function (e) {
-          let isValid = true;
+    form?.addEventListener("submit", function (e) {
+      let isValid = true;
+      if (name.value.trim() === "") { showError(name, nameError, "Name is required"); isValid = false; }
+      if (email.value.trim() === "") { showError(email, emailError, "Email is required"); isValid = false; }
+      else if (!isValidEmail(email.value)) { showError(email, emailError, "Valid email required"); isValid = false; }
+      if (subject.value.trim() === "") { showError(subject, subjectError, "Subject is required"); isValid = false; }
+      if (message.value.trim() === "") { showError(message, messageError, "Message is required"); isValid = false; }
 
-          // Validate name
-          if (name.value.trim() === "") {
-            showError(name, nameError, "Name is required");
-            isValid = false;
-          }
+      if (!isValid) e.preventDefault();
+    });
+  });
+</script>
 
-          // Validate email
-          if (email.value.trim() === "") {
-            showError(email, emailError, "Email is required");
-            isValid = false;
-          } else if (!isValidEmail(email.value)) {
-            showError(email, emailError, "Please enter a valid email address");
-            isValid = false;
-          }
-
-          // Validate subject
-          if (subject.value.trim() === "") {
-            showError(subject, subjectError, "Subject is required");
-            isValid = false;
-          }
-
-          // Validate message
-          if (message.value.trim() === "") {
-            showError(message, messageError, "Message is required");
-            isValid = false;
-          }
-
-          // Prevent form submission if validation fails
-          if (!isValid) {
-            e.preventDefault();
-          }
-        });
-      });
-
-      function removeFlashMessage() {
-        const flashMessage = document.getElementById("flash-message");
-        if (flashMessage) {
-          setTimeout(() => {
-            flashMessage.remove();
-          }, 3000);
-        }
-      }
-
-      window.onload = removeFlashMessage;
-    </script>
-  </body>
-</html>
+<%- include('../partials/user/footer') %>

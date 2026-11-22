@@ -1,8 +1,6 @@
 <%- include('../partials/user/header') %>
 
 <body>
-  <link rel="stylesheet" href="/user/assets/css/profilestyle.css" />
-
   <div class="dashboard-container">
     <!-- Account Menu -->
     <div class="account-tabs-menu">
@@ -17,13 +15,12 @@
           <a href="/address"><i class="bx bxs-map"></i> Addresses</a>
         </li>
         <li>
-          <a href="/wallet"><i class="bx bxs-wallet"></i>wallet</a>
+          <a href="/wallet"><i class="bx bxs-wallet"></i> Wallet</a>
         </li>
         <li>
-          <a href="/changenewpassword"><i class="bx bx-lock-alt"></i>Change Password</a>
+          <a href="/changenewpassword"><i class="bx bx-lock-alt"></i> Change Password</a>
         </li>
       </ul>
-      <br /><br /><br />
       <button onclick="logout()" class="logout-button">
         <i class="bx bx-log-out"></i> Logout
       </button>
@@ -31,75 +28,75 @@
 
     <!-- Dashboard Content -->
     <div class="dashboard-content">
-      <div class="dashboard-cards">
-        <div class="dashboard-card">
-          <div class="card-header">
-            <h3>Verify Email Change</h3>
-            <a href="/profile" class="back-link">
-              <i class="bx bx-arrow-back"></i> Back to Dashboard
-            </a>
-          </div>
+      <div class="attiro-card" style="max-width: 600px; margin: 0 auto;">
+        <div class="attiro-card-header">
+          <h3>Verify Email Change</h3>
+          <a href="/profile" style="color: var(--accent); font-size: 14px; text-decoration: none;">
+            <i class="bx bx-arrow-back"></i> Back to Profile
+          </a>
+        </div>
+        
+        <div class="text-center py-4">
+          <p style="color: var(--text-primary); margin-bottom: 8px;">
+            We've sent a 6-digit verification code to <strong><%= email %></strong>
+          </p>
+          <p style="color: var(--accent); font-size: 14px; margin-bottom: 30px;">
+            Enter the code below to confirm your new email address
+          </p>
           
-          <!-- OTP Verification Form -->
-          <div class="otp-verification-container">
-            <p class="otp-message">We've sent a verification code to <strong><%= email %></strong></p>
-            <p class="otp-instruction">Enter the 6-digit code to verify your new email address</p>
+          <form id="otpVerificationForm" class="otp-form">
+            <div class="d-flex justify-content-center gap-2 mb-4">
+              <input type="text" maxlength="1" class="otp-input form-control text-center fs-4 fw-bold" style="width: 48px; height: 56px;" autofocus>
+              <input type="text" maxlength="1" class="otp-input form-control text-center fs-4 fw-bold" style="width: 48px; height: 56px;">
+              <input type="text" maxlength="1" class="otp-input form-control text-center fs-4 fw-bold" style="width: 48px; height: 56px;">
+              <input type="text" maxlength="1" class="otp-input form-control text-center fs-4 fw-bold" style="width: 48px; height: 56px;">
+              <input type="text" maxlength="1" class="otp-input form-control text-center fs-4 fw-bold" style="width: 48px; height: 56px;">
+              <input type="text" maxlength="1" class="otp-input form-control text-center fs-4 fw-bold" style="width: 48px; height: 56px;">
+            </div>
             
-            <form id="otpVerificationForm" class="otp-form">
-              <div class="otp-input-container">
-                <input type="text" maxlength="1" class="otp-input" autofocus>
-                <input type="text" maxlength="1" class="otp-input">
-                <input type="text" maxlength="1" class="otp-input">
-                <input type="text" maxlength="1" class="otp-input">
-                <input type="text" maxlength="1" class="otp-input">
-                <input type="text" maxlength="1" class="otp-input">
-              </div>
-              
-              <div id="otpError" class="otp-error"></div>
-              
-              <div class="otp-timer">
-                Code expires in <span id="timer">05:00</span>
-              </div>
-              
-              <div class="form-buttons">
-                <a href="/profile/edit" class="cancel-btn">Cancel</a>
-                <button type="submit" class="save-btn" id="verifyBtn">Verify</button>
-              </div>
-              
-              <div class="resend-container">
-                <p>Didn't receive the code? <a href="#" id="resendOtp" class="resend-link">Resend</a></p>
-              </div>
-            </form>
-          </div>
+            <div id="otpError" class="text-danger small mb-3" style="min-height: 20px;"></div>
+            
+            <div class="text-muted small mb-4" style="color: var(--accent) !important;">
+              Code expires in <strong id="timer" style="color: var(--text-primary);">05:00</strong>
+            </div>
+            
+            <div class="d-flex justify-content-center gap-3">
+              <a href="/profile/edit" class="btn attiro-btn-secondary" style="border: 1px solid var(--border); color: var(--text-primary); padding: 10px 24px;">Cancel</a>
+              <button type="submit" class="default-btn" id="verifyBtn" style="padding: 10px 30px;">Verify & Update</button>
+            </div>
+            
+            <div class="mt-4">
+              <p style="font-size: 14px; color: var(--accent); margin: 0;">
+                Didn't receive code? <a href="#" id="resendOtp" style="color: var(--text-heading); font-weight: 600;">Resend</a>
+              </p>
+            </div>
+          </form>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // Logout confirmation
     function logout() {
       Swal.fire({
-        title: `Are you sure?`,
-        text: ` Do you want to continue to logout?`,
-        icon: "warning",
+        title: 'Are you sure?',
+        text: 'Do you want to continue to logout?',
+        icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: "#000000",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Logout",
-        cancelButtonText: "Cancel",
+        confirmButtonColor: '#4B4C3C',
+        cancelButtonColor: '#A94442',
+        confirmButtonText: 'Logout',
+        cancelButtonText: 'Cancel',
       }).then((result) => {
         if (result.isConfirmed) {
-          window.location.href = "/logout";
+          window.location.href = '/logout';
         }
       });
     }
 
-    // Handle OTP input functionality
     const otpInputs = document.querySelectorAll('.otp-input');
     
     otpInputs.forEach((input, index) => {
-      // Move to next input after entering a digit
       input.addEventListener('input', function() {
         if (this.value.length === 1) {
           if (index < otpInputs.length - 1) {
@@ -108,7 +105,6 @@
         }
       });
       
-      // Handle backspace key to go back to previous input
       input.addEventListener('keydown', function(e) {
         if (e.key === 'Backspace' && !this.value && index > 0) {
           otpInputs[index - 1].focus();
@@ -116,7 +112,6 @@
       });
     });
     
-    // Timer functionality
     function startTimer(duration, display) {
       let timer = duration;
       let minutes, seconds;
@@ -139,27 +134,22 @@
       return interval;
     }
     
-    // Start the timer when page loads
     let timerElement = document.getElementById('timer');
-    let timerInterval = startTimer(300, timerElement); // 5 minutes = 300 seconds
+    let timerInterval = startTimer(300, timerElement);
     
-    // Handle form submission
     document.getElementById('otpVerificationForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
-      // Collect OTP from inputs
       let otp = '';
       otpInputs.forEach(input => {
         otp += input.value;
       });
       
-      // Validate OTP length
       if (otp.length !== 6) {
         document.getElementById('otpError').textContent = "Please enter the complete 6-digit code";
         return;
       }
       
-      // Show loading
       Swal.fire({
         title: 'Verifying...',
         text: 'Please wait while we verify your code',
@@ -169,7 +159,6 @@
         }
       });
       
-      // Send verification request
       fetch('/verify-email-change', {
         method: 'POST',
         headers: {
@@ -182,30 +171,21 @@
         Swal.close();
         
         if (data.success) {
-          // Get stored form data from session storage
           const formData = JSON.parse(sessionStorage.getItem('profileUpdateData'));
           
-          // Show success message
           Swal.fire({
             title: 'Success!',
             text: 'Email verified successfully. Your profile has been updated.',
             icon: 'success',
-            confirmButtonColor: '#000000',
+            confirmButtonColor: '#4B4C3C',
             confirmButtonText: 'OK'
           }).then(() => {
-            // Clear session storage
             sessionStorage.removeItem('profileUpdateData');
-            // Redirect to profile page
             window.location.href = '/profile';
           });
         } else {
-          // Show error message
           document.getElementById('otpError').textContent = data.message || "Invalid verification code. Please try again.";
-          
-          // Clear OTP inputs
-          otpInputs.forEach(input => {
-            input.value = '';
-          });
+          otpInputs.forEach(input => { input.value = ''; });
           otpInputs[0].focus();
         }
       })
@@ -216,15 +196,12 @@
       });
     });
     
-    // Handle resend OTP
     document.getElementById('resendOtp').addEventListener('click', function(e) {
       e.preventDefault();
       
-      // Disable resend button temporarily
       this.classList.add('disabled');
       this.textContent = 'Sending...';
       
-      // Send resend request
       fetch('/resend-email-otp', {
         method: 'POST',
         headers: {
@@ -235,23 +212,15 @@
       .then(response => response.json())
       .then(data => {
         if (data.success) {
-          // Reset OTP inputs
-          otpInputs.forEach(input => {
-            input.value = '';
-          });
+          otpInputs.forEach(input => { input.value = ''; });
           otpInputs[0].focus();
           
-          // Reset timer
           clearInterval(timerInterval);
           timerInterval = startTimer(300, timerElement);
           
-          // Enable verify button
           document.getElementById('verifyBtn').disabled = false;
-          
-          // Clear error message
           document.getElementById('otpError').textContent = '';
           
-          // Show success message
           Swal.fire({
             toast: true,
             position: 'top-end',
@@ -261,21 +230,18 @@
             timer: 3000
           });
           
-          // Reset resend button after 60 seconds
           setTimeout(() => {
             this.classList.remove('disabled');
             this.textContent = 'Resend';
           }, 60000);
         } else {
-          // Show error message
           Swal.fire({
             icon: 'error',
             title: 'Error',
             text: data.message || 'Failed to send verification code. Please try again.',
-            confirmButtonColor: '#000000'
+            confirmButtonColor: '#4B4C3C'
           });
           
-          // Reset resend button
           this.classList.remove('disabled');
           this.textContent = 'Resend';
         }
@@ -286,15 +252,13 @@
           icon: 'error',
           title: 'Error',
           text: 'An error occurred. Please try again.',
-          confirmButtonColor: '#000000'
+          confirmButtonColor: '#4B4C3C'
         });
         
-        // Reset resend button
         this.classList.remove('disabled');
         this.textContent = 'Resend';
       });
     });
   </script>
-
-  <%- include('../partials/user/footer') %>
 </body>
+<%- include('../partials/user/footer') %>

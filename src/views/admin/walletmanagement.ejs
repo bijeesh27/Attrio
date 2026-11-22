@@ -39,7 +39,7 @@
   }
 
   .badge-primary {
-    background-color: #556ee6;
+    background-color: var(--accent, #967565);
     color: white;
   }
 
@@ -79,8 +79,8 @@
   }
   
   .search-input:focus {
-    border-color: #556ee6;
-    box-shadow: 0 0 0 2px rgba(85, 110, 230, 0.1);
+    border-color: var(--accent, #967565);
+    box-shadow: 0 0 0 2px rgba(150, 117, 101, 0.2);
   }
   
   .search-icon {
@@ -111,7 +111,7 @@
   .search-button {
     margin-left: 8px;
     padding: 8px 15px;
-    background-color: #556ee6;
+    background-color: var(--btn-primary, #4B4C3C);
     color: white;
     border: none;
     border-radius: 4px;
@@ -119,6 +119,10 @@
     cursor: pointer;
     transition: background-color 0.3s;
     height: 38px;
+  }
+  
+  .search-button:hover {
+    background-color: #3e3f31;
   }
   
   .search-button:hover {
@@ -145,7 +149,7 @@
   }
   
   .view-details-btn {
-    background-color: #556ee6;
+    background-color: var(--btn-primary, #4B4C3C);
     color: white;
     border: none;
     border-radius: 4px;
@@ -155,7 +159,7 @@
   }
   
   .view-details-btn:hover {
-    background-color: #4458b8;
+    background-color: #3e3f31;
   }
   
   .view-order-btn {
@@ -185,7 +189,6 @@
   }
 </style>
 
-<body data-sidebar="dark">
   <div class="main-content">
     <div class="page-content">
       <div class="container-fluid">
@@ -431,7 +434,6 @@
       </div>
     <% }) %>
   <% } %>
-</body>
 
 <script>
   function clearSearch() {

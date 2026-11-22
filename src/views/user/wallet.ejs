@@ -1,468 +1,406 @@
 <%- include('../partials/user/header') %>
+<link rel="stylesheet" href="/user/assets/css/profilestyle.css" />
+
+<style>
+  .wallet-container {
+    display: flex;
+    gap: 30px;
+    padding: 0;
+  }
+
+  .wallet-left-column {
+    flex: 0 0 40%;
+    max-width: 400px;
+  }
+
+  .wallet-right-column {
+    flex: 1;
+  }
+
+  /* Credit Card Styles */
+  .credit-card-container {
+    width: 100%;
+    max-width: 360px;
+    height: 220px;
+    perspective: 1000px;
+    margin: 20px 0;
+    cursor: pointer;
+  }
+  
+  .credit-card {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d;
+    box-shadow: 0 10px 25px rgba(53, 31, 22, 0.15);
+    border-radius: 14px;
+    border: 1px solid var(--accent-color);
+  }
+  
+  .credit-card.flipped {
+    transform: rotateY(180deg);
+  }
+  
+  .card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 14px;
+    padding: 24px;
+    color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .card-front {
+    background: linear-gradient(135deg, #4B4C3C 0%, #351F16 100%);
+  }
+  
+  .card-back {
+    background: linear-gradient(135deg, #351F16 0%, #4B4C3C 100%);
+    transform: rotateY(180deg);
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .card-logo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  
+  .card-logo span {
+    font-family: var(--font-heading, serif);
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    color: var(--bg-warm);
+  }
+  
+  .chip-container {
+    margin: 6px 0 16px;
+  }
+  
+  .card-chip {
+    width: 44px;
+    height: 34px;
+    background: linear-gradient(135deg, #d8cbaf 0%, #ecdcc9 50%, #b8a68b 100%);
+    border-radius: 6px;
+    position: relative;
+  }
+  
+  .card-chip::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 26px;
+    height: 20px;
+    background: #351F16;
+    border-radius: 3px;
+    opacity: 0.25;
+  }
+  
+  .card-number {
+    font-size: 1.15rem;
+    letter-spacing: 2px;
+    margin: 8px 0 16px;
+    font-family: monospace;
+    color: var(--bg-warm);
+  }
+  
+  .card-holder {
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    margin-top: auto;
+  }
+  
+  .card-holder .label {
+    font-size: 0.68rem;
+    opacity: 0.7;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+  }
+  
+  .balance-amount {
+    font-family: var(--font-heading, 'Playfair Display', serif);
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #FFFFFF;
+  }
+  
+  .balance-label {
+    font-size: 0.95rem;
+    color: var(--bg-warm);
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  .wallet-btn-action {
+    width: 100%;
+    padding: 12px 20px;
+    background-color: var(--btn-primary, #4B4C3C);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .wallet-btn-action:hover {
+    background-color: #37382B;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(75, 76, 60, 0.25);
+  }
+
+  /* Transaction History */
+  .transaction-history-card {
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(53, 31, 22, 0.04);
+    border: 1px solid var(--border-color);
+    padding: 24px;
+  }
+
+  .transaction-header-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 14px;
+  }
+
+  .transaction-title-h3 {
+    font-family: var(--font-heading, 'Playfair Display', serif);
+    font-size: 1.3rem;
+    color: var(--text-color);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .view-all-link {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+  }
+
+  .view-all-link:hover {
+    color: var(--text-color);
+  }
+
+  .transaction-list-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .transaction-item-row {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background-color: #FFFFFF;
+    transition: all 0.2s ease;
+  }
+
+  .transaction-item-row:hover {
+    background-color: #FAF8F6;
+    border-color: var(--accent-color);
+  }
+
+  .transaction-icon-box {
+    margin-right: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: var(--bg-warm);
+  }
+
+  .transaction-item-row.is-credit .transaction-icon-box {
+    background-color: #eaf3ec;
+    color: #4B7252;
+  }
+
+  .transaction-item-row.is-debit .transaction-icon-box {
+    background-color: #fbedeb;
+    color: #A34836;
+  }
+
+  .transaction-content-box {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .transaction-type-title {
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 3px;
+    font-size: 0.92rem;
+  }
+
+  .transaction-type-title a {
+    color: var(--accent-color);
+    text-decoration: none;
+  }
+
+  .transaction-date-text {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .transaction-amount-val {
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  .amount-positive {
+    color: #4B7252;
+  }
+
+  .amount-negative {
+    color: #A34836;
+  }
+
+  @media (max-width: 992px) {
+    .wallet-container {
+      flex-direction: column;
+    }
+    .wallet-left-column {
+      max-width: 100%;
+    }
+  }
+</style>
 
 <body>
-  <link rel="stylesheet" href="/user/assets/css/profilestyle.css" />
-  <style>
-    .wallet-container {
-      display: flex;
-      gap: 30px;
-      padding: 20px;
-      margin-top: 20px;
-    }
-
-    .wallet-left-column {
-      flex: 0 0 40%;
-      max-width: 400px;
-    }
-
-    .wallet-right-column {
-      flex: 1;
-    }
-
-    /* Credit Card Styles */
-    .credit-card-container {
-      width: 100%;
-      max-width: 340px;
-      height: 220px;
-      perspective: 1000px;
-      margin: 20px 0;
-      cursor: pointer;
-    }
-    
-    .credit-card {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      transition: transform 0.8s;
-      transform-style: preserve-3d;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-      border-radius: 15px;
-    }
-    
-    .credit-card.flipped {
-      transform: rotateY(180deg);
-    }
-    
-    .card-front, .card-back {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      border-radius: 15px;
-      padding: 20px;
-      color: white;
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .card-front {
-      background: linear-gradient(135deg, #3a3f58 0%, #1d2033 100%);
-    }
-    
-    .card-back {
-      background: linear-gradient(135deg, #1d2033 0%, #3a3f58 100%);
-      transform: rotateY(180deg);
-      justify-content: center;
-      align-items: center;
-    }
-    
-    .card-logo {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
-    
-    .card-logo span {
-      font-weight: bold;
-      font-size: 22px;
-      letter-spacing: 1px;
-    }
-    
-    .chip-container {
-      margin: 10px 0 20px;
-    }
-    
-    .card-chip {
-      width: 50px;
-      height: 40px;
-      background: linear-gradient(135deg, #d0bc57 0%, #f0e297 50%, #d0bc57 100%);
-      border-radius: 8px;
-      position: relative;
-    }
-    
-    .card-chip::before {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 30px;
-      height: 25px;
-      background: #1d2033;
-      border-radius: 4px;
-      opacity: 0.3;
-    }
-    
-    .card-number {
-      font-size: 20px;
-      letter-spacing: 2px;
-      margin: 10px 0 20px;
-    }
-    
-    .card-holder {
-      text-transform: uppercase;
-      font-size: 14px;
-      margin-top: auto;
-    }
-    
-    .card-holder .label {
-      font-size: 10px;
-      opacity: 0.7;
-    }
-    
-    .balance-amount {
-      font-size: 40px;
-      font-weight: bold;
-    }
-    
-    .balance-label {
-      font-size: 16px;
-      opacity: 0.8;
-      margin-top: 10px;
-    }
-    
-    /* Wallet Actions */
-    .wallet-actions {
-      display: flex;
-      gap: 15px;
-      margin: 20px 0;
-    }
-
-    .wallet-btn {
-      flex: 1;
-      padding: 12px 20px;
-      background-color: #000;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-
-    .wallet-btn:hover {
-      background-color: #333;
-    }
-
-    .wallet-btn.withdraw {
-      background-color: #f0f0f0;
-      color: #000;
-      border: 1px solid #ddd;
-    }
-
-    .wallet-btn.withdraw:hover {
-      background-color: #e0e0e0;
-    }
-
-    /* Transaction History */
-    .transaction-history {
-      background-color: #fff;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-    }
-
-    .transaction-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      border-bottom: 1px solid #f0f0f0;
-      padding-bottom: 15px;
-    }
-
-    .transaction-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: #333;
-      margin: 0;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .view-all-link {
-      color: #007bff;
-      text-decoration: none;
-      font-size: 14px;
-      transition: color 0.3s ease;
-    }
-
-    .view-all-link:hover {
-      color: #0056b3;
-    }
-
-    .transaction-list {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .transaction-item {
-      display: flex;
-      align-items: center;
-      padding: 15px;
-      border-radius: 8px;
-      transition: background-color 0.3s ease;
-      border: 1px solid #f0f0f0;
-    }
-
-    .transaction-item:hover {
-      background-color: #f8f9fa;
-    }
-
-    .transaction-icon {
-      margin-right: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background-color: #f0f0f0;
-    }
-
-    .transaction-icon i {
-      font-size: 20px;
-      color: #666;
-    }
-
-    .transaction-content {
-      flex-grow: 1;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .transaction-details {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .transaction-type {
-      font-weight: 500;
-      color: #333;
-      margin-bottom: 5px;
-    }
-
-    .transaction-date {
-      font-size: 12px;
-      color: #666;
-    }
-
-    .transaction-amount {
-      font-weight: 600;
-    }
-
-    .transaction-positive {
-      color: #28a745;
-    }
-
-    .transaction-negative {
-      color: #dc3545;
-    }
-
-    .no-transactions {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 30px;
-      color: #666;
-      text-align: center;
-    }
-
-    .no-transactions i {
-      font-size: 48px;
-      margin-bottom: 15px;
-      color: #007bff;
-    }
-
-    /* Responsive Design */
-    @media (max-width: 992px) {
-      .wallet-container {
-        flex-direction: column;
-      }
-
-      .wallet-left-column {
-        max-width: 100%;
-        margin-bottom: 20px;
-      }
-
-      .credit-card-container {
-        max-width: 100%;
-      }
-    }
-  </style>
-
   <div class="dashboard-container">
     <!-- Account Menu -->
     <div class="account-tabs-menu">
       <ul>
-        <li>
-          <a href="/profile">
-            <i class="bx bxs-user"></i>Profile
-          </a>
-        </li>
-        <li>
-          <a href="/orders">
-            <i class="bx bxs-shopping-bag"></i> Orders
-          </a>
-        </li>
-        <li>
-          <a href="/address">
-            <i class="bx bxs-map"></i> Addresses
-          </a>
-        </li>
-        <li>
-          <a href="/wallet" class="active">
-            <i class="bx bxs-wallet"></i> Wallet
-          </a>
-        </li>
-        <li>
-          <a href="/changenewpassword">
-            <i class="bx bx-lock-alt"></i> Change Password
-          </a>
-        </li>
+        <li><a href="/profile"><i class="bx bxs-user"></i>Profile</a></li>
+        <li><a href="/orders"><i class="bx bxs-shopping-bag"></i> Orders</a></li>
+        <li><a href="/address"><i class="bx bxs-map"></i> Addresses</a></li>
+        <li><a href="/wallet" class="active"><i class="bx bxs-wallet"></i> Wallet</a></li>
+        <li><a href="/changenewpassword"><i class="bx bx-lock-alt"></i> Change Password</a></li>
       </ul>
-      <br /><br /><br />
-      <button onclick="logout()" class="logout-button">
-        <i class="bx bx-log-out"></i> Logout
-      </button>
+      <div style="margin-top: 40px;">
+        <button onclick="logout()" class="logout-button">
+          <i class="bx bx-log-out"></i> Logout
+        </button>
+      </div>
     </div>
 
     <!-- Dashboard Content -->
     <div class="dashboard-content">
-      <!-- Wallet Container -->
       <div class="wallet-container">
         <!-- Left Column -->
         <div class="wallet-left-column">
-          <div class="wallet-title">
-            <i class="bx bx-wallet"></i> My Wallet
-          </div>
+          <h2 style="font-family: var(--font-heading, serif); font-size: 1.6rem; color: var(--text-color); margin-bottom: 6px;">
+            Attrio Wallet
+          </h2>
+          <p class="text-muted" style="font-size: 0.9rem;">Click the card to reveal available balance.</p>
           
           <!-- Flip Credit Card -->
           <div class="credit-card-container" id="creditCard">
             <div class="credit-card" id="cardInner">
               <div class="card-front">
                 <div class="card-logo">
-                  <span>WALLET CARD</span>
-                  <i class="bx bxs-wallet" style="font-size: 24px;"></i>
+                  <span>ATTIRO WALLET</span>
+                  <i class="bx bxs-wallet" style="font-size: 24px; color: var(--bg-warm);"></i>
                 </div>
                 <div class="chip-container">
                   <div class="card-chip"></div>
                 </div>
+                <div class="card-number">•••• •••• •••• <%= user.walletCardNumber || '8492' %></div>
                 <div class="card-holder">
                   <div class="label">CARD HOLDER</div>
-                  <div><%= user.username %></div>
+                  <div class="fw-bold"><%= user.username %></div>
                 </div>
-                <div class="card-number">•••• •••• •••• <%= user.walletCardNumber || '1234' %></div>
               </div>
               <div class="card-back">
-                <div class="balance-amount">Rs.<%= wallet?.balance.toFixed(2) || '0.00' %></div>
+                <div class="balance-amount">₹<%= wallet?.balance.toFixed(2) || '0.00' %></div>
                 <div class="balance-label">Available Balance</div>
               </div>
             </div>
           </div>
           
-          <!-- Wallet Actions -->
-          <div class="wallet-actions">
-            <button class="wallet-btn" onclick="showAddFundsModal()">
-              <i class="bx bx-plus-circle"></i> Add Funds
+          <!-- Add Funds Button -->
+          <div class="mt-3">
+            <button class="wallet-btn-action" onclick="showAddFundsModal()">
+              <i class="bx bx-plus-circle"></i> Add Funds via Razorpay
             </button>
           </div>
         </div>
 
         <!-- Right Column -->
         <div class="wallet-right-column">
-          <!-- Transaction History -->
-          <div class="transaction-history">
-            <div class="transaction-header">
-              <h3 class="transaction-title">
-                <i class="bx bx-history"></i>
-                Transaction History
+          <div class="transaction-history-card">
+            <div class="transaction-header-wrap">
+              <h3 class="transaction-title-h3">
+                <i class="bx bx-history" style="color: var(--accent-color);"></i>
+                Recent Transactions
               </h3>
-              <a href="/wallet/transactions" class="view-all-link">View All</a>
+              <a href="/wallet/transactions" class="view-all-link">View All History &rarr;</a>
             </div>
             
-            <div class="transaction-list">
+            <div class="transaction-list-wrap">
               <% if (wallet && wallet.transaction && wallet.transaction.length > 0) { %>
                 <% wallet.transaction.slice(0, 5).forEach(transaction => { 
-                  // Determine transaction type and style
-                  let transactionClass = 'transaction-negative';
-                  let transactionIcon = 'bx-arrow-from-right';
+                  const isCredit = ['Refund', 'Credit', 'Referral', 'Razorpay'].includes(transaction.transactionsMethod);
                   
-                  if (transaction.transactionsMethod === 'Refund' || transaction.transactionsMethod === 'Credit' || transaction.transactionsMethod === 'Referral' || transaction.transactionsMethod === 'Razorpay') {
-                    transactionClass = 'transaction-positive';
-                    transactionIcon = 'bx-arrow-from-left';
-                  }
-            
-                  // Map transaction method to a user-friendly description
                   let transactionDescription = transaction.transactionsMethod;
                   switch (transaction.transactionsMethod) {
-                    case 'Payment':
-                      transactionDescription = 'Product Purchase';
-                      break;
-                    case 'Refund':
-                      transactionDescription = 'Refund ';
-                      break;
-                    case 'Razorpay':
-                      transactionDescription = 'Added via Razorpay';
-                      break;
-                    case 'Referral':
-                      transactionDescription = 'Referral Bonus';
-                      break;
-                    case 'Credit':
-                      transactionDescription = 'Manual Credit';
-                      break;
+                    case 'Payment': transactionDescription = 'Product Purchase'; break;
+                    case 'Refund': transactionDescription = 'Order Refund'; break;
+                    case 'Razorpay': transactionDescription = 'Added via Razorpay'; break;
+                    case 'Referral': transactionDescription = 'Referral Reward'; break;
+                    case 'Credit': transactionDescription = 'Wallet Credit'; break;
                   }
                 %>
-                  <div class="transaction-item <%= transactionClass %>">
-                    <div class="transaction-icon">
-                      <i class="bx <%= transactionIcon %>"></i>
+                  <div class="transaction-item-row <%= isCredit ? 'is-credit' : 'is-debit' %>">
+                    <div class="transaction-icon-box">
+                      <i class="bx <%= isCredit ? 'bx-arrow-from-left' : 'bx-arrow-from-right' %>"></i>
                     </div>
-                    <div class="transaction-content">
-                      <div class="transaction-details">
-                        <span class="transaction-type">
+                    <div class="transaction-content-box">
+                      <div>
+                        <div class="transaction-type-title">
                           <%= transactionDescription %>
-                          <% if (transaction.transactionsMethod === 'Payment' || transaction.transactionsMethod === 'Refund') { %>
-                            <% if (transaction.orderId && transaction.orderId.orderNumber) { %>
-                              (<a href="/orderdetails/<%= transaction.orderId._id %>">OrderID #<%= transaction.orderId.orderNumber %></a>)
-                            <% } %>
+                          <% if (transaction.orderId && transaction.orderId.orderNumber) { %>
+                            (<a href="/orderdetails/<%= transaction.orderId._id %>">#<%= transaction.orderId.orderNumber %></a>)
                           <% } %>
-                        </span>
-                        <span class="transaction-date">
-                          <%= new Date(transaction.date).toLocaleDateString('en-US', { 
-                            month: 'short', 
-                            day: 'numeric', 
-                            year: 'numeric' 
-                          }) %>
+                        </div>
+                        <span class="transaction-date-text">
+                          <%= new Date(transaction.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %>
                         </span>
                       </div>
-                      <div class="transaction-amount <%= transactionClass %>">
-                        <%= transaction.transactionsMethod === 'Refund' || transaction.transactionsMethod === 'Credit' || transaction.transactionsMethod === 'Referral' || transaction.transactionsMethod === 'Razorpay' ? '+' : '-' %>₹<%= transaction.amount.toFixed(2) %>
+                      <div class="transaction-amount-val <%= isCredit ? 'amount-positive' : 'amount-negative' %>">
+                        <%= isCredit ? '+' : '-' %>₹<%= transaction.amount.toFixed(2) %>
                       </div>
                     </div>
                   </div>
                 <% }); %>
               <% } else { %>
-                <div class="no-transactions">
-                  <i class="bx bx-info-circle"></i>
-                  <p>No transactions found</p>
+                <div class="text-center py-5 text-muted">
+                  <i class="bx bx-receipt mb-2" style="font-size: 2.5rem; color: var(--accent-color);"></i>
+                  <p>No transaction history yet.</p>
                 </div>
               <% } %>
             </div>
@@ -471,179 +409,146 @@
       </div>
     </div>
   </div>
+
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script>
-    // Flip card animation
-    document.getElementById('creditCard').addEventListener('click', function() {
+    document.getElementById('creditCard')?.addEventListener('click', function() {
       document.getElementById('cardInner').classList.toggle('flipped');
     });
     
-    // Logout confirmation
     function logout() {
       Swal.fire({
-        title: `Are you sure?`,
-        text: ` Do you want to continue to logout?`,
-        icon: "warning",
+        title: 'Sign Out',
+        text: 'Do you want to continue to logout?',
+        icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: "#000000",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Logout",
-        cancelButtonText: "Cancel",
+        confirmButtonColor: '#4B4C3C',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Logout',
+        cancelButtonText: 'Cancel',
       }).then((result) => {
         if (result.isConfirmed) {
-          window.location.href = "/logout";
+          window.location.href = '/logout';
         }
       });
     }
     
     function showAddFundsModal() {
-  Swal.fire({
-    title: 'Add Funds to Wallet',
-    html: `
-      <div style="text-align: left; margin-bottom: 20px;">
-        <label for="amount" style="display: block; margin-bottom: 5px;">Amount</label>
-        <input id="amount" type="number" class="swal2-input" placeholder="Enter amount" min="1" step="1">
-      </div>
-    `,
-    showCancelButton: true,
-    confirmButtonText: 'Add Funds',
-    confirmButtonColor: '#000000',
-    cancelButtonColor: '#d33',
-    preConfirm: () => {
-      const amount = document.getElementById('amount').value;
-      if (!amount || amount <= 0) {
-        Swal.showValidationMessage('Please enter a valid amount');
-        return false;
-      }
-      return { amount };
-    }
-  }).then((result) => {
-    if (result.isConfirmed) {
-      const amount = result.value.amount;
-      initiateRazorpayPayment(amount);
-    }
-  });
-}
-
-// Function to initiate Razorpay payment
-async function initiateRazorpayPayment(amount) {
-  try {
-    // Show loading
-    Swal.fire({
-      title: 'Processing',
-      text: 'Please wait...',
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-      }
-    });
-
-    // Create order on your server
-    const response = await fetch('/wallet/create-order', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ amount: parseInt(amount) * 100 }) 
-    });
-    console.log("Amount", amount);
-
-    const data = await response.json();
-    
-    if (!data.success) {
-      throw new Error(data.error || 'Failed to create order');
-    }
-
-    // Close loading
-    Swal.close();
-    
-    
-    const options = {
-      key: '<%= process.env.TEST_KEY_ID %>',
-      amount: data.order.amount,
-      currency: data.order.currency,
-      name: 'Attiro',
-      description: 'Add funds to wallet',
-      order_id: data.order.id,
-      handler: async function(response) {
-        await verifyPayment(response, amount);
-      },
-      prefill: {
-        name: 'Attiro', 
-        email: 'attiro@example.com',
-        contact: '9999999999'
-      },
-      theme: {
-        color: '#000000'
-      }
-    };
-
-    // Initialize Razorpay
-    const razorpay = new Razorpay(options);
-    razorpay.open();
-    
-  } catch (error) {
-    console.error('Payment creation error:', error);
-    Swal.fire({
-      icon: 'error',
-      title: 'Payment Failed',
-      text: 'Could not initiate payment. Please try again.'
-    });
-  }
-}
-
-// Function to verify payment with your server
-async function verifyPayment(paymentResponse, amount) {
-  try {
-    // Show loading
-    Swal.fire({
-      title: 'Verifying Payment',
-      text: 'Please wait...',
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-      }
-    });
-
-    const response = await fetch('/wallet/verify-payment', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        razorpay_order_id: paymentResponse.razorpay_order_id,
-        razorpay_payment_id: paymentResponse.razorpay_payment_id,
-        razorpay_signature: paymentResponse.razorpay_signature,
-        amount: amount
-      })
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
       Swal.fire({
-        icon: 'success',
-        title: 'Success!',
-        text: `₹${amount} added to your wallet successfully!`,
-        confirmButtonColor: '#000000'
-      }).then(() => {
-        
-        window.location.reload();
+        title: 'Add Funds to Wallet',
+        html: `
+          <div style="text-align: left; margin-bottom: 20px;">
+            <label for="amount" style="display: block; margin-bottom: 5px; font-weight: 500;">Amount (INR)</label>
+            <input id="amount" type="number" class="swal2-input" placeholder="e.g. 1000" min="1" step="1" style="width: 100%; border: 1px solid #DDD3CB;">
+          </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Proceed to Pay',
+        confirmButtonColor: '#4B4C3C',
+        cancelButtonColor: '#d33',
+        preConfirm: () => {
+          const amount = document.getElementById('amount').value;
+          if (!amount || amount <= 0) {
+            Swal.showValidationMessage('Please enter a valid amount');
+            return false;
+          }
+          return { amount };
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          initiateRazorpayPayment(result.value.amount);
+        }
       });
-    } else {
-      throw new Error(data.error || 'Payment verification failed');
     }
-  } catch (error) {
-    console.error('Error:', error);
-    Swal.fire({
-      icon: 'error',
-      title: 'Payment Failed',
-      text: error.message || 'There was an issue verifying your payment.'
-    });
-  }
-}
-    
+
+    async function initiateRazorpayPayment(amount) {
+      try {
+        Swal.fire({
+          title: 'Processing',
+          text: 'Preparing Razorpay...',
+          allowOutsideClick: false,
+          didOpen: () => Swal.showLoading()
+        });
+
+        const response = await fetch('/wallet/create-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ amount: parseInt(amount) * 100 }) 
+        });
+
+        const data = await response.json();
+        if (!data.success) throw new Error(data.error || 'Failed to create order');
+
+        Swal.close();
+        
+        const options = {
+          key: '<%= process.env.TEST_KEY_ID %>',
+          amount: data.order.amount,
+          currency: data.order.currency,
+          name: 'Attrio Fashions',
+          description: 'Wallet Top-up',
+          order_id: data.order.id,
+          handler: async function(response) {
+            await verifyPayment(response, amount);
+          },
+          theme: { color: '#4B4C3C' }
+        };
+
+        const razorpay = new Razorpay(options);
+        razorpay.open();
+        
+      } catch (error) {
+        console.error(error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Payment Error',
+          text: error.message || 'Could not initiate payment.',
+          confirmButtonColor: '#4B4C3C'
+        });
+      }
+    }
+
+    async function verifyPayment(paymentResponse, amount) {
+      try {
+        Swal.fire({
+          title: 'Verifying Transaction',
+          text: 'Please wait...',
+          allowOutsideClick: false,
+          didOpen: () => Swal.showLoading()
+        });
+
+        const response = await fetch('/wallet/verify-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            razorpay_order_id: paymentResponse.razorpay_order_id,
+            razorpay_payment_id: paymentResponse.razorpay_payment_id,
+            razorpay_signature: paymentResponse.razorpay_signature,
+            amount: amount
+          })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Funds Added!',
+            text: `₹${amount} added to your Attrio wallet.`,
+            confirmButtonColor: '#4B4C3C'
+          }).then(() => window.location.reload());
+        } else {
+          throw new Error(data.error || 'Payment verification failed');
+        }
+      } catch (error) {
+        console.error(error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Verification Failed',
+          text: error.message || 'There was an issue verifying your payment.',
+          confirmButtonColor: '#4B4C3C'
+        });
+      }
+    }
   </script>
-</body>
 
 <%- include('../partials/user/footer') %>

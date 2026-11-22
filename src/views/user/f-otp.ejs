@@ -6,8 +6,8 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <title>Attiro Fashions</title>
-    <link rel="icon" type="image/png" href="user/assets/img/favicon.png" />
+    <title>OTP Verification — Attiro Fashions</title>
+    <link rel="icon" type="image/png" href="/user/assets/img/favicon.png" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
@@ -16,123 +16,298 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <link rel="stylesheet" href="/user/assets/css/substyle.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/user/assets/css/attiro-variables.css">
+
+    <style>
+      :root {
+        --bg-primary: #F4F4F4;
+        --bg-warm: #DDD3CB;
+        --accent: #967565;
+        --accent-light: #B89A8C;
+        --btn-primary: #4B4C3C;
+        --btn-hover: #5D5E4B;
+        --text-primary: #351F16;
+        --text-heading: #4A2F24;
+        --border-color: #E8DED6;
+      }
+
+      body, html {
+        height: 100%;
+        margin: 0;
+        font-family: 'Inter', sans-serif;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+      }
+
+      .bg-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 30px 15px;
+        background: radial-gradient(circle at top right, var(--bg-warm), var(--bg-primary));
+      }
+
+      .otp-card {
+        background: #FFFFFF;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(53, 31, 22, 0.08);
+        padding: 40px;
+        width: 100%;
+        max-width: 460px;
+        text-align: center;
+      }
+
+      .verify-icon {
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 20px;
+        background-color: rgba(150, 117, 101, 0.12);
+        color: var(--accent);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+      }
+
+      .otp-card h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 28px;
+        color: var(--text-heading);
+        margin-bottom: 10px;
+      }
+
+      .otp-card p {
+        color: var(--accent);
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 30px;
+      }
+
+      .otp-card p strong {
+        color: var(--text-primary);
+      }
+
+      .otp-inputs {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 30px;
+      }
+
+      .otp-input {
+        width: 55px;
+        height: 60px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background-color: var(--bg-primary);
+        font-size: 24px;
+        font-weight: 600;
+        text-align: center;
+        color: var(--text-primary);
+        transition: all 0.25s ease;
+      }
+
+      .otp-input:focus {
+        border-color: var(--accent);
+        background-color: #FFFFFF;
+        box-shadow: 0 0 0 3px rgba(150, 117, 101, 0.15);
+        outline: none;
+      }
+
+      .submit-btn {
+        width: 100%;
+        height: 48px;
+        background-color: var(--btn-primary);
+        color: #FFFFFF;
+        border: none;
+        border-radius: 6px;
+        font-size: 15px;
+        font-weight: 500;
+        letter-spacing: 0.03em;
+        transition: all 0.25s ease;
+        margin-bottom: 20px;
+      }
+
+      .submit-btn:hover {
+        background-color: var(--btn-hover);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(75, 76, 60, 0.25);
+      }
+
+      .timer {
+        display: block;
+        color: var(--accent);
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .resend-link {
+        display: inline-block;
+        color: var(--accent);
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+
+      .resend-link:hover {
+        color: var(--text-heading);
+        text-decoration: underline;
+      }
+
+      .flash-message {
+        display: flex;
+        align-items: center;
+        padding: 14px 20px;
+        border-radius: 6px;
+        font-weight: 500;
+        box-shadow: 0 4px 16px rgba(53, 31, 22, 0.1);
+        position: fixed;
+        top: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        max-width: 440px;
+        width: 90%;
+        z-index: 1050;
+        background: #FFFFFF;
+      }
+
+      .flash-message svg {
+        width: 20px;
+        height: 20px;
+        margin-right: 12px;
+        flex-shrink: 0;
+      }
+
+      .error-message {
+        color: #A94442;
+        border-left: 4px solid #A94442;
+      }
+
+      .success-message {
+        color: #5B8C5A;
+        border-left: 4px solid #5B8C5A;
+      }
+    </style>
   </head>
   <body>
     <% if (error_msg && error_msg.length > 0) { %>
-        <div class="flash-message error-message" id="flash-message">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="feather feather-alert-circle"
-          >
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
-          <span><%= error_msg %></span>
-        </div>
-        <% } %> <% if (success_msg && success_msg.length > 0) { %>
-        <div class="flash-message success-message" id="flash-message">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="feather feather-check-circle"
-          >
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-          </svg>
-          <span><%= success_msg %></span>
-        </div>
-        <%}%>
+      <div class="flash-message error-message" id="flash-message">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="feather feather-alert-circle"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span><%= error_msg %></span>
+      </div>
+    <% } %> 
+    
+    <% if (success_msg && success_msg.length > 0) { %>
+      <div class="flash-message success-message" id="flash-message">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="feather feather-check-circle"
+        >
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        <span><%= success_msg %></span>
+      </div>
+    <% } %>
+
     <div class="bg-wrapper">
-      <div class="blur-overlay">
-        <div class="otp-container">
-          <section class="otp-area">
-            <div class="otp-content">
-              <div class="verify-icon">
-                <i class="fas fa-shield-alt"></i>
-              </div>
-              <h2>OTP Verification</h2>
-              <p>
-                Please enter the verification code sent to <br /><strong
-                  ><%= email %></strong
-                >
-              </p>
-
-              <form class="otp-form" action="/verifyfotp" method="post">
-                <div class="otp-inputs" id="otp">
-                  <input
-                    type="text"
-                    class="otp-input"
-                    maxlength="1"
-                    pattern="[0-9]"
-                    inputmode="numeric"
-                    autocomplete="one-time-code"
-                    name="otp1"
-                    required
-                  />
-                  <input
-                    type="text"
-                    class="otp-input"
-                    maxlength="1"
-                    pattern="[0-9]"
-                    inputmode="numeric"
-                    name="otp2"
-                    required
-                  />
-                  <input
-                    type="text"
-                    class="otp-input"
-                    maxlength="1"
-                    pattern="[0-9]"
-                    inputmode="numeric"
-                    name="otp3"
-                    required
-                  />
-                  <input
-                    type="text"
-                    class="otp-input"
-                    maxlength="1"
-                    pattern="[0-9]"
-                    inputmode="numeric"
-                    name="otp4"
-                    required
-                  />
-                </div>
-
-                <button type="submit" class="default-btn">Verify</button>
-
-                <span class="timer"
-                  >Resend OTP in <span id="countdown">00:10</span></span
-                >
-                <a
-                  href="/resendfotp"
-                  class="resend-link"
-                  id="resendLink"
-                  style="display: none"
-                  >Resend Code</a
-                >
-              </form>
-            </div>
-          </section>
+      <div class="otp-card">
+        <div class="verify-icon">
+          <i class="fas fa-shield-alt"></i>
         </div>
+        <h2>OTP Verification</h2>
+        <p>
+          Please enter the 4-digit code to reset your password sent to <br />
+          <strong><%= email %></strong>
+        </p>
+
+        <form class="otp-form" action="/verifyfotp" method="post">
+          <div class="otp-inputs" id="otp">
+            <input
+              type="text"
+              class="otp-input"
+              maxlength="1"
+              pattern="[0-9]"
+              inputmode="numeric"
+              autocomplete="one-time-code"
+              name="otp1"
+              required
+              autofocus
+            />
+            <input
+              type="text"
+              class="otp-input"
+              maxlength="1"
+              pattern="[0-9]"
+              inputmode="numeric"
+              name="otp2"
+              required
+            />
+            <input
+              type="text"
+              class="otp-input"
+              maxlength="1"
+              pattern="[0-9]"
+              inputmode="numeric"
+              name="otp3"
+              required
+            />
+            <input
+              type="text"
+              class="otp-input"
+              maxlength="1"
+              pattern="[0-9]"
+              inputmode="numeric"
+              name="otp4"
+              required
+            />
+          </div>
+
+          <button type="submit" class="submit-btn">Verify Code</button>
+
+          <span class="timer">
+            Resend OTP in <span id="countdown">00:10</span>
+          </span>
+          <a
+            href="/resendfotp"
+            class="resend-link"
+            id="resendLink"
+            style="display: none"
+          >
+            Resend Code
+          </a>
+        </form>
       </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
-      // Auto-focus to next input field
       const otpInputs = document.querySelectorAll(".otp-input");
       otpInputs.forEach((input, index) => {
         input.addEventListener("keyup", function (e) {
@@ -144,7 +319,6 @@
           }
         });
 
-        // Allow backspace to go to previous field
         input.addEventListener("keydown", function (e) {
           if (e.key === "Backspace" && this.value.length === 0 && index > 0) {
             otpInputs[index - 1].focus();
@@ -152,8 +326,7 @@
         });
       });
 
-      // Countdown timer
-      let timeLeft = 10; // 1:30 in seconds
+      let timeLeft = 10;
       const countdownEl = document.getElementById("countdown");
       const resendLink = document.getElementById("resendLink");
 
@@ -168,7 +341,7 @@
         if (timeLeft < 0) {
           clearInterval(countdownTimer);
           document.querySelector(".timer").style.display = "none";
-          resendLink.style.display = "block";
+          resendLink.style.display = "inline-block";
         }
       }, 1000);
 

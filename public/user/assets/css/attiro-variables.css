@@ -1,0 +1,70 @@
+/* ============================================
+   ATTIRO FASHIONS — Design System Variables
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* ── Core Colors ── */
+  --bg-primary: #F4F4F4;
+  --bg-warm: #DDD3CB;
+  --accent: #967565;
+  --accent-light: #B89A8C;
+  --accent-lighter: rgba(150, 117, 101, 0.15);
+  --btn-primary: #4B4C3C;
+  --btn-hover: #5D5E4B;
+  --text-primary: #351F16;
+  --text-heading: #4A2F24;
+  --white: #FFFFFF;
+  --border: #E8DED6;
+  --border-light: #F0EAE5;
+
+  /* ── Semantic Colors ── */
+  --success: #5B8C5A;
+  --success-light: rgba(91, 140, 90, 0.12);
+  --warning: #C4794D;
+  --warning-light: rgba(196, 121, 77, 0.12);
+  --danger: #A94442;
+  --danger-light: rgba(169, 68, 66, 0.12);
+  --info: #6B8FA3;
+  --info-light: rgba(107, 143, 163, 0.12);
+
+  /* ── Typography ── */
+  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* ── Font Sizes ── */
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.8125rem;  /* 13px */
+  --text-base: 0.9375rem;/* 15px */
+  --text-md: 1rem;       /* 16px */
+  --text-lg: 1.125rem;   /* 18px */
+  --text-xl: 1.5rem;     /* 24px */
+  --text-2xl: 2rem;      /* 32px */
+  --text-3xl: 2.5rem;    /* 40px */
+
+  /* ── Spacing ── */
+  --space-xs: 0.25rem;   /* 4px */
+  --space-sm: 0.5rem;    /* 8px */
+  --space-md: 1rem;      /* 16px */
+  --space-lg: 1.5rem;    /* 24px */
+  --space-xl: 2.5rem;    /* 40px */
+  --space-2xl: 4rem;     /* 64px */
+
+  /* ── Border Radius ── */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 50%;
+
+  /* ── Shadows ── */
+  --shadow-sm: 0 2px 8px rgba(53, 31, 22, 0.06);
+  --shadow-md: 0 4px 16px rgba(53, 31, 22, 0.10);
+  --shadow-lg: 0 8px 32px rgba(53, 31, 22, 0.14);
+  --shadow-btn: 0 2px 6px rgba(75, 76, 60, 0.20);
+
+  /* ── Transitions ── */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
+}

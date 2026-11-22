@@ -6,8 +6,8 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <title>Attiro Fashions</title>
-    <link rel="icon" type="image/png" href="user/assets/img/favicon.png" />
+    <title>Forgot Password — Attiro Fashions</title>
+    <link rel="icon" type="image/png" href="/user/assets/img/favicon.png" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
@@ -16,166 +16,169 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <link rel="stylesheet" href="/user/assets/css/substyle.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/user/assets/css/attiro-variables.css">
+
     <style>
-      body,
-      html {
+      :root {
+        --bg-primary: #F4F4F4;
+        --bg-warm: #DDD3CB;
+        --accent: #967565;
+        --accent-light: #B89A8C;
+        --btn-primary: #4B4C3C;
+        --btn-hover: #5D5E4B;
+        --text-primary: #351F16;
+        --text-heading: #4A2F24;
+        --border-color: #E8DED6;
+      }
+
+      body, html {
         height: 100%;
         margin: 0;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-family: 'Inter', sans-serif;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
       }
 
       .bg-wrapper {
-        height: 100%;
-        width: 100%;
-        position: relative;
-        overflow: hidden;
-        background: url("/api/placeholder/1920/1080") no-repeat center center;
-        background-size: cover;
-      }
-
-      .blur-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(8px);
+        min-height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
+        padding: 30px 15px;
+        background: radial-gradient(circle at top right, var(--bg-warm), var(--bg-primary));
       }
 
-      .login-container {
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 15px;
-        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+      .forgot-card {
+        background: #FFFFFF;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(53, 31, 22, 0.08);
         padding: 40px;
         width: 100%;
-        max-width: 500px;
-        transition: all 0.3s ease;
-      }
-
-      .login-container:hover {
-        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.4);
-      }
-
-      .login-area h2 {
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 15px;
+        max-width: 460px;
         text-align: center;
       }
 
-      .login-area p {
-        text-align: center;
-        color: #6c757d;
+      .lock-icon {
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 20px;
+        background-color: rgba(150, 117, 101, 0.12);
+        color: var(--accent);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+      }
+
+      .forgot-card h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 28px;
+        color: var(--text-heading);
+        margin-bottom: 10px;
+      }
+
+      .forgot-card p {
+        color: var(--accent);
+        font-size: 14px;
+        line-height: 1.6;
         margin-bottom: 30px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+        text-align: left;
       }
 
       .form-control {
         height: 50px;
-        border-radius: 8px;
-        box-shadow: none;
-        margin-bottom: 25px;
-        padding-left: 20px;
-        border: 1px solid #e8e8e8;
-        transition: all 0.3s;
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
+        background-color: var(--bg-primary);
+        padding: 12px 16px;
+        font-size: 14px;
+        color: var(--text-primary);
+        transition: all 0.25s ease;
       }
 
       .form-control:focus {
-        border-color: #f53f85;
-        box-shadow: 0 0 0 0.25rem #f56da1;
+        background-color: #FFFFFF;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(150, 117, 101, 0.15) !important;
+        outline: none;
       }
 
-      .default-btn {
+      .submit-btn {
         width: 100%;
-        height: 50px;
-        background: linear-gradient(135deg, #f53f85 0%, #f53f85 100%);
-        color: white;
+        height: 48px;
+        background-color: var(--btn-primary);
+        color: #FFFFFF;
         border: none;
-        border-radius: 8px;
+        border-radius: 6px;
+        font-size: 15px;
         font-weight: 500;
+        letter-spacing: 0.03em;
+        transition: all 0.25s ease;
         margin-bottom: 20px;
-        transition: all 0.3s;
       }
 
-      .default-btn:hover {
-        background: linear-gradient(135deg, #f53f85 0%, #f53f85 100%);
-        transform: translateY(-2px);
+      .submit-btn:hover {
+        background-color: var(--btn-hover);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(75, 76, 60, 0.25);
       }
 
       .back-to-login {
-        display: block;
-        text-align: center;
-        color: #6c757d;
+        display: inline-block;
+        color: var(--accent);
         font-size: 14px;
-        margin-top: 15px;
+        font-weight: 500;
         text-decoration: none;
-        transition: color 0.3s;
+        transition: color 0.2s;
       }
 
       .back-to-login:hover {
-        color: #f53f85;
+        color: var(--text-heading);
+        text-decoration: underline;
       }
 
-      .lock-icon {
-        display: block;
-        text-align: center;
-        margin-bottom: 20px;
-        font-size: 50px;
-        color: #f53f85;
+      .flash-message {
+        display: flex;
+        align-items: center;
+        padding: 14px 20px;
+        border-radius: 6px;
+        font-weight: 500;
+        box-shadow: 0 4px 16px rgba(53, 31, 22, 0.1);
+        position: fixed;
+        top: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        max-width: 440px;
+        width: 90%;
+        z-index: 1050;
+        background: #FFFFFF;
       }
-      
-.flash-message {
-    display: flex;
-    align-items: center;
-    padding: 12px 16px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    font-weight: 500;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 0.3s ease-in-out;
-  
-    /* Positioning */
-    position: fixed;
-    top: 20px;
-    right: 45%;
-    max-width: 700px; /* Adjust as needed */
-    z-index: 1000;
-  }
-  
-  .flash-message svg {
-    width: 24px;
-    height: 24px;
-    margin-right: 12px;
-    flex-shrink: 0;
-  }
-  
-  .error-message {
-    background-color: #ffebee;
-    color: #d32f2f;
-    border-left: 4px solid #d32f2f;
-  }
-  
-  .success-message {
-    background-color: #e8f5e9;
-    color: #2e7d32;
-    border-left: 4px solid #2e7d32;
-  }
-  
-  /* Optional: Add fade-in animation */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+
+      .flash-message svg {
+        width: 20px;
+        height: 20px;
+        margin-right: 12px;
+        flex-shrink: 0;
+      }
+
+      .error-message {
+        color: #A94442;
+        border-left: 4px solid #A94442;
+      }
+
+      .success-message {
+        color: #5B8C5A;
+        border-left: 4px solid #5B8C5A;
+      }
     </style>
   </head>
   <body>
@@ -197,7 +200,9 @@
         </svg>
         <span><%= error_msg %></span>
       </div>
-      <% } %> <% if (success_msg && success_msg.length > 0) { %>
+    <% } %> 
+    
+    <% if (success_msg && success_msg.length > 0) { %>
       <div class="flash-message success-message" id="flash-message">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -214,41 +219,39 @@
         </svg>
         <span><%= success_msg %></span>
       </div>
-      <%}%>
+    <% } %>
+
     <div class="bg-wrapper">
-      <div class="blur-overlay">
-        <div class="login-container">
-          <section class="login-area">
-            <div class="login-content">
-              <div class="lock-icon">
-                <i class="fas fa-lock"></i>
-              </div>
-              <h2>Forgot Password?</h2>
-              <p>
-                Enter your email address and we'll send you a link to reset your
-                password.
-              </p>
-
-              <form class="login-form" action="/verify-fotp" method="post">
-                <div class="form-group">
-                  <input
-                    type="email"
-                    class="form-control"
-                    placeholder="Enter your email address"
-                    name="email"
-                    required
-                  />
-                </div>
-
-                <button type="submit" class="default-btn">
-                  Send Reset Link
-                </button>
-
-                <a href="/login" class="back-to-login">Back to Login</a>
-              </form>
-            </div>
-          </section>
+      <div class="forgot-card">
+        <div class="lock-icon">
+          <i class="fas fa-lock"></i>
         </div>
+        <h2>Forgot Password?</h2>
+        <p>
+          Enter your email address and we'll send you an OTP to reset your password.
+        </p>
+
+        <form class="login-form" action="/verify-fotp" method="post">
+          <div class="form-group">
+            <input
+              type="email"
+              class="form-control"
+              placeholder="Enter your email address"
+              name="email"
+              required
+            />
+          </div>
+
+          <button type="submit" class="submit-btn">
+            Send Reset OTP
+          </button>
+
+          <div>
+            <a href="/login" class="back-to-login">
+              <i class="fas fa-arrow-left me-1"></i> Back to Login
+            </a>
+          </div>
+        </form>
       </div>
     </div>
 

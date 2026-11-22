@@ -1,604 +1,218 @@
 <%- include('../partials/user/header') %>
+  <link rel="stylesheet" href="/user/assets/css/profilestyle.css" />
 
-<body>
-  <style>
-    :root {
-      --primary-color: #f53f85;
-      --secondary-color: #f8f9fa;
-      --accent-color: #4a6fdc;
-      --text-color: #333;
-      --border-color: #ddd;
-      --success-color: #28a745;
-    }
-
-    .logout-button {
-      background-color: #f53f85;
-      color: white;
-      border: none;
-      border-radius: 50px;
-      padding: 10px 20px;
-      text-align: center;
-      font-size: 14px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    }
-
-    .logout-button i {
-      margin-right: 8px;
-      font-size: 16px;
-    }
-
-    .logout-button:hover {
-      background-color: #f53f85;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-      transform: translateY(-2px);
-    }
-
-    .logout-button:active {
-      transform: translateY(0);
-      box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
-    }
-
-    /* Dashboard Layout */
-    .dashboard-container {
-      display: flex;
-      max-width: 1200px;
-      margin: 20px auto;
-      gap: 20px;
-    }
-
-    .account-tabs-menu {
-      flex: 0 0 250px;
-      background-color: white;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-      height: fit-content;
-    }
-
-    .account-tabs-menu ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .account-tabs-menu li {
-      margin-bottom: 10px;
-    }
-
-    .account-tabs-menu a {
-      display: flex;
-      align-items: center;
-      padding: 12px 15px;
-      border-radius: 8px;
-      color: var(--text-color);
-      text-decoration: none;
-      transition: all 0.3s ease;
-    }
-
-    .account-tabs-menu a i {
-      margin-right: 10px;
-      font-size: 18px;
-    }
-
-    .account-tabs-menu a.active {
-      background-color: var(--primary-color);
-      color: white;
-    }
-
-    .account-tabs-menu a:hover:not(.active) {
-      background-color: var(--secondary-color);
-    }
-
-    .dashboard-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    /* Address Form Section */
-    .address-form-section {
-      background-color: white;
-      border-radius: 10px;
-      padding: 25px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    }
-
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .section-header h2 {
-      margin: 0;
-      font-size: 24px;
-    }
-
-    .section-header .btn-back {
-      background-color: var(--accent-color);
-      color: white;
-      border: none;
-      border-radius: 50px;
-      padding: 10px 20px;
-      display: flex;
-      align-items: center;
-      text-decoration: none;
-      transition: all 0.3s ease;
-    }
-
-    .section-header .btn-back i {
-      margin-right: 8px;
-    }
-
-    .section-header .btn-back:hover {
-      background-color: #3d5dbb;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Form Styling */
-    .form-group {
-      margin-bottom: 15px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: 500;
-      color: var(--text-color);
-    }
-
-    .form-control {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid var(--border-color);
-      border-radius: 5px;
-      font-size: 14px;
-      transition: border-color 0.3s;
-    }
-
-    .form-control:focus {
-      border-color: var(--primary-color);
-      outline: none;
-      box-shadow: 0 0 0 2px rgba(245, 63, 133, 0.2);
-    }
-
-    .form-row {
-      display: flex;
-      gap: 15px;
-      margin-bottom: 15px;
-    }
-
-    .form-col {
-      flex: 1;
-    }
-
-    .form-checkbox {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 10px;
-      margin-bottom: 25px;
-    }
-
-    .form-checkbox input {
-      width: 18px;
-      height: 18px;
-      accent-color: var(--primary-color);
-    }
-
-    .form-checkbox label {
-      margin-bottom: 0;
-      cursor: pointer;
-    }
-
-    .form-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 15px;
-      margin-top: 30px;
-    }
-
-    .btn {
-      padding: 12px 24px;
-      border-radius: 5px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-    }
-
-    .btn i {
-      margin-right: 8px;
-    }
-
-    .btn-primary {
-      background-color: var(--primary-color);
-      color: white;
-      border: none;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn-primary:hover {
-      background-color: #e52f75;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-
-    .btn-secondary {
-      background-color: #f1f1f1;
-      color: #333;
-      border: 1px solid #ddd;
-    }
-
-    .btn-secondary:hover {
-      background-color: #e0e0e0;
-      transform: translateY(-2px);
-    }
-
-    @media (max-width: 768px) {
-      .dashboard-container {
-        flex-direction: column;
-      }
-
-      .account-tabs-menu {
-        flex: auto;
-      }
-
-      .form-row {
-        flex-direction: column;
-        gap: 0;
-      }
-    }
-  </style>
-
-  <div class="dashboard-container">
-    <!-- Account Menu -->
-    
-
-    <!-- Dashboard Content -->
-    <div class="dashboard-content">
-      <!-- Address Form Section -->
-      <div class="address-form-section">
-        <div class="section-header">
-          <h2>Add Address</h2>
-          <a href="/address" class="btn-back">
-            <i class="bx bx-arrow-back"></i> Back to Addresses
-          </a>
+  <body>
+    <div class="dashboard-container">
+      <!-- Account Menu -->
+      <div class="account-tabs-menu">
+        <ul>
+          <li><a href="/profile"><i class="bx bxs-user"></i>Profile</a></li>
+          <li><a href="/orders"><i class="bx bxs-shopping-bag"></i> Orders</a></li>
+          <li><a href="/address" class="active"><i class="bx bxs-map"></i> Addresses</a></li>
+          <li><a href="/wallet"><i class="bx bxs-wallet"></i>Wallet</a></li>
+          <li><a href="/changenewpassword"><i class="bx bx-lock-alt"></i>Change Password</a></li>
+        </ul>
+        <div style="margin-top: 40px;">
+          <button onclick="logout()" class="logout-button">
+            <i class="bx bx-log-out"></i> Logout
+          </button>
         </div>
+      </div>
 
-        <form id="editAddressForm" action="/add-address/<%= address._id %>" method="POST">
-          <input type="hidden" name="id" value="<%= address._id %>">
-          
-          <div class="form-group">
-            <label for="saveAs">Address Type*</label>
-            <select id="saveAs" name="saveAs" class="form-control" >
-              <option value="">Select Type</option>
-              <option value="Home" <%= address.saveAs === 'Home' ? 'selected' : '' %>>Home</option>
-              <option value="Work" <%= address.saveAs === 'Work' ? 'selected' : '' %>>Work</option>
-              <option value="Other" <%= address.saveAs === 'Other' ? 'selected' : '' %>>Other</option>
-            </select>
-          </div>
-          
-          <div class="form-group">
-            <label for="name">Full Name*</label>
-            <input type="text" id="name" name="name" class="form-control" value="<%= address.name %>" >
-          </div>
-          
-          <div class="form-group">
-            <label for="email">Email*</label>
-            <input type="email" id="email" name="email" class="form-control" value="<%= address.email %>" >
-          </div>
-          
-          <div class="form-group">
-            <label for="number">Phone Number*</label>
-            <input type="tel" id="number" name="number" class="form-control" value="<%= address.number %>" >
-          </div>
-          
-          <div class="form-group">
-            <label for="houseName">House/Apartment Name*</label>
-            <input type="text" id="houseName" name="houseName" class="form-control" value="<%= address.houseName %>" >
-          </div>
-          
-          <div class="form-group">
-            <label for="street">Street*</label>
-            <input type="text" id="street" name="street" class="form-control" value="<%= address.street %>" >
-          </div>
-          
-          <div class="form-row">
-            <div class="form-col">
-              <div class="form-group">
-                <label for="city">City*</label>
-                <input type="text" id="city" name="city" class="form-control" value="<%= address.city %>" >
-              </div>
-            </div>
-            <div class="form-col">
-              <div class="form-group">
-                <label for="state">State/Province*</label>
-                <input type="text" id="state" name="state" class="form-control" value="<%= address.state %>" >
-              </div>
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-col">
-              <div class="form-group">
-                <label for="pincode">Postal/Zip Code*</label>
-                <input type="text" id="pincode" name="pincode" class="form-control" value="<%= address.pincode %>" >
-              </div>
-            </div>
-            <div class="form-col">
-              <div class="form-group">
-                <label for="country">Country*</label>
-                <input type="text" id="country" name="country" class="form-control" value="<%= address.country %>" >
-              </div>
-            </div>
-          </div>
-          
-          <div class="form-checkbox">
-            <input type="checkbox" id="isDefault" name="isDefault" <%= address.isDefault ? 'checked' : '' %>>
-            <label for="isDefault">Set as default address</label>
-          </div>
-          
-          <div class="form-actions">
-            <a href="/address" class="btn btn-secondary">
-              <i class="bx bx-x"></i> Cancel
+      <!-- Dashboard Content -->
+      <div class="dashboard-content">
+        <div class="address-section">
+          <div class="section-header">
+            <h2>Add New Address</h2>
+            <a href="/address" class="btn-back">
+              <i class="bx bx-arrow-back"></i> Back to Addresses
             </a>
-            <button type="submit" class="btn btn-primary">
-              <i class="bx bx-save"></i> Add Address
-            </button>
           </div>
-        </form>
+
+          <form id="editAddressForm" action="/add-address/<%= address._id %>" method="POST">
+            <input type="hidden" name="id" value="<%= address._id %>">
+
+            <div class="form-group">
+              <label for="saveAs">Address Type*</label>
+              <select id="saveAs" name="saveAs" class="form-control">
+                <option value="">Select Type</option>
+                <option value="Home" <%=address.saveAs==='Home' ? 'selected' : '' %>>Home</option>
+                <option value="Work" <%=address.saveAs==='Work' ? 'selected' : '' %>>Work</option>
+                <option value="Other" <%=address.saveAs==='Other' ? 'selected' : '' %>>Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="name">Full Name*</label>
+              <input type="text" id="name" name="name" class="form-control" value="<%= address.name %>">
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email*</label>
+              <input type="email" id="email" name="email" class="form-control" value="<%= address.email %>">
+            </div>
+
+            <div class="form-group">
+              <label for="number">Phone Number*</label>
+              <input type="tel" id="number" name="number" class="form-control" value="<%= address.number %>">
+            </div>
+
+            <div class="form-group">
+              <label for="houseName">House/Apartment Name*</label>
+              <input type="text" id="houseName" name="houseName" class="form-control" value="<%= address.houseName %>">
+            </div>
+
+            <div class="form-group">
+              <label for="street">Street*</label>
+              <input type="text" id="street" name="street" class="form-control" value="<%= address.street %>">
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="city">City*</label>
+                  <input type="text" id="city" name="city" class="form-control" value="<%= address.city %>">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="state">State/Province*</label>
+                  <input type="text" id="state" name="state" class="form-control" value="<%= address.state %>">
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="pincode">Postal/Zip Code*</label>
+                  <input type="text" id="pincode" name="pincode" class="form-control" value="<%= address.pincode %>">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="country">Country*</label>
+                  <input type="text" id="country" name="country" class="form-control" value="<%= address.country %>">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-check my-3">
+              <input class="form-check-input" type="checkbox" id="isDefault" name="isDefault" <%=address.isDefault
+                ? 'checked' : '' %>>
+              <label class="form-check-label" for="isDefault" style="cursor: pointer;">Set as default address</label>
+            </div>
+
+            <div class="form-buttons">
+              <a href="/address" class="cancel-btn">
+                Cancel
+              </a>
+              <button type="submit" class="save-btn">
+                <i class="bx bx-save me-1"></i> Save Address
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
 
-  <script>
-
-    
-    // Logout confirmation
-    function logout() {
-      Swal.fire({
-        title: 'Are you sure?',
-        text: 'Do you want to continue to logout?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#000000',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Logout',
-        cancelButtonText: 'Cancel',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          window.location.href = '/logout';
-        }
-      });
-    }
-
-  // Form validation for edit address form
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('editAddressForm');
-    
-    // Validation functions
-    function validateName(name) {
-        return name.trim().length >= 2 && /^[a-zA-Z\s]+$/.test(name.trim());
-    }
-    
-    function validateEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email.trim());
-    }
-    
-    function validatePhone(phone) {
-        const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
-        return phoneRegex.test(phone.replace(/[\s\-\(\)]/g, ''));
-    }
-    
-    function validateText(text, minLength = 2) {
-        return text.trim().length >= minLength;
-    }
-    
-    function validatePincode(pincode) {
-        return /^[0-9]{4,10}$/.test(pincode.trim());
-    }
-    
-    // Show error message
-    function showError(field, message) {
-        removeError(field);
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'error-message';
-        errorDiv.style.cssText = 'color: #dc3545; font-size: 12px; margin-top: 5px;';
-        errorDiv.textContent = message;
-        field.parentNode.appendChild(errorDiv);
-        field.style.borderColor = '#dc3545';
-    }
-    
-    // Remove error message
-    function removeError(field) {
-        const existingError = field.parentNode.querySelector('.error-message');
-        if (existingError) {
-            existingError.remove();
-        }
-        field.style.borderColor = '';
-    }
-    
-    // Real-time validation for each field
-    const nameField = document.getElementById('name');
-    nameField.addEventListener('blur', function() {
-        if (!validateName(this.value)) {
-            showError(this, 'Name must be at least 2 characters and contain only letters');
-        } else {
-            removeError(this);
-        }
-    });
-    
-    const emailField = document.getElementById('email');
-    emailField.addEventListener('blur', function() {
-        if (!validateEmail(this.value)) {
-            showError(this, 'Please enter a valid email address');
-        } else {
-            removeError(this);
-        }
-    });
-    
-    const phoneField = document.getElementById('number');
-    phoneField.addEventListener('blur', function() {
-        if (!validatePhone(this.value)) {
-            showError(this, 'Please enter a valid phone number');
-        } else {
-            removeError(this);
-        }
-    });
-    
-    const houseNameField = document.getElementById('houseName');
-    houseNameField.addEventListener('blur', function() {
-        if (!validateText(this.value)) {
-            showError(this, 'House/Apartment name is required');
-        } else {
-            removeError(this);
-        }
-    });
-    
-    const streetField = document.getElementById('street');
-    streetField.addEventListener('blur', function() {
-        if (!validateText(this.value)) {
-            showError(this, 'Street address is required');
-        } else {
-            removeError(this);
-        }
-    });
-    
-    const cityField = document.getElementById('city');
-    cityField.addEventListener('blur', function() {
-        if (!validateText(this.value)) {
-            showError(this, 'City is required');
-        } else {
-            removeError(this);
-        }
-    });
-    
-    const stateField = document.getElementById('state');
-    stateField.addEventListener('blur', function() {
-        if (!validateText(this.value)) {
-            showError(this, 'State/Province is required');
-        } else {
-            removeError(this);
-        }
-    });
-    
-    const pincodeField = document.getElementById('pincode');
-    pincodeField.addEventListener('blur', function() {
-        if (!validatePincode(this.value)) {
-            showError(this, 'Please enter a valid postal/zip code (4-10 digits)');
-        } else {
-            removeError(this);
-        }
-    });
-    
-    const countryField = document.getElementById('country');
-    countryField.addEventListener('blur', function() {
-        if (!validateText(this.value)) {
-            showError(this, 'Country is required');
-        } else {
-            removeError(this);
-        }
-    });
-    
-    const saveAsField = document.getElementById('saveAs');
-    saveAsField.addEventListener('change', function() {
-        if (!this.value) {
-            showError(this, 'Please select an address type');
-        } else {
-            removeError(this);
-        }
-    });
-    
-    // Form submission validation
-    form.addEventListener('submit', function(e) {
-        let isValid = true;
-        
-        // Validate all fields
-        if (!document.getElementById('saveAs').value) {
-            showError(document.getElementById('saveAs'), 'Please select an address type');
-            isValid = false;
-        }
-        
-        if (!validateName(nameField.value)) {
-            showError(nameField, 'Name must be at least 2 characters and contain only letters');
-            isValid = false;
-        }
-        
-        if (!validateEmail(emailField.value)) {
-            showError(emailField, 'Please enter a valid email address');
-            isValid = false;
-        }
-        
-        if (!validatePhone(phoneField.value)) {
-            showError(phoneField, 'Please enter a valid phone number');
-            isValid = false;
-        }
-        
-        if (!validateText(houseNameField.value)) {
-            showError(houseNameField, 'House/Apartment name is required');
-            isValid = false;
-        }
-        
-        if (!validateText(streetField.value)) {
-            showError(streetField, 'Street address is required');
-            isValid = false;
-        }
-        
-        if (!validateText(cityField.value)) {
-            showError(cityField, 'City is required');
-            isValid = false;
-        }
-        
-        if (!validateText(stateField.value)) {
-            showError(stateField, 'State/Province is required');
-            isValid = false;
-        }
-        
-        if (!validatePincode(pincodeField.value)) {
-            showError(pincodeField, 'Please enter a valid postal/zip code (4-10 digits)');
-            isValid = false;
-        }
-        
-        if (!validateText(countryField.value)) {
-            showError(countryField, 'Country is required');
-            isValid = false;
-        }
-        
-        if (!isValid) {
-            e.preventDefault();
-            // Scroll to first error
-            const firstError = document.querySelector('.error-message');
-            if (firstError) {
-                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        }
-    });
-    
-    // Remove error styling on input
-    const allInputs = form.querySelectorAll('input, select');
-    allInputs.forEach(input => {
-        input.addEventListener('input', function() {
-            if (this.style.borderColor === 'rgb(220, 53, 69)') {
-                this.style.borderColor = '';
-            }
+    <script>
+      function logout() {
+        Swal.fire({
+          title: 'Sign Out',
+          text: 'Do you want to continue to logout?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#4B4C3C',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Logout',
+          cancelButtonText: 'Cancel',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = '/logout';
+          }
         });
-    });
-});
-  </script>
-</body>
-<%- include('../partials/user/footer') %>
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('editAddressForm');
+
+        function validateName(name) {
+          return name.trim().length >= 2 && /^[a-zA-Z\s]+$/.test(name.trim());
+        }
+        function validateEmail(email) {
+          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+        }
+        function validatePhone(phone) {
+          return /^[\+]?[1-9][\d]{0,15}$/.test(phone.replace(/[\s\-\(\)]/g, ''));
+        }
+        function validateText(text, minLength = 2) {
+          return text.trim().length >= minLength;
+        }
+        function validatePincode(pincode) {
+          return /^[0-9]{4,10}$/.test(pincode.trim());
+        }
+
+        function showError(field, message) {
+          removeError(field);
+          const errorDiv = document.createElement('div');
+          errorDiv.className = 'error-message';
+          errorDiv.style.cssText = 'color: #A34836; font-size: 12px; margin-top: 4px;';
+          errorDiv.textContent = message;
+          field.parentNode.appendChild(errorDiv);
+          field.style.borderColor = '#A34836';
+        }
+
+        function removeError(field) {
+          const existingError = field.parentNode.querySelector('.error-message');
+          if (existingError) existingError.remove();
+          field.style.borderColor = '';
+        }
+
+        const nameField = document.getElementById('name');
+        const emailField = document.getElementById('email');
+        const phoneField = document.getElementById('number');
+        const houseNameField = document.getElementById('houseName');
+        const streetField = document.getElementById('street');
+        const cityField = document.getElementById('city');
+        const stateField = document.getElementById('state');
+        const pincodeField = document.getElementById('pincode');
+        const countryField = document.getElementById('country');
+        const saveAsField = document.getElementById('saveAs');
+
+        nameField?.addEventListener('blur', function () {
+          if (!validateName(this.value)) showError(this, 'Name must be at least 2 characters and contain only letters');
+          else removeError(this);
+        });
+        emailField?.addEventListener('blur', function () {
+          if (!validateEmail(this.value)) showError(this, 'Please enter a valid email address');
+          else removeError(this);
+        });
+        phoneField?.addEventListener('blur', function () {
+          if (!validatePhone(this.value)) showError(this, 'Please enter a valid phone number');
+          else removeError(this);
+        });
+
+        form.addEventListener('submit', function (e) {
+          let isValid = true;
+          if (!saveAsField.value) { showError(saveAsField, 'Please select an address type'); isValid = false; }
+          if (!validateName(nameField.value)) { showError(nameField, 'Valid name is required'); isValid = false; }
+          if (!validateEmail(emailField.value)) { showError(emailField, 'Valid email is required'); isValid = false; }
+          if (!validatePhone(phoneField.value)) { showError(phoneField, 'Valid phone number is required'); isValid = false; }
+          if (!validateText(houseNameField.value)) { showError(houseNameField, 'House/Apartment is required'); isValid = false; }
+          if (!validateText(streetField.value)) { showError(streetField, 'Street is required'); isValid = false; }
+          if (!validateText(cityField.value)) { showError(cityField, 'City is required'); isValid = false; }
+          if (!validateText(stateField.value)) { showError(stateField, 'State is required'); isValid = false; }
+          if (!validatePincode(pincodeField.value)) { showError(pincodeField, 'Valid postal code is required'); isValid = false; }
+          if (!validateText(countryField.value)) { showError(countryField, 'Country is required'); isValid = false; }
+
+          if (!isValid) {
+            e.preventDefault();
+            const firstError = document.querySelector('.error-message');
+            if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        });
+      });
+    </script>
+  </body>
+  <%- include('../partials/user/footer') %>

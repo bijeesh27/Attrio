@@ -47,8 +47,8 @@
   }
   
   .search-input:focus {
-    border-color: #556ee6;
-    box-shadow: 0 0 0 2px rgba(85, 110, 230, 0.1);
+    border-color: var(--accent, #967565);
+    box-shadow: 0 0 0 2px rgba(150, 117, 101, 0.2);
   }
   
   .search-icon {
@@ -79,7 +79,7 @@
   .search-button {
     margin-left: 8px;
     padding: 8px 15px;
-    background-color: #556ee6;
+    background-color: var(--btn-primary, #4B4C3C);
     color: white;
     border: none;
     border-radius: 4px;
@@ -90,7 +90,7 @@
   }
   
   .search-button:hover {
-    background-color: #4458b8;
+    background-color: #3e3f31;
   }
 
   .coupon-badge {
@@ -111,7 +111,6 @@
   }
 </style>
 
-<body data-sidebar="dark">
   <div class="main-content">
     <div class="page-content">
       <div class="container-fluid">
@@ -301,7 +300,6 @@
     <!-- End Page Content -->
   </div>
   <!-- End Main Content -->
-</body>
 
 <script>
 function confirmBlock(couponId) {
@@ -314,7 +312,7 @@ function confirmBlock(couponId) {
       text: isBlocking ? `Do you want to block this coupon?` : `Do you want to activate this coupon?`,
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#000000",
+      confirmButtonColor: "#4B4C3C",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, proceed!",
       cancelButtonText: "No, cancel"

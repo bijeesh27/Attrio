@@ -1,336 +1,333 @@
 <!DOCTYPE html>
-<html lang="zxx">
-    
-<!-- Mirrored from templates.hibootstrap.com/xton/default/index-4.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 05 Feb 2025 12:25:18 GMT -->
+<html lang="en">
+
 <head>
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        
-        <!-- Links of CSS files -->
-        <link rel="stylesheet" href="/user/assets/css/bootstrap.min.css">
-        <link rel="stylesheet" href="/user/assets/css/animate.min.css">
-        <link rel="stylesheet" href="/user/assets/css/boxicons.min.css">
-        <link rel="stylesheet" href="/user/assets/css/flaticon.css">
-        <link rel="stylesheet" href="/user/assets/css/magnific-popup.min.css">
-        <link rel="stylesheet" href="/user/assets/css/nice-select.min.css">
-        <link rel="stylesheet" href="/user/assets/css/slick.min.css">
-        <link rel="stylesheet" href="/user/assets/css/owl.carousel.min.css">
-        <link rel="stylesheet" href="/user/assets/css/meanmenu.min.css">
-        <link rel="stylesheet" href="/user/assets/css/rangeSlider.min.css">
-        <link rel="stylesheet" href="/user/assets/css/style.css">
-        <link rel="stylesheet" href="/user/assets/css/dark.css">
-        <link rel="stylesheet" href="/user/assets/css/responsive.css">
-        <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        
-        
-        <title>Attiro Fashions</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-        <link rel="icon" type="image/png" href="/user/assets/img/favicon.png">
+    <!-- Framework CSS -->
+    <link rel="stylesheet" href="/user/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/user/assets/css/animate.min.css">
+    <link rel="stylesheet" href="/user/assets/css/boxicons.min.css">
+    <link rel="stylesheet" href="/user/assets/css/flaticon.css">
+    <link rel="stylesheet" href="/user/assets/css/magnific-popup.min.css">
+    <link rel="stylesheet" href="/user/assets/css/nice-select.min.css">
+    <link rel="stylesheet" href="/user/assets/css/slick.min.css">
+    <link rel="stylesheet" href="/user/assets/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/user/assets/css/meanmenu.min.css">
+    <link rel="stylesheet" href="/user/assets/css/rangeSlider.min.css">
+    <link rel="stylesheet" href="/user/assets/css/style.css">
+    <link rel="stylesheet" href="/user/assets/css/responsive.css">
 
-        <!-- Additional CSS for header search -->
-        <style>
-        /* Header Search Styles */
-        .header-search {
-            position: relative;
-            margin-right: 20px;
-        }
+    <!-- Attiro Design System (loaded after framework to override) -->
+    <link rel="stylesheet" href="/user/assets/css/attiro-variables.css">
+    <link rel="stylesheet" href="/user/assets/css/attiro-base.css">
+    <link rel="stylesheet" href="/user/assets/css/attiro-components.css">
 
-        .search-container {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
-        .header-search-input {
-            width: 0;
-            height: 40px;
-            border: none;
-            border-bottom: 1px solid #ddd;
-            background-color: transparent;
-            padding: 0;
-            transition: width 0.3s ease;
-            outline: none;
-        }
+    <!-- JS Libraries (loaded once) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        .header-search-input.active {
-            width: 250px;
-            padding: 0 40px 0 10px;
-        }
+    <title>Attiro Fashions</title>
+    <link rel="icon" type="image/png" href="/user/assets/img/favicon.png">
 
-        .search-container button {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            position: absolute;
-            right: 5px;
-        }
+    <!-- Header Overrides -->
+    <style>
+    /* ── Announcement Bar ── */
+    .attiro-topbar {
+        background-color: var(--bg-warm);
+        padding: 8px 0;
+        font-size: var(--text-xs);
+        color: var(--text-primary);
+        text-align: center;
+        letter-spacing: 0.04em;
+    }
 
-        .search-clear-icon {
-            position: absolute;
-            right: 30px;
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.3s;
-            color: #777;
-        }
+    .attiro-topbar .topbar-links {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: var(--space-lg);
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
 
-        /* Hide the original search buttons when using inline search */
-        .search-btn-box {
-            display: none;
-        }
-        </style>
+    .attiro-topbar .topbar-links a {
+        color: var(--text-primary);
+        font-size: var(--text-xs);
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: var(--space-xs);
+        transition: color var(--transition-fast);
+    }
 
-    </head>
-    <body>
-        <!-- Start Top Header Area -->
-        <div class="top-header">
-            <div class="container-fluid">
-                <div class="row align-items-center justify-content-center">
-                    <div class="col-lg-4 col-md-12">
-                        <ul class="header-contact-info">
-                            <li>Welcome to Attiro</li>
-                            <li>
-                                <div class="dropdown language-switcher d-inline-block">
+    .attiro-topbar .topbar-links a:hover {
+        color: var(--accent);
+    }
 
-                                    <div class="dropdown-menu">
-                                        <a href="#" class="dropdown-item d-flex align-items-center">
-                                            <img src="/user/assets/img/germany-flag.jpg" class="shadow-sm" alt="flag">
-                                            <span>Ger</span>
-                                        </a>
-                                        <a href="#" class="dropdown-item d-flex align-items-center">
-                                            <img src="/user/assets/img/france-flag.jpg" class="shadow-sm" alt="flag">
-                                            <span>Fre</span>
-                                        </a>
-                                        <a href="#" class="dropdown-item d-flex align-items-center">
-                                            <img src="/user/assets/img/spain-flag.jpg" class="shadow-sm" alt="flag">
-                                            <span>Spa</span>
-                                        </a>
-                                        <a href="#" class="dropdown-item d-flex align-items-center">
-                                            <img src="/user/assets/img/russia-flag.jpg" class="shadow-sm" alt="flag">
-                                            <span>Rus</span>
-                                        </a>
-                                        <a href="#" class="dropdown-item d-flex align-items-center">
-                                            <img src="/user/assets/img/italy-flag.jpg" class="shadow-sm" alt="flag">
-                                            <span>Ita</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
+    /* ── Main Navbar ── */
+    .navbar-area,
+    .navbar-area.header-sticky,
+    .navbar-area.header-sticky.is-sticky,
+    .xton-nav,
+    .xton-responsive-nav,
+    .xton-responsive-menu,
+    .xton-nav .container-fluid,
+    .xton-nav .navbar,
+    .xton-nav .navbar-collapse {
+        background-color: var(--bg-warm, #DDD3CB) !important;
+        background: var(--bg-warm, #DDD3CB) !important;
+    }
 
-                    <div class="col-lg-4 col-md-12">
-                        <div class="top-header-discount-info">
-                            <!-- <p><strong> Explore </strong>  Our collections! <a href="/shop"> Shop Now! </a></p> -->
-                        </div>
-                    </div>
+    .navbar-area {
+        border-bottom: 1px solid rgba(150, 117, 101, 0.2) !important;
+        box-shadow: none !important;
+        transition: all 0.3s ease;
+    }
 
-                    <div class="col-lg-4 col-md-12">
-                        <ul class="header-top-menu">
-                            <% if (locals.session.isAuth) { %>
-                                <li><a href="/profile"><i class='bx bxs-user'></i> My Account</a></li>
-                                <li><a href="/wishlist" ><i class='bx bx-heart'></i> Wishlist</a></li>
-                            <% } else {%>
+    .navbar-area.header-sticky.is-sticky {
+        box-shadow: 0 2px 10px rgba(53, 31, 22, 0.08) !important;
+    }
+
+    .xton-nav .navbar {
+        padding-top: 8px !important;
+        padding-bottom: 8px !important;
+    }
+
+    .xton-nav .navbar .navbar-brand .main-logo,
+    .xton-responsive-menu .logo .main-logo {
+        max-height: 38px;
+    }
+
+    /* Brand Text Fallback */
+    .attiro-brand {
+        font-family: var(--font-display);
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--text-heading);
+        letter-spacing: 0.05em;
+        text-decoration: none;
+    }
+
+    .attiro-brand:hover {
+        color: var(--text-heading);
+    }
+
+    /* Nav Links in Middle Part — Compact, Closer Spacing & Palette Matched */
+    .xton-nav .navbar .navbar-nav {
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    .xton-nav .navbar .navbar-nav .nav-item a.nav-link {
+        font-family: var(--font-body) !important;
+        font-size: 15px !important;
+        font-weight: 500 !important;
+        color: var(--text-primary, #351F16) !important;
+        padding: 8px 14px !important;
+        margin: 0 !important;
+        border-radius: 4px;
+        letter-spacing: 0.2px;
+        transition: all var(--transition-fast);
+    }
+
+    .xton-nav .navbar .navbar-nav .nav-item a.nav-link:hover,
+    .xton-nav .navbar .navbar-nav .nav-item a.nav-link.active {
+        color: var(--accent, #967565) !important;
+        background-color: rgba(150, 117, 101, 0.12) !important;
+        font-weight: 600 !important;
+    }
+
+    /* Cart Badge */
+    .cart-btn a {
+        position: relative;
+        color: var(--text-primary);
+        font-size: 22px;
+        transition: color var(--transition-fast);
+    }
+
+    .cart-btn a:hover {
+        color: var(--accent);
+    }
+
+    .cart-btn a span {
+        position: absolute;
+        top: -6px;
+        right: -10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+        border-radius: var(--radius-full);
+        background-color: var(--accent);
+        color: var(--white);
+        font-size: 10px;
+        font-weight: 600;
+        font-family: var(--font-body);
+    }
+
+    /* Top Header Links */
+    .top-header {
+        background-color: var(--bg-warm, #DDD3CB) !important;
+        border-bottom: 1px solid rgba(150, 117, 101, 0.15) !important;
+        padding: 6px 0 !important;
+    }
+
+    .header-contact-info li,
+    .header-top-menu li a {
+        color: var(--text-primary) !important;
+        font-family: var(--font-body) !important;
+        font-size: var(--text-xs) !important;
+        font-weight: 500 !important;
+    }
+
+    .header-top-menu li a:hover {
+        color: var(--accent) !important;
+    }
+
+    .header-top-menu li a i {
+        color: var(--accent);
+        margin-right: 4px;
+    }
+    </style>
+</head>
+
+<body>
+    <!-- Start Top Header Area -->
+    <div class="top-header">
+        <div class="container-fluid">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-lg-6 col-md-12">
+                    <ul class="header-contact-info">
+                        <li>Welcome to Attiro Fashions — Elevate Your Style</li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-6 col-md-12">
+                    <ul class="header-top-menu">
+                        <% if (locals.session.isAuth) { %>
+                            <li><a href="/profile"><i class='bx bxs-user'></i> My Account</a></li>
+                            <li><a href="/wishlist"><i class='bx bx-heart'></i> Wishlist</a></li>
+                        <% } else { %>
                             <li><a href="/login"><i class='bx bx-log-in'></i> Login</a></li>
-                            <% } %>
+                        <% } %>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Top Header Area -->
+
+    <!-- Start Navbar Area -->
+    <div class="navbar-area">
+        <div class="xton-responsive-nav">
+            <div class="container">
+                <div class="xton-responsive-menu">
+                    <div class="logo">
+                        <a href="/">
+                            <img src="/user/assets/img/logo.png" class="main-logo" alt="Attiro Fashions">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="xton-nav">
+            <div class="container-fluid">
+                <nav class="navbar navbar-expand-md navbar-light">
+                    <a class="navbar-brand" href="/">
+                        <img src="/user/assets/img/logo.png" class="main-logo" alt="Attiro Fashions">
+                    </a>
+
+                    <div class="collapse navbar-collapse mean-menu">
+                        <ul class="navbar-nav">
+                            <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
+                            <li class="nav-item"><a href="/shop" class="nav-link">Shop</a></li>
+                            <li class="nav-item"><a href="/about" class="nav-link">About</a></li>
+                            <li class="nav-item"><a href="/contact" class="nav-link">Contact</a></li>
                         </ul>
 
-                        <ul class="header-top-others-option">
-                            <!-- New Search Input -->
-                            
-
-                            <div class="option-item">
-                                <div class="cart-btn">
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#shoppingCartModal"><i class='bx bx-shopping-bag'></i><span>0</span></a>
+                        <div class="others-option">
+                            <% if (locals.session.isAuth) { %>
+                                <div class="option-item">
+                                    <div class="cart-btn">
+                                        <a href="/cart"><i class='bx bx-shopping-bag'></i><span><%= cartItem %></span></a>
+                                    </div>
                                 </div>
-                            </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- End Navbar Area -->
+
+    <!-- Start Sticky Navbar Area -->
+    <div class="navbar-area header-sticky">
+        <div class="xton-nav">
+            <div class="container-fluid">
+                <nav class="navbar navbar-expand-md navbar-light">
+                    <a class="navbar-brand" href="/">
+                        <img src="/user/assets/img/logo.png" alt="Attiro Fashions">
+                    </a>
+
+                    <div class="collapse navbar-collapse mean-menu">
+                        <ul class="navbar-nav">
+                            <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
+                            <li class="nav-item"><a href="/shop" class="nav-link">Shop</a></li>
+                            <li class="nav-item"><a href="/about" class="nav-link">About</a></li>
+                            <li class="nav-item"><a href="/contact" class="nav-link">Contact</a></li>
                         </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End Top Header Area -->
 
-        <!-- Start Navbar Area -->
-        <div class="navbar-area">
-            <div class="xton-responsive-nav">
-                <div class="container">
-                    <div class="xton-responsive-menu">
-                        <div class="logo">
-                            <a href="/">
-                                <img src="/user/assets/img/logo.png" class="main-logo" alt="logo">
-                                <img src="/user/assets/img/white-logo.png" class="white-logo" alt="logo">
-                            </a>
+                        <div class="others-option">
+                            <% if (locals.session.isAuth) { %>
+                                <div class="option-item">
+                                    <div class="cart-btn">
+                                        <a href="/cart"><i class='bx bx-shopping-bag'></i><span><%= cartItem %></span></a>
+                                    </div>
+                                </div>
+                            <% } %>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="xton-nav">
-                <div class="container-fluid">
-                    <nav class="navbar navbar-expand-md navbar-light">
-                        <a class="navbar-brand" href="/">
-                            <img src="/user/assets/img/logo.png" class="main-logo" alt="logo">
-                            <img src="/user/assets/img/white-logo.png" class="white-logo" alt="logo">
-                        </a>
-
-                        <div class="collapse navbar-collapse mean-menu">
-                            <ul class="navbar-nav">
-                                <li class="nav-item"><a href="/" class="nav-link active">Home </a></li>
-                                <li class="nav-item megamenu"><a href="/shop" class="nav-link">Shop</i></a></li>
-                                <li class="nav-item megamenu"><a href="/about" class="nav-link">About </a>
-                                <li class="nav-item megamenu"><a href="/contact" class="nav-link">Contact us </a>
-                            </ul>
-
-                            <div class="others-option">
-                                <!-- New Search Input for navbar -->
-                               
-                                
-                                <% if (locals.session.isAuth) { %>
-                                    <div class="option-item">
-                                        <div class="cart-btn">
-                                            <a href="/cart" ><i class='bx bx-shopping-bag'></i><span><%= cartItem %></span></a>
-                                        </div>
-                                    </div>
-                                <% } %>
-                            </div>
-                        </div>
-                    </nav>
-                </div>
+                </nav>
             </div>
         </div>
-        <!-- End Navbar Area -->
+    </div>
 
-        <!-- Start Sticky Navbar Area -->
-        <div class="navbar-area header-sticky">
-            <div class="xton-nav">
-                <div class="container-fluid">
-                    <nav class="navbar navbar-expand-md navbar-light">
-                        <a class="navbar-brand" href="index-4.html">
-                            <img src="/user/assets/img/logo.png" alt="logo">
-                        </a>
-
-                        <div class="collapse navbar-collapse mean-menu">
-                            <ul class="navbar-nav">
-                                <li class="nav-item"><a href="/" class="nav-link active">Home </a></li>
-                                <li class="nav-item megamenu"><a href="/shop" class="nav-link">Shop</i></a></li>
-                                <li class="nav-item megamenu"><a href="/about" class="nav-link">About</a></li>
-                                <li class="nav-item megamenu"><a href="/contact" class="nav-link">Contact us</a></li>
-                            </ul>
-
-                            <div class="others-option">
-                                <!-- New Search Input for sticky navbar -->
-                               
-
-                                <% if (locals.session.isAuth) { %>
-                                    <div class="option-item">
-                                        <div class="cart-btn">
-                                            <a href="/cart" ><i class='bx bx-shopping-bag'></i><span><%= cartItem %></span></a>
-                                        </div>
-                                    </div>
-                                <% } %>
-                            </div>
-                        </div>
-                    </nav>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Remove the search overlay since we're using inline search -->
-        
-        <!-- Loading Animation JavaScript -->
-        <script>
-document.addEventListener('DOMContentLoaded', function() {
-        // Get all nav links
+    <!-- Active Nav Script -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
         const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
-        
-        // Set active class based on current URL when page loads
         const currentPath = window.location.pathname;
+        
         navLinks.forEach(link => {
+            link.classList.remove('active');
             if (link.getAttribute('href') === currentPath) {
                 link.classList.add('active');
-            } else {
-                link.classList.remove('active');
             }
         });
-        
-        // Add click event listeners to each link
+
         navLinks.forEach(link => {
             link.addEventListener('click', function() {
-                // Remove active class from all links
                 navLinks.forEach(l => l.classList.remove('active'));
-                
-                // Add active class to clicked link
                 this.classList.add('active');
             });
         });
-
-        // Header search functionality
-        const searchBtns = document.querySelectorAll('.search-container button');
-        const searchInputs = document.querySelectorAll('.header-search-input');
-        const clearBtns = document.querySelectorAll('.search-clear-icon');
-        
-        // Setup each search input
-        searchInputs.forEach((input, index) => {
-            const btn = searchBtns[index];
-            const clearBtn = clearBtns[index];
-            
-            // Toggle search input visibility
-            btn.addEventListener('click', function(e) {
-                if (!input.classList.contains('active') && !input.value) {
-                    e.preventDefault(); // Prevent form submission when opening
-                    input.classList.add('active');
-                    input.focus();
-                }
-            });
-            
-            // Show clear button when input has text
-            input.addEventListener('input', function() {
-                if (this.value.length > 0) {
-                    clearBtn.style.opacity = '1';
-                } else {
-                    clearBtn.style.opacity = '0';
-                }
-            });
-            
-            // Check if there's initial value
-            if (input.value.length > 0) {
-                input.classList.add('active');
-                clearBtn.style.opacity = '1';
-            }
-        });
-        
-        // Hide search inputs when clicking outside
-        document.addEventListener('click', function(e) {
-            searchInputs.forEach((input, index) => {
-                const btn = searchBtns[index];
-                const clearBtn = clearBtns[index];
-                
-                if (!input.contains(e.target) && !btn.contains(e.target) && !clearBtn.contains(e.target)) {
-                    if (input.value.length === 0) {
-                        input.classList.remove('active');
-                    }
-                }
-            });
-        });
     });
-
-    // Clear search function
-    function clearUserSearch() {
-        const searchInput = document.getElementById('userSearchInput');
-        searchInput.value = '';
-        document.getElementById('searchClearBtn').style.opacity = '0';
-        // Redirect to shop page to show all products
-        window.location.href = '/shop';
-    }
-        </script>
-    </body>
-</html>
+    </script>

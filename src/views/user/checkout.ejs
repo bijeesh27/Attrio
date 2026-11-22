@@ -614,7 +614,7 @@ document.getElementById('addressForm').addEventListener('submit', async function
                 title: 'Success!',
                 text: 'Your address has been saved.',
                 icon: 'success',
-                confirmButtonColor: '#000000'
+                confirmButtonColor: '#4B4C3C'
             }).then(() => {
                 document.getElementById('addressFormContainer').style.display = 'none';
                 document.getElementById('addressForm').reset();
@@ -625,7 +625,7 @@ document.getElementById('addressForm').addEventListener('submit', async function
                 title: 'Error!',
                 text: result.message || 'Failed to save address. Please check your input and try again.',
                 icon: 'error',
-                confirmButtonColor: '#000000'
+                confirmButtonColor: '#4B4C3C'
             });
         }
     } catch (error) {
@@ -634,7 +634,7 @@ document.getElementById('addressForm').addEventListener('submit', async function
             title: 'Error!',
             text: 'An unexpected error occurred while saving the address. Please try again later.',
             icon: 'error',
-            confirmButtonColor: '#000000'
+            confirmButtonColor: '#4B4C3C'
         });
     }
 });
@@ -648,7 +648,7 @@ document.getElementById('placeOrderBtn').addEventListener('click', async functio
             title: 'Error',
             text: 'Please select a delivery address.',
             icon: 'error',
-            confirmButtonColor: '#000000'
+            confirmButtonColor: '#4B4C3C'
         });
         return;
     }
@@ -660,7 +660,7 @@ document.getElementById('placeOrderBtn').addEventListener('click', async functio
             title: 'Error',
             text: 'Please select a payment method.',
             icon: 'error',
-            confirmButtonColor: '#000000'
+            confirmButtonColor: '#4B4C3C'
         });
         return;
     }
@@ -679,7 +679,7 @@ document.getElementById('placeOrderBtn').addEventListener('click', async functio
                 text: 'Do you want to place this order with Cash on Delivery?',
                 icon: 'question',
                 showCancelButton: true,
-                confirmButtonColor: '#000000',
+                confirmButtonColor: '#4B4C3C',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, Place Order'
             }).then((result) => {
@@ -711,7 +711,7 @@ document.getElementById('placeOrderBtn').addEventListener('click', async functio
                         title: 'Error',
                         text: 'Invalid cart total. Please refresh the page and try again.',
                         icon: 'error',
-                        confirmButtonColor: '#000000'
+                        confirmButtonColor: '#4B4C3C'
                     });
                     return;
                 }
@@ -721,7 +721,7 @@ document.getElementById('placeOrderBtn').addEventListener('click', async functio
                         title: 'Insufficient Balance',
                         text: 'Your wallet balance is insufficient for this purchase.',
                         icon: 'error',
-                        confirmButtonColor: '#000000'
+                        confirmButtonColor: '#4B4C3C'
                     });
                     return;
                 }
@@ -731,7 +731,7 @@ document.getElementById('placeOrderBtn').addEventListener('click', async functio
                     text: `Do you want to pay ₹${cartTotal.toFixed(2)} using your wallet balance?`,
                     icon: 'question',
                     showCancelButton: true,
-                    confirmButtonColor: '#000000',
+                    confirmButtonColor: '#4B4C3C',
                     cancelButtonColor: '#d33',
                     confirmButtonText: 'Yes, Pay Now'
                 }).then((result) => {
@@ -745,7 +745,7 @@ document.getElementById('placeOrderBtn').addEventListener('click', async functio
                     title: 'Error',
                     text: 'Could not verify wallet balance. Please try again later.',
                     icon: 'error',
-                    confirmButtonColor: '#000000'
+                    confirmButtonColor: '#4B4C3C'
                 });
             }
             break;
@@ -755,7 +755,7 @@ document.getElementById('placeOrderBtn').addEventListener('click', async functio
                 title: 'Not Available',
                 text: 'This payment method is not available yet.',
                 icon: 'info',
-                confirmButtonColor: '#000000'
+                confirmButtonColor: '#4B4C3C'
             });
     }
 });
@@ -767,7 +767,7 @@ function payNow(addressId) {
             title: 'Error',
             text: 'Please select a delivery address.',
             icon: 'error',
-            confirmButtonColor: '#000000'
+            confirmButtonColor: '#4B4C3C'
         });
         return;
     }
@@ -790,7 +790,7 @@ function payNow(addressId) {
             title: 'Error',
             text: 'Invalid order total. Please refresh the page and try again.',
             icon: 'error',
-            confirmButtonColor: '#000000'
+            confirmButtonColor: '#4B4C3C'
         });
         return;
     }
@@ -837,7 +837,7 @@ function payNow(addressId) {
                         title: 'Payment Cancelled',
                         text: 'You closed the payment window.',
                         icon: 'warning',
-                        confirmButtonColor: '#000000'
+                        confirmButtonColor: '#4B4C3C'
                     });
                 }
             },
@@ -847,7 +847,7 @@ function payNow(addressId) {
                 contact: document.getElementById('phone')?.value || ''
             },
             theme: {
-                color: '#000000'
+                color: '#4B4C3C'
             }
         };
 
@@ -879,7 +879,7 @@ function payNow(addressId) {
                     title: 'Error',
                     text: 'Failed to process failed payment. Please try again.',
                     icon: 'error',
-                    confirmButtonColor: '#000000'
+                    confirmButtonColor: '#4B4C3C'
                 });
             });
         });
@@ -893,7 +893,7 @@ function payNow(addressId) {
             title: 'Error',
             text: error.message || 'Failed to initiate payment. Please try again later.',
             icon: 'error',
-            confirmButtonColor: '#000000',
+            confirmButtonColor: '#4B4C3C',
             showCancelButton: true,
             cancelButtonText: 'Go to Cart',
             confirmButtonText: 'Try Again'
@@ -960,7 +960,7 @@ function processOrder(addressId, paymentMethod, paymentId = null, orderId = null
             title: 'Error',
             text: error.message || 'An unexpected error occurred while processing your order. Please try again.',
             icon: 'error',
-            confirmButtonColor: '#000000',
+            confirmButtonColor: '#4B4C3C',
             showCancelButton: true,
             cancelButtonText: 'Go to Cart',
             confirmButtonText: 'Try Again'
@@ -1046,7 +1046,7 @@ function removeCoupon() {
             title: 'Error',
             text: error.message || 'Failed to remove coupon. Please try again later.',
             icon: 'error',
-            confirmButtonColor: '#000000'
+            confirmButtonColor: '#4B4C3C'
         });
     });
 }
@@ -1094,7 +1094,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 title: 'Stock Issue',
                 text: data.stockErrors.map(err => err.message).join('\n'),
                 icon: 'error',
-                confirmButtonColor: '#000000',
+                confirmButtonColor: '#4B4C3C',
                 showCancelButton: true,
                 cancelButtonText: 'Go to Cart',
                 confirmButtonText: 'Try Again'

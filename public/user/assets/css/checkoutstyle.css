@@ -1,1597 +1,316 @@
-/* Main Checkout Styles */
+/* Main Checkout Styles - Attiro Redesign */
 .checkout-area {
-    padding: 80px 0;
-    background-color: #f9f9f9;
-  }
-  
-  /* Checkout Steps Indicator */
-  .checkout-steps-indicator {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 30px;
-    position: relative;
-  }
-  
-  .step {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-    z-index: 2;
-  }
-  
-  .step-number {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #e0e0e0;
-    color: #666;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    margin-bottom: 10px;
-    transition: all 0.3s ease;
-  }
-  
-  .step-text {
-    font-size: 14px;
-    color: #666;
-    font-weight: 500;
-  }
-  
-  .step.active .step-number {
-    background-color: #000;
-    color: #fff;
-  }
-  
-  .step.active .step-text {
-    color: #000;
-    font-weight: 600;
-  }
-  
-  .step.completed .step-number {
-    background-color: #4CAF50;
-    color: #fff;
-  }
-  
-  .step-connector {
-    flex: 1;
-    height: 3px;
-    background-color: #e0e0e0;
-    position: relative;
-    z-index: 1;
-  }
-  
-  /* Checkout Sections */
-  .checkout-section {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    margin-bottom: 25px;
-    overflow: hidden;
-  }
-  
-  .section-header {
-    padding: 15px 20px;
-    background-color: #f5f5f5;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .section-header h3 {
-    font-size: 18px;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    font-weight: 600;
-  }
-  
-  .section-header h3 i {
-    margin-right: 10px;
-    font-size: 22px;
-  }
-  
-  .section-body {
-    padding: 20px;
-  }
-  
-  /* Address Cards */
-  .saved-addresses {
-    margin-bottom: 20px;
-  }
-  
-  .address-selection {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 15px;
-    margin-bottom: 20px;
-  }
-  
-  .address-card {
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    padding: 15px;
-    display: flex;
-    transition: all 0.3s ease;
-    position: relative;
-  }
-  
-  .address-card.selected {
-    border-color: #000;
-    background-color: #f9f9f9;
-  }
-  
-  .address-radio {
-    margin-right: 15px;
-    display: flex;
-    align-items: flex-start;
-    padding-top: 5px;
-  }
-  
-  .address-radio input[type="radio"] {
-    display: none;
-  }
-  
-  .address-selector {
-    width: 18px;
-    height: 18px;
-    border: 2px solid #aaa;
-    border-radius: 50%;
-    display: inline-block;
-    position: relative;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  
-  .address-radio input[type="radio"]:checked + .address-selector {
-    border-color: #000;
-  }
-  
-  .address-radio input[type="radio"]:checked + .address-selector::after {
-    content: "";
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background-color: #000;
-    border-radius: 50%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-  
-  .address-content {
-    flex: 1;
-  }
-  
-  .address-content h4 {
-    font-size: 16px;
-    margin: 0 0 5px;
-    font-weight: 600;
-  }
-  
-  .address-content p {
-    margin: 0 0 5px;
-    color: #666;
-    font-size: 14px;
-  }
-  
-  .address-actions {
-    margin-top: 10px;
-    display: flex;
-    gap: 10px;
-  }
-  
-  .btn-edit-address, .btn-delete-address {
-    background: none;
-    border: none;
-    font-size: 13px;
-    color: #666;
-    cursor: pointer;
-    padding: 5px 0;
-    display: flex;
-    align-items: center;
-    transition: all 0.3s ease;
-  }
-  
-  .btn-edit-address:hover {
-    color: #007bff;
-  }
-  
-  .btn-delete-address:hover {
-    color: #dc3545;
-  }
-  
-  .btn-edit-address i, .btn-delete-address i {
-    margin-right: 5px;
-  }
-  
-  .no-addresses {
-    text-align: center;
-    padding: 20px;
-    border: 1px dashed #ccc;
-    border-radius: 6px;
-    margin-bottom: 20px;
-  }
-  
-  .no-address-icon {
-    font-size: 40px;
-    color: #aaa;
-    margin-bottom: 10px;
-  }
-  
-  .btn-add-address {
-    background-color: #000;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 10px 20px;
-    font-size: 14px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    width: 100%;
-  }
-  
-  .btn-add-address:hover {
-    background-color: #333;
-  }
-  
-  .btn-add-address i {
-    margin-right: 8px;
-    font-size: 18px;
-  }
-  
-  /* Address Form */
-  .address-form-container {
-    margin-top: 20px;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    padding: 20px;
-    background-color: #f9f9f9;
-  }
-  
-  .form-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .form-header h4 {
-    margin: 0;
-    font-size: 16px;
-    font-weight: 600;
-  }
-  
-  .form-close {
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    color: #666;
-    transition: color 0.3s ease;
-  }
-  
-  .form-close:hover {
-    color: #000;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-size: 14px;
-    font-weight: 500;
-  }
-  
-  .form-control {
-    width: 100%;
-    padding: 10px 12px;
-    font-size: 14px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    transition: border-color 0.3s ease;
-  }
-  
-  .form-control:focus {
-    border-color: #000;
-    outline: none;
-  }
-  
-  .form-check {
-    display: flex;
-    align-items: center;
-    margin-top: 10px;
-  }
-  
-  .form-check-input {
-    margin-right: 8px;
-  }
-  
-  .form-check-label {
-    font-size: 14px;
-  }
-  
-  .btn-save-address {
-    background-color: #000;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 10px 20px;
-    font-size: 14px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-  }
-  
-  .btn-save-address:hover {
-    background-color: #333;
-  }
-  
-  .btn-save-address i {
-    margin-right: 8px;
-  }
-  
-  /* Payment Methods */
-  .payment-methods {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-  
-  .payment-method-option {
-    position: relative;
-  }
-  
-  .payment-method-option input[type="radio"] {
-    position: absolute;
-    opacity: 0;
-  }
-  
-  .payment-method-label {
-    display: flex;
-    align-items: center;
-    padding: 15px;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin: 0;
-  }
-  
-  .payment-method-option input[type="radio"]:checked + .payment-method-label {
-    border-color: #000;
-    background-color: #f9f9f9;
-  }
-  
-  .payment-method-icon {
-    width: 40px;
-    height: 40px;
-    background-color: #f5f5f5;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 15px;
-    font-size: 20px;
-  }
-  
-  .payment-method-option input[type="radio"]:checked + .payment-method-label .payment-method-icon {
-    background-color: #000;
-    color: #fff;
-  }
-  
-  .payment-method-info {
-    flex: 1;
-  }
-  
-  .payment-method-info h4 {
-    margin: 0 0 5px;
-    font-size: 15px;
-    font-weight: 600;
-  }
-  
-  .payment-method-info p {
-    margin: 0;
-    font-size: 13px;
-    color: #666;
-  }
-  
-  /* Order Summary */
-  .order-summary {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    position: sticky;
-    top: 20px;
-  }
-  
-  .summary-header {
-    padding: 15px 20px;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .summary-header h3 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-  }
-  
-  .summary-body {
-    padding: 20px;
-  }
-  
-  .summary-items {
-    margin-bottom: 20px;
-  }
-  
-  .items-count {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-  }
-  
-  .view-details-toggle {
-    color: #007bff;
-    text-decoration: none;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-  }
-  
-  .view-details-toggle i {
-    margin-left: 5px;
-    transition: transform 0.3s ease;
-  }
-  
-  .items-details {
-    border-top: 1px solid #eee;
-    padding-top: 15px;
-  }
-  
-  .summary-item-row {
-    display: flex;
-    margin-bottom: 15px;
-    align-items: center;
-  }
-  
-  .item-image {
-    width: 60px;
-    height: 60px;
-    border-radius: 4px;
-    overflow: hidden;
-    position: relative;
-    margin-right: 15px;
-  }
-  
-  .item-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  .item-quantity {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background-color: #000;
-    color: #fff;
-    font-size: 12px;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .item-details {
-    flex: 1;
-  }
-  
-  .item-name {
-    font-size: 14px;
-    margin: 0 0 5px;
-    font-weight: 600;
-  }
-  
-  .item-size {
-    font-size: 12px;
-    color: #666;
-    margin: 0;
-  }
-  
-  .item-price {
-    font-weight: 600;
-    font-size: 14px;
-  }
-  
-  .empty-cart-message {
-    text-align: center;
-    padding: 15px;
-    font-size: 14px;
-    color: #666;
-  }
-  
-  .empty-cart-message a {
-    color: #007bff;
-    text-decoration: none;
-  }
-  
-  .price-breakdown {
-    margin-bottom: 20px;
-  }
-  
-  .summary-divider {
-    height: 1px;
-    background-color: #eee;
-    margin: 15px 0;
-  }
-  
-  .summary-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-  }
-  
-  .summary-row .label {
-    color: #666;
-  }
-  
-  .summary-row .value {
-    font-weight: 500;
-  }
-  
-  .free-shipping {
-    color: #4CAF50;
-  }
-  
-  .total-row {
-    font-size: 18px;
-    font-weight: 600;
-  }
-  
-  .discount-row {
-    color: #4CAF50;
-  }
-  
-  /* Coupon Section */
-  .coupon-section {
-    margin-bottom: 20px;
-  }
-  
-  .coupon-toggle {
-    display: flex;
-    align-items: center;
-    padding: 10px 0;
-    cursor: pointer;
-    color: #007bff;
-    font-size: 14px;
-  }
-  
-  .coupon-toggle i {
-    margin-right: 8px;
-  }
-  
-  .toggle-icon {
-    margin-left: auto;
-    transition: transform 0.3s ease;
-  }
-  
-  .coupon-form {
-    margin-top: 15px;
-  }
-  
-  .input-group {
-    display: flex;
-  }
-  
-  .input-group .form-control {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-  
-  .input-group-append {
-    display: flex;
-  }
-  
-  .btn-apply-coupon {
-    background-color: #000;
-    color: #fff;
-    border: none;
-    padding: 10px 15px;
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .btn-apply-coupon:hover {
-    background-color: #333;
-  }
-  
-  .coupon-message {
-    margin-top: 8px;
-    font-size: 13px;
-  }
-  
-  .summary-footer {
-    padding: 20px;
-    border-top: 1px solid #eee;
-  }
-  
-  .btn-place-order {
-    width: 100%;
-    background-color: #000;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 15px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-  }
-  
-  .btn-place-order:hover {
-    background-color: #333;
-  }
-  
-  .btn-place-order i {
-    margin-left: 8px;
-    font-size: 18px;
-  }
-  
-  /* Payment Modal */
-  .payment-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1000;
-    display: none;
-  }
-  
-  .payment-modal-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-  
-  .payment-modal-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 90%;
-    max-width: 800px;
-    background-color: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 3px 20px rgba(0, 0, 0, 0.2);
-  }
-  
-  .payment-card-container {
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-  }
-  
-  @media (min-width: 768px) {
-    .payment-card-container {
-      flex-direction: row;
-    }
-  }
-  
-  /* Credit Card Design */
-  .credit-card {
-    width: 100%;
-    max-width: 350px;
-    height: 200px;
-    margin: 0 auto 30px;
-    perspective: 1000px;
-  }
-  
-  @media (min-width: 768px) {
-    .credit-card {
-      margin: 0 20px 0 0;
-    }
-  }
-  
-  .credit-card-inner {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    transition: transform 0.8s;
-    transform-style: preserve-3d;
-  }
-  
-  .card-front, .card-back {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    backface-visibility: hidden;
-    border-radius: 15px;
-    overflow: hidden;
-    padding: 20px;
-    box-sizing: border-box;
-    background: linear-gradient(135deg, #000046, #1CB5E0);
-    color: #fff;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  }
-  
-  .card-back {
-    transform: rotateY(180deg);
-  }
-  
-  .card-logo {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    font-size: 30px;
-  }
-  
-  .card-chip {
-    margin-bottom: 40px;
-    font-size: 24px;
-  }
-  
-  .card-number {
-    font-size: 20px;
-    letter-spacing: 2px;
-    margin-bottom: 30px;
-    font-family: 'Courier New', monospace;
-  }
-  
-  .card-info {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-  }
-  
-  .card-holder, .card-expiry {
-    text-transform: uppercase;
-  }
-  
-  .label {
-    color: rgba(255, 255, 255, 0.7);
-    margin-bottom: 5px;
-    font-size: 10px;
-  }
-  
-  .card-stripe {
-    background-color: #111;
-    height: 40px;
-    margin: 20px 0;
-  }
-  
-  .card-signature {
-    background-color: #fff;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    height: 40px;
-  }
-  
-  .signature-line {
-    flex: 1;
-    height: 2px;
-    background: repeating-linear-gradient(
-      90deg,
-      #777,
-      #777 2px,
-      transparent 2px,
-      transparent 4px
-    );
-  }
-  
-  .cvc {
-    width: 40px;
-    text-align: center;
-    font-family: 'Courier New', monospace;
-    font-size: 14px;
-    color: #000;
-    font-weight: bold;
-  }
-  
-  .card-info-back {
-    font-size: 8px;
-    color: rgba(255, 255, 255, 0.7);
-    margin-top: 20px;
-  }
-  
-  /* Payment Form */
-  .payment-form {
-    flex: 1;
-  }
-  
-  .close-modal {
-    background: none;
-    border: none;
-    font-size: 24px;
-    color: #666;
-    cursor: pointer;
-    padding: 0;
-    transition: color 0.3s ease;
-  }
-  
-  .close-modal:hover {
-    color: #000;
-  }
-  
-  .input-with-icon {
-    position: relative;
-  }
-  
-  .input-with-icon i {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #aaa;
-  }
-  
-  .input-with-icon input {
-    padding-left: 35px;
-  }
-  
-  .save-card-checkbox {
-    display: flex;
-    align-items: center;
-  }
-  
-  .save-card-checkbox input {
-    margin-right: 8px;
-  }
-  
-  .btn-pay {
-    width: 100%;
-    background-color: #000;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    margin-top: 20px;
-  }
-  
-  .btn-pay:hover {
-    background-color: #333;
-  }
-  
-  .btn-pay i {
-    margin-left: 8px;
-  }
-  
-  /* Responsive Styles */
-  @media (max-width: 991px) {
-    .checkout-area {
-      padding: 60px 0;
-    }
-    
-    .step-number {
-      width: 35px;
-      height: 35px;
-      font-size: 14px;
-    }
-    
-    .step-text {
-      font-size: 12px;
-    }
-  }
-  
-  @media (max-width: 767px) {
-    .checkout-area {
-      padding: 40px 0;
-    }
-    
-    .address-selection {
-      grid-template-columns: 1fr;
-    }
-    
-    .payment-methods {
-      grid-template-columns: 1fr;
-    }
-    
-    .order-summary {
-      margin-top: 30px;
-      position: static;
-    }
-    
-    .checkout-steps-indicator {
-      margin-bottom: 20px;
-    }
-    
-    .step-connector {
-      flex: 1;
-    }
-    
-    .step-number {
-      width: 30px;
-      height: 30px;
-      font-size: 12px;
-    }
-    
-    .step-text {
-      font-size: 10px;
-    }
-  }
-  
-  /* Facility Area Styles */
-  .facility-area {
-    padding-bottom: 70px;
-  }
-  
-  .single-facility-box {
-    text-align: center;
-    margin-bottom: 30px;
-  }
-  
-  .single-facility-box .icon {
-    margin-bottom: 15px;
-    font-size: 35px;
-  }
-  
-  .single-facility-box h3 {
-    font-size: 16px;
-    margin: 0;
-  }
-  
-  /* Page Title Styles */
-  .page-title-area {
-    background-color: #f9f9f9;
-    padding: 30px 0;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .page-title-content h2 {
-    margin: 0 0 10px;
-    font-size: 24px;
-    font-weight: 600;
-  }
-  
-  .page-title-content ul {
-    padding: 0;
-    margin: 0;
-    list-style-type: none;
-    display: flex;
-  }
-  
-  .page-title-content ul li {
-    position: relative;
-    font-size: 14px;
-    color: #666;
-  }
-  
-  .page-title-content ul li:not(:last-child) {
-    margin-right: 20px;
-  }
-  
-  .page-title-content ul li:not(:last-child)::after {
-    content: "/";
-    position: absolute;
-    right: -12px;
-    color: #999;
-  }
-  
-  .page-title-content ul li a {
-    color: #000;
-    text-decoration: none;
-  }
-  
-  .page-title-content ul li a:hover {
-    color: #007bff;
-  }
-  
-  /* Search Overlay */
-  .search-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 9999;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease-in-out;
-  }
-  
-  .search-overlay.active {
-    opacity: 1;
-    visibility: visible;
-  }
-  
-  .search-overlay .d-table {
-    display: table;
-    width: 100%;
-    height: 100%;
-  }
-  
-  .search-overlay .d-table-cell {
-    display: table-cell;
-    vertical-align: middle;
-  }
-  
-  .search-overlay-layer {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background-color: rgba(0, 0, 0, 0.85);
-    transform: translateX(-100%);
-    transition: all 0.3s ease-in-out;
-  }
-  
-  .search-overlay.active .search-overlay-layer:nth-child(1) {
-    transform: translateX(0);
-    transition-delay: 0.1s;
-  }
-  
-  .search-overlay.active .search-overlay-layer:nth-child(2) {
-    transform: translateX(0);
-    transition-delay: 0.2s;
-  }
-  
-  .search-overlay.active .search-overlay-layer:nth-child(3) {
-    transform: translateX(0);
-    transition-delay: 0.3s;
-  }
-  
-  .search-overlay-close {
-    position: absolute;
-    top: 40px;
-    right: 40px;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    transform: translateY(-100px);
-  }
-  
-  .search-overlay.active .search-overlay-close {
-    transform: translateY(0);
-    transition-delay: 0.4s;
-  }
-  
-  .search-overlay-close-line {
-    width: 100%;
-    height: 3px;
-    background-color: #fff;
-    margin: 3px 0;
-    transform-origin: center;
-    transition: transform 0.3s ease;
-  }
-  
-  .search-overlay-close:hover .search-overlay-close-line:first-child {
-    transform: rotate(45deg) translate(5px, 5px);
-  }
-  
-  .search-overlay-close:hover .search-overlay-close-line:last-child {
-    transform: rotate(-45deg) translate(5px, -5px);
-  }
-  
-  .search-overlay-form {
-    max-width: 550px;
-    margin: 0 auto;
-    position: relative;
-    transform: translateY(100px);
-    opacity: 0;
-    transition: all 0.3s ease-in-out;
-  }
-  
-  .search-overlay.active .search-overlay-form {
-    transform: translateY(0);
-    opacity: 1;
-    transition-delay: 0.5s;
-  }
-  
-  .search-overlay-form form {
-    position: relative;
-  }
-  
-  .search-overlay-form .input-search {
-    width: 100%;
-    height: 60px;
-    padding: 0 15px 0 78px;
-    border: none;
-    border-radius: 4px;
-    font-size: 24px;
-    background-color: transparent;
-    border-bottom: 2px solid #fff;
-    color: #fff;
-  }
-  
-  .search-overlay-form .input-search:focus {
-    outline: none;
-  }
-  
-  .search-overlay-form .input-search::placeholder {
-    color: #fff;
-    opacity: 0.7;
-  }
-  
-  .search-overlay-form button {
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    background-color: transparent;
-    border: none;
-    color: #fff;
-    font-size: 30px;
-    padding: 0 25px;
-    cursor: pointer;
-  }
-  
-  /* Sweet Alert Customization */
-  .swal2-popup {
-    border-radius: 10px !important;
-    padding: 25px !important;
-  }
-  
-  .swal2-title {
-    font-size: 22px !important;
-    font-weight: 600 !important;
-  }
-  
-  .swal2-confirm {
-    background-color: #000 !important;
-    border-radius: 4px !important;
-    box-shadow: none !important;
-  }
-  
-  .swal2-confirm:focus {
-    box-shadow: none !important;
-  }
-  
-  /* Typography & Spacing Utilities */
-  .mt-3 {
-    margin-top: 1rem;
-  }
-  
-  .text-center {
-    text-align: center;
-  }
-  
-  .text-right {
-    text-align: right;
-  }
-  
-  .text-danger {
-    color: #dc3545;
-  }
-  
-  .text-success {
-    color: #4CAF50;
-  }
-  
-  .text-info {
-    color: #007bff;
-  }
-
-  /* Pink Theme Color: #f53f85 */
-
-/* Global Color Overrides */
-.btn-add-address, 
-.btn-save-address, 
-.btn-place-order,
-.btn-pay,
-.btn-apply-coupon {
-  background-color: #f53f85;
-  border-color: #f53f85;
+  padding: 60px 0;
+  background-color: var(--bg-primary);
 }
 
-.btn-add-address:hover, 
-.btn-save-address:hover, 
-.btn-place-order:hover,
-.btn-pay:hover,
-.btn-apply-coupon:hover {
-  background-color: #d62d6f;
-  border-color: #d62d6f;
+/* Checkout Steps Indicator */
+.checkout-steps-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 35px;
+  position: relative;
+  background: #FFFFFF;
+  padding: 24px 30px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
 }
 
-/* Step Indicator */
-.checkout-steps-indicator .step.active .step-number {
-  background-color: #f53f85;
-  border-color: #f53f85;
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
 }
 
-.checkout-steps-indicator .step.completed .step-number {
-  background-color: #f53f85;
-  border-color: #f53f85;
+.step-number {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: var(--bg-warm);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
 }
 
-.checkout-steps-indicator .step-connector {
-  background-color: #e0e0e0;
+.step-text {
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 500;
 }
 
-.checkout-steps-indicator .step.active .step-text,
-.checkout-steps-indicator .step.completed .step-text {
-  color: #f53f85;
+.step.active .step-number {
+  background-color: var(--btn-primary);
+  color: #FFFFFF;
 }
 
-/* Radio Button Styling */
-.address-radio input[type="radio"]:checked + .address-selector {
-  border-color: #f53f85;
+.step.active .step-text {
+  color: var(--text-heading);
+  font-weight: 600;
 }
 
-.address-radio input[type="radio"]:checked + .address-selector::after {
-  background-color: #f53f85;
+.step.completed .step-number {
+  background-color: var(--success);
+  color: #FFFFFF;
 }
 
-/* Address Card Selected */
-.address-card.selected {
-  border-color: #f53f85;
+.step-connector {
+  flex: 1;
+  height: 2px;
+  background-color: var(--border);
+  margin: 0 15px;
+  margin-bottom: 22px;
+  position: relative;
+  z-index: 1;
 }
 
-/* Section Headers */
+/* Checkout Sections */
+.checkout-section {
+  background-color: #FFFFFF;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 25px;
+  overflow: hidden;
+}
+
+.section-header {
+  padding: 18px 24px;
+  background-color: var(--bg-warm);
+  border-bottom: 1px solid var(--border);
+}
+
+.section-header h3 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--text-heading);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+}
+
 .section-header h3 i {
-  color: #f53f85;
+  margin-right: 10px;
+  font-size: 22px;
+  color: var(--accent);
+}
+
+.section-body {
+  padding: 24px;
+}
+
+/* Address Cards */
+.address-selection {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.address-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 18px;
+  position: relative;
+  background: var(--bg-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.address-card:hover {
+  border-color: var(--accent);
+}
+
+.address-card.selected {
+  border: 2px solid var(--accent);
+  background: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(150, 117, 101, 0.12);
+}
+
+.address-card h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-heading);
+  margin-bottom: 6px;
+}
+
+.address-card p {
+  font-size: 13px;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+/* Order Summary Box (Sidebar) */
+.order-summary-box,
+.order-summary-card {
+  background: #FFFFFF;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  padding: 24px;
+}
+
+.order-summary-box h3,
+.order-summary-card h3 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-heading);
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+
+.order-item-list {
+  max-height: 320px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+
+.order-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.order-item-img {
+  width: 50px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-right: 12px;
+}
+
+.order-item-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.order-item-price {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-heading);
+}
+
+/* Price summary */
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: var(--accent);
+}
+
+.summary-line.total-line {
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+  margin-top: 14px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-heading);
+}
+
+/* Coupon section */
+.coupon-box {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.coupon-input {
+  flex: 1;
+  height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0 14px;
+  font-size: 13px;
+  background: var(--bg-primary);
+}
+
+.coupon-input:focus {
+  border-color: var(--accent);
+  outline: none;
+  background: #FFFFFF;
+}
+
+.apply-coupon-btn {
+  height: 44px;
+  padding: 0 20px;
+  border: none;
+  background: var(--btn-primary);
+  color: #FFFFFF;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.apply-coupon-btn:hover {
+  background: var(--btn-hover);
+}
+
+/* Place Order button */
+.place-order-btn,
+.btn-place-order {
+  width: 100%;
+  height: 50px;
+  background: var(--btn-primary);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.place-order-btn:hover,
+.btn-place-order:hover {
+  background: var(--btn-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(75, 76, 60, 0.25);
 }
 
 /* Payment Methods */
-.payment-method-option input[type="radio"]:checked + .payment-method-label {
-  border-color: #f53f85;
+.payment-methods-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin-top: 16px;
 }
 
-.payment-method-option input[type="radio"]:checked + .payment-method-label .payment-method-icon {
-  color: #ffffff;
-}
-
-/* Order Summary */
-.summary-header h3 {
-  color: #f53f85;
-}
-
-.view-details-toggle, 
-.coupon-toggle i {
-  color: #f53f85;
-}
-
-.free-shipping {
-  color: #f53f85;
-}
-
-/* Discount */
-.discount-amount {
-  color: #f53f85;
-}
-
-/* Coupon Message */
-.coupon-message .text-success {
-  color: #f53f85 !important;
-}
-
-/* Credit Card */
-.credit-card {
-  background: linear-gradient(135deg, #ffffff, #ffffff);
-}
-
-/* Sweet Alert Overrides */
-.swal2-styled.swal2-confirm {
-  background-color: #f53f85 !important;
-}
-
-/* Checkbox styling */
-.form-check-input:checked {
-  background-color: #f53f85;
-  border-color: #f53f85;
-}
-
-/* Links */
-a:hover {
-  color: #f53f85;
-}
-
-/* Breadcrumb active */
-.page-title-content ul li:last-child {
-  color: #f53f85;
-}
-
-/* Form focus states */
-.form-control:focus {
-  border-color: #f53f85;
-  box-shadow: 0 0 0 0.2rem rgba(245, 63, 133, 0.25);
-}
-
-/* Button hover transitions */
-.btn-add-address, 
-.btn-save-address, 
-.btn-place-order,
-.btn-pay,
-.btn-apply-coupon {
-  transition: all 0.3s ease;
-}
-
-/* Owl Carousel Dots */
-.owl-dots .owl-dot.active span {
-  background-color: #f53f85 !important;
-}
-
-/* Facility icons */
-.single-facility-box .icon {
-  color: #f53f85;
-}
-
-/* Search overlay */
-.search-overlay-form button {
-  background-color: #f53f85;
-}
-
-/* No address icon */
-.no-address-icon i {
-  color: #f53f85;
-}
-
-
-/* Coupon Modal Styles */
-.coupon-modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1100;
-}
-
-.coupon-modal-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-.coupon-modal-content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-  width: 90%;
-  max-width: 500px;
-  max-height: 80vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.coupon-modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px;
-  border-bottom: 1px solid #eee;
-}
-
-.coupon-modal-header h3 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.coupon-modal-body {
-  padding: 20px;
-  overflow-y: auto;
-}
-
-.coupon-list {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.coupon-card {
-  display: flex;
-  flex-wrap: wrap;
-  border: 1px dashed #ddd;
+.payment-method-card {
+  border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 15px;
-  position: relative;
-  background-color: #f9f9f9;
-  transition: all 0.3s ease;
-}
-
-.coupon-card:hover {
-  border-color: #000;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-}
-
-.coupon-card-left {
-  flex: 1;
-  padding-right: 15px;
-}
-
-.coupon-card-right {
+  padding: 16px;
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: space-between;
-}
-
-.coupon-code {
-  font-size: 18px;
-  font-weight: 700;
-  color: #000;
-  margin-bottom: 5px;
-  letter-spacing: 1px;
-}
-
-.coupon-expiry {
-  font-size: 12px;
-  color: #666;
-}
-
-.coupon-discount {
-  font-size: 16px;
-  font-weight: 700;
-  color: #d23f57;
-  margin-bottom: 5px;
-}
-
-.coupon-min {
-  font-size: 12px;
-  color: #666;
-  margin-bottom: 10px;
-}
-
-.coupon-description {
-  width: 100%;
-  font-size: 13px;
-  color: #555;
-  margin-top: 10px;
-  border-top: 1px solid #eee;
-  padding-top: 10px;
-}
-
-.btn-apply {
-  background-color: #000;
-  color: #fff;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
+  align-items: center;
+  gap: 12px;
   cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
-  transition: all 0.3s ease;
+  background: var(--bg-primary);
+  transition: all 0.2s;
 }
 
-.btn-apply:hover {
-  background-color: #333;
+.payment-method-card:hover {
+  border-color: var(--accent);
 }
 
-.no-coupons {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 30px 0;
-  color: #666;
-}
-
-.no-coupons-icon {
-  font-size: 40px;
-  margin-bottom: 15px;
-  color: #ddd;
-}
-
-/* Applied Coupon Styles */
-.applied-coupon {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #f0f8ff;
-  border: 1px solid #c5e1ff;
-  border-radius: 6px;
-  padding: 10px 15px;
-  margin-bottom: 10px;
-}
-
-.applied-coupon-code {
-  display: flex;
-  align-items: center;
-}
-
-.coupon-badge {
-  background-color: #2a9d8f;
-  color: white;
-  font-size: 12px;
-  padding: 3px 6px;
-  border-radius: 4px;
-  margin-right: 8px;
-  display: flex;
-  align-items: center;
-}
-
-.coupon-badge i {
-  margin-right: 3px;
-}
-
-.code-text {
-  font-weight: 600;
-  color: #000;
-}
-
-.coupon-discount-amount {
-  font-weight: 600;
-  color: #2a9d8f;
-}
-
-.btn-remove-coupon {
-  background: transparent;
-  border: none;
-  color: #666;
-  cursor: pointer;
-  font-size: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  margin-left: 10px;
-  transition: color 0.3s ease;
-}
-
-.btn-remove-coupon:hover {
-  color: #f44336;
-}
-
-.btn-view-coupons {
-  background: transparent;
-  border: none;
-  color: #3f51b5;
-  cursor: pointer;
-  padding: 5px 0;
-  font-size: 13px;
-  display: flex;
-  align-items: center;
-  margin-top: 8px;
-}
-
-.btn-view-coupons i {
-  margin-right: 5px;
-}
-
-.btn-view-coupons:hover {
-  text-decoration: underline;
-}
-
-.payment-method-label.dimmed {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.payment-method-option.disabled {
-  pointer-events: none;
+.payment-method-card.selected {
+  border: 2px solid var(--accent);
+  background: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(150, 117, 101, 0.12);
 }

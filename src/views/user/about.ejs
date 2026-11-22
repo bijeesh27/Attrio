@@ -1,352 +1,202 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fashion Store - Home</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<%- include('../partials/user/header') %>
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5dc;
-            color: #333;
-        }
+<style>
+  .about-hero {
+    background: linear-gradient(135deg, var(--bg-warm, #DDD3CB) 0%, var(--bg-primary, #F4F4F4) 100%);
+    padding: 70px 0 50px;
+    border-bottom: 1px solid var(--border-color, #e2ded9);
+    text-align: center;
+  }
 
-        /* Navbar Styles */
-        .navbar {
-            background-color: #fff;
-            padding: 1.2rem 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
+  .about-hero h1 {
+    font-family: var(--font-heading, 'Playfair Display', serif);
+    font-size: 2.8rem;
+    color: var(--text-color, #351F16);
+    margin-bottom: 14px;
+    letter-spacing: -0.5px;
+  }
 
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+  .about-hero p {
+    font-size: 1.1rem;
+    color: var(--text-muted, #7c7267);
+    max-width: 620px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
 
-        .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #8b7355;
-        }
+  .about-content-section {
+    padding: 70px 0;
+  }
 
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2.5rem;
-        }
+  .story-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 50px;
+    align-items: center;
+    margin-bottom: 70px;
+  }
 
-        .nav-links a {
-            text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            transition: color 0.3s;
-            font-size: 1.05rem;
-        }
+  .story-text h2 {
+    font-family: var(--font-heading, 'Playfair Display', serif);
+    font-size: 2.2rem;
+    color: var(--text-color, #351F16);
+    margin-bottom: 18px;
+  }
 
-        .nav-links a:hover {
-            color: #8b7355;
-        }
+  .story-text p {
+    color: #605249;
+    line-height: 1.8;
+    font-size: 1rem;
+    margin-bottom: 20px;
+  }
 
-        /* Slider Styles */
-        .slider-container {
-            position: relative;
-            width: 100%;
-            height: 500px;
-            overflow: hidden;
-            background-color: #fff;
-        }
+  .story-image-wrap {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(53, 31, 22, 0.08);
+    border: 1px solid var(--border-color, #DDD3CB);
+    background-color: var(--bg-warm, #DDD3CB);
+    aspect-ratio: 4/3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-        .slider-wrapper {
-            display: flex;
-            height: 100%;
-            transition: transform 0.8s ease-in-out;
-        }
+  .story-image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 
-        .slide {
-            min-width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #f5f5dc 0%, #fff 100%);
-        }
+  .values-section {
+    background-color: #FFFFFF;
+    border: 1px solid var(--border-color, #DDD3CB);
+    border-radius: 12px;
+    padding: 50px 40px;
+    margin-bottom: 60px;
+  }
 
-        .slide-content {
-            text-align: center;
-            padding: 2rem;
-        }
+  .values-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
 
-        .slide-image {
-            width: 300px;
-            height: 400px;
-            background-color: #e8e8d8;
-            margin: 0 auto 1.5rem;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            color: #8b7355;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
+  .values-header h2 {
+    font-family: var(--font-heading, 'Playfair Display', serif);
+    font-size: 2rem;
+    color: var(--text-color, #351F16);
+    margin-bottom: 10px;
+  }
 
-        .slide h2 {
-            font-size: 2rem;
-            color: #8b7355;
-            margin-bottom: 0.5rem;
-        }
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+  }
 
-        .slide p {
-            font-size: 1.1rem;
-            color: #666;
-        }
+  .value-card {
+    text-align: center;
+    padding: 24px;
+    border-radius: 8px;
+    background-color: var(--bg-primary, #F4F4F4);
+    border: 1px solid var(--border-color, #DDD3CB);
+  }
 
-        /* Products Section */
-        .products-section {
-            max-width: 1200px;
-            margin: 4rem auto;
-            padding: 0 2rem;
-        }
+  .value-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: var(--bg-warm, #DDD3CB);
+    color: var(--accent, #967565);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin-bottom: 18px;
+  }
 
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            color: #8b7355;
-            margin-bottom: 3rem;
-        }
+  .value-card h3 {
+    font-family: var(--font-heading, 'Playfair Display', serif);
+    font-size: 1.25rem;
+    color: var(--text-color, #351F16);
+    margin-bottom: 10px;
+  }
 
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-        }
+  .value-card p {
+    font-size: 0.92rem;
+    color: #605249;
+    line-height: 1.6;
+    margin: 0;
+  }
 
-        .product-card {
-            background-color: #fff;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-        }
+  @media (max-width: 991px) {
+    .story-grid {
+      grid-template-columns: 1fr;
+      gap: 35px;
+    }
+    .values-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+  }
+</style>
 
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-        }
+<div class="about-hero">
+  <div class="container">
+    <h1>The Attrio Story</h1>
+    <p>Crafting timeless contemporary silhouettes with sustainable textiles and artisanal care.</p>
+  </div>
+</div>
 
-        .product-image {
-            width: 100%;
-            height: 300px;
-            background-color: #f5f5dc;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            color: #8b7355;
-        }
-
-        .product-info {
-            padding: 1.5rem;
-        }
-
-        .product-category {
-            font-size: 0.9rem;
-            color: #8b7355;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
-        }
-
-        .product-name {
-            font-size: 1.3rem;
-            color: #333;
-            margin-bottom: 0.8rem;
-        }
-
-        .product-price {
-            font-size: 1.2rem;
-            color: #8b7355;
-            font-weight: bold;
-        }
-
-        .view-btn {
-            display: inline-block;
-            margin-top: 1rem;
-            padding: 0.7rem 1.5rem;
-            background-color: #8b7355;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-
-        .view-btn:hover {
-            background-color: #6d5a44;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .nav-links {
-                gap: 1.5rem;
-            }
-
-            .slide-image {
-                width: 250px;
-                height: 350px;
-            }
-
-            .products-grid {
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">FashionHub</div>
-            <ul class="nav-links">
-                <li><a href="/">Home</a></li>
-                <li><a href="/about">About</a></li>
-                <li><a href="/contact">Contact</a></li>
-                <li><a href="/cart">Cart</a></li>
-                <li><a href="/collections">Collections</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <!-- Image Slider -->
-    <div class="slider-container">
-        <div class="slider-wrapper" id="sliderWrapper">
-            <div class="slide">
-                <div class="slide-content">
-                    <div class="slide-image">
-                        👶 Kids Fashion
-                    </div>
-                    <h2>Children's Collection</h2>
-                    <p>Adorable outfits for your little ones</p>
-                </div>
-            </div>
-            <div class="slide">
-                <div class="slide-content">
-                    <div class="slide-image">
-                        👔 Men's Fashion
-                    </div>
-                    <h2>Men's Collection</h2>
-                    <p>Sophisticated styles for modern gentlemen</p>
-                </div>
-            </div>
-            <div class="slide">
-                <div class="slide-content">
-                    <div class="slide-image">
-                        👗 Women's Fashion
-                    </div>
-                    <h2>Women's Collection</h2>
-                    <p>Elegant designs for every occasion</p>
-                </div>
-            </div>
-        </div>
+<div class="about-content-section">
+  <div class="container">
+    <!-- Story Block -->
+    <div class="story-grid">
+      <div class="story-text">
+        <h2>Heritage & Modern Elegance</h2>
+        <p>
+          Founded on the philosophy of understated luxury, Attrio is dedicated to redefining essential apparel through quiet sophistication, earth-inspired palettes, and uncompromising craftsmanship.
+        </p>
+        <p>
+          Each garment begins with thoughtfully sourced sustainable fibers — organic linens, fine wools, and breathable cottons tailored to seamlessly accompany you through every chapter of modern life.
+        </p>
+        <a href="/shop" class="btn" style="background-color: var(--btn-primary, #4B4C3C); color: #FFF; padding: 12px 28px; font-weight: 500; border-radius: 6px;">
+          Discover Collection
+        </a>
+      </div>
+      <div class="story-image-wrap">
+        <img src="/user/assets/img/women-banner.jpg" alt="Attrio Craftsmanship" onerror="this.onerror=null; this.src='/user/assets/images/about-img.jpg';" />
+      </div>
     </div>
 
-    <!-- Products Section -->
-    <section class="products-section">
-        <h2 class="section-title">Shop By Category</h2>
-        <div class="products-grid">
-            <!-- Kids Category -->
-            <div class="product-card" onclick="location.href='/category/kids'">
-                <div class="product-image">Kids Collection</div>
-                <div class="product-info">
-                    <div class="product-category">Children</div>
-                    <h3 class="product-name">Kids Wear</h3>
-                    <p class="product-price">Starting from $25</p>
-                    <a href="/category/kids" class="view-btn">Browse Kids</a>
-                </div>
-            </div>
+    <!-- Core Values -->
+    <div class="values-section">
+      <div class="values-header">
+        <h2>Our Core Pillars</h2>
+        <p class="text-muted">The principles guiding every stitch, silhouette, and client experience.</p>
+      </div>
 
-            <!-- Men Category -->
-            <div class="product-card" onclick="location.href='/category/men'">
-                <div class="product-image">Men's Collection</div>
-                <div class="product-info">
-                    <div class="product-category">Men</div>
-                    <h3 class="product-name">Men's Wear</h3>
-                    <p class="product-price">Starting from $45</p>
-                    <a href="/category/men" class="view-btn">Browse Men</a>
-                </div>
-            </div>
-
-            <!-- Women Category -->
-            <div class="product-card" onclick="location.href='/category/women'">
-                <div class="product-image">Women's Collection</div>
-                <div class="product-info">
-                    <div class="product-category">Women</div>
-                    <h3 class="product-name">Women's Wear</h3>
-                    <p class="product-price">Starting from $40</p>
-                    <a href="/category/women" class="view-btn">Browse Women</a>
-                </div>
-            </div>
-
-            <!-- Accessories Category -->
-            <div class="product-card" onclick="location.href='/category/accessories'">
-                <div class="product-image">Accessories</div>
-                <div class="product-info">
-                    <div class="product-category">Accessories</div>
-                    <h3 class="product-name">Fashion Accessories</h3>
-                    <p class="product-price">Starting from $15</p>
-                    <a href="/category/accessories" class="view-btn">Browse Accessories</a>
-                </div>
-            </div>
-
-            <!-- Seasonal Category -->
-            <div class="product-card" onclick="location.href='/category/seasonal'">
-                <div class="product-image">Seasonal Collection</div>
-                <div class="product-info">
-                    <div class="product-category">Seasonal</div>
-                    <h3 class="product-name">Seasonal Trends</h3>
-                    <p class="product-price">Starting from $35</p>
-                    <a href="/category/seasonal" class="view-btn">Browse Seasonal</a>
-                </div>
-            </div>
-
-            <!-- Sale Category -->
-            <div class="product-card" onclick="location.href='/category/sale'">
-                <div class="product-image">Sale Items</div>
-                <div class="product-info">
-                    <div class="product-category">Sale</div>
-                    <h3 class="product-name">Special Offers</h3>
-                    <p class="product-price">Up to 50% Off</p>
-                    <a href="/category/sale" class="view-btn">Browse Sale</a>
-                </div>
-            </div>
+      <div class="values-grid">
+        <div class="value-card">
+          <div class="value-icon"><i class="bx bx-feather"></i></div>
+          <h3>Artisanal Precision</h3>
+          <p>Meticulous attention to seamwork, drapery, and structured tailoring that elevates everyday attire.</p>
         </div>
-    </section>
 
-    <script>
-        // Slider functionality
-        const sliderWrapper = document.getElementById('sliderWrapper');
-        let currentSlide = 0;
-        const totalSlides = 3;
+        <div class="value-card">
+          <div class="value-icon"><i class="bx bx-globe"></i></div>
+          <h3>Conscious Living</h3>
+          <p>Ethical manufacturing partnerships and sustainable textiles that honor both craftspeople and environment.</p>
+        </div>
 
-        function nextSlide() {
-            currentSlide = (currentSlide + 1) % totalSlides;
-            sliderWrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
-        }
+        <div class="value-card">
+          <div class="value-icon"><i class="bx bx-heart"></i></div>
+          <h3>Timeless Vision</h3>
+          <p>Enduring silhouettes designed to outlive ephemeral trends and remain essential wardrobe staples.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-        // Auto-slide every 2 seconds
-        setInterval(nextSlide, 2000);
-    </script>
-</body>
-</html>
+<%- include('../partials/user/footer') %>

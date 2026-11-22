@@ -582,7 +582,7 @@ Navbar CSS
   width: 100%;
   z-index: 999;
   box-shadow: 0 2px 28px 0 rgba(0, 0, 0, 0.06);
-  background: #ffffff !important;
+  background: #DDD3CB !important;
   opacity: 0;
   visibility: hidden;
   transition: 0.5s;
@@ -609,7 +609,7 @@ Navbar CSS
 }
 
 .xton-nav {
-  background-color: #ffffff;
+  background-color: #DDD3CB;
 }
 .xton-nav .container-fluid {
   padding-left: 40px;

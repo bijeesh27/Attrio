@@ -113,8 +113,8 @@
   }
   
   .search-input:focus {
-    border-color: #556ee6;
-    box-shadow: 0 0 0 2px rgba(85, 110, 230, 0.1);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(150, 117, 101, 0.15);
   }
   
   .search-icon {
@@ -145,7 +145,7 @@
   .search-button {
     margin-left: 8px;
     padding: 8px 15px;
-    background-color: #556ee6;
+    background-color: var(--btn-primary);
     color: white;
     border: none;
     border-radius: 4px;
@@ -156,7 +156,7 @@
   }
   
   .search-button:hover {
-    background-color: #4458b8;
+    background-color: var(--btn-hover);
   }
 
   @media screen and (max-width: 992px) {
@@ -171,7 +171,6 @@
   }
 </style>
 
-<body data-sidebar="dark">
   <div class="main-content">
     <div class="page-content">
       <div class="container-fluid">
@@ -358,7 +357,6 @@
     <!-- End Page Content -->
   </div>
   <!-- End Main Content -->
-</body>
 
 <script>
   function confirmBlock(productId) {
@@ -367,7 +365,7 @@
       text: ` Do you want to continue?`,
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#000000",
+      confirmButtonColor: "#4B4C3C",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes",
       cancelButtonText: "No",
