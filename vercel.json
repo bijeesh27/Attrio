@@ -1,29 +1,14 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "api/index.js",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": [
-          "src/views/**",
-          "public/**"
-        ]
-      }
+  "functions": {
+    "api/index.js": {
+      "includeFiles": "{src/views/**,public/**}"
     }
-  ],
-  "routes": [
+  },
+  "rewrites": [
     {
-      "src": "/admin/assets/(.*)",
-      "dest": "/public/admin/assets/$1"
-    },
-    {
-      "src": "/user/assets/(.*)",
-      "dest": "/public/user/assets/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/api/index.js"
+      "source": "/(.*)",
+      "destination": "/api/index.js"
     }
   ]
 }

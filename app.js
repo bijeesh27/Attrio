@@ -37,17 +37,17 @@ app.use((req, res, next) => {
     "Content-Security-Policy",
     [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://*.vercel.live https://cdn.jsdelivr.net https://checkout.razorpay.com https://code.jquery.com",
-      "script-src-elem 'self' 'unsafe-inline' https://vercel.live https://*.vercel.live https://cdn.jsdelivr.net https://checkout.razorpay.com https://code.jquery.com",
-      "connect-src 'self' https://vercel.live https://*.vercel.live https://api.razorpay.com",
-      "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com",
-      "font-src 'self' data: https://cdn.jsdelivr.net https://fonts.gstatic.com",
-      "img-src 'self' data: blob: https://*.googleusercontent.com https://cdn.razorpay.com",
-      "frame-src 'self' https://api.razorpay.com https://checkout.razorpay.com"
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https:",
+      "script-src-elem 'self' 'unsafe-inline' https:",
+      "connect-src 'self' https:",
+      "style-src 'self' 'unsafe-inline' https:",
+      "font-src 'self' data: https:",
+      "img-src 'self' data: blob: https:",
+      "frame-src 'self' https:"
     ].join("; ")
-  )
-  next()
-})
+  );
+  next();
+});
 
 app.use(
   session({
