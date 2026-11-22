@@ -20,6 +20,7 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const PORT = process.env.PORT;
 
 app.use(nocache());
+app.set("trust proxy", 1);
 
 
 app.set("view engine", "ejs");
@@ -68,22 +69,29 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-app.use(express.static(path.join(os.homedir(), "Downloads")));
+const downloadsPath = path.join(os.homedir(), "Downloads");
+if (fs.existsSync(downloadsPath)) {
+  app.use(express.static(downloadsPath));
+}
+
+const uploadDir = path.join(process.env.VERCEL ? os.tmpdir() : __dirname, "uploads");
+
+try {
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+} catch (err) {
+  console.log("Upload dir initialization:", err.message);
+}
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "uploads"));
+    cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + "-" + file.originalname);
   },
 });
-
-const uploadDir = path.join(__dirname, "uploads");
-
-if (!fs.existsSync(uploadDir)){
-  fs.mkdirSync(uploadDir);
-}
 
 const upload = multer({ storage: storage });
 
@@ -111,6 +119,11 @@ app.use("/admin", adminRoutes);
 
 connectDB();
 
-app.listen(PORT, () => {
-  console.log(`http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
