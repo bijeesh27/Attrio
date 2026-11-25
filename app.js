@@ -104,9 +104,8 @@ app.post("/uploads", upload.array("uploaded_file"), (req, res) => {
 });
 
 app.use((req, res, next) => {
-  res.locals.session = req.session;
-  res.locals.cartItem = req.session.cartItem || 0
-  
+  res.locals.session = req.session || {};
+  res.locals.cartItem = (req.session && req.session.cartItem) ? req.session.cartItem : 0;
   next();
 });
 

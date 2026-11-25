@@ -220,7 +220,7 @@
 
                 <div class="col-lg-6 col-md-12">
                     <ul class="header-top-menu">
-                        <% if (locals.session.isAuth) { %>
+                        <% if (locals.session && locals.session.isAuth) { %>
                             <li><a href="/profile"><i class='bx bxs-user'></i> My Account</a></li>
                             <li><a href="/wishlist"><i class='bx bx-heart'></i> Wishlist</a></li>
                         <% } else { %>
@@ -263,10 +263,10 @@
                         </ul>
 
                         <div class="others-option">
-                            <% if (locals.session.isAuth) { %>
+                            <% if (locals.session && locals.session.isAuth) { %>
                                 <div class="option-item">
                                     <div class="cart-btn">
-                                        <a href="/cart"><i class='bx bx-shopping-bag'></i><span><%= cartItem %></span></a>
+                                        <a href="/cart"><i class='bx bx-shopping-bag'></i><span><%= locals.cartItem || 0 %></span></a>
                                     </div>
                                 </div>
                             <% } %>
@@ -296,10 +296,10 @@
                         </ul>
 
                         <div class="others-option">
-                            <% if (locals.session.isAuth) { %>
+                            <% if (locals.session && locals.session.isAuth) { %>
                                 <div class="option-item">
                                     <div class="cart-btn">
-                                        <a href="/cart"><i class='bx bx-shopping-bag'></i><span><%= cartItem %></span></a>
+                                        <a href="/cart"><i class='bx bx-shopping-bag'></i><span><%= locals.cartItem || 0 %></span></a>
                                     </div>
                                 </div>
                             <% } %>
