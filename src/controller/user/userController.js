@@ -8,6 +8,7 @@ dotenv.config();
 const Category = require("../../models/categorySchema");
 const nodemailer = require("nodemailer");
 const passport = require("passport");
+const mongoose = require("mongoose");
 
                       
 
@@ -311,7 +312,7 @@ const resendForgetOtp = async (req, res) => {
 const loadHome = async (req, res, next) => {
   try {
     let wishlistProduct = [];
-    if (req.session && req.session.userId) {
+    if (req.session && req.session.userId && mongoose.connection.readyState === 1) {
       try {
         const user = await User.findOne({ _id: req.session.userId });
         if (user && Array.isArray(user.wishlist)) {
@@ -326,19 +327,26 @@ const loadHome = async (req, res, next) => {
     const limit = 3;
     const skip = (page - 1) * limit;
 
-    const totalProducts = await Product.countDocuments({ status: true }).catch(() => 0);
-    const totalPages = Math.ceil(totalProducts / limit) || 1;
+    let products = [];
+    let totalProducts = 0;
+    let totalPages = 1;
+    let category = [];
 
-    const category = await Category.find({ status: true }).catch(() => []);
-    const activeCategoryIds = category.map((category) => category._id);
-    const products = await Product.find({
-      status: true,
-      category: { $in: activeCategoryIds },
-    })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .catch(() => []);
+    if (mongoose.connection.readyState === 1) {
+      totalProducts = await Product.countDocuments({ status: true }).catch(() => 0);
+      totalPages = Math.ceil(totalProducts / limit) || 1;
+
+      category = await Category.find({ status: true }).catch(() => []);
+      const activeCategoryIds = category.map((category) => category._id);
+      products = await Product.find({
+        status: true,
+        category: { $in: activeCategoryIds },
+      })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .catch(() => []);
+    }
 
     res.render("home", {
       products,

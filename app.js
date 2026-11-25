@@ -25,10 +25,13 @@ app.set("trust proxy", 1);
 
 app.set("view engine", "ejs");
 
-app.set("views", [
+const viewDirectories = [
   path.join(__dirname, "src", "views", "user"),
   path.join(__dirname, "src", "views", "admin"),
-]);
+  path.join(process.cwd(), "src", "views", "user"),
+  path.join(process.cwd(), "src", "views", "admin"),
+];
+app.set("views", Array.from(new Set(viewDirectories)));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -142,9 +145,10 @@ app.use((err, req, res, next) => {
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
           body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #FAF7F2; color: #2D241E; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
-          .card { background: white; border-radius: 12px; padding: 40px; max-width: 550px; width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.06); text-align: center; border: 1px solid #EFEAE6; }
+          .card { background: white; border-radius: 12px; padding: 40px; max-width: 600px; width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.06); text-align: center; border: 1px solid #EFEAE6; }
           h1 { font-size: 24px; margin-bottom: 12px; color: #5C3D2E; }
-          p { color: #6E6259; line-height: 1.6; margin-bottom: 24px; font-size: 15px; }
+          p { color: #6E6259; line-height: 1.6; margin-bottom: 20px; font-size: 15px; }
+          .diag { background: #F8F4F0; border: 1px solid #E2D9D2; border-radius: 6px; padding: 12px; font-family: monospace; font-size: 12px; color: #8A4035; text-align: left; margin-bottom: 24px; word-break: break-all; }
           a { display: inline-block; background: #5C3D2E; color: white; padding: 10px 24px; border-radius: 6px; text-decoration: none; font-weight: 500; }
           a:hover { background: #442C20; }
         </style>
@@ -153,6 +157,7 @@ app.use((err, req, res, next) => {
         <div class="card">
           <h1>We'll be right back</h1>
           <p>We encountered a temporary issue while loading this page. Please try refreshing in a moment.</p>
+          <div class="diag"><strong>Details:</strong> ${err && (err.message || err.toString()) ? (err.message || err.toString()) : "Internal Server Error"}</div>
           <a href="/">Return to Home</a>
         </div>
       </body>
