@@ -7,12 +7,19 @@ const connectDB = async () => {
     if (isConnected || mongoose.connection.readyState >= 1) {
         return;
     }
+    if (!process.env.MONGODB_URL) {
+        console.warn("MONGODB_URL environment variable is not defined!");
+        return;
+    }
     try {
-        await mongoose.connect(process.env.MONGODB_URL);
+        await mongoose.connect(process.env.MONGODB_URL, {
+            serverSelectionTimeoutMS: 5000,
+        });
         isConnected = true;
         console.log("DataBase connected successfully");
     } catch (error) {
-        console.log("error occured while connecting database", error);
+        console.error("Error occurred while connecting database:", error.message);
+        throw error;
     }
 };
 

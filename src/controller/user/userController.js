@@ -308,29 +308,37 @@ const resendForgetOtp = async (req, res) => {
   }
 };
 
-const loadHome = async (req, res) => {
+const loadHome = async (req, res, next) => {
   try {
-    const user=await User.findOne({_id:req.session.userId})
-    const wishlistProduct=user?.wishlist.map((val)=>val.productId)
-    console.log("whishlistprodyct",wishlistProduct);
+    let wishlistProduct = [];
+    if (req.session && req.session.userId) {
+      try {
+        const user = await User.findOne({ _id: req.session.userId });
+        if (user && Array.isArray(user.wishlist)) {
+          wishlistProduct = user.wishlist.map((val) => val.productId ? val.productId.toString() : val.toString());
+        }
+      } catch (userErr) {
+        console.warn("Error fetching user for home page:", userErr.message);
+      }
+    }
+
     const page = parseInt(req.query.page) || 1;
     const limit = 3;
     const skip = (page - 1) * limit;
 
-    const totalProducts = await Product.countDocuments({ status: true });
-    const totalPages = Math.ceil(totalProducts / limit);
+    const totalProducts = await Product.countDocuments({ status: true }).catch(() => 0);
+    const totalPages = Math.ceil(totalProducts / limit) || 1;
 
-    const category = await Category.find({ status: true });
-    const activeCategories = await Category.find({ status: true });
-    const activeCategoryIds = activeCategories.map((category) => category._id);
+    const category = await Category.find({ status: true }).catch(() => []);
+    const activeCategoryIds = category.map((category) => category._id);
     const products = await Product.find({
       status: true,
       category: { $in: activeCategoryIds },
     })
       .sort({ createdAt: -1 })
-      .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .catch(() => []);
 
     res.render("home", {
       products,
@@ -341,7 +349,12 @@ const loadHome = async (req, res) => {
       wishlistProduct
     });
   } catch (error) {
-    console.log("error rendering home page", error);
+    console.error("error rendering home page", error);
+    if (next) {
+      next(error);
+    } else {
+      res.status(500).send("Error rendering home page: " + error.message);
+    }
   }
 };
 

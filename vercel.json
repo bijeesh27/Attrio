@@ -7,7 +7,7 @@
   },
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/((?!user/|admin/|uploads/|favicon\\.ico).*)",
       "destination": "/api/index.js"
     }
   ]

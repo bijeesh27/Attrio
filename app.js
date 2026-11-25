@@ -51,7 +51,7 @@ app.use((req, res, next) => {
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || "attrio-session-secret-2025",
     resave: false,
     saveUninitialized: false,
     cookie: { secure: false }
@@ -114,8 +114,51 @@ app.use(
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+// Ensure DB connection before processing requests
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+  } catch (err) {
+    console.error("Database connection failure in request:", err.message);
+  }
+  next();
+});
+
 app.use("/", userRoutes);
 app.use("/admin", adminRoutes);
+
+// Global error handling middleware
+app.use((err, req, res, next) => {
+  console.error("Unhandled application error:", err);
+  if (res.headersSent) {
+    return next(err);
+  }
+  res.status(500).send(`
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <title>Attiro - Service Notice</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #FAF7F2; color: #2D241E; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+          .card { background: white; border-radius: 12px; padding: 40px; max-width: 550px; width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.06); text-align: center; border: 1px solid #EFEAE6; }
+          h1 { font-size: 24px; margin-bottom: 12px; color: #5C3D2E; }
+          p { color: #6E6259; line-height: 1.6; margin-bottom: 24px; font-size: 15px; }
+          a { display: inline-block; background: #5C3D2E; color: white; padding: 10px 24px; border-radius: 6px; text-decoration: none; font-weight: 500; }
+          a:hover { background: #442C20; }
+        </style>
+      </head>
+      <body>
+        <div class="card">
+          <h1>We'll be right back</h1>
+          <p>We encountered a temporary issue while loading this page. Please try refreshing in a moment.</p>
+          <a href="/">Return to Home</a>
+        </div>
+      </body>
+    </html>
+  `);
+});
 
 connectDB();
 
