@@ -126,25 +126,6 @@ app.use(async (req, res, next) => {
   next();
 });
 
-app.get("/debug-views", (req, res) => {
-  const fs = require("fs");
-  function listFiles(dir) {
-    if (!fs.existsSync(dir)) return "DOES_NOT_EXIST";
-    try {
-      const entries = fs.readdirSync(dir, { withFileTypes: true });
-      return entries.map(e => e.isDirectory() ? { dir: e.name, children: listFiles(path.join(dir, e.name)) } : e.name);
-    } catch (e) {
-      return e.message;
-    }
-  }
-  res.json({
-    cwd: process.cwd(),
-    __dirname: __dirname,
-    rootFiles: fs.readdirSync(process.cwd()),
-    views: listFiles(path.join(process.cwd(), "src", "views"))
-  });
-});
-
 app.use("/", userRoutes);
 app.use("/admin", adminRoutes);
 
