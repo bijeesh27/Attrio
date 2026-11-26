@@ -126,7 +126,7 @@ app.use(async (req, res, next) => {
   next();
 });
 
-app.get("/api/debug-views", (req, res) => {
+app.get("/debug-views", (req, res) => {
   const fs = require("fs");
   function listFiles(dir) {
     if (!fs.existsSync(dir)) return "DOES_NOT_EXIST";
