@@ -28,6 +28,8 @@ app.set("view engine", "ejs");
 const viewDirectories = [
   path.join(__dirname, "src", "views", "user"),
   path.join(__dirname, "src", "views", "admin"),
+  path.join(__dirname, "src", "views", "partials"),
+  path.join(__dirname, "src", "views"),
   path.join(process.cwd(), "src", "views", "user"),
   path.join(process.cwd(), "src", "views", "admin"),
 ];
